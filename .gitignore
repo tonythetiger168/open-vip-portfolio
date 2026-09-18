@@ -1,0 +1,42 @@
+# Simulation artifacts
+*.vcd
+*.fsdb
+*.wlf
+*.trn
+*.dsn
+
+# Compilation outputs
+work/
+INCA_libs/
+csrc/
+simv*
+*.daidir/
+*.vdb/
+DVEfiles/
+verdiLog/
+
+# UVM / EDA tool outputs
+uvm_report_server*
+*.log
+*.svcf
+*.ucdb
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Build artifacts
+build/
+dist/
