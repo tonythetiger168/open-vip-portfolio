@@ -1,0 +1,157 @@
+# =============================================================================
+# VIP Portfolio v1.7.4 — CI 回歸（GitHub Actions 範例）
+#
+# !! 部署注意 !!
+#   本檔因 OAuth workflow scope 限制暫置於 ci/ 目錄。
+#   使用時請複製到 .github/workflows/vip_regression.yml 即可啟用。
+#
+# 內容：
+#   - Job 1「elab-gate」：在 ubuntu runner 上以開源工具鏈（pyslang 11 +
+#     Accellera uvm-core）對全部 87 個 VIP 執行 L1a elaboration gate，
+#     並在 smoke harness 存在時加跑 L1b iverilog DUT 冒煙測試，
+#     最後上傳報告 artifact。
+#   - 檔案尾端以註解示範 Job 2：在 self-hosted runner（具 VCS/Xcelium/Questa
+#     license）上執行 L2/L3 coverage-driven 回歸。
+#
+# 假設 repo 版面：
+#   <repo>/vips/<協定>-VIP/            ← 87 個 VIP 目錄
+#   <repo>/tools/elab_scan.py          ← elaboration gate 腳本
+#   <repo>/smoke/run_smoke.sh          ← iverilog DUT 冒煙測試 harness（選配）
+# =============================================================================
+
+name: VIP 回歸（L1 開源閘）
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:      # 允許手動觸發
+  schedule:
+    - cron: '0 18 * * *'  # 每日夜間回歸（UTC 18:00）
+
+env:
+  # uvm-core 的 src 目錄（elab_scan.py 透過 UVM_CORE 環境變數取得）
+  UVM_CORE: ${{ github.workspace }}/tools/uvm-core/src
+
+jobs:
+  elab-gate:
+    name: L1 elaboration gate（87 VIP）
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取出 portfolio 原始碼
+        uses: actions/checkout@v4
+
+      - name: 安裝 Icarus Verilog（L1b DUT 冒煙測試用）
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y iverilog
+          iverilog -V | head -1
+
+      - name: 安裝 pyslang 11（slang SystemVerilog 前端之 Python 綁定）
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install "pyslang>=11,<12"
+          python3 -c "import pyslang; print('pyslang major =', pyslang.VersionInfo.getMajor())"
+
+      - name: 取得 Accellera uvm-core（UVM-1.2 標準庫原始碼）
+        run: |
+          git clone --depth 1 https://github.com/accellera-official/uvm-core.git \
+            "${{ github.workspace }}/tools/uvm-core"
+          ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/macros/uvm_macros.svh"
+
+      - name: 對全部 87 個 VIP 執行 elaboration gate
+        run: |
+          set -u
+          mkdir -p reports/elab
+          pass=0; fail=0
+          : > reports/elab/elab_summary.txt
+          for vip in vips/*/; do
+            name=$(basename "$vip")
+            log="reports/elab/${name}.log"
+            # elab_scan.py 一律 exit 0，必須以輸出的 ELAB_ERRORS 判定
+            if python3 tools/elab_scan.py "$vip" > "$log" 2>&1 \
+               && grep -q '^ELAB_ERRORS=0$' "$log"; then
+              echo "PASS  $name" | tee -a reports/elab/elab_summary.txt
+              pass=$((pass+1))
+            else
+              echo "FAIL  $name" | tee -a reports/elab/elab_summary.txt
+              fail=$((fail+1))
+            fi
+          done
+          echo "elab gate 結果：PASS=$pass FAIL=$fail（總計 $((pass+fail))）" \
+            | tee -a reports/elab/elab_summary.txt
+          [ "$fail" -eq 0 ]   # 任何一個 VIP 失敗即讓整個 job 失敗
+
+      - name: iverilog DUT 冒煙測試（smoke harness 存在時才執行）
+        run: |
+          set -u
+          mkdir -p reports/smoke
+          if [ -f smoke/run_smoke.sh ]; then
+            # 不帶參數＝跑全部 87 個 VIP，輸出 SMOKE_PASS/SMOKE_FAIL/SMOKE_SKIP
+            # 並產生 smoke/smoke_report.csv；詳細介面以 smoke/ 內 README 為準
+            bash smoke/run_smoke.sh | tee reports/smoke/smoke.log
+            cp -f smoke/smoke_report.csv reports/smoke/ 2>/dev/null || true
+            if grep -q 'SMOKE_FAIL' reports/smoke/smoke.log; then
+              echo "::error::DUT 冒煙測試有 SMOKE_FAIL，詳見 reports/smoke/smoke.log"
+              exit 1
+            fi
+          else
+            echo "smoke/run_smoke.sh 尚未納入 repo，略過 L1b（參見 docs/ACCEPTANCE.md）"
+          fi
+
+      - name: 上傳 L1 報告 artifact
+        if: always()          # 即使 gate 失敗也要保留日誌供排查
+        uses: actions/upload-artifact@v4
+        with:
+          name: l1-elab-gate-report
+          path: reports/
+          retention-days: 30
+
+# =============================================================================
+# Job 2 範例（註解）：L2/L3 商用模擬器 coverage-driven 回歸
+#
+# 商用模擬器與 license server 無法在 GitHub 公用 runner 上使用，
+# 請在內部備有 VCS/Xcelium/Questa 的 self-hosted runner 執行。
+# 建議排程（夜間）或以 workflow_dispatch 手動觸發，避免消耗 PR 檢查時間。
+#
+# commercial-regression:
+#   name: L2/L3 coverage 回歸（商用模擬器）
+#   runs-on: [self-hosted, eda]        # 該 runner 須預裝模擬器並可達 license server
+#   env:
+#     SIMULATOR: vcs                   # 或 xcelium / questa
+#     COV_GOAL: "100"                  # 正式驗收門檻固定 100
+#     JOBS: "4"
+#   steps:
+#     - uses: actions/checkout@v4
+#
+#     - name: 確認模擬器與 license
+#       run: |
+#         vcs -ID || true               # VCS 無 -version，-ID 可檢查安裝與 license
+#         lmstat -a -c "$LM_LICENSE_FILE" | head
+#
+#     - name: 全 87 VIP coverage 回歸（L3）
+#       run: |
+#         set -u
+#         mkdir -p reports/l3
+#         pass=0; fail=0
+#         for vip in vips/*/; do
+#           name=$(basename "$vip")
+#           echo "=== [$name] 開始 $(date +%T) ==="
+#           if (cd "$vip/scripts" && bash coverage_regression.sh) \
+#                > "reports/l3/${name}.log" 2>&1; then
+#             pass=$((pass+1)); echo "=== [$name] PASS ==="
+#           else
+#             fail=$((fail+1)); echo "=== [$name] FAIL ==="
+#           fi
+#         done
+#         echo "L3 結果：PASS=$pass FAIL=$fail"
+#         [ "$fail" -eq 0 ]
+#
+#     - name: 上傳 coverage 報告 artifact
+#       if: always()
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: l3-coverage-report
+#         path: reports/l3/
+#         retention-days: 30
+# =============================================================================
