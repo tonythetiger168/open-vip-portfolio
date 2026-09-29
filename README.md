@@ -1,201 +1,310 @@
 # Open VIP Portfolio
 
-A comprehensive, open-source collection of **87 standalone protocol VIP (Verification IP) testbenches** in SystemVerilog / UVM-1.2 for SoC/ASIC verification.
+> A comprehensive, open-source collection of **131 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification, plus synthesizable RTL IP reference designs.
 
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![VIP Count](https://img.shields.io/badge/VIPs-87-brightgreen.svg)](vip_individual_portfolio.csv)
+[![License](https://img.shields.io/badge/License-Apache%%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![VIP Count](https://img.shields.io/badge/VIPs-131-brightgreen.svg)]()
+[![Protocols](https://img.shields.io/badge/Protocols-116-orange.svg)]()
 
 ---
 
 ## Overview
 
-This repository is a modular, per-protocol VIP library covering the major interface standards used in modern semiconductor design. Each VIP ships as a fully expanded source tree under `vips/<PROTOCOL>-VIP/` — no zip files, no code generation steps — ready to integrate into your verification flow.
+This repository provides a **modular, per-protocol verification IP library** covering major interface standards used in modern semiconductor design. Each entry is packaged as a standalone zip file.
 
-All source files are licensed under the [Apache License 2.0](LICENSE).
+- **109 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
+- **22 RTL IPs** -- synthesizable reference RTL with directed testbenches
+- **116 distinct protocols** across 20 families
 
-## What's in each VIP
+All source files are licensed under **Apache License 2.0**.
 
-Every one of the 87 VIPs contains a complete UVM-1.2 testbench:
+---
 
-| Component | Description |
-|-----------|-------------|
-| Driver / Monitor / Sequencer | Active UVM agent implementing the protocol's signaling |
-| Scoreboard | End-to-end checker with expected/observed analysis imp ports |
-| Functional DUT model | Pure-RTL behavioral model of the protocol target |
-| L1–L4 tiered SVA checkers | Layered SystemVerilog assertion compliance checkers |
-| Functional coverage | ≥ 3 covergroups with crosses |
-| Directed sequences | ≥ 6 directed sequence library entries |
-| `README.md` | Protocol overview, architecture map, usage |
-| `scripts/` | `Makefile` + `coverage.mk` + `cov_check.py` + `coverage_regression.sh` — coverage-driven regression with `COV_GOAL=100`, supporting VCS / Xcelium / Questa |
+## Protocol Coverage
 
-## Repository layout
+### AMBA (11)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| ACE | RTL IP | `ACE-VIP.zip` |  |
+| ACE-Lite | RTL IP | `ACE_Lite-VIP.zip` |  |
+| ACE-Lite | UVM VIP | `ACE_Lite-UVM-VIP.zip` |  |
+| AHB | UVM VIP | `AHB-VIP.zip` |  |
+| APB | UVM VIP | `APB-VIP.zip` |  |
+| AXI | UVM VIP | `AXI-VIP.zip` |  |
+| AXI-Stream | RTL IP | `AXI_Stream-VIP.zip` |  |
+| AXI4 | RTL IP | `AXI4-VIP.zip` |  |
+| AXI4-Lite | RTL IP | `AXI4_Lite-VIP.zip` |  |
+| CHI | RTL IP | `CHI-VIP.zip` |  |
+| CHI | UVM VIP | `CHI-UVM-VIP.zip` |  |
+
+### Aerospace (1)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| MIL-STD-1553 | UVM VIP | `MIL_STD_1553-VIP.zip` |  |
+
+### Audio (1)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| I2S Audio | UVM VIP | `I2S-VIP.zip` |  |
+
+### Automotive (6)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| CAN | UVM VIP | `CAN-VIP.zip` |  |
+| CAN-FD | UVM VIP | `CAN_FD-UVM-VIP.zip` |  |
+| Ethernet-AVB-TSN | UVM VIP | `Ethernet_AVB_TSN-VIP.zip` |  |
+| FlexRay | UVM VIP | `FlexRay-VIP.zip` |  |
+| LIN | UVM VIP | `LIN-VIP.zip` |  |
+| SENT | UVM VIP | `SENT-VIP.zip` |  |
+
+### Debug (5)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| ARM Serial Wire Debug | UVM VIP | `SWD-VIP.zip` |  |
+| ATB | RTL IP | `ATB-VIP.zip` |  |
+| ATB | UVM VIP | `ATB-UVM-VIP.zip` |  |
+| WTB | RTL IP | `WTB-VIP.zip` |  |
+| WTB | UVM VIP | `WTB-UVM-VIP.zip` |  |
+
+### Industrial (2)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| EtherCAT | UVM VIP | `EtherCAT-VIP.zip` |  |
+| IO-Link | UVM VIP | `IO_Link-VIP.zip` |  |
+
+### Interconnect (16)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| ARM Local Translation Interface | UVM VIP | `LTI-VIP.zip` |  |
+| Avalon-MM | RTL IP | `Avalon_MM-VIP.zip` |  |
+| Avalon-MM | UVM VIP | `Avalon_MM-UVM-VIP.zip` |  |
+| Avalon-ST | RTL IP | `Avalon_ST-VIP.zip` |  |
+| Avalon-ST | UVM VIP | `Avalon_ST-UVM-VIP.zip` |  |
+| CCIX Cache Coherent Interconnect | UVM VIP | `CCIX-VIP.zip` |  |
+| CXL | UVM VIP | `CXL-VIP.zip` |  |
+| CXS CCIX Stream Interface | UVM VIP | `CXS-VIP.zip` |  |
+| OCP-IP Open Core Protocol | UVM VIP | `OCP-VIP.zip` |  |
+| PCIe | UVM VIP | `PCIe-VIP.zip` |  |
+| RapidIO | UVM VIP | `RapidIO-VIP.zip` |  |
+| TileLink (TL-UL/TL-C) | UVM VIP | `TileLink-VIP.zip` |  |
+| UALink | UVM VIP | `UALink-VIP.zip` |  |
+| UCIe | UVM VIP | `UCIe-VIP.zip` |  |
+| Wishbone | RTL IP | `Wishbone-VIP.zip` |  |
+| Wishbone | UVM VIP | `Wishbone-UVM-VIP.zip` |  |
+
+### MIPI (16)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| C-PHY | UVM VIP | `C_PHY-VIP.zip` |  |
+| CSE | UVM VIP | `CSE-VIP.zip` |  |
+| CSI-2 | UVM VIP | `CSI_2-VIP.zip` |  |
+| D-PHY | UVM VIP | `D_PHY-VIP.zip` |  |
+| DSI | UVM VIP | `DSI-VIP.zip` |  |
+| DigRF | UVM VIP | `DigRF-VIP.zip` |  |
+| HSI | UVM VIP | `HSI-VIP.zip` |  |
+| M-PHY | UVM VIP | `M_PHY-VIP.zip` |  |
+| MIPI DBI (Display Bus Interface) | UVM VIP | `DBI-VIP.zip` |  |
+| MIPI DPI (Display Pixel Interface) | UVM VIP | `DPI-VIP.zip` |  |
+| MIPI I3C | UVM VIP | `I3C-VIP.zip` |  |
+| MIPI RFFE | UVM VIP | `RFFE-VIP.zip` |  |
+| MIPI SLIMbus | UVM VIP | `SLIMbus-VIP.zip` |  |
+| MIPI SPMI | UVM VIP | `SPMI-VIP.zip` |  |
+| MIPI SoundWire | UVM VIP | `SoundWire-VIP.zip` |  |
+| UniPro | UVM VIP | `UniPro-VIP.zip` |  |
+
+### Memory (26)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| DDR | UVM VIP | `DDR-VIP.zip` |  |
+| DDR4 | RTL IP | `DDR4-VIP.zip` |  |
+| DDR5 | UVM VIP | `ddr5-VIP.zip` |  |
+| DDR6 | UVM VIP | `ddr6-VIP.zip` |  |
+| DDR7 | UVM VIP | `ddr7-VIP.zip` |  |
+| DFI 5.0 (MC-PHY Interface) | UVM VIP | `DFI-VIP.zip` |  |
+| GDDR5 | UVM VIP | `gddr5-VIP.zip` |  |
+| GDDR6 | UVM VIP | `gddr6-VIP.zip` |  |
+| GDDR7 | UVM VIP | `gddr7-VIP.zip` |  |
+| HBM | UVM VIP | `HBM-VIP.zip` |  |
+| HBM2 | UVM VIP | `hbm2-VIP.zip` |  |
+| HBM3 | UVM VIP | `hbm3-VIP.zip` |  |
+| HBM3E | UVM VIP | `hbm3e-VIP.zip` |  |
+| HBM4 | UVM VIP | `hbm4-VIP.zip` |  |
+| HBM5 | UVM VIP | `HBM5-VIP.zip` |  |
+| LPDDR | UVM VIP | `LPDDR-VIP.zip` |  |
+| LPDDR4 | RTL IP | `LPDDR4-VIP.zip` |  |
+| LPDDR5 | UVM VIP | `lpddr5-VIP.zip` |  |
+| LPDDR5X | UVM VIP | `lpddr5x-VIP.zip` |  |
+| LPDDR6 | UVM VIP | `lpddr6-VIP.zip` |  |
+| LPDDR7 | UVM VIP | `lpddr7-VIP.zip` |  |
+| ONFI | UVM VIP | `ONFI-VIP.zip` |  |
+| SD | UVM VIP | `SD-VIP.zip` |  |
+| UFS | UVM VIP | `UFS-VIP.zip` |  |
+| UniPro-Mem | UVM VIP | `UniPro_Mem-VIP.zip` |  |
+| eMMC | UVM VIP | `eMMC-VIP.zip` |  |
+
+### Networking (13)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| Ethernet | UVM VIP | `Ethernet-VIP.zip` |  |
+| FC | UVM VIP | `FC-VIP.zip` |  |
+| GMII | RTL IP | `GMII-VIP.zip` |  |
+| GMII | UVM VIP | `GMII-UVM-VIP.zip` |  |
+| IEEE 1588 PTP | UVM VIP | `PTP-VIP.zip` |  |
+| Interlaken v1.2 | UVM VIP | `Interlaken-VIP.zip` |  |
+| MDIO | RTL IP | `MDIO-VIP.zip` |  |
+| MDIO | UVM VIP | `MDIO-UVM-VIP.zip` |  |
+| RGMII | RTL IP | `RGMII-VIP.zip` |  |
+| RGMII | UVM VIP | `RGMII-UVM-VIP.zip` |  |
+| UEC | UVM VIP | `UEC-VIP.zip` |  |
+| XGMII | RTL IP | `XGMII-VIP.zip` |  |
+| XGMII | UVM VIP | `XGMII-UVM-VIP.zip` |  |
+
+### Peripherals (6)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| 1-Wire | RTL IP | `OneWire-VIP.zip` |  |
+| 1-Wire | UVM VIP | `OneWire-UVM-VIP.zip` |  |
+| GPIO | RTL IP | `GPIO-VIP.zip` |  |
+| GPIO | UVM VIP | `GPIO-UVM-VIP.zip` |  |
+| PWM | RTL IP | `PWM-VIP.zip` |  |
+| PWM | UVM VIP | `PWM-UVM-VIP.zip` |  |
+
+### Power (2)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| ARM Q-Channel Low Power Interface | UVM VIP | `LPI-VIP.zip` |  |
+| AVSBus (Adaptive Voltage Scaling) | UVM VIP | `AVSBus-VIP.zip` |  |
+
+### Security (2)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| Crypto / Security Engine | UVM VIP | `Security-VIP.zip` |  |
+| HDCP 2.3 Content Protection | UVM VIP | `HDCP-VIP.zip` |  |
+
+### SerDes (1)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| JESD204C | UVM VIP | `JESD204-VIP.zip` |  |
+
+### Serial (4)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| I2C | UVM VIP | `I2C-VIP.zip` |  |
+| QSPI | RTL IP | `QSPI-VIP.zip` |  |
+| SPI | UVM VIP | `SPI-VIP.zip` |  |
+| UART | UVM VIP | `UART-VIP.zip` |  |
+
+### Storage (4)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| SAS-4 (Serial Attached SCSI) | UVM VIP | `SAS-VIP.zip` |  |
+| SDIO | RTL IP | `SDIO-VIP.zip` |  |
+| SDIO | UVM VIP | `SDIO-UVM-VIP.zip` |  |
+| Toggle Mode NAND | UVM VIP | `ToggleNAND-VIP.zip` |  |
+
+### Storage/Debug (5)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| Bluetooth5 | UVM VIP | `Bluetooth5-VIP.zip` |  |
+| DisplayPort2 | UVM VIP | `DisplayPort2-VIP.zip` |  |
+| JTAG | UVM VIP | `JTAG-VIP.zip` |  |
+| NVMe | UVM VIP | `NVMe-VIP.zip` |  |
+| SATA | UVM VIP | `SATA-VIP.zip` |  |
+
+### Telecom (2)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| CPRI v8.0 (eCPRI over CPR) | UVM VIP | `CPRI-VIP.zip` |  |
+| eCPRI over Ethernet | UVM VIP | `eCPRI-VIP.zip` |  |
+
+### USB (7)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| USB | UVM VIP | `USB-VIP.zip` |  |
+| USB Type-C Port Controller | UVM VIP | `TypeC-VIP.zip` |  |
+| USB-PD | UVM VIP | `USB_PD-VIP.zip` |  |
+| USB2 | UVM VIP | `USB2-VIP.zip` |  |
+| USB3 | UVM VIP | `USB3-VIP.zip` |  |
+| USB4 | UVM VIP | `USB4-VIP.zip` |  |
+| eUSB2 | UVM VIP | `eUSB2-VIP.zip` |  |
+
+### Video (1)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| HDMI 2.1 | UVM VIP | `HDMI-VIP.zip` |  |
+
+---
+
+## Repository Structure
 
 ```
-.
-├── vips/                        # 87 VIP source trees (vips/<PROTOCOL>-VIP/)
-├── tools/
-│   └── elab_scan.py             # pyslang 11 elaboration gate (L1a)
-├── smoke/                       # Icarus Verilog DUT smoke harness (L1b)
-│   ├── flatten.py               #   interface-port flattener
-│   ├── smoke_run.py             #   tb generator + compile/run/classify
-│   ├── run_smoke.sh             #   entry script
-│   └── README.md
-├── docs/
-│   ├── CONTRIBUTING.md          # contribution guide
-│   ├── ACCEPTANCE.md            # user acceptance guide (L1/L2/L3)
-│   ├── CI_README.md             # CI integration notes
-│   ├── reachability_report.csv  # covergroup reachability audit (507 groups)
-│   └── fix_round2.csv           # round-2 fix log
-├── .github/workflows/vip_regression.yml  # GitHub Actions: L1 gate
-├── Jenkinsfile                  # Jenkins declarative pipeline (same flow)
-└── vip_individual_portfolio.csv # machine-readable index of all 87 VIPs
+open-vip-portfolio/
+|-- LICENSE
+|-- README.md
+|-- vip_individual_portfolio.csv   # machine-readable index (131 entries)
+|-- smoke_report.csv               # full open-toolchain L1b smoke results
+|-- vips/                          # 131 individual VIP/IP zip files
+|-- .github/workflows/             # CI validation
+|-- docs/                          # CONTRIBUTING and guides
 ```
 
-## Verification status (v1.7.4)
+---
 
-| Gate | Tooling | Result |
-|------|---------|--------|
-| L1a elaboration gate | pyslang 11 + Accellera uvm-core, full parse + elaborate | **87/87 `ELAB_ERRORS=0`** |
-| L1b DUT smoke test | Icarus Verilog 11 | **26 PASS / 0 FAIL / 61 SKIP** (SKIPs are Icarus tool limitations, not failures) |
-| Covergroup reachability audit | static analysis | **507/507 covergroups clean** |
+## Quick Start
 
-## Quick start
-
-### Open-source toolchain (no commercial license needed)
-
-Requires Icarus Verilog 11, pyslang 11, and Accellera uvm-core:
+### 1. Download a VIP
 
 ```bash
 git clone https://github.com/tonythetiger168/open-vip-portfolio.git
 cd open-vip-portfolio
-
-# 1. Tool setup
-sudo apt-get install -y iverilog
-python3 -m pip install "pyslang>=11,<12"
-git clone --depth 1 https://github.com/accellera-official/uvm-core.git
-export UVM_CORE=$PWD/uvm-core/src
-
-# 2. L1a — elaboration gate on a single VIP (expected output: ELAB_ERRORS=0)
-python3 tools/elab_scan.py vips/AHB-VIP
-
-# 3. L1b — iverilog DUT smoke test (expected: SMOKE_PASS AHB-VIP)
-bash smoke/run_smoke.sh vips/AHB-VIP
-bash smoke/run_smoke.sh            # all 87 VIPs
+unzip vips/UART-VIP.zip -d ./my_project/
 ```
 
-The full acceptance flow (environment checks, batch scripts, FAQ) is documented in [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md).
-
-### Commercial toolchain (coverage-driven regression)
-
-Requires one of VCS / Xcelium / Questa with UVM-1.2:
+### 2. Run the open-toolchain smoke gate
 
 ```bash
-cd vips/AHB-VIP/scripts
-SIMULATOR=vcs bash coverage_regression.sh     # or SIMULATOR=xcelium / questa
+bash smoke/run_smoke.sh UART-VIP   # or: python3 smoke/smoke_run.py --smoke-all
 ```
 
-Each VIP's regression builds with coverage instrumentation, runs its directed
-test list, and enforces the acceptance gate `COV_GOAL=100` (line / FSM /
-toggle / assertion coverage) via `cov_check.py`.
+---
 
-## Protocol catalog
+## Quality Gates
 
-All 87 VIPs, grouped by category (from [`vip_individual_portfolio.csv`](vip_individual_portfolio.csv)):
+- **L1a elaboration**: `python3 tools/elab_scan.py vips/<VIP>` (pyslang + UVM 1.2)
+- **L1b smoke**: `bash smoke/run_smoke.sh <VIP>` (iverilog/verilator; full report in `smoke_report.csv`)
 
-| Category | Protocol | Directory |
-|----------|----------|-----------|
-| Interconnect | CXL | [`vips/CXL-VIP/`](vips/CXL-VIP/) |
-| Interconnect | PCIe | [`vips/PCIe-VIP/`](vips/PCIe-VIP/) |
-| Interconnect | UCIe | [`vips/UCIe-VIP/`](vips/UCIe-VIP/) |
-| Interconnect | UALink | [`vips/UALink-VIP/`](vips/UALink-VIP/) |
-| Networking | Ethernet | [`vips/Ethernet-VIP/`](vips/Ethernet-VIP/) |
-| Networking | FC | [`vips/FC-VIP/`](vips/FC-VIP/) |
-| Networking | UEC | [`vips/UEC-VIP/`](vips/UEC-VIP/) |
-| USB | USB | [`vips/USB-VIP/`](vips/USB-VIP/) |
-| USB | USB-PD | [`vips/USB_PD-VIP/`](vips/USB_PD-VIP/) |
-| USB | USB2 | [`vips/USB2-VIP/`](vips/USB2-VIP/) |
-| USB | USB3 | [`vips/USB3-VIP/`](vips/USB3-VIP/) |
-| USB | USB4 | [`vips/USB4-VIP/`](vips/USB4-VIP/) |
-| USB | eUSB2 | [`vips/eUSB2-VIP/`](vips/eUSB2-VIP/) |
-| AMBA | AHB | [`vips/AHB-VIP/`](vips/AHB-VIP/) |
-| AMBA | APB | [`vips/APB-VIP/`](vips/APB-VIP/) |
-| AMBA | AXI | [`vips/AXI-VIP/`](vips/AXI-VIP/) |
-| Memory | DDR | [`vips/DDR-VIP/`](vips/DDR-VIP/) |
-| Memory | DDR5 | [`vips/ddr5-VIP/`](vips/ddr5-VIP/) |
-| Memory | DDR6 | [`vips/ddr6-VIP/`](vips/ddr6-VIP/) |
-| Memory | HBM | [`vips/HBM-VIP/`](vips/HBM-VIP/) |
-| Memory | LPDDR | [`vips/LPDDR-VIP/`](vips/LPDDR-VIP/) |
-| Memory | LPDDR5 | [`vips/lpddr5-VIP/`](vips/lpddr5-VIP/) |
-| Memory | LPDDR5X | [`vips/lpddr5x-VIP/`](vips/lpddr5x-VIP/) |
-| Memory | LPDDR6 | [`vips/lpddr6-VIP/`](vips/lpddr6-VIP/) |
-| Memory | ONFI | [`vips/ONFI-VIP/`](vips/ONFI-VIP/) |
-| Memory | SD | [`vips/SD-VIP/`](vips/SD-VIP/) |
-| Memory | UFS | [`vips/UFS-VIP/`](vips/UFS-VIP/) |
-| Memory | UniPro-Mem | [`vips/UniPro_Mem-VIP/`](vips/UniPro_Mem-VIP/) |
-| Memory | eMMC | [`vips/eMMC-VIP/`](vips/eMMC-VIP/) |
-| Memory | DDR7 | [`vips/ddr7-VIP/`](vips/ddr7-VIP/) |
-| Memory | GDDR5 | [`vips/gddr5-VIP/`](vips/gddr5-VIP/) |
-| Memory | GDDR6 | [`vips/gddr6-VIP/`](vips/gddr6-VIP/) |
-| Memory | GDDR7 | [`vips/gddr7-VIP/`](vips/gddr7-VIP/) |
-| Memory | HBM2 | [`vips/hbm2-VIP/`](vips/hbm2-VIP/) |
-| Memory | HBM3 | [`vips/hbm3-VIP/`](vips/hbm3-VIP/) |
-| Memory | HBM3E | [`vips/hbm3e-VIP/`](vips/hbm3e-VIP/) |
-| Memory | HBM4 | [`vips/hbm4-VIP/`](vips/hbm4-VIP/) |
-| Memory | HBM5 | [`vips/HBM5-VIP/`](vips/HBM5-VIP/) |
-| Memory | LPDDR7 | [`vips/lpddr7-VIP/`](vips/lpddr7-VIP/) |
-| MIPI | C-PHY | [`vips/C_PHY-VIP/`](vips/C_PHY-VIP/) |
-| MIPI | CSE | [`vips/CSE-VIP/`](vips/CSE-VIP/) |
-| MIPI | CSI-2 | [`vips/CSI_2-VIP/`](vips/CSI_2-VIP/) |
-| MIPI | D-PHY | [`vips/D_PHY-VIP/`](vips/D_PHY-VIP/) |
-| MIPI | DSI | [`vips/DSI-VIP/`](vips/DSI-VIP/) |
-| MIPI | DigRF | [`vips/DigRF-VIP/`](vips/DigRF-VIP/) |
-| MIPI | HSI | [`vips/HSI-VIP/`](vips/HSI-VIP/) |
-| MIPI | M-PHY | [`vips/M_PHY-VIP/`](vips/M_PHY-VIP/) |
-| MIPI | UniPro | [`vips/UniPro-VIP/`](vips/UniPro-VIP/) |
-| Storage/Debug | Bluetooth5 | [`vips/Bluetooth5-VIP/`](vips/Bluetooth5-VIP/) |
-| Storage/Debug | DisplayPort2 | [`vips/DisplayPort2-VIP/`](vips/DisplayPort2-VIP/) |
-| Storage/Debug | JTAG | [`vips/JTAG-VIP/`](vips/JTAG-VIP/) |
-| Storage/Debug | NVMe | [`vips/NVMe-VIP/`](vips/NVMe-VIP/) |
-| Storage/Debug | SATA | [`vips/SATA-VIP/`](vips/SATA-VIP/) |
-| Automotive | CAN | [`vips/CAN-VIP/`](vips/CAN-VIP/) |
-| Automotive | Ethernet-AVB-TSN | [`vips/Ethernet_AVB_TSN-VIP/`](vips/Ethernet_AVB_TSN-VIP/) |
-| Automotive | FlexRay | [`vips/FlexRay-VIP/`](vips/FlexRay-VIP/) |
-| Automotive | LIN | [`vips/LIN-VIP/`](vips/LIN-VIP/) |
-| Serial | I2C | [`vips/I2C-VIP/`](vips/I2C-VIP/) |
-| Audio | I2S Audio | [`vips/I2S-VIP/`](vips/I2S-VIP/) |
-| Serial | SPI | [`vips/SPI-VIP/`](vips/SPI-VIP/) |
-| Serial | UART | [`vips/UART-VIP/`](vips/UART-VIP/) |
-| Debug | ARM Serial Wire Debug | [`vips/SWD-VIP/`](vips/SWD-VIP/) |
-| Power | AVSBus (Adaptive Voltage Scaling) | [`vips/AVSBus-VIP/`](vips/AVSBus-VIP/) |
-| Power | ARM Q-Channel Low Power Interface | [`vips/LPI-VIP/`](vips/LPI-VIP/) |
-| Video | HDMI 2.1 | [`vips/HDMI-VIP/`](vips/HDMI-VIP/) |
-| Security | HDCP 2.3 Content Protection | [`vips/HDCP-VIP/`](vips/HDCP-VIP/) |
-| MIPI | MIPI I3C | [`vips/I3C-VIP/`](vips/I3C-VIP/) |
-| MIPI | MIPI RFFE | [`vips/RFFE-VIP/`](vips/RFFE-VIP/) |
-| MIPI | MIPI SLIMbus | [`vips/SLIMbus-VIP/`](vips/SLIMbus-VIP/) |
-| MIPI | MIPI SoundWire | [`vips/SoundWire-VIP/`](vips/SoundWire-VIP/) |
-| MIPI | MIPI SPMI | [`vips/SPMI-VIP/`](vips/SPMI-VIP/) |
-| MIPI | MIPI DBI (Display Bus Interface) | [`vips/DBI-VIP/`](vips/DBI-VIP/) |
-| MIPI | MIPI DPI (Display Pixel Interface) | [`vips/DPI-VIP/`](vips/DPI-VIP/) |
-| Interconnect | CCIX Cache Coherent Interconnect | [`vips/CCIX-VIP/`](vips/CCIX-VIP/) |
-| Interconnect | CXS CCIX Stream Interface | [`vips/CXS-VIP/`](vips/CXS-VIP/) |
-| Interconnect | OCP-IP Open Core Protocol | [`vips/OCP-VIP/`](vips/OCP-VIP/) |
-| Interconnect | TileLink (TL-UL/TL-C) | [`vips/TileLink-VIP/`](vips/TileLink-VIP/) |
-| Interconnect | ARM Local Translation Interface | [`vips/LTI-VIP/`](vips/LTI-VIP/) |
-| Memory | DFI 5.0 (MC-PHY Interface) | [`vips/DFI-VIP/`](vips/DFI-VIP/) |
-| Telecom | CPRI v8.0 (eCPRI over CPR) | [`vips/CPRI-VIP/`](vips/CPRI-VIP/) |
-| Telecom | eCPRI over Ethernet | [`vips/eCPRI-VIP/`](vips/eCPRI-VIP/) |
-| Networking | Interlaken v1.2 | [`vips/Interlaken-VIP/`](vips/Interlaken-VIP/) |
-| SerDes | JESD204C | [`vips/JESD204-VIP/`](vips/JESD204-VIP/) |
-| Storage | SAS-4 (Serial Attached SCSI) | [`vips/SAS-VIP/`](vips/SAS-VIP/) |
-| Storage | Toggle Mode NAND | [`vips/ToggleNAND-VIP/`](vips/ToggleNAND-VIP/) |
-| Security | Crypto / Security Engine | [`vips/Security-VIP/`](vips/Security-VIP/) |
-| USB | USB Type-C Port Controller | [`vips/TypeC-VIP/`](vips/TypeC-VIP/) |
-
-## Contributing
-
-Contributions are welcome! Please read [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for the development workflow, coding conventions, and the regression requirements for new or updated VIPs.
+---
 
 ## License
 
-This project is licensed under the [Apache License 2.0](LICENSE). See [NOTICE](NOTICE) for third-party attribution (Accellera uvm-core is used as a verification dependency but is not distributed with this repository).
+All VIP source files in this repository are licensed under the **Apache License 2.0**. See [LICENSE](LICENSE).
+
+---
+
+## Contributing
+
+Contributions are welcome! Please see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+
+---
+
+*Release v1.7.5 -- generated from vip_individual_portfolio.csv*
