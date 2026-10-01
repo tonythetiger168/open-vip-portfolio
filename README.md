@@ -26,232 +26,232 @@ All source files are licensed under **Apache License 2.0**.
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| ACE | RTL IP | `ACE-VIP.zip` |  |
-| ACE-Lite | RTL IP | `ACE_Lite-VIP.zip` |  |
-| ACE-Lite | UVM VIP | `ACE_Lite-UVM-VIP.zip` |  |
-| AHB | UVM VIP | `AHB-VIP.zip` |  |
-| APB | UVM VIP | `APB-VIP.zip` |  |
-| AXI | UVM VIP | `AXI-VIP.zip` |  |
-| AXI-Stream | RTL IP | `AXI_Stream-VIP.zip` |  |
-| AXI4 | RTL IP | `AXI4-VIP.zip` |  |
-| AXI4-Lite | RTL IP | `AXI4_Lite-VIP.zip` |  |
-| CHI | RTL IP | `CHI-VIP.zip` |  |
-| CHI | UVM VIP | `CHI-UVM-VIP.zip` |  |
+| ACE | RTL IP | `ACE-VIP.zip` | 13KB |
+| ACE-Lite | RTL IP | `ACE_Lite-VIP.zip` | 11KB |
+| ACE-Lite | UVM VIP | `ACE_Lite-UVM-VIP.zip` | 24KB |
+| AHB | UVM VIP | `AHB-VIP.zip` | 35KB |
+| APB | UVM VIP | `APB-VIP.zip` | 33KB |
+| AXI | UVM VIP | `AXI-VIP.zip` | 35KB |
+| AXI-Stream | RTL IP | `AXI_Stream-VIP.zip` | 7KB |
+| AXI4 | RTL IP | `AXI4-VIP.zip` | 13KB |
+| AXI4-Lite | RTL IP | `AXI4_Lite-VIP.zip` | 10KB |
+| CHI | RTL IP | `CHI-VIP.zip` | 8KB |
+| CHI | UVM VIP | `CHI-UVM-VIP.zip` | 24KB |
 
 ### Aerospace (1)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| MIL-STD-1553 | UVM VIP | `MIL_STD_1553-VIP.zip` |  |
+| MIL-STD-1553 | UVM VIP | `MIL_STD_1553-VIP.zip` | 24KB |
 
 ### Audio (1)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| I2S Audio | UVM VIP | `I2S-VIP.zip` |  |
+| I2S Audio | UVM VIP | `I2S-VIP.zip` | 29KB |
 
 ### Automotive (6)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| CAN | UVM VIP | `CAN-VIP.zip` |  |
-| CAN-FD | UVM VIP | `CAN_FD-UVM-VIP.zip` |  |
-| Ethernet-AVB-TSN | UVM VIP | `Ethernet_AVB_TSN-VIP.zip` |  |
-| FlexRay | UVM VIP | `FlexRay-VIP.zip` |  |
-| LIN | UVM VIP | `LIN-VIP.zip` |  |
-| SENT | UVM VIP | `SENT-VIP.zip` |  |
+| CAN | UVM VIP | `CAN-VIP.zip` | 42KB |
+| CAN-FD | UVM VIP | `CAN_FD-UVM-VIP.zip` | 23KB |
+| Ethernet-AVB-TSN | UVM VIP | `Ethernet_AVB_TSN-VIP.zip` | 66KB |
+| FlexRay | UVM VIP | `FlexRay-VIP.zip` | 38KB |
+| LIN | UVM VIP | `LIN-VIP.zip` | 37KB |
+| SENT | UVM VIP | `SENT-VIP.zip` | 23KB |
 
 ### Debug (5)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| ARM Serial Wire Debug | UVM VIP | `SWD-VIP.zip` |  |
-| ATB | RTL IP | `ATB-VIP.zip` |  |
-| ATB | UVM VIP | `ATB-UVM-VIP.zip` |  |
-| WTB | RTL IP | `WTB-VIP.zip` |  |
-| WTB | UVM VIP | `WTB-UVM-VIP.zip` |  |
+| ARM Serial Wire Debug | UVM VIP | `SWD-VIP.zip` | 31KB |
+| ATB | RTL IP | `ATB-VIP.zip` | 7KB |
+| ATB | UVM VIP | `ATB-UVM-VIP.zip` | 23KB |
+| WTB | RTL IP | `WTB-VIP.zip` | 14KB |
+| WTB | UVM VIP | `WTB-UVM-VIP.zip` | 23KB |
 
 ### Industrial (2)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| EtherCAT | UVM VIP | `EtherCAT-VIP.zip` |  |
-| IO-Link | UVM VIP | `IO_Link-VIP.zip` |  |
+| EtherCAT | UVM VIP | `EtherCAT-VIP.zip` | 24KB |
+| IO-Link | UVM VIP | `IO_Link-VIP.zip` | 24KB |
 
 ### Interconnect (16)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| ARM Local Translation Interface | UVM VIP | `LTI-VIP.zip` |  |
-| Avalon-MM | RTL IP | `Avalon_MM-VIP.zip` |  |
-| Avalon-MM | UVM VIP | `Avalon_MM-UVM-VIP.zip` |  |
-| Avalon-ST | RTL IP | `Avalon_ST-VIP.zip` |  |
-| Avalon-ST | UVM VIP | `Avalon_ST-UVM-VIP.zip` |  |
-| CCIX Cache Coherent Interconnect | UVM VIP | `CCIX-VIP.zip` |  |
-| CXL | UVM VIP | `CXL-VIP.zip` |  |
-| CXS CCIX Stream Interface | UVM VIP | `CXS-VIP.zip` |  |
-| OCP-IP Open Core Protocol | UVM VIP | `OCP-VIP.zip` |  |
-| PCIe | UVM VIP | `PCIe-VIP.zip` |  |
-| RapidIO | UVM VIP | `RapidIO-VIP.zip` |  |
-| TileLink (TL-UL/TL-C) | UVM VIP | `TileLink-VIP.zip` |  |
-| UALink | UVM VIP | `UALink-VIP.zip` |  |
-| UCIe | UVM VIP | `UCIe-VIP.zip` |  |
-| Wishbone | RTL IP | `Wishbone-VIP.zip` |  |
-| Wishbone | UVM VIP | `Wishbone-UVM-VIP.zip` |  |
+| ARM Local Translation Interface | UVM VIP | `LTI-VIP.zip` | 28KB |
+| Avalon-MM | RTL IP | `Avalon_MM-VIP.zip` | 10KB |
+| Avalon-MM | UVM VIP | `Avalon_MM-UVM-VIP.zip` | 24KB |
+| Avalon-ST | RTL IP | `Avalon_ST-VIP.zip` | 7KB |
+| Avalon-ST | UVM VIP | `Avalon_ST-UVM-VIP.zip` | 24KB |
+| CCIX Cache Coherent Interconnect | UVM VIP | `CCIX-VIP.zip` | 28KB |
+| CXL | UVM VIP | `CXL-VIP.zip` | 40KB |
+| CXS CCIX Stream Interface | UVM VIP | `CXS-VIP.zip` | 28KB |
+| OCP-IP Open Core Protocol | UVM VIP | `OCP-VIP.zip` | 28KB |
+| PCIe | UVM VIP | `PCIe-VIP.zip` | 41KB |
+| RapidIO | UVM VIP | `RapidIO-VIP.zip` | 23KB |
+| TileLink (TL-UL/TL-C) | UVM VIP | `TileLink-VIP.zip` | 29KB |
+| UALink | UVM VIP | `UALink-VIP.zip` | 54KB |
+| UCIe | UVM VIP | `UCIe-VIP.zip` | 54KB |
+| Wishbone | RTL IP | `Wishbone-VIP.zip` | 10KB |
+| Wishbone | UVM VIP | `Wishbone-UVM-VIP.zip` | 24KB |
 
 ### MIPI (16)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| C-PHY | UVM VIP | `C_PHY-VIP.zip` |  |
-| CSE | UVM VIP | `CSE-VIP.zip` |  |
-| CSI-2 | UVM VIP | `CSI_2-VIP.zip` |  |
-| D-PHY | UVM VIP | `D_PHY-VIP.zip` |  |
-| DSI | UVM VIP | `DSI-VIP.zip` |  |
-| DigRF | UVM VIP | `DigRF-VIP.zip` |  |
-| HSI | UVM VIP | `HSI-VIP.zip` |  |
-| M-PHY | UVM VIP | `M_PHY-VIP.zip` |  |
-| MIPI DBI (Display Bus Interface) | UVM VIP | `DBI-VIP.zip` |  |
-| MIPI DPI (Display Pixel Interface) | UVM VIP | `DPI-VIP.zip` |  |
-| MIPI I3C | UVM VIP | `I3C-VIP.zip` |  |
-| MIPI RFFE | UVM VIP | `RFFE-VIP.zip` |  |
-| MIPI SLIMbus | UVM VIP | `SLIMbus-VIP.zip` |  |
-| MIPI SPMI | UVM VIP | `SPMI-VIP.zip` |  |
-| MIPI SoundWire | UVM VIP | `SoundWire-VIP.zip` |  |
-| UniPro | UVM VIP | `UniPro-VIP.zip` |  |
+| C-PHY | UVM VIP | `C_PHY-VIP.zip` | 36KB |
+| CSE | UVM VIP | `CSE-VIP.zip` | 36KB |
+| CSI-2 | UVM VIP | `CSI_2-VIP.zip` | 36KB |
+| D-PHY | UVM VIP | `D_PHY-VIP.zip` | 36KB |
+| DSI | UVM VIP | `DSI-VIP.zip` | 36KB |
+| DigRF | UVM VIP | `DigRF-VIP.zip` | 33KB |
+| HSI | UVM VIP | `HSI-VIP.zip` | 34KB |
+| M-PHY | UVM VIP | `M_PHY-VIP.zip` | 36KB |
+| MIPI DBI (Display Bus Interface) | UVM VIP | `DBI-VIP.zip` | 28KB |
+| MIPI DPI (Display Pixel Interface) | UVM VIP | `DPI-VIP.zip` | 27KB |
+| MIPI I3C | UVM VIP | `I3C-VIP.zip` | 35KB |
+| MIPI RFFE | UVM VIP | `RFFE-VIP.zip` | 30KB |
+| MIPI SLIMbus | UVM VIP | `SLIMbus-VIP.zip` | 31KB |
+| MIPI SPMI | UVM VIP | `SPMI-VIP.zip` | 30KB |
+| MIPI SoundWire | UVM VIP | `SoundWire-VIP.zip` | 32KB |
+| UniPro | UVM VIP | `UniPro-VIP.zip` | 36KB |
 
 ### Memory (26)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| DDR | UVM VIP | `DDR-VIP.zip` |  |
-| DDR4 | RTL IP | `DDR4-VIP.zip` |  |
-| DDR5 | UVM VIP | `ddr5-VIP.zip` |  |
-| DDR6 | UVM VIP | `ddr6-VIP.zip` |  |
-| DDR7 | UVM VIP | `ddr7-VIP.zip` |  |
-| DFI 5.0 (MC-PHY Interface) | UVM VIP | `DFI-VIP.zip` |  |
-| GDDR5 | UVM VIP | `gddr5-VIP.zip` |  |
-| GDDR6 | UVM VIP | `gddr6-VIP.zip` |  |
-| GDDR7 | UVM VIP | `gddr7-VIP.zip` |  |
-| HBM | UVM VIP | `HBM-VIP.zip` |  |
-| HBM2 | UVM VIP | `hbm2-VIP.zip` |  |
-| HBM3 | UVM VIP | `hbm3-VIP.zip` |  |
-| HBM3E | UVM VIP | `hbm3e-VIP.zip` |  |
-| HBM4 | UVM VIP | `hbm4-VIP.zip` |  |
-| HBM5 | UVM VIP | `HBM5-VIP.zip` |  |
-| LPDDR | UVM VIP | `LPDDR-VIP.zip` |  |
-| LPDDR4 | RTL IP | `LPDDR4-VIP.zip` |  |
-| LPDDR5 | UVM VIP | `lpddr5-VIP.zip` |  |
-| LPDDR5X | UVM VIP | `lpddr5x-VIP.zip` |  |
-| LPDDR6 | UVM VIP | `lpddr6-VIP.zip` |  |
-| LPDDR7 | UVM VIP | `lpddr7-VIP.zip` |  |
-| ONFI | UVM VIP | `ONFI-VIP.zip` |  |
-| SD | UVM VIP | `SD-VIP.zip` |  |
-| UFS | UVM VIP | `UFS-VIP.zip` |  |
-| UniPro-Mem | UVM VIP | `UniPro_Mem-VIP.zip` |  |
-| eMMC | UVM VIP | `eMMC-VIP.zip` |  |
+| DDR | UVM VIP | `DDR-VIP.zip` | 29KB |
+| DDR4 | RTL IP | `DDR4-VIP.zip` | 11KB |
+| DDR5 | UVM VIP | `ddr5-VIP.zip` | 27KB |
+| DDR6 | UVM VIP | `ddr6-VIP.zip` | 27KB |
+| DDR7 | UVM VIP | `ddr7-VIP.zip` | 27KB |
+| DFI 5.0 (MC-PHY Interface) | UVM VIP | `DFI-VIP.zip` | 32KB |
+| GDDR5 | UVM VIP | `gddr5-VIP.zip` | 29KB |
+| GDDR6 | UVM VIP | `gddr6-VIP.zip` | 30KB |
+| GDDR7 | UVM VIP | `gddr7-VIP.zip` | 30KB |
+| HBM | UVM VIP | `HBM-VIP.zip` | 29KB |
+| HBM2 | UVM VIP | `hbm2-VIP.zip` | 29KB |
+| HBM3 | UVM VIP | `hbm3-VIP.zip` | 29KB |
+| HBM3E | UVM VIP | `hbm3e-VIP.zip` | 30KB |
+| HBM4 | UVM VIP | `hbm4-VIP.zip` | 30KB |
+| HBM5 | UVM VIP | `HBM5-VIP.zip` | 27KB |
+| LPDDR | UVM VIP | `LPDDR-VIP.zip` | 29KB |
+| LPDDR4 | RTL IP | `LPDDR4-VIP.zip` | 11KB |
+| LPDDR5 | UVM VIP | `lpddr5-VIP.zip` | 30KB |
+| LPDDR5X | UVM VIP | `lpddr5x-VIP.zip` | 32KB |
+| LPDDR6 | UVM VIP | `lpddr6-VIP.zip` | 32KB |
+| LPDDR7 | UVM VIP | `lpddr7-VIP.zip` | 32KB |
+| ONFI | UVM VIP | `ONFI-VIP.zip` | 53KB |
+| SD | UVM VIP | `SD-VIP.zip` | 44KB |
+| UFS | UVM VIP | `UFS-VIP.zip` | 35KB |
+| UniPro-Mem | UVM VIP | `UniPro_Mem-VIP.zip` | 39KB |
+| eMMC | UVM VIP | `eMMC-VIP.zip` | 41KB |
 
 ### Networking (13)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| Ethernet | UVM VIP | `Ethernet-VIP.zip` |  |
-| FC | UVM VIP | `FC-VIP.zip` |  |
-| GMII | RTL IP | `GMII-VIP.zip` |  |
-| GMII | UVM VIP | `GMII-UVM-VIP.zip` |  |
-| IEEE 1588 PTP | UVM VIP | `PTP-VIP.zip` |  |
-| Interlaken v1.2 | UVM VIP | `Interlaken-VIP.zip` |  |
-| MDIO | RTL IP | `MDIO-VIP.zip` |  |
-| MDIO | UVM VIP | `MDIO-UVM-VIP.zip` |  |
-| RGMII | RTL IP | `RGMII-VIP.zip` |  |
-| RGMII | UVM VIP | `RGMII-UVM-VIP.zip` |  |
-| UEC | UVM VIP | `UEC-VIP.zip` |  |
-| XGMII | RTL IP | `XGMII-VIP.zip` |  |
-| XGMII | UVM VIP | `XGMII-UVM-VIP.zip` |  |
+| Ethernet | UVM VIP | `Ethernet-VIP.zip` | 51KB |
+| FC | UVM VIP | `FC-VIP.zip` | 48KB |
+| GMII | RTL IP | `GMII-VIP.zip` | 7KB |
+| GMII | UVM VIP | `GMII-UVM-VIP.zip` | 23KB |
+| IEEE 1588 PTP | UVM VIP | `PTP-VIP.zip` | 23KB |
+| Interlaken v1.2 | UVM VIP | `Interlaken-VIP.zip` | 30KB |
+| MDIO | RTL IP | `MDIO-VIP.zip` | 8KB |
+| MDIO | UVM VIP | `MDIO-UVM-VIP.zip` | 23KB |
+| RGMII | RTL IP | `RGMII-VIP.zip` | 8KB |
+| RGMII | UVM VIP | `RGMII-UVM-VIP.zip` | 23KB |
+| UEC | UVM VIP | `UEC-VIP.zip` | 42KB |
+| XGMII | RTL IP | `XGMII-VIP.zip` | 8KB |
+| XGMII | UVM VIP | `XGMII-UVM-VIP.zip` | 23KB |
 
 ### Peripherals (6)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| 1-Wire | RTL IP | `OneWire-VIP.zip` |  |
-| 1-Wire | UVM VIP | `OneWire-UVM-VIP.zip` |  |
-| GPIO | RTL IP | `GPIO-VIP.zip` |  |
-| GPIO | UVM VIP | `GPIO-UVM-VIP.zip` |  |
-| PWM | RTL IP | `PWM-VIP.zip` |  |
-| PWM | UVM VIP | `PWM-UVM-VIP.zip` |  |
+| 1-Wire | RTL IP | `OneWire-VIP.zip` | 8KB |
+| 1-Wire | UVM VIP | `OneWire-UVM-VIP.zip` | 23KB |
+| GPIO | RTL IP | `GPIO-VIP.zip` | 6KB |
+| GPIO | UVM VIP | `GPIO-UVM-VIP.zip` | 23KB |
+| PWM | RTL IP | `PWM-VIP.zip` | 6KB |
+| PWM | UVM VIP | `PWM-UVM-VIP.zip` | 23KB |
 
 ### Power (2)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| ARM Q-Channel Low Power Interface | UVM VIP | `LPI-VIP.zip` |  |
-| AVSBus (Adaptive Voltage Scaling) | UVM VIP | `AVSBus-VIP.zip` |  |
+| ARM Q-Channel Low Power Interface | UVM VIP | `LPI-VIP.zip` | 29KB |
+| AVSBus (Adaptive Voltage Scaling) | UVM VIP | `AVSBus-VIP.zip` | 31KB |
 
 ### Security (2)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| Crypto / Security Engine | UVM VIP | `Security-VIP.zip` |  |
-| HDCP 2.3 Content Protection | UVM VIP | `HDCP-VIP.zip` |  |
+| Crypto / Security Engine | UVM VIP | `Security-VIP.zip` | 30KB |
+| HDCP 2.3 Content Protection | UVM VIP | `HDCP-VIP.zip` | 32KB |
 
 ### SerDes (1)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| JESD204C | UVM VIP | `JESD204-VIP.zip` |  |
+| JESD204C | UVM VIP | `JESD204-VIP.zip` | 31KB |
 
 ### Serial (4)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| I2C | UVM VIP | `I2C-VIP.zip` |  |
-| QSPI | RTL IP | `QSPI-VIP.zip` |  |
-| SPI | UVM VIP | `SPI-VIP.zip` |  |
-| UART | UVM VIP | `UART-VIP.zip` |  |
+| I2C | UVM VIP | `I2C-VIP.zip` | 29KB |
+| QSPI | RTL IP | `QSPI-VIP.zip` | 8KB |
+| SPI | UVM VIP | `SPI-VIP.zip` | 31KB |
+| UART | UVM VIP | `UART-VIP.zip` | 31KB |
 
 ### Storage (4)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| SAS-4 (Serial Attached SCSI) | UVM VIP | `SAS-VIP.zip` |  |
-| SDIO | RTL IP | `SDIO-VIP.zip` |  |
-| SDIO | UVM VIP | `SDIO-UVM-VIP.zip` |  |
-| Toggle Mode NAND | UVM VIP | `ToggleNAND-VIP.zip` |  |
+| SAS-4 (Serial Attached SCSI) | UVM VIP | `SAS-VIP.zip` | 34KB |
+| SDIO | RTL IP | `SDIO-VIP.zip` | 15KB |
+| SDIO | UVM VIP | `SDIO-UVM-VIP.zip` | 23KB |
+| Toggle Mode NAND | UVM VIP | `ToggleNAND-VIP.zip` | 33KB |
 
 ### Storage/Debug (5)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| Bluetooth5 | UVM VIP | `Bluetooth5-VIP.zip` |  |
-| DisplayPort2 | UVM VIP | `DisplayPort2-VIP.zip` |  |
-| JTAG | UVM VIP | `JTAG-VIP.zip` |  |
-| NVMe | UVM VIP | `NVMe-VIP.zip` |  |
-| SATA | UVM VIP | `SATA-VIP.zip` |  |
+| Bluetooth5 | UVM VIP | `Bluetooth5-VIP.zip` | 36KB |
+| DisplayPort2 | UVM VIP | `DisplayPort2-VIP.zip` | 42KB |
+| JTAG | UVM VIP | `JTAG-VIP.zip` | 41KB |
+| NVMe | UVM VIP | `NVMe-VIP.zip` | 35KB |
+| SATA | UVM VIP | `SATA-VIP.zip` | 33KB |
 
 ### Telecom (2)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| CPRI v8.0 (eCPRI over CPR) | UVM VIP | `CPRI-VIP.zip` |  |
-| eCPRI over Ethernet | UVM VIP | `eCPRI-VIP.zip` |  |
+| CPRI v8.0 (eCPRI over CPR) | UVM VIP | `CPRI-VIP.zip` | 29KB |
+| eCPRI over Ethernet | UVM VIP | `eCPRI-VIP.zip` | 30KB |
 
 ### USB (7)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| USB | UVM VIP | `USB-VIP.zip` |  |
-| USB Type-C Port Controller | UVM VIP | `TypeC-VIP.zip` |  |
-| USB-PD | UVM VIP | `USB_PD-VIP.zip` |  |
-| USB2 | UVM VIP | `USB2-VIP.zip` |  |
-| USB3 | UVM VIP | `USB3-VIP.zip` |  |
-| USB4 | UVM VIP | `USB4-VIP.zip` |  |
-| eUSB2 | UVM VIP | `eUSB2-VIP.zip` |  |
+| USB | UVM VIP | `USB-VIP.zip` | 63KB |
+| USB Type-C Port Controller | UVM VIP | `TypeC-VIP.zip` | 31KB |
+| USB-PD | UVM VIP | `USB_PD-VIP.zip` | 61KB |
+| USB2 | UVM VIP | `USB2-VIP.zip` | 64KB |
+| USB3 | UVM VIP | `USB3-VIP.zip` | 61KB |
+| USB4 | UVM VIP | `USB4-VIP.zip` | 61KB |
+| eUSB2 | UVM VIP | `eUSB2-VIP.zip` | 61KB |
 
 ### Video (1)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| HDMI 2.1 | UVM VIP | `HDMI-VIP.zip` |  |
+| HDMI 2.1 | UVM VIP | `HDMI-VIP.zip` | 31KB |
 
 ---
 
@@ -307,4 +307,4 @@ Contributions are welcome! Please see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.m
 
 ---
 
-*Release v1.7.5 -- generated from vip_individual_portfolio.csv*
+*Release v1.7.6 -- generated from vip_individual_portfolio.csv*
