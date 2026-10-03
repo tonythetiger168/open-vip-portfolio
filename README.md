@@ -1,10 +1,10 @@
 # Open VIP Portfolio
 
-> A comprehensive, open-source collection of **131 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification, plus synthesizable RTL IP reference designs.
+> A comprehensive, open-source collection of **132 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification, plus synthesizable RTL IP reference designs.
 
 [![License](https://img.shields.io/badge/License-Apache%%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![VIP Count](https://img.shields.io/badge/VIPs-131-brightgreen.svg)]()
-[![Protocols](https://img.shields.io/badge/Protocols-116-orange.svg)]()
+[![VIP Count](https://img.shields.io/badge/VIPs-132-brightgreen.svg)]()
+[![Protocols](https://img.shields.io/badge/Protocols-117-orange.svg)]()
 
 ---
 
@@ -12,9 +12,9 @@
 
 This repository provides a **modular, per-protocol verification IP library** covering major interface standards used in modern semiconductor design. Each entry is packaged as a standalone zip file.
 
-- **109 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
+- **110 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
 - **22 RTL IPs** -- synthesizable reference RTL with directed testbenches
-- **116 distinct protocols** across 20 families
+- **117 distinct protocols** across 20 families
 
 All source files are licensed under **Apache License 2.0**.
 
@@ -94,8 +94,8 @@ All source files are licensed under **Apache License 2.0**.
 | PCIe | UVM VIP | `PCIe-VIP.zip` | 41KB |
 | RapidIO | UVM VIP | `RapidIO-VIP.zip` | 23KB |
 | TileLink (TL-UL/TL-C) | UVM VIP | `TileLink-VIP.zip` | 29KB |
-| UALink | UVM VIP | `UALink-VIP.zip` | 54KB |
-| UCIe | UVM VIP | `UCIe-VIP.zip` | 54KB |
+| UALink | UVM VIP | `UALink-VIP.zip` | 22KB |
+| UCIe | UVM VIP | `UCIe-VIP.zip` | 22KB |
 | Wishbone | RTL IP | `Wishbone-VIP.zip` | 10KB |
 | Wishbone | UVM VIP | `Wishbone-UVM-VIP.zip` | 24KB |
 
@@ -126,7 +126,7 @@ All source files are licensed under **Apache License 2.0**.
 |----------|------|------|------|
 | DDR | UVM VIP | `DDR-VIP.zip` | 29KB |
 | DDR4 | RTL IP | `DDR4-VIP.zip` | 11KB |
-| DDR5 | UVM VIP | `ddr5-VIP.zip` | 27KB |
+| DDR5 | UVM VIP | `DDR5-VIP.zip` | 22KB |
 | DDR6 | UVM VIP | `ddr6-VIP.zip` | 27KB |
 | DDR7 | UVM VIP | `ddr7-VIP.zip` | 27KB |
 | DFI 5.0 (MC-PHY Interface) | UVM VIP | `DFI-VIP.zip` | 32KB |
@@ -136,14 +136,14 @@ All source files are licensed under **Apache License 2.0**.
 | HBM | UVM VIP | `HBM-VIP.zip` | 29KB |
 | HBM2 | UVM VIP | `hbm2-VIP.zip` | 29KB |
 | HBM3 | UVM VIP | `hbm3-VIP.zip` | 29KB |
-| HBM3E | UVM VIP | `hbm3e-VIP.zip` | 30KB |
+| HBM3E | UVM VIP | `HBM3E-VIP.zip` | 22KB |
 | HBM4 | UVM VIP | `hbm4-VIP.zip` | 30KB |
 | HBM5 | UVM VIP | `HBM5-VIP.zip` | 27KB |
 | LPDDR | UVM VIP | `LPDDR-VIP.zip` | 29KB |
 | LPDDR4 | RTL IP | `LPDDR4-VIP.zip` | 11KB |
 | LPDDR5 | UVM VIP | `lpddr5-VIP.zip` | 30KB |
 | LPDDR5X | UVM VIP | `lpddr5x-VIP.zip` | 32KB |
-| LPDDR6 | UVM VIP | `lpddr6-VIP.zip` | 32KB |
+| LPDDR6 | UVM VIP | `LPDDR6-VIP.zip` | 22KB |
 | LPDDR7 | UVM VIP | `lpddr7-VIP.zip` | 32KB |
 | ONFI | UVM VIP | `ONFI-VIP.zip` | 53KB |
 | SD | UVM VIP | `SD-VIP.zip` | 44KB |
@@ -151,10 +151,11 @@ All source files are licensed under **Apache License 2.0**.
 | UniPro-Mem | UVM VIP | `UniPro_Mem-VIP.zip` | 39KB |
 | eMMC | UVM VIP | `eMMC-VIP.zip` | 41KB |
 
-### Networking (13)
+### Networking (14)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
+| 800G Ethernet | UVM VIP | `ETH800G-VIP.zip` | 23KB |
 | Ethernet | UVM VIP | `Ethernet-VIP.zip` | 51KB |
 | FC | UVM VIP | `FC-VIP.zip` | 48KB |
 | GMII | RTL IP | `GMII-VIP.zip` | 7KB |
@@ -165,7 +166,7 @@ All source files are licensed under **Apache License 2.0**.
 | MDIO | UVM VIP | `MDIO-UVM-VIP.zip` | 23KB |
 | RGMII | RTL IP | `RGMII-VIP.zip` | 8KB |
 | RGMII | UVM VIP | `RGMII-UVM-VIP.zip` | 23KB |
-| UEC | UVM VIP | `UEC-VIP.zip` | 42KB |
+| UEC | UVM VIP | `UEC-VIP.zip` | 22KB |
 | XGMII | RTL IP | `XGMII-VIP.zip` | 8KB |
 | XGMII | UVM VIP | `XGMII-UVM-VIP.zip` | 23KB |
 
@@ -261,9 +262,9 @@ All source files are licensed under **Apache License 2.0**.
 open-vip-portfolio/
 |-- LICENSE
 |-- README.md
-|-- vip_individual_portfolio.csv   # machine-readable index (131 entries)
+|-- vip_individual_portfolio.csv   # machine-readable index (132 entries)
 |-- smoke_report.csv               # full open-toolchain L1b smoke results
-|-- vips/                          # 131 individual VIP/IP zip files
+|-- vips/                          # 132 individual VIP/IP zip files
 |-- .github/workflows/             # CI validation
 |-- docs/                          # CONTRIBUTING and guides
 ```
@@ -307,4 +308,4 @@ Contributions are welcome! Please see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.m
 
 ---
 
-*Release v1.7.6 -- generated from vip_individual_portfolio.csv*
+*Release v1.8.0 -- generated from vip_individual_portfolio.csv*
