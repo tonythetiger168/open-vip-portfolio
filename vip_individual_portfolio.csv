@@ -1,11 +1,11 @@
 ﻿#,類別,Protocol,類型,VIP檔案,大小(zip),來源家族,SV檔案數,SV行數,SVA assertions,cover property,covergroups,checker檔案,版本,最後更新,狀態,Smoke測試(L1b),下載路徑,License,open-ip 對應
 1,Interconnect,CXL,UVM VIP,CXL-VIP.zip,40KB,PCIE-VIP,21,2508,24,21,7,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/CXL-VIP,Apache-2.0,CXL
 2,Interconnect,PCIe,UVM VIP,PCIe-VIP.zip,41KB,PCIE-VIP,22,2558,28,25,7,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/PCIe-VIP,Apache-2.0,PCIe
-3,Interconnect,UCIe,UVM VIP,UCIe-VIP.zip,54KB,PCIE-VIP,28,3078,40,20,8,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/UCIe-VIP,Apache-2.0,UCIe
-4,Interconnect,UALink,UVM VIP,UALink-VIP.zip,54KB,PCIE-VIP,28,3043,38,18,8,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/UALink-VIP,Apache-2.0,UALink
+3,Interconnect,UCIe,UVM VIP,UCIe-VIP.zip,22KB,PCIE-VIP,18,873,3,2,1,2,v1.8.0,2026-10-02,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/UCIe-VIP,Apache-2.0,UCIe
+4,Interconnect,UALink,UVM VIP,UALink-VIP.zip,22KB,PCIE-VIP,18,873,4,2,1,2,v1.8.0,2026-10-02,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/UALink-VIP,Apache-2.0,UALink
 5,Networking,Ethernet,UVM VIP,Ethernet-VIP.zip,51KB,NET-VIP,26,3541,37,19,5,4,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/Ethernet-VIP,Apache-2.0,Ethernet
 6,Networking,FC,UVM VIP,FC-VIP.zip,48KB,NET-VIP,25,3387,37,19,5,4,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/FC-VIP,Apache-2.0,FC
-7,Networking,UEC,UVM VIP,UEC-VIP.zip,42KB,NET-VIP,25,2373,33,18,8,4,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/UEC-VIP,Apache-2.0,UEC
+7,Networking,UEC,UVM VIP,UEC-VIP.zip,22KB,NET-VIP,18,855,4,2,1,2,v1.8.0,2026-10-02,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/UEC-VIP,Apache-2.0,UEC
 8,USB,USB,UVM VIP,USB-VIP.zip,63KB,USB-VIP,21,5263,27,19,14,7,v1.7.4,2026-09-28,✅,PASS,https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/USB-VIP,Apache-2.0,USB
 9,USB,USB-PD,UVM VIP,USB_PD-VIP.zip,61KB,USB-VIP,20,5149,27,19,14,6,v1.7.4,2026-09-28,✅,PASS,https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/USB_PD-VIP,Apache-2.0,USB PD (Power Delivery)
 10,USB,USB2,UVM VIP,USB2-VIP.zip,64KB,USB-VIP,21,5344,27,19,14,6,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/USB2-VIP,Apache-2.0,USB2
@@ -16,13 +16,13 @@
 15,AMBA,APB,UVM VIP,APB-VIP.zip,33KB,AMBA-VIP,16,1827,31,14,8,4,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/APB-VIP,Apache-2.0,APB
 16,AMBA,AXI,UVM VIP,AXI-VIP.zip,35KB,AMBA-VIP,16,1985,32,15,8,4,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/AXI-VIP,Apache-2.0,AXI
 17,Memory,DDR,UVM VIP,DDR-VIP.zip,29KB,MEMORY-VIP,10,1575,33,29,0,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/DDR-VIP,Apache-2.0,DDR
-18,Memory,DDR5,UVM VIP,ddr5-VIP.zip,27KB,NEW,15,1264,38,26,3,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/ddr5-VIP,Apache-2.0,DDR5
+18,Memory,DDR5,UVM VIP,DDR5-VIP.zip,22KB,NEW,18,862,4,2,1,2,v1.8.0,2026-10-02,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/DDR5-VIP,Apache-2.0,DDR5
 19,Memory,DDR6,UVM VIP,ddr6-VIP.zip,27KB,NEW,15,1266,38,26,3,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/ddr6-VIP,Apache-2.0,DDR6
 20,Memory,HBM,UVM VIP,HBM-VIP.zip,29KB,MEMORY-VIP,10,1548,28,24,0,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/HBM-VIP,Apache-2.0,HBM
 21,Memory,LPDDR,UVM VIP,LPDDR-VIP.zip,29KB,MEMORY-VIP,10,1593,28,24,0,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/LPDDR-VIP,Apache-2.0,LPDDR
 22,Memory,LPDDR5,UVM VIP,lpddr5-VIP.zip,30KB,NEW,14,1306,28,20,3,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/lpddr5-VIP,Apache-2.0,LPDDR5
 23,Memory,LPDDR5X,UVM VIP,lpddr5x-VIP.zip,32KB,NEW,14,1426,37,35,0,5,v1.7.4,2026-09-28,✅,PASS,https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/lpddr5x-VIP,Apache-2.0,LPDDR5X
-24,Memory,LPDDR6,UVM VIP,lpddr6-VIP.zip,32KB,NEW,14,1437,39,37,0,5,v1.7.4,2026-09-28,✅,PASS,https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/lpddr6-VIP,Apache-2.0,LPDDR6
+24,Memory,LPDDR6,UVM VIP,LPDDR6-VIP.zip,22KB,NEW,18,874,4,2,1,2,v1.8.0,2026-10-02,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/LPDDR6-VIP,Apache-2.0,LPDDR6
 25,Memory,ONFI,UVM VIP,ONFI-VIP.zip,53KB,MEMORY-VIP,17,4267,31,35,0,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/ONFI-VIP,Apache-2.0,ONFI
 26,Memory,SD,UVM VIP,SD-VIP.zip,44KB,MEMORY-VIP,13,3269,32,34,0,7,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/SD-VIP,Apache-2.0,SD
 27,Memory,UFS,UVM VIP,UFS-VIP.zip,35KB,MEMORY-VIP,11,2343,32,32,0,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/UFS-VIP,Apache-2.0,UFS
@@ -34,7 +34,7 @@
 33,Memory,GDDR7,UVM VIP,gddr7-VIP.zip,30KB,NEW,14,1317,32,24,3,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/gddr7-VIP,Apache-2.0,GDDR7
 34,Memory,HBM2,UVM VIP,hbm2-VIP.zip,29KB,NEW,14,1305,28,20,3,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/hbm2-VIP,Apache-2.0,HBM2
 35,Memory,HBM3,UVM VIP,hbm3-VIP.zip,29KB,NEW,14,1311,30,22,3,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/hbm3-VIP,Apache-2.0,HBM3
-36,Memory,HBM3E,UVM VIP,hbm3e-VIP.zip,30KB,NEW,14,1311,30,22,3,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/hbm3e-VIP,Apache-2.0,HBM3E
+36,Memory,HBM3E,UVM VIP,HBM3E-VIP.zip,22KB,NEW,18,862,3,2,1,2,v1.8.0,2026-10-02,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/HBM3E-VIP,Apache-2.0,HBM3E
 37,Memory,HBM4,UVM VIP,hbm4-VIP.zip,30KB,NEW,14,1317,32,24,3,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/hbm4-VIP,Apache-2.0,HBM4
 38,Memory,HBM5,UVM VIP,HBM5-VIP.zip,27KB,NEW,15,1244,40,28,3,5,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/HBM5-VIP,Apache-2.0,HBM5
 39,Memory,LPDDR7,UVM VIP,lpddr7-VIP.zip,32KB,NEW,14,1448,41,39,0,5,v1.7.4,2026-09-28,✅,PASS,https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/lpddr7-VIP,Apache-2.0,LPDDR7
@@ -130,3 +130,4 @@
 129,Debug,WTB,UVM VIP,WTB-UVM-VIP.zip,23KB,wave2-uvm,18,826,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/WTB-UVM-VIP,Apache-2.0,WTB
 130,Interconnect,Wishbone,UVM VIP,Wishbone-UVM-VIP.zip,24KB,wave2-uvm,18,843,4,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/Wishbone-UVM-VIP,Apache-2.0,Wishbone
 131,Networking,XGMII,UVM VIP,XGMII-UVM-VIP.zip,23KB,wave2-uvm,18,783,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/XGMII-UVM-VIP,Apache-2.0,XGMII
+132,Networking,800G Ethernet,UVM VIP,ETH800G-VIP.zip,23KB,wave3-uvm,18,882,4,2,1,2,v1.8.0,2026-10-02,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/tree/main/vips/ETH800G-VIP,Apache-2.0,Ethernet
