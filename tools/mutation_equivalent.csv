@@ -288,3 +288,35 @@ SLIMbus-VIP,dut_slimbus_codec_slave.sv:26,0 -> 1,h is a blocking temporary assig
 SLIMbus-VIP,dut_slimbus_codec_slave.sv:28,0 -> 1,initial value overwritten by the reset branch
 SLIMbus-VIP,dut_slimbus_codec_slave.sv:74,0 -> 1,initial value overwritten by the reset branch
 SLIMbus-VIP,dut_slimbus_codec_slave.sv:77,1'b1 inverted,data_o value while data_oe is low (line released) is not observable
+DDR4-VIP,DDR4_top.sv:28,0 -> 1,PROTOCOL is passed down but never read by MEMCORE_top
+DDR4-VIP,MEMCH_top.sv:10,0 -> 1,parameter default overridden by the top-level instantiation
+DDR4-VIP,MEMCH_top.sv:13,15 -> 16,parameter default overridden by the top-level instantiation
+DDR4-VIP,MEMCH_top.sv:36,2 -> 3,NCH is 1 or 2: CHW stays 1 for either threshold
+DDR4-VIP,MEMCORE_top.sv:12,15 -> 16,parameter default overridden by MEMCH_top
+DDR4-VIP,MEMCORE_top.sv:15,17 -> 18,parameter default overridden by MEMCH_top
+DDR4-VIP,MEMCORE_top.sv:73,1'b0 inverted,bank_open is written but never read
+DDR4-VIP,MEMCORE_top.sv:88,1'b1 inverted,bank_open is written but never read
+DDR4-VIP,MEMCORE_top.sv:127,1'b0 inverted,rd_pending is reassigned from hcmd whenever the next command is accepted
+LPDDR4-VIP,LPDDR4_top.sv:31,2 -> 3,PROTOCOL is passed down but never read by MEMCORE_top
+LPDDR4-VIP,MEMCH_top.sv:10,0 -> 1,parameter default overridden by the top-level instantiation
+LPDDR4-VIP,MEMCH_top.sv:13,15 -> 16,parameter default overridden by the top-level instantiation
+LPDDR4-VIP,MEMCH_top.sv:36,2 -> 3,NCH is 1 or 2: CHW stays 1 for either threshold
+LPDDR4-VIP,MEMCORE_top.sv:12,15 -> 16,parameter default overridden by MEMCH_top
+LPDDR4-VIP,MEMCORE_top.sv:15,17 -> 18,parameter default overridden by MEMCH_top
+LPDDR4-VIP,MEMCORE_top.sv:73,1'b0 inverted,bank_open is written but never read
+LPDDR4-VIP,MEMCORE_top.sv:88,1'b1 inverted,bank_open is written but never read
+LPDDR4-VIP,MEMCORE_top.sv:127,1'b0 inverted,rd_pending is reassigned from hcmd whenever the next command is accepted
+DDR4-VIP,MEMCH_top.sv:53,== flipped,NCH == 1: the channel compare is short-circuited
+DDR4-VIP,MEMCH_top.sv:65,== flipped,NCH == 1: the channel-1 instance is not generated
+DDR4-VIP,MEMCH_top.sv:65,|| flipped,NCH == 1: the channel-1 instance is not generated
+LPDDR4-VIP,MEMCORE_top.sv:114,1'b0 inverted,LPDDR4 exposes only addr[2:0] on CA; the zero-extended upper bits are dropped
+Avalon_MM-VIP,Avalon_MM_top.sv:13,32 -> 33,parameter default; ports are 32-bit in every instantiation and lanes are fixed at 4 bytes
+Avalon_MM-VIP,Avalon_MM_top.sv:14,32 -> 33,parameter default; the address map compares 32-bit constants
+Avalon_MM-VIP,Avalon_MM_top.sv:15,256 -> 257,array index is cur_addr[9:2] (8 bits): entry 256 is unreachable
+Avalon_MM-VIP,Avalon_MM_top.sv:60,> -> >= in condition,burstcount 16 clamps to 16 either way
+Avalon_MM-VIP,Avalon_MM_top.sv:100,1'b0 inverted,rd_gap is cleared whenever a read command is accepted
+Avalon_MM-VIP,Avalon_MM_top.sv:117,4 -> 5,byteenable[4] is out of range (x): the extra lane never writes
+Avalon_MM-VIP,Avalon_MM_top.sv:142,4 -> 5,byteenable[4] is out of range (x): the extra lane never writes
+OneWire-VIP,_1_Wire_top.sv:9,10 -> 11,parameter default overridden by every instantiation (US=10)
+OneWire-VIP,_1_Wire_top.sv:22,1'b1 inverted,"dq_d reset value: dq_fall is only used in WAIT_SLOT/TX_BYTE, never in the first cycle after reset"
+OneWire-VIP,_1_Wire_top.sv:111,1'b0 inverted,bit shifted into tx_shift[7] is never transmitted (8 bits per byte)
