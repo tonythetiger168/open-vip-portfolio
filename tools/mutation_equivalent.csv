@@ -320,3 +320,30 @@ Avalon_MM-VIP,Avalon_MM_top.sv:142,4 -> 5,byteenable[4] is out of range (x): the
 OneWire-VIP,_1_Wire_top.sv:9,10 -> 11,parameter default overridden by every instantiation (US=10)
 OneWire-VIP,_1_Wire_top.sv:22,1'b1 inverted,"dq_d reset value: dq_fall is only used in WAIT_SLOT/TX_BYTE, never in the first cycle after reset"
 OneWire-VIP,_1_Wire_top.sv:111,1'b0 inverted,bit shifted into tx_shift[7] is never transmitted (8 bits per byte)
+DDR-VIP,dut_ddr_mem_model.sv:23,32 -> 33,bank arrays sized beyond the 32 addressable banks: extra entry unreachable
+DDR-VIP,dut_ddr_mem_model.sv:29,0 -> 1,"statistics counter, only printed in final"
+DDR-VIP,dut_ddr_mem_model.sv:69,&& flipped,PRE/REF decode only updates bank_open and the refresh counter (never read)
+DDR-VIP,dut_ddr_mem_model.sv:70,1'b0 inverted,bank_open is written but never read
+DDR-VIP,dut_ddr_mem_model.sv:71,! dropped in condition,PRE/REF decode only updates bank_open and the refresh counter (never read)
+DDR4-VIP,MEMCH_top.sv:12,15 -> 16,parameter default overridden by the top-level instantiation
+DDR4-VIP,MEMCH_top.sv:65,1 -> 2,NCH == 1: the channel-1 instance is not generated
+DDR4-VIP,MEMCORE_top.sv:74,1'b0 inverted,rd_pending is reassigned from hcmd whenever the next command is accepted
+HBM-VIP,dut_hbm_mem_model.sv:22,32 -> 33,bank arrays sized beyond the 32 addressable banks: extra entry unreachable
+HBM-VIP,dut_hbm_mem_model.sv:28,0 -> 1,"statistics counter, only printed in final"
+HBM-VIP,dut_hbm_mem_model.sv:61,1'b1 inverted,bank_open is written but never read
+HBM-VIP,dut_hbm_mem_model.sv:68,! dropped in condition,PRE/REF decode only updates bank_open and the refresh counter (never read)
+HBM-VIP,dut_hbm_mem_model.sv:70,&& flipped,PRE/REF decode only updates bank_open and the refresh counter (never read)
+HBM-VIP,dut_hbm_mem_model.sv:70,! dropped in condition,PRE/REF decode only updates bank_open and the refresh counter (never read)
+LPDDR-VIP,dut_lpddr_mem_model.sv:17,32 -> 33,bank arrays sized beyond the 32 addressable banks: extra entry unreachable
+LPDDR-VIP,dut_lpddr_mem_model.sv:22,0 -> 1,"statistics counter, only printed in final"
+LPDDR-VIP,dut_lpddr_mem_model.sv:23,0 -> 1,"statistics counter, only printed in final"
+LPDDR-VIP,dut_lpddr_mem_model.sv:23,0 -> 1,"statistics counter, only printed in final"
+LPDDR-VIP,dut_lpddr_mem_model.sv:34,8 -> 9,extra burst beat lands at col+64; the model's commands always use column 0 and read 8 beats
+LPDDR-VIP,dut_lpddr_mem_model.sv:57,1'b1 inverted,bank_open is written but never read
+LPDDR-VIP,dut_lpddr_mem_model.sv:62,1'b0 inverted,bank_open is written but never read
+LPDDR-VIP,dut_lpddr_mem_model.sv:65,0 -> 1,bank_open is written but never read
+LPDDR4-VIP,MEMCH_top.sv:12,15 -> 16,parameter default overridden by the top-level instantiation
+LPDDR4-VIP,MEMCORE_top.sv:74,1'b0 inverted,rd_pending is reassigned from hcmd whenever the next command is accepted
+LPDDR4-VIP,MEMCORE_top.sv:105,1'b0 inverted,LPDDR4 exposes only addr[2:0] on CA; the zero-extended upper bits are dropped
+AHB-VIP,dut_amba_dut.sv:37,1024 -> 1025,initial loop index 1024 is out of range of mem[0:1023]
+AHB-VIP,dut_amba_dut.sv:57,1'b0 inverted,"ap_write reset value is only used together with ap_valid, which resets to 0"
