@@ -40,3 +40,6 @@ __pycache__/
 # Build artifacts
 build/
 dist/
+
+# Extracted VIP trees and smoke outputs
+smoke/*-VIP/

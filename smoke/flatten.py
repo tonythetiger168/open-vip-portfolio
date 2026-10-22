@@ -11,9 +11,12 @@ Unreliable cases are marked SKIP with a reason.
 """
 import os, re, sys, json, time, collections
 
-ROOT = "/mnt/agents/output/work_v174"
-VIPS = os.path.join(ROOT, "vips")
-SMOKE = os.path.join(ROOT, "smoke")
+# Paths are derived from this file's location so the harness runs from any
+# checkout. VIPS_DIR points at the extracted VIP trees (tools/extract_vips.sh);
+# per-VIP outputs (dut_*.sv, tb_smoke_*.sv, smoke.log) go under SMOKE.
+SMOKE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(SMOKE)
+VIPS = os.environ.get("VIPS_DIR", os.path.join(ROOT, "build", "vips"))
 
 def read_retry(p, tries=5):
     for i in range(tries):
