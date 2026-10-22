@@ -2,7 +2,7 @@
 // VIP Portfolio v1.7.3 — CI 回歸（Jenkins declarative pipeline 範例）
 //
 // 流程與 GitHub Actions 範例（ci/.github/workflows/vip_regression.yml）相同：
-//   Stage 1 環境準備：iverilog + pyslang 11 + Accellera uvm-core
+//   Stage 1 環境準備：iverilog + Verilator v5.052 + pyslang 12 + Accellera uvm-core
 //   Stage 2 L1a elaboration gate：對全部 87 個 VIP 跑 tools/elab_scan.py
 //   Stage 3 L1b iverilog DUT 冒煙測試：smoke/run_smoke.sh 存在時才執行
 //   Stage 4 歸檔報告 artifact（失敗也保留日誌）
@@ -28,6 +28,8 @@ pipeline {
         UVM_CORE = "${WORKSPACE}/tools/uvm-core/src"
         // vips/ 只存放 zip；解壓後的 VIP 原始碼樹（tools/extract_vips.sh 產生）
         VIPS_DIR = "${WORKSPACE}/build/vips"
+        // tools/install_tools.sh 安裝的 Verilator v5.052
+        PATH = "/opt/verilator-5.052/bin:${env.PATH}"
     }
 
     stages {
@@ -35,23 +37,9 @@ pipeline {
             steps {
                 sh '''
                     set -e
-                    # (a) Icarus Verilog（L1b DUT 冒煙測試用）
-                    if ! command -v iverilog >/dev/null; then
-                        sudo apt-get update && sudo apt-get install -y iverilog
-                    fi
-                    iverilog -V | head -1
-
-                    # (b) pyslang 11（slang SystemVerilog 前端之 Python 綁定）
-                    python3 -m pip install --user "pyslang>=11,<12"
-                    python3 -c "import pyslang; print('pyslang major =', pyslang.VersionInfo.getMajor())"
-
-                    # (c) Accellera uvm-core（UVM-1.2 標準庫原始碼）
-                    if [ ! -f "$UVM_CORE/uvm_pkg.sv" ]; then
-                        rm -rf "${WORKSPACE}/tools/uvm-core"
-                        git clone --depth 1 \
-                            https://github.com/accellera-official/uvm-core.git \
-                            "${WORKSPACE}/tools/uvm-core"
-                    fi
+                    # (a)-(c) Icarus Verilog、Verilator v5.052（原始碼編譯）、pyslang 12.0.0、
+                    #         Accellera uvm-core（UVM-1.2 標準庫原始碼）
+                    UVM_CORE_DIR="${WORKSPACE}/tools/uvm-core" bash tools/install_tools.sh
                     ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/macros/uvm_macros.svh"
 
                     # (d) 解壓全部 VIP zip 到 $VIPS_DIR
@@ -112,6 +100,18 @@ pipeline {
                     else
                         echo "smoke/run_smoke.sh 尚未納入 repo，略過 L1b（參見 docs/ACCEPTANCE.md）"
                     fi
+                '''
+            }
+        }
+
+        stage('L1c：功能測試（iverilog / Verilator）') {
+            steps {
+                sh '''#!/bin/bash
+                    set -o pipefail
+                    mkdir -p reports/func
+                    # 每個 VIP 的 tb/smoke_func_tb.sv、tb/func_*_tb.sv 與 RTL IP 的 directed tb
+                    python3 tools/run_func_tests.py | tee reports/func/func.log
+                    cp -f func_report.csv reports/func/
                 '''
             }
         }
