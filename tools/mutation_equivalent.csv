@@ -1,0 +1,67 @@
+# Surviving mutants reviewed as equivalent (no observable behaviour change) or
+# out of the VIP's scope. Read by tools/mutation_score.py; location is
+# <flattened file>:<line> as printed in its "survived:" lines.
+vip,location,mutation,reason
+AXI-VIP,dut_amba_dut.sv:45,512 -> 513,initialises an index past the 512-word memory
+AXI-VIP,dut_amba_dut.sv:87,1'b0 inverted,wr_error is reloaded by every AW before it is used
+AXI-VIP,dut_amba_dut.sv:132,1'b0 inverted,rd_error is reloaded by every AR before it is used
+AXI-VIP,dut_amba_dut.sv:106,8 -> 9,wstrb[8] does not exist (X): no write
+AXI-VIP,dut_amba_dut.sv:161,1'b0 inverted,AXI-Stream tie-off of the shared AMBA shell (not AXI)
+AXI-VIP,dut_amba_dut.sv:162,1'b0 inverted,AHB tie-off of the shared AMBA shell (not AXI)
+AXI-VIP,dut_amba_dut.sv:163,1'b0 inverted,APB tie-off of the shared AMBA shell (not AXI)
+HBM3E-VIP,dut_hbm3e_model.sv:26,4 -> 5,initialises a stack index past the array
+HBM3E-VIP,dut_hbm3e_model.sv:27,2 -> 3,initialises a pseudo-channel index past the array
+HBM3E-VIP,dut_hbm3e_model.sv:28,16384 -> 16385,initialises a word index past the array
+HBM3E-VIP,dut_hbm3e_model.sv:34,3 -> 4,clears a pipeline stage past the array
+DDR5-VIP,dut_ddr5_model.sv:25,4 -> 5,initialises a bank index past the array
+DDR5-VIP,dut_ddr5_model.sv:26,16384 -> 16385,initialises a word index past the array
+DDR5-VIP,dut_ddr5_model.sv:32,4 -> 5,clears a pipeline stage past the array
+LPDDR6-VIP,dut_lpddr6_model.sv:26,4 -> 5,initialises a bank index past the array
+LPDDR6-VIP,dut_lpddr6_model.sv:27,16384 -> 16385,initialises a word index past the array
+LPDDR6-VIP,dut_lpddr6_model.sv:33,6 -> 7,clears a pipeline stage past the array
+LPDDR6-VIP,dut_lpddr6_model.sv:53,6 -> 7,clears a pipeline stage past the array
+MDIO-UVM-VIP,dut_mdio_model.sv:30,! dropped in condition,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
+MDIO-UVM-VIP,dut_mdio_model.sv:31,! dropped in condition,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
+MDIO-UVM-VIP,dut_mdio_model.sv:33,== flipped,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
+MDIO-UVM-VIP,dut_mdio_model.sv:33,1'b1 inverted,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
+MDIO-UVM-VIP,dut_mdio_model.sv:35,== flipped,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
+MDIO-UVM-VIP,dut_mdio_model.sv:35,&& flipped,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
+MDIO-UVM-VIP,dut_mdio_model.sv:36,1'b1 inverted,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
+MDIO-UVM-VIP,dut_mdio_model.sv:39,== flipped,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
+MDIO-UVM-VIP,dut_mdio_model.sv:41,! dropped in condition,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
+MDIO-UVM-VIP,dut_mdio_model.sv:42,1'b0 inverted,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
+MDIO-UVM-VIP,dut_mdio_model.sv:43,== flipped,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
+MDIO-UVM-VIP,dut_mdio_model.sv:43,&& flipped,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
+MDIO-UVM-VIP,dut_mdio_model.sv:43,! dropped in condition,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
+MDIO-UVM-VIP,dut_mdio_model.sv:44,1'b0 inverted,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
+Avalon_ST-UVM-VIP,dut_avalon_st_model.sv:33,1'b0 inverted,skid buffer registers are never used
+Avalon_ST-UVM-VIP,dut_avalon_st_model.sv:34,1'b0 inverted,skid buffer registers are never used
+Avalon_ST-UVM-VIP,dut_avalon_st_model.sv:35,1'b0 inverted,skid buffer registers are never used
+Avalon_ST-UVM-VIP,dut_avalon_st_model.sv:40,&& flipped,only changes data / SOP / EOP while aso_valid is low (don't care)
+Wishbone-UVM-VIP,dut_wishbone_model.sv:25,16 -> 17,reset loop index 16 is out of range (write ignored)
+Wishbone-UVM-VIP,dut_wishbone_model.sv:32,&& flipped,DAT_O is only defined while ACK is high; the change is visible only outside a cycle
+APB-VIP,dut_amba_dut.sv:39,64 -> 65,init loop index 64 is out of range (write ignored)
+APB-VIP,dut_amba_dut.sv:59,< -> <= in condition,wait_cnt saturates at 2 either way within the observed 2-clock wait
+APB-VIP,dut_amba_dut.sv:62,4 -> 5,PSTRB[4] is out of range (reads X; branch not taken)
+APB-VIP,dut_amba_dut.sv:71,1'b0 inverted,tie-off of an unused sibling protocol (AXI) in the shared AMBA model
+APB-VIP,dut_amba_dut.sv:72,1'b0 inverted,tie-off of an unused sibling protocol (AXI) in the shared AMBA model
+APB-VIP,dut_amba_dut.sv:73,1'b0 inverted,tie-off of an unused sibling protocol (AXI/AXI-Stream) in the shared AMBA model
+APB-VIP,dut_amba_dut.sv:74,1'b0 inverted,tie-off of an unused sibling protocol (AHB) in the shared AMBA model
+NVMe-VIP,dut_nvme_controller_model.sv:35,0 -> 1,initial value overwritten by the synchronous reset before any doorbell
+NVMe-VIP,dut_nvme_controller_model.sv:40,0 -> 1,initial value overwritten by the synchronous reset before it is observed
+NVMe-VIP,dut_nvme_controller_model.sv:50,0 -> 1,initial value overwritten by the synchronous reset before it is observed
+NVMe-VIP,dut_nvme_controller_model.sv:51,0 -> 1,word 0 left uninitialised: 0 under the 2-state simulator (Verilator) either way
+NVMe-VIP,dut_nvme_controller_model.sv:51,16 -> 17,loop index 16 is out of range (write ignored)
+NVMe-VIP,dut_nvme_controller_model.sv:52,0 -> 1,word 0 left uninitialised: 0 under the 2-state simulator (Verilator) either way
+NVMe-VIP,dut_nvme_controller_model.sv:52,16 -> 17,loop index 16 is out of range (write ignored)
+ETH800G-VIP,dut_eth800g_model.sv:27,1'b0 inverted,initial value overwritten by the asynchronous reset
+ETH800G-VIP,dut_eth800g_model.sv:30,1'b0 inverted,in_pkt set by reset only changes a SOP beat into a continuation of a zero-byte packet (same counts)
+ETH800G-VIP,dut_eth800g_model.sv:49,9600 -> 9601,single-beat term unreachable: a beat carries at most 32 bytes
+ETH800G-VIP,dut_eth800g_model.sv:49,> -> >= in condition,single-beat term unreachable: a beat carries at most 32 bytes
+ETH800G-VIP,dut_eth800g_model.sv:49,! dropped in condition,single-beat term unreachable: a beat carries at most 32 bytes
+Ethernet-VIP,dut_net_mac_model.sv:56,0 -> 1,ls_timer is cleared again in LS_UP; no observable effect
+Ethernet-VIP,dut_net_mac_model.sv:57,0 -> 1,ls_timer is unused in LS_UP
+Ethernet-VIP,dut_net_mac_model.sv:71,0 -> 1,pause count after reset only holds ready low while the link is still training
+Ethernet-VIP,dut_net_mac_model.sv:109,8 -> 9,BE[8] is out of range (reads X; branch not taken)
+Ethernet-VIP,dut_net_mac_model.sv:120,4 -> 5,loop index 4 writes beyond the 32-bit FCS (ignored)
+Ethernet-VIP,dut_net_mac_model.sv:132,> -> >= in condition,a 22-byte frame (14 bytes after the preamble) cannot carry the PAUSE EtherType check bytes plus FCS; only differs for frames already flagged len_error
