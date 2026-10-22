@@ -11,6 +11,10 @@ tests need a commercial simulator; these run on open-source tools):
     flattened DUT model produced by ``smoke/flatten.py``
     (``smoke/<VIP>/dut_<mod>.sv``) and prints ``FUNC_PASS``/``FUNC_FAIL``.
   * RTL IPs: ``tb/<IP>_tb.sv`` against ``rtl/*.sv`` (prints ``TEST PASSED``).
+    Their constrained-random phase and immediate-assertion suite are under
+    ```ifdef VERILATOR``, so these run on Verilator first when it is
+    installed; the check count is then the number of assertion evaluations
+    (``SVA_CHECKS``).
 
 DUT models report protocol violations with `uvm_error, which the flattener
 maps to ``[ERROR] ...`` prints. Any such line fails the test, unless the test
@@ -71,7 +75,9 @@ def classify(out, rtl):
         xf = [l.strip()[8:] for l in out.splitlines() if l.strip().startswith("[XFAIL]")]
         return "PASS", int(m.group(1)), ("xfail=%d: %s" % (len(xf), " | ".join(xf)))[:300] if xf else ""
     if rtl and re.search(r'TEST PASSED', out) and not re.search(r'TEST FAILED|SVA_FAIL', out):
-        n = len(re.findall(r'^\s*(PASS|\[PASS\]|ok)\b', out, re.M))
+        # checks: assertion evaluations (Verilator flow), else PASS lines
+        sva = re.search(r'SVA_CHECKS:\s*\d+/(\d+)', out)
+        n = int(sva.group(1)) if sva else len(re.findall(r'^\s*(PASS|\[PASS\]|ok)\b', out, re.M))
         return "PASS", n, ""
     fails = [l.strip() for l in out.splitlines() if re.search(r'FAIL|ERROR', l)]
     return "FAIL", 0, " | ".join(fails[:4])[:300] or "no PASS marker"
@@ -183,6 +189,11 @@ def run_test(vip, tb, rtl_files=None):
             return "ERROR", "-", 0, "no flattened DUT module instantiated by the test"
     pin = pinned_sim(tb)
     sims = [("iverilog", sim_iverilog), ("verilator", sim_verilator)]
+    if (rtl_files is not None and shutil.which("verilator")
+            and re.search(r'`ifdef\s+VERILATOR', open(tb, errors="ignore").read())):
+        # the RTL testbenches' constrained-random phase and assertion suite
+        # are Verilator-only: prefer Verilator when it is installed
+        sims.reverse()
     if pin:
         sims = [s for s in sims if s[0] == pin]
     log = []
