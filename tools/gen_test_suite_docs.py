@@ -109,7 +109,7 @@ def limitations(lines):
 
 def sva_counted(row):
     """RTL IP testbenches report assertion evaluations (SVA_CHECKS), not checks."""
-    return row["vip"] and os.path.isdir(os.path.join(VIPS, row["vip"], "rtl")) and not row["test"].startswith("func_")
+    return bool(glob.glob(os.path.join(VIPS, row["vip"], "rtl", "*_top.sv"))) and not row["test"].startswith("func_")
 
 def n_checks(rows):
     return sum(int(r["checks"] or 0) for r in rows if not sva_counted(r))
@@ -165,8 +165,9 @@ def vip_doc(vip, meta, frows, mut):
     L.append("| 類型 | %s |" % meta.get("類型", "RTL IP" if rtl else "UVM VIP"))
     checks = n_checks(frows)
     sva_n = n_sva(frows)
-    L.append("| 功能測試 | %d 個檔案，%d 個 check%s，%s |" % (
-        len(frows), checks, "，%d 次斷言評估" % sva_n if sva_n else "",
+    parts = (["%d 個 check" % checks] if checks or not sva_n else []) + (["%d 次斷言評估" % sva_n] if sva_n else [])
+    L.append("| 功能測試 | %d 個檔案，%s，%s |" % (
+        len(frows), "，".join(parts),
         "全部通過" if frows and all(r["result"] == "PASS" for r in frows) else "未全部通過"))
     if mut and mut.get("valid") not in (None, "", "0"):
         L.append("| Mutation | %s/%s 個 mutant 被偵測（%s%%） |" % (mut["killed"], mut["valid"], mut["score"]))
