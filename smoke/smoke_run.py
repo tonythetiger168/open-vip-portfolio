@@ -249,7 +249,7 @@ def compilable_pkgs(vip_dir, vip):
 def inject_imports(dut_path, pkg_names, out_path):
     src = read_retry(dut_path)
     imp = "\n" + "\n".join("  import %s::*;" % n for n in pkg_names) + "\n"
-    m = re.search(r'\bmodule\s+\w+\s*\(', src)
+    m = re.search(r'\bmodule\s+\w+\b', src)
     i = src.index('\n);', m.start()) + 3   # end of generated port list
     src = src[:i] + imp + src[i:]
     write_retry(out_path, src)
