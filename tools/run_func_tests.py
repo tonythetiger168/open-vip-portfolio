@@ -22,7 +22,8 @@ report detail.
 
 Compile order tried per test: Icarus without packages, Icarus with the VIP's
 sanitised packages imported into the DUT, then Verilator (``--binary
---timing``) for DUT code Icarus cannot parse. A test may pin its flow with a
+--timing``) for DUT code Icarus cannot parse, also with the packages' full
+function bodies. A test may pin its flow with a
 header line ``// FUNC_SIM: verilator`` or ``// FUNC_SIM: iverilog``.
 
 Output: one line per test ``FUNC_PASS|FUNC_FAIL|FUNC_ERROR <VIP>/<test> -- detail``
@@ -96,6 +97,33 @@ def vip_pkgs(vip):
             _pkg_cache[vip] = []
     return _pkg_cache[vip]
 
+_full_cache = {}
+def vip_pkgs_full(vip):
+    """The VIP's packages with only UVM classes stripped. compilable_pkgs()
+    also drops every function Icarus rejects (e.g. ``const ref`` arguments),
+    which leaves DUT models that call them unbuildable; Verilator takes the
+    full functions."""
+    if vip not in _full_cache:
+        out, vdir = [], os.path.join(VIPS, vip)
+        for name, path in vip_pkgs(vip):
+            fn = os.path.basename(path)
+            if fn.startswith("pkg_san_"):
+                orig = glob.glob(os.path.join(vdir, "**", fn[8:]), recursive=True)
+                if orig:
+                    txt = open(orig[0], errors="ignore").read()
+                    blocks = []
+                    for m in re.finditer(r'\bpackage\s+(\w+)\s*;', txt):
+                        e = txt.find('endpackage', m.end())
+                        if e > 0:
+                            blocks.append(txt[m.start():e + 10])
+                    path = os.path.join(WORK, vip, "full_" + fn[8:])
+                    os.makedirs(os.path.dirname(path), exist_ok=True)
+                    open(path, "w").write(smoke_run().sanitize_pkg("\n\n".join(blocks)))
+            if path not in [p for _, p in out]:
+                out.append((name, path))
+        _full_cache[vip] = out
+    return _full_cache[vip]
+
 def build_sets(vip, tb):
     """Yield (label, files) compile candidates for a UVM functional tb."""
     txt = open(tb, errors="ignore").read()
@@ -114,6 +142,9 @@ def build_sets(vip, tb):
             smoke_run().inject_imports(flats[m], [n for n, _ in pkgs], p)
             out.append(p)
         yield "pkgs", [f for _, f in pkgs] + out + [tb]
+        full = vip_pkgs_full(vip)
+        if [f for _, f in full] != [f for _, f in pkgs]:
+            yield "pkgs_full", [f for _, f in full] + out + [tb]
 
 def sim_iverilog(files, top, wd, defines):
     exe = os.path.join(wd, top + ".vvp")

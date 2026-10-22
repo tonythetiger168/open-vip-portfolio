@@ -46,3 +46,4 @@ smoke/*-VIP/
 
 # Accellera UVM library checkout used by tools/elab_scan.py
 uvm-core/
+func_report.csv
