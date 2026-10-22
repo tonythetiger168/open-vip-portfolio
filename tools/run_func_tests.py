@@ -12,6 +12,14 @@ tests need a commercial simulator; these run on open-source tools):
     (``smoke/<VIP>/dut_<mod>.sv``) and prints ``FUNC_PASS``/``FUNC_FAIL``.
   * RTL IPs: ``tb/<IP>_tb.sv`` against ``rtl/*.sv`` (prints ``TEST PASSED``).
 
+DUT models report protocol violations with `uvm_error, which the flattener
+maps to ``[ERROR] ...`` prints. Any such line fails the test, unless the test
+provokes errors on purpose and states the count as ``dut_errors=<n>`` on its
+``FUNC_PASS`` line; the runner then requires exactly that many. Checks of a
+known DUT-model defect print ``[XFAIL] <check>`` instead of failing (and
+``[XPASS]``, a failure, once the defect is fixed); they are listed in the
+report detail.
+
 Compile order tried per test: Icarus without packages, Icarus with the VIP's
 sanitised packages imported into the DUT, then Verilator (``--binary
 --timing``) for DUT code Icarus cannot parse. A test may pin its flow with a
@@ -49,7 +57,17 @@ def run(cmd, cwd, timeout=300):
 def classify(out, rtl):
     m = re.search(r'FUNC_PASS\b[^\n]*?checks=(\d+)', out)
     if m and "FUNC_FAIL" not in out:
-        return "PASS", int(m.group(1)), ""
+        # error reports from the DUT model (`uvm_error/`uvm_fatal, flattened to
+        # "[ERROR]"/"[FATAL]") fail the test unless the test announces how many
+        # it provoked on purpose with "dut_errors=<n>" on its FUNC_PASS line
+        exp = re.search(r'FUNC_PASS\b[^\n]*?dut_errors=(\d+)', out)
+        got = len(re.findall(r'^\s*\[(?:ERROR|FATAL)\]', out, re.M))
+        if got != (int(exp.group(1)) if exp else 0):
+            return "FAIL", int(m.group(1)), "DUT reported %d error(s), test expected %s" % (
+                got, exp.group(1) if exp else 0)
+        # known model defects are reported as [XFAIL] and listed in the detail
+        xf = [l.strip()[8:] for l in out.splitlines() if l.strip().startswith("[XFAIL]")]
+        return "PASS", int(m.group(1)), ("xfail=%d: %s" % (len(xf), " | ".join(xf)))[:300] if xf else ""
     if rtl and re.search(r'TEST PASSED', out) and not re.search(r'TEST FAILED|SVA_FAIL', out):
         n = len(re.findall(r'^\s*(PASS|\[PASS\]|ok)\b', out, re.M))
         return "PASS", n, ""
