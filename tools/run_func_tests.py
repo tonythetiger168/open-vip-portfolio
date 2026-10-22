@@ -23,7 +23,8 @@ report detail.
 Compile order tried per test: Icarus without packages, Icarus with the VIP's
 sanitised packages imported into the DUT, then Verilator (``--binary
 --timing``) for DUT code Icarus cannot parse, also with the packages' full
-function bodies. A test may pin its flow with a
+function bodies; a vvp run that ends without a result marker (a simulator
+crash) also falls through to Verilator. A test may pin its flow with a
 header line ``// FUNC_SIM: verilator`` or ``// FUNC_SIM: iverilog``.
 
 Output: one line per test ``FUNC_PASS|FUNC_FAIL|FUNC_ERROR <VIP>/<test> -- detail``
@@ -192,6 +193,12 @@ def run_test(vip, tb, rtl_files=None):
                 log.append("%s/%s compile: %s" % (sname, label, err.strip().splitlines()[-1:] if err.strip() else ""))
                 continue
             open(os.path.join(wd, top + ".log"), "w").write(out)
+            if (rtl_files is None and sname == "iverilog" and not pin
+                    and not re.search(r'FUNC_(PASS|FAIL)', out)):
+                # vvp crashed or hung before reporting (it segfaults on some
+                # models' automatic tasks): fall through to Verilator
+                log.append("iverilog/%s run: no result marker" % label)
+                break
             st, n, detail = classify(out, rtl_files is not None)
             return st, sname, n, detail
     return "ERROR", "-", 0, ("; ".join(str(x) for x in log))[:300]
