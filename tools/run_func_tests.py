@@ -159,6 +159,7 @@ def sim_verilator(files, top, wd, defines):
     obj = os.path.join(wd, "obj_" + top)
     shutil.rmtree(obj, ignore_errors=True)
     rc, out = run(["verilator", "--binary", "--timing", "-Wno-fatal", "-Wno-lint", "-Wno-style",
+                   "-Wno-ENUMVALUE",   # flattened ports drop enum types
                    "--x-initial", "unique", "--x-assign", "unique",
                    "-j", "4", "--Mdir", obj, "--top-module", top]
                   + ["+define+" + d for d in defines] + files, wd, 900)
