@@ -108,6 +108,15 @@ jobs:
           python3 tools/run_func_tests.py | tee reports/func/func.log
           cp -f func_report.csv reports/func/
 
+      - name: UVM RAL 測試（Verilator + uvm-core）
+        run: |
+          set -o pipefail
+          mkdir -p reports/uvm
+          # 有 UVM register model 的 VIP：uvm_reg_hw_reset / bit_bash / mem_walk
+          # 加 frontdoor mirror 與錯誤回應檢查（每個 VIP 編譯數分鐘）
+          python3 tools/run_uvm_tests.py | tee reports/uvm/uvm.log
+          cp -f uvm_report.csv reports/uvm/
+
       - name: 上傳 L1 報告 artifact
         if: always()          # 即使 gate 失敗也要保留日誌供排查
         uses: actions/upload-artifact@v4

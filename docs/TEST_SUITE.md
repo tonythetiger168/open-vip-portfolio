@@ -7,14 +7,14 @@
 - 135 個 VIP 中 135 個有可在開源工具上執行的 self-checking 功能測試，共 2502 個 check（另有 RTL IP testbench 的 57770027 次斷言評估）；135 個 VIP 的測試全部通過。
 - 判定：✅ Sufficient 102、🟡 Partial 33、❌ Insufficient 0。
 - Mutation testing：1819 個有效 mutant 中 1600 個被功能測試偵測（88%）。
-- 功能測試找到 68 個 DUT 模型缺陷，以 XFAIL check 記錄（見第 4 節）；模型修好後該 check 會變成 XPASS 並使測試失敗，提醒移除標記。
+- 功能測試找到 66 個 DUT 模型缺陷，以 XFAIL check 記錄（見第 4 節）；模型修好後該 check 會變成 XPASS 並使測試失敗，提醒移除標記。
 
 ## 2. 方法
 
 每個 VIP 的測試套件分三層：
 
 1. **功能測試**（`tb/func_*_tb.sv`、`tb/smoke_func_tb.sv`、RTL IP 的 `tb/*_tb.sv`）：直接驅動 VIP 內的 DUT 模型，依協定規格與模型合約逐項比對，輸出 `FUNC_PASS checks=N`。由 `tools/run_func_tests.py` 以 Icarus Verilog 或 Verilator 5.052 執行，結果寫入 `func_report.csv`。
-2. **UVM 測試平台**（tests / sequences / scoreboard / SVA / coverage）：需商用模擬器執行，開源流程以 pyslang elaboration 檢查（`tools/elab_scan.py`）。
+2. **UVM 測試平台**（tests / sequences / scoreboard / SVA / coverage）：需商用模擬器執行，開源流程以 pyslang elaboration 檢查（`tools/elab_scan.py`）；有 register model 的 VIP（APB / AHB / AXI）另以 `tools/run_uvm_tests.py` 在 Verilator 上執行 UVM RAL test（見 [RAL.md](RAL.md)）。
 3. **Mutation testing**（`tools/mutation_score.py`）：對 DUT 模型注入運算子與常數錯誤，檢查功能測試能否偵測，作為「測試是否足夠」的客觀指標，結果寫入 `mutation_report.csv`。
 
 判定標準：
@@ -36,7 +36,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [ACE-VIP](test_suites/ACE-VIP.md) | AMBA | `ACE_tb.sv` | 0 | verilator | 8/12 | 0 | 🟡 Partial |
 | [ACE_Lite-UVM-VIP](test_suites/ACE_Lite-UVM-VIP.md) | AMBA | `smoke_func_tb.sv` | 12 | iverilog | 12/19 | 0 | 🟡 Partial |
 | [ACE_Lite-VIP](test_suites/ACE_Lite-VIP.md) | AMBA | `ACE_Lite_tb.sv` | 0 | verilator | 9/12 | 0 | 🟡 Partial |
-| [AHB-VIP](test_suites/AHB-VIP.md) | AMBA | `smoke_func_tb.sv`, `func_ahb_tb.sv` | 38 | iverilog | 28/28 | 2 | ✅ Sufficient |
+| [AHB-VIP](test_suites/AHB-VIP.md) | AMBA | `smoke_func_tb.sv`, `func_ahb_tb.sv` | 38 | iverilog | 28/28 | 0 | ✅ Sufficient |
 | [APB-VIP](test_suites/APB-VIP.md) | AMBA | `smoke_func_tb.sv`, `func_apb_tb.sv` | 22 | iverilog | 15/15 | 0 | ✅ Sufficient |
 | [ATB-UVM-VIP](test_suites/ATB-UVM-VIP.md) | Debug | `smoke_func_tb.sv` | 9 | iverilog | 4/6 | 0 | 🟡 Partial |
 | [ATB-VIP](test_suites/ATB-VIP.md) | Debug | `ATB_tb.sv` | 0 | verilator | 9/10 | 0 | ✅ Sufficient |
@@ -170,11 +170,6 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [lpddr7-VIP](test_suites/lpddr7-VIP.md) | Memory | `func_mem_tb.sv` | 26 | iverilog | 24/24 | 0 | ✅ Sufficient |
 
 ## 4. 功能測試找到的 DUT 模型缺陷
-
-**AHB-VIP**
-
-- read of a written byte address returns the written word
-- BUSY transfer is ignored
 
 **AXI-VIP**
 
