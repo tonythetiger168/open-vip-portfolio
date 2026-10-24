@@ -73,7 +73,16 @@ UVM_PASS AXI-VIP/amba_ral_test [checks=1074]
 
 對 DUT 模型手動注入 6 個暫存器層級錯誤，`amba_ral_test` 必須失敗：
 
-MUTATION_TABLE
+| Mutant | VIP | 注入的錯誤 | RAL test 結果 |
+|---|---|---|---|
+| m1 | APB | PSLVERR 永遠為 0 | FAIL：`ERR_PROBE write did not return UVM_NOT_OK` |
+| m2 | APB | 寫入時 bit 20 卡 1 | FAIL：bit_bash 264 個錯誤 |
+| m3 | APB | `REG17` reset 值 0x100 | FAIL：hw_reset `REG17` 讀值不符 |
+| m4 | AHB | 寫入用 byte address 當 index（修正前的模型） | FAIL：bit_bash / mem_walk 1958 個錯誤 |
+| m5 | AXI | 讀取位址少一個 bit（上半部 alias 到下半部） | FAIL：mem_walk 272 個錯誤 |
+| m6 | AXI | BRESP 永遠 OKAY（錯誤區不回 SLVERR） | FAIL：`ERR_PROBE write did not return UVM_NOT_OK` |
+
+6/6 被偵測。
 
 ## 4. 已知限制
 
