@@ -346,4 +346,4 @@ LPDDR4-VIP,MEMCH_top.sv:12,15 -> 16,parameter default overridden by the top-leve
 LPDDR4-VIP,MEMCORE_top.sv:74,1'b0 inverted,rd_pending is reassigned from hcmd whenever the next command is accepted
 LPDDR4-VIP,MEMCORE_top.sv:105,1'b0 inverted,LPDDR4 exposes only addr[2:0] on CA; the zero-extended upper bits are dropped
 AHB-VIP,dut_amba_dut.sv:37,1024 -> 1025,initial loop index 1024 is out of range of mem[0:1023]
-AHB-VIP,dut_amba_dut.sv:57,1'b0 inverted,"ap_write reset value is only used together with ap_valid, which resets to 0"
+AHB-VIP,dut_amba_dut.sv:58,1'b0 inverted,"ap_write reset value is only used together with ap_valid, which resets to 0"

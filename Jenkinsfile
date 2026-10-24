@@ -115,6 +115,19 @@ pipeline {
                 '''
             }
         }
+
+        stage('L1d：UVM RAL 測試（Verilator + uvm-core）') {
+            steps {
+                sh '''#!/bin/bash
+                    set -o pipefail
+                    mkdir -p reports/uvm
+                    # 有 UVM register model 的 VIP：uvm_reg_hw_reset / bit_bash / mem_walk
+                    # 加 frontdoor mirror 與錯誤回應檢查（每個 VIP 編譯數分鐘）
+                    python3 tools/run_uvm_tests.py | tee reports/uvm/uvm.log
+                    cp -f uvm_report.csv reports/uvm/
+                '''
+            }
+        }
     }
 
     post {

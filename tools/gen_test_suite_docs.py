@@ -221,7 +221,12 @@ def vip_doc(vip, meta, frows, mut):
     if rtl and not tests:
         L.append("RTL IP：以 `tb/` 的 self-checking testbench 驗證，無 UVM 測試。")
     else:
-        L.append("UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只做 elaboration（L1a）。")
+        if os.path.exists(os.path.join(VIPS, vip, "env", "amba_reg_model.sv")):
+            L.append("UVM RAL test（`amba_ral_test`：hw_reset / bit_bash / mirror 等）在 Verilator 上以 "
+                     "`python3 tools/run_uvm_tests.py %s` 執行（見 [docs/RAL.md](../RAL.md)）；其餘 UVM 測試需商用模擬器"
+                     "（VCS / Xcelium / Questa），開源流程只做 elaboration（L1a）。" % vip)
+        else:
+            L.append("UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只做 elaboration（L1a）。")
         L.append("")
         L.append("| 項目 | 數量 | 名稱 |")
         L.append("|---|---|---|")
@@ -312,7 +317,8 @@ def main():
              "依協定規格與模型合約逐項比對，輸出 `FUNC_PASS checks=N`。由 `tools/run_func_tests.py` 以 Icarus Verilog 或 "
              "Verilator 5.052 執行，結果寫入 `func_report.csv`。")
     S.append("2. **UVM 測試平台**（tests / sequences / scoreboard / SVA / coverage）：需商用模擬器執行，開源流程以 "
-             "pyslang elaboration 檢查（`tools/elab_scan.py`）。")
+             "pyslang elaboration 檢查（`tools/elab_scan.py`）；有 register model 的 VIP（APB / AHB / AXI）另以 "
+             "`tools/run_uvm_tests.py` 在 Verilator 上執行 UVM RAL test（見 [RAL.md](RAL.md)）。")
     S.append("3. **Mutation testing**（`tools/mutation_score.py`）：對 DUT 模型注入運算子與常數錯誤，檢查功能測試能否偵測，"
              "作為「測試是否足夠」的客觀指標，結果寫入 `mutation_report.csv`。")
     S.append("")
