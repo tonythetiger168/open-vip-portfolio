@@ -76,8 +76,8 @@ def classify(rc, out):
     # warnings raised by the VIP itself (protocol checkers / SVA report with
     # `uvm_warning); uvm-core's own UVM_NO_DPI notices are not counted
     warns = [l for l in out.splitlines()
-             if l.startswith("UVM_WARNING ") and not l.startswith("UVM_WARNING uvm-core")
-             and "/uvm-core/" not in l.split("@")[0]]
+             if l.startswith("UVM_WARNING ") and not re.match(r'UVM_WARNING\s*:', l)
+             and not l.startswith("UVM_WARNING uvm-core") and "/uvm-core/" not in l.split("@")[0]]
     m = re.search(r'^RAL_PASS checks=(\d+)', out, re.M)
     if rc == 0 and m and errs == 0 and fatals == 0 and not warns:
         return "PASS", int(m.group(1)), ""
