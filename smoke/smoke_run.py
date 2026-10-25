@@ -6,9 +6,12 @@ Usage: python3 smoke_run.py [VIP_NAME ...]   (default: all VIPs)
 """
 import os, re, sys, json, subprocess, time, collections
 
-ROOT = "/mnt/agents/output/work_v174"
-VIPS = os.path.join(ROOT, "vips")
-SMOKE = os.path.join(ROOT, "smoke")
+# Paths are derived from this file's location so the harness runs from any
+# checkout. VIPS_DIR points at the extracted VIP trees (tools/extract_vips.sh);
+# per-VIP outputs (dut_*.sv, tb_smoke_*.sv, smoke.log) go under SMOKE.
+SMOKE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(SMOKE)
+VIPS = os.environ.get("VIPS_DIR", os.path.join(ROOT, "build", "vips"))
 CYCLES = 1500
 WARMUP = 12
 
@@ -246,7 +249,7 @@ def compilable_pkgs(vip_dir, vip):
 def inject_imports(dut_path, pkg_names, out_path):
     src = read_retry(dut_path)
     imp = "\n" + "\n".join("  import %s::*;" % n for n in pkg_names) + "\n"
-    m = re.search(r'\bmodule\s+\w+\s*\(', src)
+    m = re.search(r'\bmodule\s+\w+\b', src)
     i = src.index('\n);', m.start()) + 3   # end of generated port list
     src = src[:i] + imp + src[i:]
     write_retry(out_path, src)

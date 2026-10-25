@@ -6,7 +6,8 @@ DUT modules are extracted and tested standalone.
 
 ## Usage
 
-    bash run_smoke.sh              # all 87 VIPs (parallel, xargs -P 3)
+    bash ../tools/extract_vips.sh  # unzip vips/*.zip into build/vips (or $VIPS_DIR)
+    bash run_smoke.sh              # all extracted VIPs (parallel, xargs -P 3)
     bash run_smoke.sh AHB-VIP      # single VIP (name or full path)
 
 Output lines: `SMOKE_PASS|SMOKE_FAIL|SMOKE_SKIP <VIP> -- <per-module detail>`.

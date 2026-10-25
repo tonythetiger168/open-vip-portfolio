@@ -6,7 +6,7 @@
 #   使用時請複製到 .github/workflows/vip_regression.yml 即可啟用。
 #
 # 內容：
-#   - Job 1「elab-gate」：在 ubuntu runner 上以開源工具鏈（pyslang 11 +
+#   - Job 1「elab-gate」：在 ubuntu runner 上以開源工具鏈（pyslang 12 +
 #     Accellera uvm-core）對全部 87 個 VIP 執行 L1a elaboration gate，
 #     並在 smoke harness 存在時加跑 L1b iverilog DUT 冒煙測試，
 #     最後上傳報告 artifact。
@@ -32,6 +32,8 @@ on:
 env:
   # uvm-core 的 src 目錄（elab_scan.py 透過 UVM_CORE 環境變數取得）
   UVM_CORE: ${{ github.workspace }}/tools/uvm-core/src
+  # vips/ 只存放 zip；解壓後的 VIP 原始碼樹（tools/extract_vips.sh 產生）
+  VIPS_DIR: ${{ github.workspace }}/build/vips
 
 jobs:
   elab-gate:
@@ -41,31 +43,29 @@ jobs:
       - name: 取出 portfolio 原始碼
         uses: actions/checkout@v4
 
-      - name: 安裝 Icarus Verilog（L1b DUT 冒煙測試用）
+      - name: 安裝開源工具鏈（Icarus Verilog、Verilator v5.052、pyslang 12.0.0、uvm-core）
         run: |
-          sudo apt-get update
-          sudo apt-get install -y iverilog
-          iverilog -V | head -1
-
-      - name: 安裝 pyslang 11（slang SystemVerilog 前端之 Python 綁定）
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install "pyslang>=11,<12"
-          python3 -c "import pyslang; print('pyslang major =', pyslang.VersionInfo.getMajor())"
-
-      - name: 取得 Accellera uvm-core（UVM-1.2 標準庫原始碼）
-        run: |
-          git clone --depth 1 https://github.com/accellera-official/uvm-core.git \
-            "${{ github.workspace }}/tools/uvm-core"
+          # Verilator 由原始碼編譯（約 10 分鐘）；功能測試中 Icarus 無法解析的 DUT model 改用 Verilator
+          UVM_CORE_DIR="${{ github.workspace }}/tools/uvm-core" bash tools/install_tools.sh
+          echo "/opt/verilator-5.052/bin" >> "$GITHUB_PATH"
           ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/macros/uvm_macros.svh"
 
-      - name: 對全部 87 個 VIP 執行 elaboration gate
+      - name: 解壓全部 VIP zip
+        run: bash tools/extract_vips.sh "$VIPS_DIR"
+
+      - name: 對全部 VIP 執行 elaboration gate
         run: |
           set -u
+          shopt -s nullglob
           mkdir -p reports/elab
           pass=0; fail=0
           : > reports/elab/elab_summary.txt
-          for vip in vips/*/; do
+          vips=("$VIPS_DIR"/*/)
+          if [ ${#vips[@]} -eq 0 ]; then
+            echo "::error::$VIPS_DIR 內找不到任何 VIP 目錄"
+            exit 1
+          fi
+          for vip in "${vips[@]}"; do
             name=$(basename "$vip")
             log="reports/elab/${name}.log"
             # elab_scan.py 一律 exit 0，必須以輸出的 ELAB_ERRORS 判定
@@ -86,8 +86,9 @@ jobs:
         run: |
           set -u
           mkdir -p reports/smoke
+          set -o pipefail
           if [ -f smoke/run_smoke.sh ]; then
-            # 不帶參數＝跑全部 87 個 VIP，輸出 SMOKE_PASS/SMOKE_FAIL/SMOKE_SKIP
+            # 不帶參數＝跑 $VIPS_DIR 下全部 VIP（找不到任何 VIP 時 exit 1），輸出 SMOKE_PASS/SMOKE_FAIL/SMOKE_SKIP
             # 並產生 smoke/smoke_report.csv；詳細介面以 smoke/ 內 README 為準
             bash smoke/run_smoke.sh | tee reports/smoke/smoke.log
             cp -f smoke/smoke_report.csv reports/smoke/ 2>/dev/null || true
@@ -98,6 +99,14 @@ jobs:
           else
             echo "smoke/run_smoke.sh 尚未納入 repo，略過 L1b（參見 docs/ACCEPTANCE.md）"
           fi
+
+      - name: 功能測試（self-checking functional tests，iverilog / Verilator）
+        run: |
+          set -o pipefail
+          mkdir -p reports/func
+          # 每個 VIP 的 tb/smoke_func_tb.sv、tb/func_*_tb.sv 與 RTL IP 的 directed tb
+          python3 tools/run_func_tests.py | tee reports/func/func.log
+          cp -f func_report.csv reports/func/
 
       - name: 上傳 L1 報告 artifact
         if: always()          # 即使 gate 失敗也要保留日誌供排查
