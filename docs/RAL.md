@@ -89,7 +89,8 @@ UVM_PASS AXI-VIP/amba_ral_test [checks=1074]
 - Verilator 的 constraint solver（z3）無法處理 sequence 對巢狀 `rand` 物件的 inline constraint
   （`item.randomize() with { txn.len == ...; }` 加上 `data.size() == len`），所以既有的 random
   sequence 在 Verilator 上 randomize 失敗；RAL test 不使用 randomize，不受影響。其餘 UVM test
-  仍需商用模擬器。
+  仍需商用模擬器。所有 sequence 的 `randomize()` 失敗現在都會報 `uvm_error("RANDFAIL")`，
+  不再被 `void'()` 靜默吞掉。
 - Adapter 不支援 byte enable：三個 driver 都固定送出全部 byte lane（PSTRB/WSTRB 全 1）。
 - 沒有 backdoor（`hdl_path`）：Verilator 不支援 `uvm_hdl_*` DPI，因此不跑需要 backdoor 的
   `uvm_reg_access_seq` / `uvm_mem_access_seq`；改以 frontdoor write + mirror 檢查。
