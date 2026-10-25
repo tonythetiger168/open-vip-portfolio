@@ -4,9 +4,9 @@
 
 ## 1. 結論
 
-- 135 個 VIP 中 135 個有可在開源工具上執行的 self-checking 功能測試，共 2502 個 check（另有 RTL IP testbench 的 57770027 次斷言評估）；135 個 VIP 的測試全部通過。
-- 判定：✅ Sufficient 102、🟡 Partial 33、❌ Insufficient 0。
-- Mutation testing：1819 個有效 mutant 中 1600 個被功能測試偵測（88%）。
+- 132 個 VIP 中 132 個有可在開源工具上執行的 self-checking 功能測試，共 2445 個 check（另有 RTL IP testbench 的 57770027 次斷言評估）；132 個 VIP 的測試全部通過。
+- 判定：✅ Sufficient 99、🟡 Partial 33、❌ Insufficient 0。
+- Mutation testing：1783 個有效 mutant 中 1564 個被功能測試偵測（88%）。
 - 功能測試找到 66 個 DUT 模型缺陷，以 XFAIL check 記錄（見第 4 節）；模型修好後該 check 會變成 XPASS 並使測試失敗，提醒移除標記。
 
 ## 2. 方法
@@ -151,7 +151,6 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [Wishbone-VIP](test_suites/Wishbone-VIP.md) | Interconnect | `Wishbone_tb.sv` | 0 | verilator | 8/12 | 0 | 🟡 Partial |
 | [XGMII-UVM-VIP](test_suites/XGMII-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 14 | iverilog | 1/1 | 0 | ✅ Sufficient |
 | [XGMII-VIP](test_suites/XGMII-VIP.md) | Networking | `XGMII_tb.sv` | 0 | verilator | 10/12 | 0 | ✅ Sufficient |
-| [ddr5-VIP](test_suites/ddr5-VIP.md) | - | `func_mem_tb.sv` | 16 | verilator | 5/5 | 0 | ✅ Sufficient |
 | [ddr6-VIP](test_suites/ddr6-VIP.md) | Memory | `func_mem_tb.sv` | 16 | verilator | 5/5 | 0 | ✅ Sufficient |
 | [ddr7-VIP](test_suites/ddr7-VIP.md) | Memory | `func_mem_tb.sv` | 16 | verilator | 5/5 | 0 | ✅ Sufficient |
 | [eCPRI-VIP](test_suites/eCPRI-VIP.md) | Telecom | `func_ecpri_tb.sv` | 20 | iverilog | 27/30 | 4 | ✅ Sufficient |
@@ -162,11 +161,9 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [gddr7-VIP](test_suites/gddr7-VIP.md) | Memory | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [hbm2-VIP](test_suites/hbm2-VIP.md) | Memory | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [hbm3-VIP](test_suites/hbm3-VIP.md) | Memory | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
-| [hbm3e-VIP](test_suites/hbm3e-VIP.md) | - | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [hbm4-VIP](test_suites/hbm4-VIP.md) | Memory | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [lpddr5-VIP](test_suites/lpddr5-VIP.md) | Memory | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [lpddr5x-VIP](test_suites/lpddr5x-VIP.md) | Memory | `func_mem_tb.sv` | 26 | iverilog | 24/24 | 0 | ✅ Sufficient |
-| [lpddr6-VIP](test_suites/lpddr6-VIP.md) | - | `func_mem_tb.sv` | 26 | iverilog | 24/24 | 0 | ✅ Sufficient |
 | [lpddr7-VIP](test_suites/lpddr7-VIP.md) | Memory | `func_mem_tb.sv` | 26 | iverilog | 24/24 | 0 | ✅ Sufficient |
 
 ## 4. 功能測試找到的 DUT 模型缺陷

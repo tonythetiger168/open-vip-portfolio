@@ -1,11 +1,11 @@
 # UVM RAL（register model）
 
-本文件記錄 135 個 VIP 的 UVM RAL（`uvm_reg`）掃描結果、目前已加入 register model 的 VIP、
+本文件記錄 132 個 VIP 的 UVM RAL（`uvm_reg`）掃描結果、目前已加入 register model 的 VIP、
 測試方法與結果，以及下一批候選。
 
 ## 1. 掃描結果（2026-10-24）
 
-- 加入前 135 個 VIP **沒有任何** `uvm_reg` / `uvm_reg_block` / `uvm_reg_adapter` /
+- 加入前 132 個 VIP **沒有任何** `uvm_reg` / `uvm_reg_block` / `uvm_reg_adapter` /
   `uvm_reg_predictor`；暫存器只存在於各 `tb/top_tb.sv` 的 DUT 模型（register bank 或
   word memory），UVM 環境無法以暫存器層級存取或檢查它們。
 - 本次為 **APB-VIP、AHB-VIP、AXI-VIP** 加入 register model、adapter、predictor 與 RAL test，
