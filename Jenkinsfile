@@ -28,6 +28,8 @@ pipeline {
         UVM_CORE = "${WORKSPACE}/tools/uvm-core/src"
         // vips/ 只存放 zip；解壓後的 VIP 原始碼樹（tools/extract_vips.sh 產生）
         VIPS_DIR = "${WORKSPACE}/build/vips"
+        // elab_scan.py：slang engine 判為 error 的 LRM 違規（重複定義、clocking 重複宣告等）也算失敗
+        ELAB_STRICT = "1"
         // tools/install_tools.sh 安裝的 Verilator v5.052
         PATH = "/opt/verilator-5.052/bin:${env.PATH}"
     }
@@ -112,6 +114,19 @@ pipeline {
                     # 每個 VIP 的 tb/smoke_func_tb.sv、tb/func_*_tb.sv 與 RTL IP 的 directed tb
                     python3 tools/run_func_tests.py | tee reports/func/func.log
                     cp -f func_report.csv reports/func/
+                '''
+            }
+        }
+
+        stage('L1d：UVM RAL 測試（Verilator + uvm-core）') {
+            steps {
+                sh '''#!/bin/bash
+                    set -o pipefail
+                    mkdir -p reports/uvm
+                    # 有 UVM register model 的 VIP：uvm_reg_hw_reset / bit_bash / mem_walk
+                    # 加 frontdoor mirror 與錯誤回應檢查（每個 VIP 編譯數分鐘）
+                    python3 tools/run_uvm_tests.py | tee reports/uvm/uvm.log
+                    cp -f uvm_report.csv reports/uvm/
                 '''
             }
         }

@@ -63,6 +63,7 @@ bash tools/install_tools.sh                 # 一次安裝 iverilog、Verilator 
 export PATH=/opt/verilator-5.052/bin:$PATH
 verilator --version                         # 預期：Verilator 5.052
 python3 tools/run_func_tests.py             # 全部功能測試，結果寫入 func_report.csv
+python3 tools/run_uvm_tests.py              # UVM RAL test（APB/AHB/AXI，每個 VIP 建置數分鐘），結果寫入 uvm_report.csv
 ```
 
 > Ubuntu 套件庫的 Verilator 5.020 會在部分 DUT model（`fork ... join_none` 內的
@@ -71,7 +72,7 @@ python3 tools/run_func_tests.py             # 全部功能測試，結果寫入 
 **(c) Accellera uvm-core（UVM 標準庫原始碼）**
 
 ```bash
-git clone --depth 1 https://github.com/accellera-official/uvm-core.git "$TOOLS_DIR/uvm-core"
+git clone --depth 1 --branch 2020.3.1 https://github.com/accellera-official/uvm-core.git "$TOOLS_DIR/uvm-core"
 ls "$TOOLS_DIR/uvm-core/src/uvm_pkg.sv"     # 必須存在
 ```
 

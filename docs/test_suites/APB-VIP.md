@@ -54,11 +54,11 @@
 
 ## 3. UVM 測試平台內容
 
-UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只做 elaboration（L1a）。
+UVM RAL test（`amba_ral_test`：hw_reset / bit_bash / mirror 等）在 Verilator 上以 `python3 tools/run_uvm_tests.py APB-VIP` 執行（見 [docs/RAL.md](../RAL.md)）；其餘 UVM 測試需商用模擬器（VCS / Xcelium / Questa），開源流程只做 elaboration（L1a）。
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 4 | `amba_base_test`, `amba_axi_test`, `amba_apb_test`, `amba_apb_test` |
+| UVM tests | 5 | `amba_base_test`, `amba_axi_test`, `amba_apb_test`, `amba_apb_err_test`, `amba_ral_test` |
 | Sequences | 11 | `apb_base_sequence`, `apb_write_seq`, `apb_read_seq`, `apb_back_to_back_seq`, `apb_wait_state_seq`, `apb_error_inject_seq`, `apb_reset_seq`, `apb_stress_seq`, `apb_random_sequence`, `apb_regression_sequence`, `amba_seq_item` |
 | SVA（assert / cover property） | 31 / 14 | `assert_axi_aw`, `assert_axi_wlast`, `assert_axi_bresp`, `assert_ahb_trans`, `assert_apb_en`, `assert_p_apb_psel_setup`, `cover_p_apb_psel_setup`, `assert_p_apb_penable_1cycle`, `cover_p_apb_penable_1cycle`, `assert_p_apb_pwrite_stable`, `cover_p_apb_pwrite_stable`, `assert_p_apb_paddr_stable` … |
 | Covergroups / coverpoints | 8 / 41 | |

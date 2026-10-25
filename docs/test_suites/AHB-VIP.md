@@ -28,7 +28,7 @@
 | 4 | word 0 reads 0 after power-up | check |
 | 5 | word 1023 reads 0 after power-up | check |
 | 6 | transfer during reset did not write | check |
-| 7 | read of a written byte address returns the written word | XFAIL（模型缺陷） |
+| 7 | read of a written byte address returns the written word | check |
 | 8 | NONSEQ write reads back | check |
 | 9 | SEQ write reads back | check |
 | 10 | OKAY response, no wait states | check |
@@ -37,10 +37,10 @@
 | 13 | pipelined write landed | check |
 | 14 | IDLE transfers do not write | check |
 | 15 | stale HWDATA after the data phase is not written | check |
-| 16 | BUSY transfer is ignored | XFAIL（模型缺陷） |
+| 16 | BUSY transfer is ignored | check |
 | 17 | error cycle 1: wait state, ERROR, no read data | check |
 | 18 | error cycle 2: ERROR completes | check |
-| 19 | OKAY again after the error | check |
+| 19 | OKAY again after the error, no data phase left behind | check |
 | 20 | write to the error region has no side effect | check |
 | 21 | previous write target untouched by the error transfer | check |
 | 22 | error read returns no data | check |
@@ -67,11 +67,11 @@
 
 ## 3. UVM 測試平台內容
 
-UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只做 elaboration（L1a）。
+UVM RAL test（`amba_ral_test`：hw_reset / bit_bash / mirror 等）在 Verilator 上以 `python3 tools/run_uvm_tests.py AHB-VIP` 執行（見 [docs/RAL.md](../RAL.md)）；其餘 UVM 測試需商用模擬器（VCS / Xcelium / Questa），開源流程只做 elaboration（L1a）。
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 4 | `amba_base_test`, `amba_axi_test`, `amba_ahb_test`, `amba_apb_test` |
+| UVM tests | 5 | `amba_base_test`, `amba_axi_test`, `amba_ahb_test`, `amba_apb_test`, `amba_ral_test` |
 | Sequences | 11 | `ahb_base_sequence`, `ahb_single_seq`, `ahb_incr_burst_seq`, `ahb_wrap_burst_seq`, `ahb_back_to_back_seq`, `ahb_error_inject_seq`, `ahb_reset_seq`, `ahb_stress_seq`, `ahb_random_sequence`, `ahb_regression_sequence`, `amba_seq_item` |
 | SVA（assert / cover property） | 33 / 16 | `assert_axi_aw`, `assert_axi_wlast`, `assert_axi_bresp`, `assert_ahb_trans`, `assert_apb_en`, `assert_p_ahb_htrans_valid`, `cover_p_ahb_htrans_valid`, `assert_p_ahb_hburst_valid`, `cover_p_ahb_hburst_valid`, `assert_p_ahb_hsize_valid`, `cover_p_ahb_hsize_valid`, `assert_p_ahb_hresp_valid` … |
 | Covergroups / coverpoints | 8 / 42 | |
@@ -80,8 +80,5 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 判定：**✅ Sufficient**（38 個 check，mutation score 100%）。
 
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- read of a written byte address returns the written word
-- BUSY transfer is ignored
+無已知缺口。
 
