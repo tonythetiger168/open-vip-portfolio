@@ -9,7 +9,7 @@
 - Toggle coverage（全部 DUT model 合計）：51.6%（44432/86160）。
 - Expression coverage（全部 DUT model 合計）：90.0%（2423/2692）。
 - Line coverage 100% 的 VIP 60 個，≥ 90% 的 111 個，低於 90% 的 20 個（見第 4 節）。
-- Functional coverage（covergroup bins，AHB-VIP / APB-VIP / AXI-VIP 的 UVM RAL test）：31.4%（172/547），其餘 UVM 環境的 covergroup 需商用模擬器（見第 2 節）。
+- Functional coverage（covergroup bins，AHB-VIP / APB-VIP / AXI-VIP / OCP-VIP / TileLink-VIP 的 UVM RAL test）：35.5%（216/608），其餘 UVM 環境的 covergroup 需商用模擬器（見第 2 節）。
 
 ## 2. 方法
 
@@ -25,7 +25,7 @@
 
 限制：
 - Toggle 包含寬資料匯流排的高位元與測試中固定不動的 sideband / 其他協定的 tie-off，所以普遍低於 line coverage，是參考值而非目標。
-- Functional coverage 只在 UVM 測試能在 Verilator 上跑的 VIP 量測（APB / AHB / AXI 的 `amba_ral_test`，見 [RAL.md](RAL.md)）；AMBA VIP 共用 APB/AHB/AXI checker，只計算該 VIP 協定與共用 interface 的 covergroup。其他 VIP 的 covergroup 在 UVM monitor / coverage collector 裡，需用各 VIP 的 `scripts/coverage.mk`（VCS / Xcelium / Questa）量測。
+- Functional coverage 只在 UVM 測試能在 Verilator 上跑的 VIP 量測（APB / AHB / AXI 的 `amba_ral_test`、OCP 的 `ocp_ral_test`、TileLink 的 `tilelink_ral_test`，見 [RAL.md](RAL.md)）；AMBA VIP 共用 APB/AHB/AXI checker，只計算該 VIP 協定與共用 interface 的 covergroup。其他 VIP 的 covergroup 在 UVM monitor / coverage collector 裡，需用各 VIP 的 `scripts/coverage.mk`（VCS / Xcelium / Questa）量測。
 - 只能在 Icarus 上跑的測試（例如要比對 `1'bz` 的 tri-state 檢查）量不到 coverage；在 coverage 建置下結果不同的測試仍計入其 coverage，兩者都列在第 5 節。
 
 ## 3. 各 VIP Coverage
@@ -104,7 +104,7 @@
 | [MIL_STD_1553-VIP](test_suites/MIL_STD_1553-VIP.md) | 1/1 | 100.0% (9/9) | 32.3% (31/96) | 100.0% (6/6) | - | - |
 | [M_PHY-VIP](test_suites/M_PHY-VIP.md) | 1/1 | 100.0% (13/13) | 51.7% (187/362) | 100.0% (10/10) | - | - |
 | [NVMe-VIP](test_suites/NVMe-VIP.md) | 2/2 | 100.0% (19/19) | 10.4% (282/2720) | 100.0% (12/12) | - | - |
-| [OCP-VIP](test_suites/OCP-VIP.md) | 1/1 | 100.0% (16/16) | 85.8% (295/344) | 100.0% (5/5) | - | - |
+| [OCP-VIP](test_suites/OCP-VIP.md) | 1/1 | 100.0% (16/16) | 85.8% (295/344) | 100.0% (5/5) | - | 93.1% (27/29) |
 | [ONFI-VIP](test_suites/ONFI-VIP.md) | 1/1 | 91.5% (75/82) | 82.9% (116/140) | 100.0% (27/27) | - | - |
 | [OneWire-UVM-VIP](test_suites/OneWire-UVM-VIP.md) | 1/1 | 90.9% (10/11) | 87.5% (21/24) | 85.7% (6/7) | - | - |
 | [OneWire-VIP](test_suites/OneWire-VIP.md) | 2/2 | 97.6% (41/42) | 92.6% (150/162) | 90.9% (20/22) | - | - |
@@ -129,7 +129,7 @@
 | [SWD-VIP](test_suites/SWD-VIP.md) | 1/1 | 93.6% (44/47) | 9.0% (24/268) | 75.0% (18/24) | - | - |
 | [Security-VIP](test_suites/Security-VIP.md) | 1/1 | 96.2% (25/26) | 79.6% (532/668) | 100.0% (8/8) | - | - |
 | [SoundWire-VIP](test_suites/SoundWire-VIP.md) | 1/1 | 95.3% (41/43) | 100.0% (110/110) | 86.7% (13/15) | - | - |
-| [TileLink-VIP](test_suites/TileLink-VIP.md) | 1/1 | 100.0% (13/13) | 82.0% (287/350) | 100.0% (5/5) | - | - |
+| [TileLink-VIP](test_suites/TileLink-VIP.md) | 1/1 | 100.0% (13/13) | 82.0% (287/350) | 100.0% (5/5) | - | 53.1% (17/32) |
 | [ToggleNAND-VIP](test_suites/ToggleNAND-VIP.md) | 1/1 | 95.7% (45/47) | 50.8% (128/252) | 100.0% (38/38) | - | - |
 | [TypeC-VIP](test_suites/TypeC-VIP.md) | 1/1 | 88.9% (8/9) | 100.0% (18/18) | 100.0% (2/2) | - | - |
 | [UALink-VIP](test_suites/UALink-VIP.md) | 1/1 | 100.0% (11/11) | 15.9% (55/346) | 100.0% (8/8) | - | - |
@@ -199,6 +199,8 @@
 | AHB-VIP | 38.8% (47/121) | cg_ahb.cp_hburst(7); cg_ahb.cp_hsize(5); cg_ahb.cp_htrans(2); cg_ahb.cross_trans_write(4); cg_amba.cp_arvalid(1); cg_amba.cp_awvalid(1); cg_amba.cp_bvalid(1); cg_amba.cp_htrans(2); cg_amba.cp_penable(1); cg_amba.cp_psel(1); cg_amba.cp_rvalid(1); cg_amba.cp_wvalid(1); cg_amba.cross_aw_ar(3); cg_amba.cross_psel_en(3); cg_data.cp_data(1); cg_data.cx_wr_data(2); cg_fsm.cp_state(3); cg_fsm.cp_trans(5); cg_protocol.cp_burst(2); cg_protocol.cp_len(4); cg_protocol.cp_size(3); cg_protocol.cx_burst_size(11); cg_protocol.cx_wr_burst(4); cg_protocol.cx_wr_len(6) |
 | APB-VIP | 47.7% (53/111) | cg_amba.cp_arvalid(1); cg_amba.cp_awvalid(1); cg_amba.cp_bvalid(1); cg_amba.cp_htrans(3); cg_amba.cp_rvalid(1); cg_amba.cp_wvalid(1); cg_amba.cross_aw_ar(3); cg_amba.cross_psel_en(1); cg_apb.cp_pprot(2); cg_apb.cp_pstrb(4); cg_apb.cross_sel_en(1); cg_apb.cross_wr_strb(10); cg_data.cp_data(2); cg_data.cx_wr_data(4); cg_fsm.cp_state(2); cg_fsm.cp_trans(5); cg_protocol.cp_len(3); cg_protocol.cp_prot(3); cg_protocol.cx_wr_len(6); cg_protocol.cx_wr_prot(4) |
 | AXI-VIP | 22.9% (72/315) | cg_amba.cp_htrans(3); cg_amba.cp_penable(1); cg_amba.cp_psel(1); cg_amba.cross_aw_ar(1); cg_amba.cross_psel_en(3); cg_axi.cp_arburst(1); cg_axi.cp_arsize(4); cg_axi.cp_awburst(1); cg_axi.cp_awcache(3); cg_axi.cp_awlen(3); cg_axi.cp_awsize(4); cg_axi.cp_bresp(2); cg_axi.cp_burst(2); cg_axi.cp_len(3); cg_axi.cp_prot(4); cg_axi.cp_resp(2); cg_axi.cp_rresp(2); cg_axi.cp_size(5); cg_axi.cross_ar(16); cg_axi.cross_aw(70); cg_axi.cross_burst_len(11); cg_axi.cross_prot_size(29); cg_data.cp_data(1); cg_data.cx_wr_data(2); cg_fsm.cp_trans(2); cg_protocol.cp_burst(2); cg_protocol.cp_len(5); cg_protocol.cp_resp(1); cg_protocol.cp_size(3); cg_protocol.cx_burst_len(14); cg_protocol.cx_wr_burst(4); cg_protocol.cx_wr_size_len(38) |
+| OCP-VIP | 93.1% (27/29) | cg_fsm.cp_trans(2) |
+| TileLink-VIP | 53.1% (17/32) | cg_error.cp_data_corner(1); cg_error.cp_err(1); cg_fsm.cp_state(1); cg_fsm.cp_trans(2); cg_protocol.cp_addr(2); cg_protocol.cp_size(2); cg_protocol.cx_op_dop(2); cg_protocol.cx_op_size(4) |
 
 ## 5. 備註
 

@@ -137,7 +137,7 @@ pipeline {
                     set -o pipefail
                     mkdir -p reports/cov
                     # 功能測試對 DUT model 的 line/branch、toggle、expression、cover 覆蓋率，
-                    # APB/AHB/AXI 另含 UVM RAL test 的 covergroup bins；明細見 docs/COVERAGE.md
+                    # APB/AHB/AXI/OCP/TileLink 另含 UVM RAL test 的 covergroup bins；明細見 docs/COVERAGE.md
                     python3 tools/coverage.py -j 2 | tee reports/cov/coverage.log
                     cp -f coverage_report.csv reports/cov/
                     python3 tools/gen_coverage_doc.py
