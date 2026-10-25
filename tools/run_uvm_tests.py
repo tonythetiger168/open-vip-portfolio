@@ -40,6 +40,15 @@ SUITES = {
     "APB-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test"]),
     "AHB-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test"]),
     "AXI-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test"]),
+    "OCP-VIP": dict(files=["common/common_pkg.sv", "ocp/ocp_defs.sv", "ocp/ocp_if.sv",
+                           "ocp/ocp_pkg.sv", "env/ocp_env.sv", "tests/ocp_tests.sv",
+                           "tb/top_tb.sv"],
+                    incs=["common", "ocp", "env", "tests", "tb"], tests=["ocp_ral_test"]),
+    "TileLink-VIP": dict(files=["common/common_pkg.sv", "tilelink/tilelink_defs.sv",
+                                "tilelink/tilelink_if.sv", "tilelink/tilelink_pkg.sv",
+                                "env/tilelink_env.sv", "tests/tilelink_tests.sv", "tb/top_tb.sv"],
+                         incs=["common", "tilelink", "env", "tests", "tb"],
+                         tests=["tilelink_ral_test"]),
 }
 
 def run(cmd, cwd, timeout):
