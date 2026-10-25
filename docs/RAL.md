@@ -1,11 +1,11 @@
 # UVM RAL（register model）
 
-本文件記錄 135 個 VIP 的 UVM RAL（`uvm_reg`）掃描結果、目前已加入 register model 的 VIP、
+本文件記錄 132 個 VIP 的 UVM RAL（`uvm_reg`）掃描結果、目前已加入 register model 的 VIP、
 測試方法與結果，以及下一批候選。
 
 ## 1. 掃描結果（2026-10-24）
 
-- 加入前 135 個 VIP **沒有任何** `uvm_reg` / `uvm_reg_block` / `uvm_reg_adapter` /
+- 加入前 132 個 VIP **沒有任何** `uvm_reg` / `uvm_reg_block` / `uvm_reg_adapter` /
   `uvm_reg_predictor`；暫存器只存在於各 `tb/top_tb.sv` 的 DUT 模型（register bank 或
   word memory），UVM 環境無法以暫存器層級存取或檢查它們。
 - 本次為 **APB-VIP、AHB-VIP、AXI-VIP** 加入 register model、adapter、predictor 與 RAL test，
@@ -89,7 +89,8 @@ UVM_PASS AXI-VIP/amba_ral_test [checks=1074]
 - Verilator 的 constraint solver（z3）無法處理 sequence 對巢狀 `rand` 物件的 inline constraint
   （`item.randomize() with { txn.len == ...; }` 加上 `data.size() == len`），所以既有的 random
   sequence 在 Verilator 上 randomize 失敗；RAL test 不使用 randomize，不受影響。其餘 UVM test
-  仍需商用模擬器。
+  仍需商用模擬器。所有 sequence 的 `randomize()` 失敗現在都會報 `uvm_error("RANDFAIL")`，
+  不再被 `void'()` 靜默吞掉。
 - Adapter 不支援 byte enable：三個 driver 都固定送出全部 byte lane（PSTRB/WSTRB 全 1）。
 - 沒有 backdoor（`hdl_path`）：Verilator 不支援 `uvm_hdl_*` DPI，因此不跑需要 backdoor 的
   `uvm_reg_access_seq` / `uvm_mem_access_seq`；改以 frontdoor write + mirror 檢查。
