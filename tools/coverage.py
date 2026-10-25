@@ -25,9 +25,9 @@ Metrics (hit / total coverage points, a point is hit with count > 0):
   * func   -- covergroup bins hit (``v_covergroup``) in the VIP's own UVM
               code (interface, monitor and coverage collectors). Only for
               the VIPs whose UVM tests run on Verilator
-              (tools/run_uvm_tests.py: APB / AHB / AXI register tests); the
-              other UVM environments need a commercial simulator
-              (scripts/coverage.mk in each VIP)
+              (tools/run_uvm_tests.py: APB / AHB / AXI / OCP / TileLink
+              register tests); the other UVM environments need a commercial
+              simulator (scripts/coverage.mk in each VIP)
 
 A test that only builds on Icarus contributes nothing (Verilator cannot
 compare against ``1'bz``, so tri-state checks stay on Icarus); a test that
