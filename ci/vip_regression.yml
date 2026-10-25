@@ -117,6 +117,16 @@ jobs:
           python3 tools/run_uvm_tests.py | tee reports/uvm/uvm.log
           cp -f uvm_report.csv reports/uvm/
 
+      - name: Coverage（Verilator --coverage）
+        run: |
+          set -o pipefail
+          mkdir -p reports/cov
+          # 功能測試對 DUT model 的 line/branch、toggle、expression、cover 覆蓋率，
+          # APB/AHB/AXI 另含 UVM RAL test 的 covergroup bins；明細見 docs/COVERAGE.md
+          python3 tools/coverage.py -j 2 | tee reports/cov/coverage.log
+          cp -f coverage_report.csv reports/cov/
+          python3 tools/gen_coverage_doc.py
+
       - name: 上傳 L1 報告 artifact
         if: always()          # 即使 gate 失敗也要保留日誌供排查
         uses: actions/upload-artifact@v4
