@@ -90,11 +90,6 @@ hbm3-VIP,dut_hbm3_mem_model.sv:61,&& flipped,PRE/REF/NOP decode only updates is_
 hbm3-VIP,dut_hbm3_mem_model.sv:61,1'b1 inverted,PRE/REF/NOP decode only updates is_open, which is never read
 hbm3-VIP,dut_hbm3_mem_model.sv:62,1'b0 inverted,is_open (bank state) is never read; no observable effect
 hbm3-VIP,dut_hbm3_mem_model.sv:64,1'b0 inverted,PRE/REF/NOP decode only updates is_open, which is never read
-hbm3e-VIP,dut_hbm3e_mem_model.sv:37,1'b1 inverted,is_open (bank state) is never read; no observable effect
-hbm3e-VIP,dut_hbm3e_mem_model.sv:61,&& flipped,PRE/REF/NOP decode only updates is_open, which is never read
-hbm3e-VIP,dut_hbm3e_mem_model.sv:61,1'b1 inverted,PRE/REF/NOP decode only updates is_open, which is never read
-hbm3e-VIP,dut_hbm3e_mem_model.sv:62,1'b0 inverted,is_open (bank state) is never read; no observable effect
-hbm3e-VIP,dut_hbm3e_mem_model.sv:64,1'b0 inverted,PRE/REF/NOP decode only updates is_open, which is never read
 hbm4-VIP,dut_hbm4_mem_model.sv:37,1'b1 inverted,is_open (bank state) is never read; no observable effect
 hbm4-VIP,dut_hbm4_mem_model.sv:61,&& flipped,PRE/REF/NOP decode only updates is_open, which is never read
 hbm4-VIP,dut_hbm4_mem_model.sv:61,1'b1 inverted,PRE/REF/NOP decode only updates is_open, which is never read
@@ -112,13 +107,6 @@ lpddr5x-VIP,dut_lpddr5x_mem_model.sv:63,65536 -> 65537,loop index 65536 is out o
 lpddr5x-VIP,dut_lpddr5x_mem_model.sv:68,0 -> 1,rd_cnt/wr_beat of 1 in reset: one extra beat with dq_oe low / an X-indexed write (ignored)
 lpddr5x-VIP,dut_lpddr5x_mem_model.sv:113,&& flipped,only changes the decode of the reserved encodings (ras_n,cas_n,we_n) = 110 / 011
 lpddr5x-VIP,dut_lpddr5x_mem_model.sv:116,&& flipped,only changes the decode of the reserved encoding (ras_n,cas_n,we_n) = 011
-lpddr6-VIP,dut_lpddr6_mem_model.sv:26,16 -> 17,array size only: index 16 is never addressed (bank id is 4 bits)
-lpddr6-VIP,dut_lpddr6_mem_model.sv:61,0 -> 1,initial value overwritten by the reset branch (clocked while rst_n is low)
-lpddr6-VIP,dut_lpddr6_mem_model.sv:62,1 -> 2,initial row_open values overwritten by the reset branch
-lpddr6-VIP,dut_lpddr6_mem_model.sv:63,65536 -> 65537,loop index 65536 is out of range (write ignored)
-lpddr6-VIP,dut_lpddr6_mem_model.sv:68,0 -> 1,rd_cnt/wr_beat of 1 in reset: one extra beat with dq_oe low / an X-indexed write (ignored)
-lpddr6-VIP,dut_lpddr6_mem_model.sv:113,&& flipped,only changes the decode of the reserved encodings (ras_n,cas_n,we_n) = 110 / 011
-lpddr6-VIP,dut_lpddr6_mem_model.sv:116,&& flipped,only changes the decode of the reserved encoding (ras_n,cas_n,we_n) = 011
 lpddr7-VIP,dut_lpddr7_mem_model.sv:26,16 -> 17,array size only: index 16 is never addressed (bank id is 4 bits)
 lpddr7-VIP,dut_lpddr7_mem_model.sv:61,0 -> 1,initial value overwritten by the reset branch (clocked while rst_n is low)
 lpddr7-VIP,dut_lpddr7_mem_model.sv:62,1 -> 2,initial row_open values overwritten by the reset branch
@@ -126,16 +114,6 @@ lpddr7-VIP,dut_lpddr7_mem_model.sv:63,65536 -> 65537,loop index 65536 is out of 
 lpddr7-VIP,dut_lpddr7_mem_model.sv:68,0 -> 1,rd_cnt/wr_beat of 1 in reset: one extra beat with dq_oe low / an X-indexed write (ignored)
 lpddr7-VIP,dut_lpddr7_mem_model.sv:113,&& flipped,only changes the decode of the reserved encodings (ras_n,cas_n,we_n) = 110 / 011
 lpddr7-VIP,dut_lpddr7_mem_model.sv:116,&& flipped,only changes the decode of the reserved encoding (ras_n,cas_n,we_n) = 011
-ddr5-VIP,dut_ddr5_mem_model.sv:23,32 -> 33,array size only: bank index bg*4+ba never exceeds 31
-ddr5-VIP,dut_ddr5_mem_model.sv:28,0 -> 1,statistics counter only printed by the final block
-ddr5-VIP,dut_ddr5_mem_model.sv:29,0 -> 1,statistics counter only printed by the final block
-ddr5-VIP,dut_ddr5_mem_model.sv:66,1'b1 inverted,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr5-VIP,dut_ddr5_mem_model.sv:73,&& flipped,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr5-VIP,dut_ddr5_mem_model.sv:73,! dropped in condition,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr5-VIP,dut_ddr5_mem_model.sv:74,1'b0 inverted,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr5-VIP,dut_ddr5_mem_model.sv:75,&& flipped,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr5-VIP,dut_ddr5_mem_model.sv:75,! dropped in condition,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr5-VIP,dut_ddr5_mem_model.sv:77,0 -> 1,bank_open is never read (no open-bank check); PRE/REF only update it
 ddr6-VIP,dut_ddr6_mem_model.sv:23,32 -> 33,array size only: bank index bg*4+ba never exceeds 31
 ddr6-VIP,dut_ddr6_mem_model.sv:28,0 -> 1,statistics counter only printed by the final block
 ddr6-VIP,dut_ddr6_mem_model.sv:29,0 -> 1,statistics counter only printed by the final block
