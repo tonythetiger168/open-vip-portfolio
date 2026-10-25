@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Networking |
 | 類型 | UVM VIP |
-| 功能測試 | 2 個檔案，19 個 check，全部通過 |
-| Mutation | 4/4 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（19 個 check，mutation score 100%） |
+| 功能測試 | 2 個檔案，23 個 check，全部通過 |
+| Mutation | 20/20 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（23 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_mdio_tb.sv`
 
-結果：**PASS**（iverilog，8 checks）
+結果：**PASS**（iverilog，12 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -29,16 +29,12 @@ smoke_func_tb.sv (status mirror, idle bus).
 Run: python3 tools/run_func_tests.py MDIO-UVM-VIP
 
 Model contract (from tb/top_tb.sv): mdio_status mirrors phy_status one
-clock later; the PHY (address 5) answers a read with phy_status on MDIO.
-Frames here follow Clause 22: 32-bit preamble of ones, ST 01, OP 10
-(read) / 01 (write), PHYAD, REGAD, turnaround, 16 data bits, MSB first,
-MDIO sampled by the PHY on the MDC rising edge (MDC = 8 clocks).
-
-Model defect (XFAIL): the model shifts MDIO in on every clock while MDC
-is low (not on MDC edges) and only starts a response when the bits 16..24
-clocks back read 0_1100_0101 at a fixed counter phase, which a
-preamble-led frame never produces, so a read is never answered. The VIP
-driver itself only toggles MDC and phy_status (no management frames).
+clock later. Frames follow Clause 22: 32-bit preamble of ones, ST 01, OP
+10 (read) / 01 (write), PHYAD, REGAD, turnaround, 16 data bits, MSB
+first; the PHY samples MDIO on MDC rising edges (MDC = 8 clocks here).
+A read of PHYAD 5 (any REGAD) returns TA Z, 0, then phy_status; the PHY
+changes MDIO one clock after an MDC rising edge and releases it after
+the last data bit. Writes and other PHY addresses get no response.
 ```
 
 | # | Check | 類型 |
@@ -48,9 +44,13 @@ driver itself only toggles MDC and phy_status (no management frames).
 | 3 | mdio_status updates on the next clock edge | check |
 | 4 | write frame: PHY never drives MDIO | check |
 | 5 | read of another PHY address: no response | check |
-| 6 | read of PHY 5: TA 0 then phy_status, MSB first | XFAIL（模型缺陷） |
+| 6 | read of PHY 5: TA 0 then phy_status, MSB first | check |
 | 7 | MDIO released after the read frame | check |
-| 8 | reset clears status and the response state | check |
+| 8 | second read (other REGAD) returns the new status | check |
+| 9 | read after a 20-bit preamble is not answered | check |
+| 10 | reset clears status and the response state | check |
+| 11 | 31-bit preamble: read not answered | check |
+| 12 | exactly 32-bit preamble: read answered, every data bit down to bit 0 driven | check |
 
 ### `tb/smoke_func_tb.sv`
 
@@ -65,20 +65,18 @@ driver itself only toggles MDC and phy_status (no management frames).
 
 ## 3. UVM 測試平台內容
 
-UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只做 elaboration（L1a）。
+UVM agent test（`mdio_func_test`：directed + constrained-random 流量，scoreboard 以 DUT 模型的參考模型逐筆比對，並比對 driver 與 monitor 的 transaction）在 Verilator 上以 `python3 tools/run_uvm_tests.py MDIO-UVM-VIP` 執行；agent 由 `tools/gen_uvm_agents.py` 依 `tools/uvm_agents/` 的協定 spec 產生。
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 1 | `mdio_base_test` |
-| Sequences | 2 | `mdio_base_sequence`, `mdio_transaction` |
+| UVM tests | 2 | `mdio_base_test`, `mdio_func_test` |
+| Sequences | 3 | `mdio_base_sequence`, `mdio_directed_sequence`, `mdio_transaction` |
 | SVA（assert / cover property） | 3 / 2 | - |
-| Covergroups / coverpoints | 1 / 2 | |
+| Covergroups / coverpoints | 1 / 3 | |
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（19 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（23 個 check，mutation score 100%）。
 
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- read of PHY 5: TA 0 then phy_status, MSB first
+無已知缺口。
 

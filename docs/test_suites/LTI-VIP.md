@@ -9,8 +9,8 @@
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，10 個 check，全部通過 |
-| Mutation | 15/16 個 mutant 被偵測（94%） |
-| 判定 | **✅ Sufficient**（10 個 check，mutation score 94%） |
+| Mutation | 18/19 個 mutant 被偵測（95%） |
+| 判定 | **✅ Sufficient**（10 個 check，mutation score 95%） |
 
 ## 2. 可執行的功能測試
 
@@ -44,7 +44,7 @@ Model contract (from tb/top_tb.sv):
 | 5 | every response arrives within 1..7 clocks of acceptance | check |
 | 6 | 80 random requests: ids, responses and PAs all correct | check |
 | 7 | six distinct translation latencies, one per timer value 1..6 (%0d..%0d, %0d values) | check |
-| 8 | la_ready is low while a translation is outstanding | XFAIL（模型缺陷） |
+| 8 | la_ready is low while a translation is outstanding | check |
 | 9 | exactly one single-clock lr_valid per request | check |
 | 10 | reset clears pending state | check |
 
@@ -61,13 +61,9 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（10 個 check，mutation score 94%）。
+判定：**✅ Sufficient**（10 個 check，mutation score 95%）。
 
 未被偵測的 mutant（測試缺口或等價 mutant）：
 
-- `dut_lti_translation_unit_model.sv:63 > -> >= in condition [if (xlate_timer > 1) begin]`
-
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- la_ready is low while a translation is outstanding
+- `dut_lti_translation_unit_model.sv:64 > -> >= in condition [if (xlate_timer > 1) begin]`
 

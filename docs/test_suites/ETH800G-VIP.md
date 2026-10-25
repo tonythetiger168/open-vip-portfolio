@@ -9,7 +9,7 @@
 | 類別 | Networking |
 | 類型 | UVM VIP |
 | 功能測試 | 2 個檔案，30 個 check，全部通過 |
-| Mutation | 19/19 個 mutant 被偵測（100%） |
+| Mutation | 21/21 個 mutant 被偵測（100%） |
 | 判定 | **✅ Sufficient**（30 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
@@ -31,7 +31,8 @@ Model contract (from tb/top_tb.sv), 256-bit packet bus:
    Always ready. A beat counts on pkt_valid; a packet runs from SOP to EOP
    and each beat carries 32 - MTY bytes. At EOP the packet counter and the
    byte counter (bytes of the whole packet) advance, and err_oversize
-   pulses for one clock when the packet exceeds 9600 bytes.
+   pulses for one clock when the packet exceeds 9600 bytes. An EOP beat
+   outside a packet (no SOP) is ignored.
 ```
 
 | # | Check | 類型 |
@@ -50,7 +51,7 @@ Model contract (from tb/top_tb.sv), 256-bit packet bus:
 | 12 | 60 random packets: packet and byte counts | check |
 | 13 | 60 random packets: err_oversize exactly for those over 9600 bytes | check |
 | 14 | SOP repeated inside a packet: no bytes lost | check |
-| 15 | EOP without SOP is not counted as a packet | XFAIL（模型缺陷） |
+| 15 | EOP without SOP is not counted as a packet | check |
 | 16 | reset clears the counters | check |
 
 ### `tb/smoke_func_tb.sv`
@@ -72,20 +73,18 @@ Model contract (from tb/top_tb.sv), 256-bit packet bus:
 
 ## 3. UVM 測試平台內容
 
-UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只做 elaboration（L1a）。
+UVM agent test（`eth800g_func_test`：directed + constrained-random 流量，scoreboard 以 DUT 模型的參考模型逐筆比對，並比對 driver 與 monitor 的 transaction）在 Verilator 上以 `python3 tools/run_uvm_tests.py ETH800G-VIP` 執行；agent 由 `tools/gen_uvm_agents.py` 依 `tools/uvm_agents/` 的協定 spec 產生。
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 1 | `eth800g_base_test` |
-| Sequences | 2 | `eth800g_base_sequence`, `eth800g_transaction` |
+| UVM tests | 2 | `eth800g_base_test`, `eth800g_func_test` |
+| Sequences | 3 | `eth800g_base_sequence`, `eth800g_directed_sequence`, `eth800g_transaction` |
 | SVA（assert / cover property） | 4 / 2 | - |
-| Covergroups / coverpoints | 1 / 5 | |
+| Covergroups / coverpoints | 1 / 3 | |
 
 ## 4. 充分度判定與缺口
 
 判定：**✅ Sufficient**（30 個 check，mutation score 100%）。
 
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- EOP without SOP is not counted as a packet
+無已知缺口。
 

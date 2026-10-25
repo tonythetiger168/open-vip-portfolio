@@ -56,7 +56,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 15 | `mipi_base_test`, `mipi_unipro_test`, `mipi_unipro_error_test`, `mipi_unipro_reset_test`, `mipi_unipro_stress_test`, `mipi_unipro_regression_test`, `mipi_csi2_test`, `mipi_dsi_test`, `mipi_dphy_test`, `mipi_cphy_test`, `mipi_mphy_test`, `mipi_unipro_test`, `mipi_digrf_test`, `mipi_hsi_test`, `mipi_cse_test` |
+| UVM tests | 14 | `mipi_base_test`, `mipi_unipro_test`, `mipi_unipro_error_test`, `mipi_unipro_reset_test`, `mipi_unipro_stress_test`, `mipi_unipro_regression_test`, `mipi_csi2_test`, `mipi_dsi_test`, `mipi_dphy_test`, `mipi_cphy_test`, `mipi_mphy_test`, `mipi_digrf_test`, `mipi_hsi_test`, `mipi_cse_test` |
 | Sequences | 10 | `mipi_seq_item`, `mipi_base_sequence`, `mipi_normal_seq`, `mipi_error_seq`, `mipi_reset_seq`, `mipi_back_to_back_seq`, `mipi_stress_seq`, `mipi_corner_seq`, `mipi_random_sequence`, `mipi_regression_sequence` |
 | SVA（assert / cover property） | 23 / 16 | `assert_dphy_hs`, `assert_cphy_sym`, `assert_mphy_gear`, `assert_unipro_tc`, `assert_digrf`, `assert_hsi_wake`, `assert_cse_cmd`, `assert_p_unipro_cp`, `cover_p_unipro_cp`, `assert_p_unipro_tc`, `cover_p_unipro_tc`, `assert_p_unipro_vc` … |
 | Covergroups / coverpoints | 13 / 44 | |

@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Storage |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，32 個 check，全部通過 |
+| 功能測試 | 1 個檔案，33 個 check，全部通過 |
 | Mutation | 10/12 個 mutant 被偵測（83%） |
-| 判定 | **✅ Sufficient**（32 個 check，mutation score 83%） |
+| 判定 | **✅ Sufficient**（33 個 check，mutation score 83%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_tnand_tb.sv`
 
-結果：**PASS**（verilator，32 checks）
+結果：**PASS**（verilator，33 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -35,50 +35,46 @@ Model contract (from tnand_defs.sv and tnand_driver.svh):
    erase of the 32-byte page (busy 24). 70h status: [6] ready, [0] fail
    (READ/PROG/ERASE while busy, or an undefined opcode); FFh reset aborts.
 
-Model defects recorded as XFAIL: the address register shifts each byte in
-at the bottom, so the first (column LSB) byte becomes the MSB; data
-programmed at the start of a page cannot be read at a column offset, and
-erase misses bytes programmed at a non-zero column. Data are single data
-rate (one byte per DQS / RE# cycle), and in status mode the NAND drives
-DQ whenever CE# is low, also while the host drives a command. The status
-concatenation is 7 bits wide, so READY lands in bit 5 instead of bit 6;
-the other checks accept either bit (st_ok).
+Address bytes are assembled LSB first (column byte first); write data
+are double data rate (a byte on each DQS edge while host_dq_oe); the
+status register (READY bit 6, FAIL bit 0) is driven only while RE# is low.
 ```
 
 | # | Check | 類型 |
 |---|---|---|
 | 1 | reset: ready, DQ / DQS not driven | check |
 | 2 | READ STATUS 70h: ready, no fail | check |
-| 3 | status READY flag in bit 6 (40h) | XFAIL（模型缺陷） |
-| 4 | program 80h-10h: R/B# low for 16 clocks | check |
-| 5 | status after program: ready, pass | check |
-| 6 | read 00h-30h: R/B# low for 8 clocks | check |
-| 7 | read returns the 16 programmed bytes | check |
-| 8 | bytes past the programmed data read FFh | check |
-| 9 | NAND drives DQS high with every read byte | check |
-| 10 | DQ / DQS released after RE# rises | check |
-| 11 | full 32-byte page programmed and read back | check |
-| 12 | other page unaffected | check |
-| 13 | erase 60h-D0h: R/B# low for 24 clocks | check |
-| 14 | erased page reads FFh | check |
-| 15 | erase leaves the next page intact | check |
-| 16 | read at column 5 returns bytes 5..8 of the page | XFAIL（模型缺陷） |
-| 17 | erase clears data programmed at a non-zero column | XFAIL（模型缺陷） |
-| 18 | DQS before the 5th address byte or without host_dq_oe is ignored | check |
-| 19 | byte captured on the DQS rising edge | check |
-| 20 | byte captured on the DQS falling edge (DDR) | XFAIL（模型缺陷） |
-| 21 | busy after program confirm | check |
-| 22 | READ latched while busy sets the fail bit | check |
-| 23 | the program in progress still completes | check |
-| 24 | next READ clears the fail bit | check |
-| 25 | undefined opcode sets the fail bit | check |
-| 26 | RESET (FFh) ends the busy period | check |
-| 27 | status after RESET: ready, no fail | check |
-| 28 | 30h after RESET (no 00h + address) does not start a read | check |
-| 29 | 10h without 80h does not start a program | check |
-| 30 | program aborted by RESET is not committed | check |
-| 31 | NAND does not drive DQ while the host drives a command | XFAIL（模型缺陷） |
-| 32 | reset pin: ready, DQ released | check |
+| 3 | status READY flag in bit 6 (40h) | check |
+| 4 | status not driven on DQ until RE# goes low | check |
+| 5 | program 80h-10h: R/B# low for 16 clocks | check |
+| 6 | status after program: ready, pass | check |
+| 7 | read 00h-30h: R/B# low for 8 clocks | check |
+| 8 | read returns the 16 programmed bytes | check |
+| 9 | bytes past the programmed data read FFh | check |
+| 10 | NAND drives DQS high with every read byte | check |
+| 11 | DQ / DQS released after RE# rises | check |
+| 12 | full 32-byte page programmed and read back | check |
+| 13 | other page unaffected | check |
+| 14 | erase 60h-D0h: R/B# low for 24 clocks | check |
+| 15 | erased page reads FFh | check |
+| 16 | erase leaves the next page intact | check |
+| 17 | read at column 5 returns bytes 5..8 of the page | check |
+| 18 | erase clears data programmed at a non-zero column | check |
+| 19 | DQS before the 5th address byte or without host_dq_oe is ignored | check |
+| 20 | byte captured on the DQS rising edge | check |
+| 21 | byte captured on the DQS falling edge (DDR) | check |
+| 22 | busy after program confirm | check |
+| 23 | READ latched while busy sets the fail bit | check |
+| 24 | the program in progress still completes | check |
+| 25 | next READ clears the fail bit | check |
+| 26 | undefined opcode sets the fail bit | check |
+| 27 | RESET (FFh) ends the busy period | check |
+| 28 | status after RESET: ready, no fail | check |
+| 29 | 30h after RESET (no 00h + address) does not start a read | check |
+| 30 | 10h without 80h does not start a program | check |
+| 31 | program aborted by RESET is not committed | check |
+| 32 | NAND does not drive DQ while the host drives a command | check |
+| 33 | reset pin: ready, DQ released | check |
 
 ## 3. UVM 測試平台內容
 
@@ -93,18 +89,10 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（32 個 check，mutation score 83%）。
+判定：**✅ Sufficient**（33 個 check，mutation score 83%）。
 
 未被偵測的 mutant（測試缺口或等價 mutant）：
 
-- `dut_tnand_nand_model.sv:109 1'b1 inverted [we_n_d <= 1'b1; re_n_d <= 1'b1; dqs_d <= 1'b0;]`
-- `dut_tnand_nand_model.sv:147 == flipped [re_n_d == 1'b1 && vif_re_n == 1'b0) begin]`
-
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- status READY flag in bit 6 (40h)
-- read at column 5 returns bytes 5..8 of the page
-- erase clears data programmed at a non-zero column
-- byte captured on the DQS falling edge (DDR)
-- NAND does not drive DQ while the host drives a command
+- `dut_tnand_nand_model.sv:91 && flipped [TNAND_CMD_ERASE_CONFIRM: if (op == OP_ERASE && !busy) begin]`
+- `dut_tnand_nand_model.sv:107 0 -> 1 [op <= OP_NONE; busy <= 0; busy_cnt <= 0; status_mode <= 0; f]`
 

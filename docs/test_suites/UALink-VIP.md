@@ -9,8 +9,8 @@
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，11 個 check，全部通過 |
-| Mutation | 10/16 個 mutant 被偵測（62%） |
-| 判定 | **🟡 Partial**（mutation score 62%） |
+| Mutation | 10/18 個 mutant 被偵測（56%） |
+| 判定 | **🟡 Partial**（mutation score 56%） |
 
 ## 2. 可執行的功能測試
 
@@ -36,25 +36,27 @@
 
 ## 3. UVM 測試平台內容
 
-UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只做 elaboration（L1a）。
+UVM agent test（`ualink_func_test`：directed + constrained-random 流量，scoreboard 以 DUT 模型的參考模型逐筆比對，並比對 driver 與 monitor 的 transaction）在 Verilator 上以 `python3 tools/run_uvm_tests.py UALink-VIP` 執行；agent 由 `tools/gen_uvm_agents.py` 依 `tools/uvm_agents/` 的協定 spec 產生。
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 1 | `ualink_base_test` |
-| Sequences | 2 | `ualink_base_sequence`, `ualink_transaction` |
+| UVM tests | 2 | `ualink_base_test`, `ualink_func_test` |
+| Sequences | 3 | `ualink_base_sequence`, `ualink_directed_sequence`, `ualink_transaction` |
 | SVA（assert / cover property） | 4 / 2 | - |
-| Covergroups / coverpoints | 1 / 5 | |
+| Covergroups / coverpoints | 1 / 3 | |
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 62%）。
+判定：**🟡 Partial**（mutation score 56%）。
 
 未被偵測的 mutant（測試缺口或等價 mutant）：
 
 - `dut_ualink_model.sv:27 1'b0 inverted [initial begin rsp_valid = 1'b0; req_ready = 1'b1; rsp_status]`
 - `dut_ualink_model.sv:27 1'b1 inverted [initial begin rsp_valid = 1'b0; req_ready = 1'b1; rsp_status]`
 - `dut_ualink_model.sv:30 1'b0 inverted [busy <= 1'b0; req_ready <= 1'b1;]`
-- `dut_ualink_model.sv:33 && flipped [if (req_valid && req_ready) begin]`
-- `dut_ualink_model.sv:34 1'b1 inverted [busy <= 1'b1;]`
-- `dut_ualink_model.sv:50 1'b0 inverted [busy <= 1'b0;]`
+- `dut_ualink_model.sv:33 0 -> 1 [for (i = 0; i < 64; i++) mem[i] <= 64'h0;]`
+- `dut_ualink_model.sv:33 64 -> 65 [for (i = 0; i < 64; i++) mem[i] <= 64'h0;]`
+- `dut_ualink_model.sv:35 && flipped [if (req_valid && req_ready) begin]`
+- `dut_ualink_model.sv:36 1'b1 inverted [busy <= 1'b1;]`
+- `dut_ualink_model.sv:52 1'b0 inverted [busy <= 1'b0;]`
 

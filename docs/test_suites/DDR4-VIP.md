@@ -8,7 +8,7 @@
 |---|---|
 | 類別 | Memory |
 | 類型 | RTL IP |
-| 功能測試 | 2 個檔案，39 個 check，19736 次斷言評估，全部通過 |
+| 功能測試 | 2 個檔案，39 個 check，21864 次斷言評估，全部通過 |
 | Mutation | 7/7 個 mutant 被偵測（100%） |
 | 判定 | **✅ Sufficient**（39 個 check，mutation score 100%） |
 
@@ -18,7 +18,7 @@
 
 ### `tb/DDR4_tb.sv`
 
-結果：**PASS**（verilator，19736 次斷言評估）
+結果：**PASS**（verilator，21864 次斷言評估）
 
 ### `tb/func_ddr4_tb.sv`
 
@@ -59,8 +59,8 @@
 | 31 | idle host command is a no-op | check |
 | 32 | PRE encoding RAS_n=0 CAS_n=1 WE_n=0 | check |
 | 33 | PRE emits no trace and no hdone | check |
-| 34 | PRE is a single-cycle command (pins return to NOP) | XFAIL（模型缺陷） |
-| 35 | host held off for tRP after PRE | XFAIL（模型缺陷） |
+| 34 | PRE is a single-cycle command (pins return to NOP) | check |
+| 35 | host held off for tRP after PRE (k=%0d) | check |
 | 36 | 40 random reads/writes match the reference (%0d bad) | check |
 | 37 | reset returns pins to NOP, ready, data 0 | check |
 | 38 | reset clears stored data | check |
@@ -74,8 +74,5 @@ RTL IP：以 `tb/` 的 self-checking testbench 驗證，無 UVM 測試。
 
 判定：**✅ Sufficient**（39 個 check，mutation score 100%）。
 
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- PRE is a single-cycle command (pins return to NOP)
-- host held off for tRP after PRE
+無已知缺口。
 

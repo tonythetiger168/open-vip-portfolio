@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Storage/Debug |
 | 類型 | UVM VIP |
-| 功能測試 | 2 個檔案，56 個 check，全部通過 |
+| 功能測試 | 2 個檔案，57 個 check，全部通過 |
 | Mutation | 8/8 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（56 個 check，mutation score 100%） |
+| 判定 | **✅ Sufficient**（57 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_nvme_tb.sv`
 
-結果：**PASS**（verilator，23 checks）
+結果：**PASS**（verilator，24 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -57,10 +57,11 @@ Model contract (from tb/top_tb.sv):
 | 17 | non-NVM command set does not touch the namespace | check |
 | 18 | QID 7 completes with success | check |
 | 19 | QID 8 completes with invalid-queue status | check |
-| 20 | CQ entry carries this command's status | XFAIL（模型缺陷） |
-| 21 | 40 random commands: address, payload, status and IRQ correct | check |
-| 22 | exactly one TLP per doorbell | check |
-| 23 | reset clears TLP, IRQ and status | check |
+| 20 | CQ entry carries this command's status | check |
+| 21 | next CQ entry carries success, not the previous error | check |
+| 22 | 40 random commands: address, payload, status and IRQ correct | check |
+| 23 | exactly one TLP per doorbell | check |
+| 24 | reset clears TLP, IRQ and status | check |
 
 ### `tb/smoke_func_tb.sv`
 
@@ -105,9 +106,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（56 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（57 個 check，mutation score 100%）。
 
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- CQ entry carries this command's status
+無已知缺口。
 

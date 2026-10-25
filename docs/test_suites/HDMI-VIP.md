@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Video |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，19 個 check，全部通過 |
-| Mutation | 21/21 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（19 個 check，mutation score 100%） |
+| 功能測試 | 1 個檔案，20 個 check，全部通過 |
+| Mutation | 25/25 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（20 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_hdmi_tb.sv`
 
-結果：**PASS**（iverilog，19 checks）
+結果：**PASS**（iverilog，20 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -30,20 +30,15 @@ Run: python3 tools/run_func_tests.py HDMI-VIP
 Model contract (from tb/top_tb.sv and hdmi_defs_pkg), tmds_cw = {ch2, ch1,
 ch0} 10-bit code words, period type on state (0 IDLE, 1 CONTROL_PREAMBLE,
 2 DATA_ISLAND, 3 VIDEO_GUARD, 4 VIDEO_DATA):
-   * pixels are abstracted as {1, d[7:0], 0}; the last video word carries
+   * pixels are abstracted as {0, d[7:0], 0}; the last video word carries
      {2'b11, crc} on ch0, where crc folds every pixel since the preamble:
      crc = {crc[6:0], 0} ^ R ^ G ^ B ^ 0x1D. A mismatch pulses crc_err.
+   * preamble (HDMI 1.4b 5.2.1.1): ch1 CTRL1 + ch2 CTRL0 = video,
+     ch1 = ch2 = CTRL1 = data island (preamble_video / preamble_island).
    * a video guard band whose ch0 word is not 1011001100 is warned about.
    * HPD: a rising edge on hpd_drop_req drops HPD for 3 clocks, starting 2
      clocks later; requests while a drop is in progress are ignored.
      (HPD itself is registered: low on the 4th..6th clock after the edge.)
-Known deviations (XFAIL):
-   * the pixel abstraction sets bit 9, so a blue value >= 0x80 has
-     bits [9:8] = 11 and is taken as the CRC word.
-   * preamble decoding: per HDMI 1.4b 5.2.1.1 a video preamble is
-     CTL0..3 = 1,0,0,0 (ch1 = CTRL1 token, ch2 = CTRL0 token) and a data
-     island preamble 1,0,1,0 (ch1 = ch2 = CTRL1); the model calls ch2 =
-     CTRL2 "video" and ch1 = CTRL1 "island".
 ```
 
 | # | Check | 類型 |
@@ -57,16 +52,17 @@ Known deviations (XFAIL):
 | 7 | next clean period passes again | check |
 | 8 | single corrupted pixel caught by the CRC | check |
 | 9 | bad guard band does not affect the CRC | check |
-| 10 | blue >= 0x80 is pixel data, not the CRC word | XFAIL（模型缺陷） |
-| 11 | spec video preamble (ch1 CTRL1, ch2 CTRL0) decoded as video | XFAIL（模型缺陷） |
-| 12 | preamble flags clear outside control periods | check |
-| 13 | HPD low for 3 clocks (got %0d) | check |
-| 14 | HPD drops on the 4th clock after the request (got %0d) | check |
-| 15 | a new request edge during the drop is ignored | check |
-| 16 | HPD restored | check |
-| 17 | a held request does not retrigger the drop | check |
-| 18 | reset: HPD low, CRC accumulator cleared | check |
-| 19 | reset clears the preamble flags | check |
+| 10 | blue >= 0x80 is pixel data, not the CRC word | check |
+| 11 | spec video preamble (ch1 CTRL1, ch2 CTRL0) decoded as video | check |
+| 12 | spec island preamble (ch1 = ch2 = CTRL1) decoded as island | check |
+| 13 | preamble flags clear outside control periods | check |
+| 14 | HPD low for 3 clocks (got %0d) | check |
+| 15 | HPD drops on the 4th clock after the request (got %0d) | check |
+| 16 | a new request edge during the drop is ignored | check |
+| 17 | HPD restored | check |
+| 18 | a held request does not retrigger the drop | check |
+| 19 | reset: HPD low, CRC accumulator cleared | check |
+| 20 | reset clears the preamble flags | check |
 
 ## 3. UVM 測試平台內容
 
@@ -81,10 +77,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（19 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（20 個 check，mutation score 100%）。
 
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- blue >= 0x80 is pixel data, not the CRC word
-- spec video preamble (ch1 CTRL1, ch2 CTRL0) decoded as video
+無已知缺口。
 

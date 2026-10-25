@@ -9,8 +9,8 @@
 | 類別 | MIPI |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，20 個 check，全部通過 |
-| Mutation | 12/12 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（20 個 check，mutation score 100%） |
+| Mutation | 10/12 個 mutant 被偵測（83%） |
+| 判定 | **✅ Sufficient**（20 個 check，mutation score 83%） |
 
 ## 2. 可執行的功能測試
 
@@ -56,7 +56,10 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（20 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（20 個 check，mutation score 83%）。
 
-無已知缺口。
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_mipi_dut.sv:58 0 -> 1 [bp_timer          <= 0;]`
+- `dut_mipi_dut.sv:79 0 -> 1 [drf_frame_cnt <= 0;]`
 

@@ -9,8 +9,8 @@
 | 類別 | USB |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，29 個 check，全部通過 |
-| Mutation | 26/30 個 mutant 被偵測（87%） |
-| 判定 | **✅ Sufficient**（29 個 check，mutation score 87%） |
+| Mutation | 27/30 個 mutant 被偵測（90%） |
+| 判定 | **✅ Sufficient**（29 個 check，mutation score 90%） |
 
 ## 2. 可執行的功能測試
 
@@ -29,15 +29,15 @@
 | 5 | Accept before GoodCRC is ignored | check |
 | 6 | GoodCRC completes the Request | check |
 | 7 | PS_RDY before Accept is ignored | check |
-| 8 | Accept: waiting for PS_RDY, no contract yet | check |
+| 8 | Accept: waiting for PS_RDY, no contract yet, VBUS unchanged | check |
 | 9 | PS_RDY: explicit contract at 9 V | check |
 | 10 | GotoMin drops to vSafe5V and waits for PS_RDY | check |
 | 11 | PS_RDY after GotoMin re-establishes the contract | check |
 | 12 | new capabilities during a contract restart negotiation, contract kept | check |
-| 13 | Source_Capabilities during a contract are answered with a Request | XFAIL（模型缺陷） |
-| 14 | Request for PDO 4 after re-sent capabilities | check |
+| 13 | Source_Capabilities during a contract are answered with a Request for PDO 4 | check |
+| 14 | VBUS unchanged while the Request is pending | check |
 | 15 | Reject: back to waiting, reject_count++ | check |
-| 16 | rejected request leaves VBUS at the previous level | XFAIL（模型缺陷） |
+| 16 | rejected request leaves VBUS at the previous level, contract kept | check |
 | 17 | GotoMin answering a Request counts as a reject | check |
 | 18 | Request still waiting for GoodCRC after 250 clocks | check |
 | 19 | missing GoodCRC times out back to capabilities | check |
@@ -65,17 +65,11 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（29 個 check，mutation score 87%）。
+判定：**✅ Sufficient**（29 個 check，mutation score 90%）。
 
 未被偵測的 mutant（測試缺口或等價 mutant）：
 
-- `dut_usb_pd_smoke_model.sv:51 && flipped [wire msg_ps_rdy  = msg_valid && (msg_type == PD_PS_RDY);]`
-- `dut_usb_pd_smoke_model.sv:60 1'b0 inverted [req_valid       <= 1'b0;]`
-- `dut_usb_pd_smoke_model.sv:80 1'b0 inverted [req_valid <= 1'b0;]`
-- `dut_usb_pd_smoke_model.sv:93 == flipped [end else if (tmo == 8'hFF) begin]`
-
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- Source_Capabilities during a contract are answered with a Request
-- rejected request leaves VBUS at the previous level
+- `dut_usb_pd_smoke_model.sv:52 && flipped [wire msg_ps_rdy  = msg_valid && (msg_type == PD_PS_RDY);]`
+- `dut_usb_pd_smoke_model.sv:61 1'b0 inverted [req_valid       <= 1'b0;]`
+- `dut_usb_pd_smoke_model.sv:82 1'b0 inverted [req_valid <= 1'b0;]`
 

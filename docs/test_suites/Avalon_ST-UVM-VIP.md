@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
-| 功能測試 | 2 個檔案，28 個 check，全部通過 |
-| Mutation | 7/7 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（28 個 check，mutation score 100%） |
+| 功能測試 | 2 個檔案，31 個 check，全部通過 |
+| Mutation | 17/17 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（31 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_avalon_st_tb.sv`
 
-結果：**PASS**（iverilog，9 checks）
+結果：**PASS**（iverilog，12 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -32,11 +32,10 @@ Model contract (from tb/top_tb.sv): sink ready (asi_ready) rises one
 clock after reset; every accepted beat (asi_valid && asi_ready) appears
 on the source one clock later with its startofpacket / endofpacket.
 Checked with 200 random packets (1..16 beats) and random valid gaps,
-and reset in the middle of a packet.
+and reset in the middle of a packet. Downstream back-pressure: the source
+holds a beat while aso_ready is low, a one-beat skid buffer absorbs the
+beat in flight, and asi_ready drops while it is full.
 
-Model defect (XFAIL): aso_ready is ignored (readyLatency 0 requires the
-source to hold a beat until ready), and asi_ready never drops, so
-back-pressure loses data.
 ```
 
 | # | Check | 類型 |
@@ -49,7 +48,10 @@ back-pressure loses data.
 | 6 | source valid low after the last beat | check |
 | 7 | single-beat packet: SOP and EOP together | check |
 | 8 | reset clears the source and sink ready | check |
-| 9 | beats held while aso_ready is low (no data lost) | XFAIL（模型缺陷） |
+| 9 | beats held while aso_ready is low (no data lost) | check |
+| 10 | asi_ready drops while the skid buffer is full | check |
+| 11 | pipeline drained and sink ready again after back-pressure | check |
+| 12 | random back-pressure with input gaps: %0d of %0d beats in order, none extra | check |
 
 ### `tb/smoke_func_tb.sv`
 
@@ -67,20 +69,18 @@ back-pressure loses data.
 
 ## 3. UVM 測試平台內容
 
-UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只做 elaboration（L1a）。
+UVM agent test（`avalon_st_func_test`：directed + constrained-random 流量，scoreboard 以 DUT 模型的參考模型逐筆比對，並比對 driver 與 monitor 的 transaction）在 Verilator 上以 `python3 tools/run_uvm_tests.py Avalon_ST-UVM-VIP` 執行；agent 由 `tools/gen_uvm_agents.py` 依 `tools/uvm_agents/` 的協定 spec 產生。
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 1 | `avalon_st_base_test` |
-| Sequences | 2 | `avalon_st_base_sequence`, `avalon_st_transaction` |
+| UVM tests | 2 | `avalon_st_base_test`, `avalon_st_func_test` |
+| Sequences | 3 | `avalon_st_base_sequence`, `avalon_st_directed_sequence`, `avalon_st_transaction` |
 | SVA（assert / cover property） | 3 / 2 | - |
-| Covergroups / coverpoints | 1 / 5 | |
+| Covergroups / coverpoints | 1 / 1 | |
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（28 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（31 個 check，mutation score 100%）。
 
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- beats held while aso_ready is low (no data lost)
+無已知缺口。
 
