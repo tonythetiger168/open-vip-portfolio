@@ -125,6 +125,7 @@ pipeline {
                     mkdir -p reports/uvm
                     # 有 UVM register model 的 VIP：uvm_reg_hw_reset / bit_bash / mem_walk
                     # 加 frontdoor mirror 與錯誤回應檢查（每個 VIP 編譯數分鐘）
+                    # 另有 29 個 agent VIP 的 <p>_func_test（driver/monitor + reference-model scoreboard，SB_PASS）
                     python3 tools/run_uvm_tests.py | tee reports/uvm/uvm.log
                     cp -f uvm_report.csv reports/uvm/
                 '''
