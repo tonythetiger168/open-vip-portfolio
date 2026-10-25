@@ -20,24 +20,6 @@ LPDDR6-VIP,dut_lpddr6_model.sv:26,4 -> 5,initialises a bank index past the array
 LPDDR6-VIP,dut_lpddr6_model.sv:27,16384 -> 16385,initialises a word index past the array
 LPDDR6-VIP,dut_lpddr6_model.sv:33,6 -> 7,clears a pipeline stage past the array
 LPDDR6-VIP,dut_lpddr6_model.sv:53,6 -> 7,clears a pipeline stage past the array
-MDIO-UVM-VIP,dut_mdio_model.sv:30,! dropped in condition,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
-MDIO-UVM-VIP,dut_mdio_model.sv:31,! dropped in condition,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
-MDIO-UVM-VIP,dut_mdio_model.sv:33,== flipped,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
-MDIO-UVM-VIP,dut_mdio_model.sv:33,1'b1 inverted,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
-MDIO-UVM-VIP,dut_mdio_model.sv:35,== flipped,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
-MDIO-UVM-VIP,dut_mdio_model.sv:35,&& flipped,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
-MDIO-UVM-VIP,dut_mdio_model.sv:36,1'b1 inverted,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
-MDIO-UVM-VIP,dut_mdio_model.sv:39,== flipped,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
-MDIO-UVM-VIP,dut_mdio_model.sv:41,! dropped in condition,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
-MDIO-UVM-VIP,dut_mdio_model.sv:42,1'b0 inverted,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
-MDIO-UVM-VIP,dut_mdio_model.sv:43,== flipped,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
-MDIO-UVM-VIP,dut_mdio_model.sv:43,&& flipped,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
-MDIO-UVM-VIP,dut_mdio_model.sv:43,! dropped in condition,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
-MDIO-UVM-VIP,dut_mdio_model.sv:44,1'b0 inverted,read-response path unreachable by Clause 22 frames (model defect recorded as XFAIL)
-Avalon_ST-UVM-VIP,dut_avalon_st_model.sv:33,1'b0 inverted,skid buffer registers are never used
-Avalon_ST-UVM-VIP,dut_avalon_st_model.sv:34,1'b0 inverted,skid buffer registers are never used
-Avalon_ST-UVM-VIP,dut_avalon_st_model.sv:35,1'b0 inverted,skid buffer registers are never used
-Avalon_ST-UVM-VIP,dut_avalon_st_model.sv:40,&& flipped,only changes data / SOP / EOP while aso_valid is low (don't care)
 Wishbone-UVM-VIP,dut_wishbone_model.sv:25,16 -> 17,reset loop index 16 is out of range (write ignored)
 Wishbone-UVM-VIP,dut_wishbone_model.sv:32,&& flipped,DAT_O is only defined while ACK is high; the change is visible only outside a cycle
 APB-VIP,dut_amba_dut.sv:39,64 -> 65,init loop index 64 is out of range (write ignored)
@@ -149,12 +131,10 @@ OCP-VIP,dut_ocp_slave_model.sv:33,0 -> 1,rsp_timer is reloaded on every acceptan
 OCP-VIP,dut_ocp_slave_model.sv:42,0 -> 1,rsp_timer is reloaded on every acceptance before it is used
 OCP-VIP,dut_ocp_slave_model.sv:45,0 -> 1,only changes the random SCmdAccept throttle probability
 OCP-VIP,dut_ocp_slave_model.sv:45,!= flipped,only changes the random SCmdAccept throttle probability
-OCP-VIP,dut_ocp_slave_model.sv:45,&& flipped,accept while pending: masked by the XFAIL check of the same existing defect
 TileLink-VIP,dut_tilelink_device_model.sv:30,0 -> 1,initial value overwritten by the reset branch (clocked while reset is low)
 TileLink-VIP,dut_tilelink_device_model.sv:34,0 -> 1,initial value overwritten by the reset branch (clocked while reset is low)
 TileLink-VIP,dut_tilelink_device_model.sv:47,0 -> 1,only changes the random a_ready throttle probability
 TileLink-VIP,dut_tilelink_device_model.sv:47,!= flipped,only changes the random a_ready throttle probability
-TileLink-VIP,dut_tilelink_device_model.sv:47,&& flipped,ready while pending: masked by the XFAIL check of the same existing defect
 LTI-VIP,dut_lti_translation_unit_model.sv:29,0 -> 1,initial value overwritten by the reset branch (clocked while reset is low)
 LTI-VIP,dut_lti_translation_unit_model.sv:34,0 -> 1,initial value overwritten by the reset branch (clocked while reset is low)
 LTI-VIP,dut_lti_translation_unit_model.sv:35,0 -> 1,xlate_timer is reloaded on every acceptance before it is used
@@ -162,7 +142,6 @@ LTI-VIP,dut_lti_translation_unit_model.sv:46,0 -> 1,xlate_timer is reloaded on e
 LTI-VIP,dut_lti_translation_unit_model.sv:49,4 -> 5,only changes the random la_ready throttle probability
 LTI-VIP,dut_lti_translation_unit_model.sv:49,0 -> 1,only changes the random la_ready throttle probability
 LTI-VIP,dut_lti_translation_unit_model.sv:49,!= flipped,only changes the random la_ready throttle probability
-LTI-VIP,dut_lti_translation_unit_model.sv:49,&& flipped,ready while pending: masked by the XFAIL check of the same existing defect
 I2S-VIP,dut_i2s_receiver_loopback.sv:19,0 -> 1,initial value overwritten by the reset branch
 I2S-VIP,dut_i2s_receiver_loopback.sv:40,0 -> 1,initial value overwritten by the reset branch
 I2S-VIP,dut_i2s_receiver_loopback.sv:43,1'b0 inverted,initial value overwritten by the reset branch
@@ -170,19 +149,7 @@ I2S-VIP,dut_i2s_receiver_loopback.sv:50,0 -> 1,in_left after reset only shifts u
 I2S-VIP,dut_i2s_receiver_loopback.sv:53,0 -> 1,rcnt is reloaded at the WS rising edge before it is used
 I2S-VIP,dut_i2s_receiver_loopback.sv:69,24 -> 25,the extra shift happens only for slots longer than 24 bits, which are never stored (lcnt != 24)
 I2S-VIP,dut_i2s_receiver_loopback.sv:77,0 -> 1,rcnt is reloaded at the next WS rising edge before it is used
-LIN-VIP,dut_lin_slave_model.sv:70,8 -> 9,re-transmission path unreachable: the receiver never accepts a sync byte (XFAIL start-bit defect)
-LIN-VIP,dut_lin_slave_model.sv:88,6 -> 7,re-transmission path unreachable: the receiver never accepts a sync byte (XFAIL start-bit defect)
 LIN-VIP,dut_lin_slave_model.sv:98,0 -> 1,initial value overwritten by the reset branch
-LIN-VIP,dut_lin_slave_model.sv:181,&& flipped,only nrx == 0 is reachable (the sync byte is never accepted: XFAIL start-bit defect)
-LIN-VIP,dut_lin_slave_model.sv:190,2 -> 3,frame-end path unreachable: the receiver never accepts a sync byte (XFAIL start-bit defect)
-LIN-VIP,dut_lin_slave_model.sv:211,1'b0 inverted,re-transmission path unreachable: the receiver never accepts a sync byte (XFAIL start-bit defect)
-CAN-VIP,dut_can_node_model.sv:109,1'b0 inverted,frame-end decode / re-transmission unreachable: the model never completes a compliant frame (XFAIL destuffer defect)
-CAN-VIP,dut_can_node_model.sv:134,! dropped in condition,frame-end decode / re-transmission unreachable: the model never completes a compliant frame (XFAIL destuffer defect)
-CAN-VIP,dut_can_node_model.sv:154,3 -> 4,frame-end decode / re-transmission unreachable: the model never completes a compliant frame (XFAIL destuffer defect)
-CAN-VIP,dut_can_node_model.sv:170,1 -> 2,frame-end decode / re-transmission unreachable: the model never completes a compliant frame (XFAIL destuffer defect)
-CAN-VIP,dut_can_node_model.sv:186,10 -> 11,frame-end decode / re-transmission unreachable: the model never completes a compliant frame (XFAIL destuffer defect)
-CAN-VIP,dut_can_node_model.sv:266,0 -> 1,frame-end decode / re-transmission unreachable: the model never completes a compliant frame (XFAIL destuffer defect)
-CAN-VIP,dut_can_node_model.sv:285,12 -> 13,frame-end decode / re-transmission unreachable: the model never completes a compliant frame (XFAIL destuffer defect)
 CAN-VIP,dut_can_node_model.sv:194,0 -> 1,initial value overwritten by the reset branch
 CXS-VIP,dut_cxs_receiver_model.sv:34,0 -> 1,initial value overwritten by the reset branch
 CXS-VIP,dut_cxs_receiver_model.sv:36,0 -> 1,initial value overwritten by the reset branch
@@ -197,9 +164,6 @@ HDMI-VIP,dut_hdmi_sink_model.sv:22,0 -> 1,initial value overwritten by the synch
 HDMI-VIP,dut_hdmi_sink_model.sv:23,0 -> 1,initial value overwritten by the synchronous reset
 HDMI-VIP,dut_hdmi_sink_model.sv:31,0 -> 1,a timer of 1 after reset expires with HPD high (the drop window is timer 2..4)
 HDMI-VIP,dut_hdmi_sink_model.sv:32,1'b0 inverted,req_d is reloaded from the request one clock after reset; differs only for a request rising on that first clock
-HDMI-VIP,dut_hdmi_sink_model.sv:52,== flipped,preamble decode masked by the XFAIL check of the existing preamble-mapping defect
-HDMI-VIP,dut_hdmi_sink_model.sv:52,1'b1 inverted,preamble decode masked by the XFAIL check of the existing preamble-mapping defect
-HDMI-VIP,dut_hdmi_sink_model.sv:53,1'b1 inverted,preamble decode masked by the XFAIL check of the existing preamble-mapping defect
 HDMI-VIP,dut_hdmi_sink_model.sv:57,!= flipped,only selects a `uvm_warning message (not an observable output)
 ONFI-VIP,dut_onfi_nand_model.sv:9,64 -> 65,changes the internal storage key layout consistently for program / read / erase (no observable effect)
 ONFI-VIP,dut_onfi_nand_model.sv:43,0 -> 1,initial value overwritten by the reset branch
@@ -215,7 +179,6 @@ FlexRay-VIP,dut_flexray_node_model.sv:84,0 -> 1,receiver counters are reloaded a
 FlexRay-VIP,dut_flexray_node_model.sv:85,0 -> 1,transmitter / error counters are reloaded before use or reset by the reset branch
 FlexRay-VIP,dut_flexray_node_model.sv:144,36 -> 37,the shortest frame needs 62 bits: rcnt > 36 and rcnt > 37 are both implied by rcnt + 1 >= need
 FlexRay-VIP,dut_flexray_node_model.sv:161,7 -> 8,loop index 7 writes payload_length[-1] (out of range, ignored)
-FlexRay-VIP,dut_flexray_node_model.sv:169,1'b1 inverted,echo content masked by the XFAIL check of the existing all-dominant echo defect
 CSI_2-VIP,dut_mipi_dut.sv:48,0 -> 1,initial value overwritten by the reset branch
 UniPro-VIP,dut_mipi_dut.sv:48,0 -> 1,initial value overwritten by the reset branch
 C_PHY-VIP,dut_mipi_dut.sv:48,0 -> 1,initial value overwritten by the reset branch
@@ -247,11 +210,6 @@ DisplayPort2-VIP,dut_displayport2_sink_model.sv:28,0 -> 1,counter is only compar
 DisplayPort2-VIP,dut_displayport2_sink_model.sv:29,0 -> 1,counter is only compared relative to its value before each test step
 DisplayPort2-VIP,dut_displayport2_sink_model.sv:32,0 -> 1,counter is only compared relative to its value before each test step
 DisplayPort2-VIP,dut_displayport2_sink_model.sv:33,0 -> 1,initial value overwritten by the reset branch
-DisplayPort2-VIP,dut_displayport2_sink_model.sv:40,4 -> 5,training unreachable: 4-bit lane_data never equals the 32-bit {4{8'hBC}} (XFAIL defect)
-DisplayPort2-VIP,dut_displayport2_sink_model.sv:40,== flipped,training unreachable: 4-bit lane_data never equals the 32-bit {4{8'hBC}} (XFAIL defect)
-DisplayPort2-VIP,dut_displayport2_sink_model.sv:40,! dropped in condition,training unreachable: 4-bit lane_data never equals the 32-bit {4{8'hBC}} (XFAIL defect)
-DisplayPort2-VIP,dut_displayport2_sink_model.sv:41,1 -> 2,training unreachable: 4-bit lane_data never equals the 32-bit {4{8'hBC}} (XFAIL defect)
-DisplayPort2-VIP,dut_displayport2_sink_model.sv:62,!= flipped,training unreachable: 4-bit lane_data never equals the 32-bit {4{8'hBC}} (XFAIL defect)
 CCIX-VIP,dut_ccix_agent_model.sv:24,0 -> 1,initial value overwritten by the reset branch
 CCIX-VIP,dut_ccix_agent_model.sv:31,0 -> 1,the pool is set to 4 at link-up before it is used
 CCIX-VIP,dut_ccix_agent_model.sv:58,15 -> 16,the 15-credit ceiling is only reachable after more than 11 flits sent without credit (protocol violation)
