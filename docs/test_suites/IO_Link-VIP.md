@@ -32,14 +32,14 @@
 
 ## 3. UVM 測試平台內容
 
-UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只做 elaboration（L1a）。
+UVM agent test（`io_link_func_test`：directed + constrained-random 流量，scoreboard 以 DUT 模型的參考模型逐筆比對，並比對 driver 與 monitor 的 transaction）在 Verilator 上以 `python3 tools/run_uvm_tests.py IO_Link-VIP` 執行；agent 由 `tools/gen_uvm_agents.py` 依 `tools/uvm_agents/` 的協定 spec 產生。
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 1 | `io_link_base_test` |
-| Sequences | 2 | `io_link_base_sequence`, `io_link_transaction` |
+| UVM tests | 2 | `io_link_base_test`, `io_link_func_test` |
+| Sequences | 3 | `io_link_base_sequence`, `io_link_directed_sequence`, `io_link_transaction` |
 | SVA（assert / cover property） | 3 / 2 | - |
-| Covergroups / coverpoints | 1 / 3 | |
+| Covergroups / coverpoints | 1 / 2 | |
 
 ## 4. 充分度判定與缺口
 

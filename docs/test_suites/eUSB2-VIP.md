@@ -29,9 +29,9 @@
 | 5 | FS bus reset returns to idle without chirp | check |
 | 6 | SE0 bus reset | check |
 | 7 | HS device answers the reset with chirp K | check |
-| 8 | HS selected after host K-J-K-J-K-J | XFAIL（模型缺陷） |
-| 9 | model counted five changes after the first host chirp | check |
-| 10 | HS selected after a seventh host chirp | check |
+| 8 | five host chirps are not enough | check |
+| 9 | HS selected after host K-J-K-J-K-J | check |
+| 10 | chirp ends in HS after six counted host chirps | check |
 | 11 | HS transceiver and HS termination | check |
 | 12 | bus reset from HS restarts the chirp | check |
 | 13 | each host chirp counts once regardless of its length | check |
@@ -66,11 +66,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 未被偵測的 mutant（測試缺口或等價 mutant）：
 
 - `dut_eusb2_smoke_model.sv:91 1'b1 inverted [chirp_active <= 1'b1;]`
-- `dut_eusb2_smoke_model.sv:114 1'b1 inverted [chirp_active <= 1'b1;]`
-- `dut_eusb2_smoke_model.sv:121 1'b1 inverted [hs_mode      <= 1'b1;]`
-- `dut_eusb2_smoke_model.sv:124 1'b0 inverted [term_select  <= 1'b0;]`
-
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- HS selected after host K-J-K-J-K-J
+- `dut_eusb2_smoke_model.sv:115 1'b1 inverted [chirp_active <= 1'b1;]`
+- `dut_eusb2_smoke_model.sv:122 1'b1 inverted [hs_mode      <= 1'b1;]`
+- `dut_eusb2_smoke_model.sv:125 1'b0 inverted [term_select  <= 1'b0;]`
 

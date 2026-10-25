@@ -320,7 +320,10 @@ def main():
     if valid:
         S.append("- Mutation testing：%d 個有效 mutant 中 %d 個被功能測試偵測（%.0f%%）。" % (
             valid, killed, 100.0 * killed / valid))
-    S.append("- 功能測試找到 %d 個 DUT 模型缺陷，以 XFAIL check 記錄（見第 4 節）；模型修好後該 check 會變成 XPASS 並使測試失敗，提醒移除標記。" % tot_xf)
+    if tot_xf:
+        S.append("- 功能測試找到 %d 個 DUT 模型缺陷，以 XFAIL check 記錄（見第 4 節）；模型修好後該 check 會變成 XPASS 並使測試失敗，提醒移除標記。" % tot_xf)
+    else:
+        S.append("- 沒有未修正的 DUT 模型缺陷：功能測試中沒有 XFAIL check（先前記錄的缺陷都已在模型中修正）。")
     S.append("")
     S.append("## 2. 方法")
     S.append("")

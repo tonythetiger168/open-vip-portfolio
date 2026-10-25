@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | AMBA |
 | 類型 | UVM VIP |
-| 功能測試 | 2 個檔案，48 個 check，全部通過 |
+| 功能測試 | 2 個檔案，51 個 check，全部通過 |
 | Mutation | 23/23 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（48 個 check，mutation score 100%） |
+| 判定 | **✅ Sufficient**（51 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_axi_tb.sv`
 
-結果：**PASS**（iverilog，19 checks）
+結果：**PASS**（iverilog，22 checks）
 
 | # | Check | 類型 |
 |---|---|---|
@@ -37,10 +37,13 @@
 | 13 | RVALID, RDATA and RLAST held stable while RREADY is low | check |
 | 14 | W beat ahead of AW waits (WREADY low) | check |
 | 15 | W beat presented before AW is written once AW arrives | check |
-| 16 | AW accepted during a write burst does not redirect that burst's beats | XFAIL（模型缺陷） |
-| 17 | write and read bursts active | check |
-| 18 | reset aborts both bursts (WREADY, RVALID low, ARREADY high) | check |
-| 19 | memory contents survive the reset | check |
+| 16 | AWREADY low while a write burst is active | check |
+| 17 | after WLAST the next AW waits for the B handshake | check |
+| 18 | AWREADY returns once B is accepted | check |
+| 19 | AW during a write burst waits and does not redirect that burst's beats | check |
+| 20 | write and read bursts active | check |
+| 21 | reset aborts both bursts (WREADY, RVALID low, ARREADY high) | check |
+| 22 | memory contents survive the reset | check |
 
 ### `tb/smoke_func_tb.sv`
 
@@ -80,9 +83,7 @@ UVM RAL test（`amba_ral_test`：hw_reset / bit_bash / mirror 等）在 Verilato
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（48 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（51 個 check，mutation score 100%）。
 
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- AW accepted during a write burst does not redirect that burst's beats
+無已知缺口。
 

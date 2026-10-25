@@ -167,7 +167,7 @@
 
 ## 4. Line coverage 低於 90% 的 VIP
 
-未執行到的行號可對照 `build/cov/<VIP>/annotated/`（`%000000` 開頭的行）。大多是 model 的錯誤處理、未被測試觸發的協定模式，或已知 model 缺陷（XFAIL，見 [TEST_SUITE.md](TEST_SUITE.md) 第 4 節）擋住後段流程。
+未執行到的行號可對照 `build/cov/<VIP>/annotated/`（`%000000` 開頭的行）。大多是 model 的錯誤處理，或未被測試觸發的協定模式。
 
 | VIP | Line | 未執行到的行 |
 |---|---|---|

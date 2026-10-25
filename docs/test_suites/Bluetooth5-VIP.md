@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Storage/Debug |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，26 個 check，全部通過 |
+| 功能測試 | 1 個檔案，28 個 check，全部通過 |
 | Mutation | 11/11 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（26 個 check，mutation score 100%） |
+| 判定 | **✅ Sufficient**（28 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_bluetooth5_tb.sv`
 
-結果：**PASS**（verilator，26 checks）
+結果：**PASS**（verilator，28 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -34,10 +34,7 @@ a packet of 7 or more bytes: access_addr, length, and on advertising
 channels 37-39 adv_type = header[2:0], on data channels LLID = header[1:0],
 NESN = header[2], SN = header[3], MD = header[4]. After a 5-clock
 turnaround (rx_en low) it transmits the received bytes back with tx_en and
-tx_valid, then listens again.
-Known defect (XFAIL): tx_valid rises one clock before the first echoed
-byte, so the echo starts with a stale byte (the last byte of the previous
-transmission, 0x00 after reset).
+tx_valid (first byte with the first tx_valid clock), then listens again.
 ```
 
 | # | Check | 類型 |
@@ -48,11 +45,11 @@ transmission, 0x00 after reset).
 | 4 | transmit starts after a 5-clock turnaround (got %0d) | check |
 | 5 | access address and length decoded | check |
 | 6 | advertising PDU type decoded on channel 37 | check |
-| 7 | packet echoed after the leading byte (%0d bytes) | check |
-| 8 | echo starts with the first received byte | XFAIL（模型缺陷） |
+| 7 | packet echoed byte for byte (%0d of %0d bytes) | check |
+| 8 | echo starts with the first received byte | check |
 | 9 | listening again after the echo | check |
 | 10 | SCAN_REQ type and length decoded on channel 39 | check |
-| 11 | stale leading byte is the previous packet's last byte | check |
+| 11 | no stale byte from the previous packet ahead of the echo | check |
 | 12 | data-channel fields untouched on advertising channels | check |
 | 13 | connection access address decoded | check |
 | 14 | LLID/NESN/SN/MD decoded on a data channel | check |
@@ -65,9 +62,11 @@ transmission, 0x00 after reset).
 | 21 | runt packet still echoed | check |
 | 22 | 6-byte packet: header not decoded, echoed | check |
 | 23 | single-byte packet echoed | check |
-| 24 | never transmitting and receiving at once | check |
-| 25 | reset clears the buffer and header | check |
-| 26 | reset clears the enables and the decoded header fields | check |
+| 24 | two-byte packet echoed | check |
+| 25 | tx_en is high whenever tx_valid is | check |
+| 26 | never transmitting and receiving at once | check |
+| 27 | reset clears the buffer and header | check |
+| 28 | reset clears the enables and the decoded header fields | check |
 
 ## 3. UVM 測試平台內容
 
@@ -82,9 +81,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（26 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（28 個 check，mutation score 100%）。
 
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- echo starts with the first received byte
+無已知缺口。
 
