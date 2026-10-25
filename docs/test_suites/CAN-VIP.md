@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Automotive |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，7 個 check，全部通過 |
-| Mutation | 4/4 個 mutant 被偵測（100%） |
-| 判定 | **🟡 Partial**（只有 7 個 check） |
+| 功能測試 | 1 個檔案，19 個 check，全部通過 |
+| Mutation | 10/10 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（19 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_can_tb.sv`
 
-結果：**PASS**（verilator，7 checks）
+結果：**PASS**（verilator，19 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -38,30 +38,32 @@ can_en, checks the CRC (crc_ok), latches id/ide/rtr/dlc/fdf, pulses sof
 and re-transmits the frame on can_tx; a CRC or stuff error sends a 6-bit
 dominant error flag (error_frame, error_count_rx++). The error counters
 are not cleared by reset.
-Known defects (XFAIL):
-   * the destuffer keeps checking after the CRC field, so the recessive
-     CRC delimiter/ACK/EOF run of a frame is taken as a stuff error when
-     it follows five recessive bits; the model only ends a frame on a
-     6-bit recessive run of stored bits, which never happens for a
-     compliant frame. Frame reception is checked as XFAIL and the
-     dependent checks run once it is fixed.
-   * the destuffer (like the VIP driver, can_driver.svh send_frame) does
-     not count a stuff bit as the start of the next run.
+The receiver destuffs SOF..CRC only (a stuff bit starts the next run),
+then takes CRC delimiter, ACK slot, ACK delimiter and EOF unstuffed; a
+dominant delimiter/EOF bit is a form error.
 ```
 
 | # | Check | 類型 |
 |---|---|---|
-| 1 | compliant standard frame received without error | XFAIL（模型缺陷） |
+| 1 | compliant standard frame received without error | check |
 | 2 | a frame the model rejects is counted as a receive error | check |
 | 3 | ID, IDE, RTR, DLC decoded, CRC good | check |
-| 4 | extended remote frame decoded | check |
-| 5 | CRC error answered with an error flag, no re-transmission | check |
-| 6 | stuff bit counted as the first bit of the next run | XFAIL（模型缺陷） |
-| 7 | six equal bits: stuff error, error flag, error_count_rx++ | check |
-| 8 | error flag is 6 dominant bits (%0d clocks) | check |
-| 9 | error frame ends after the delimiter | check |
-| 10 | node disabled: bus activity ignored | check |
-| 11 | reset: idle, recessive | check |
+| 4 | re-transmission repeats the frame bit for bit (%0d of %0d bits) | check |
+| 5 | frame accepted after the last EOF bit (%0d clocks) | check |
+| 6 | crc output is the frame CRC | check |
+| 7 | extended remote frame decoded | check |
+| 8 | extended remote frame re-transmitted without data bytes | check |
+| 9 | 8-byte extended data frame received and re-transmitted | check |
+| 10 | standard remote frame, DLC 3, no data field | check |
+| 11 | dominant ACK slot accepted | check |
+| 12 | dominant EOF bit is a form error, frame not accepted | check |
+| 13 | CRC error answered with an error flag, no re-transmission | check |
+| 14 | stuff bit counted as the first bit of the next run | check |
+| 15 | six equal bits: stuff error, error flag, error_count_rx++ | check |
+| 16 | error flag is 6 dominant bits (%0d clocks) | check |
+| 17 | error frame ends after the delimiter | check |
+| 18 | node disabled: bus activity ignored | check |
+| 19 | reset: idle, recessive | check |
 
 ## 3. UVM 測試平台內容
 
@@ -76,10 +78,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（只有 7 個 check）。
+判定：**✅ Sufficient**（19 個 check，mutation score 100%）。
 
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- compliant standard frame received without error
-- stuff bit counted as the first bit of the next run
+無已知缺口。
 

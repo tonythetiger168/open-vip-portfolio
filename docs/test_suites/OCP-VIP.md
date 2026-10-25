@@ -9,7 +9,7 @@
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，12 個 check，全部通過 |
-| Mutation | 6/6 個 mutant 被偵測（100%） |
+| Mutation | 7/7 個 mutant 被偵測（100%） |
 | 判定 | **✅ Sufficient**（12 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
@@ -46,7 +46,7 @@ Model contract (from tb/top_tb.sv), OCP 2.x basic signals:
 | 8 | 60 random reads/writes: data, DVA and 1..4 clock latency all correct | check |
 | 9 | every response latency 1..4 occurs (%0d/%0d/%0d/%0d) | check |
 | 10 | exactly one single-clock SResp per request | check |
-| 11 | SCmdAccept low while a request is outstanding | XFAIL（模型缺陷） |
+| 11 | SCmdAccept low while a request is outstanding | check |
 | 12 | reset clears accept, response and pending state | check |
 
 ## 3. UVM 測試平台內容
@@ -55,7 +55,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 3 | `ocp_base_test`, `ocp_random_test`, `ocp_regression_test` |
+| UVM tests | 4 | `ocp_base_test`, `ocp_random_test`, `ocp_regression_test`, `ocp_ral_test` |
 | Sequences | 12 | `ocp_base_sequence`, `ocp_write_seq`, `ocp_read_seq`, `ocp_wr_rd_same_addr_seq`, `ocp_backpressure_seq`, `ocp_addr_sweep_seq`, `ocp_data_corner_seq`, `ocp_error_inject_seq`, `ocp_reset_seq`, `ocp_random_sequence`, `ocp_regression_sequence`, `ocp_transaction` |
 | SVA（assert / cover property） | 19 / 2 | `a_ocp_l1_clk`, `a_ocp_l1_rst`, `a_ocp_l1_state`, `a_ocp_l1_valid`, `a_ocp_trans_idle`, `a_ocp_trans_write`, `a_ocp_trans_read`, `a_ocp_trans_wait_resp`, `a_ocp_trans_error_resp`, `a_ocp_l3_reset_idle`, `a_ocp_l3_no_stuck`, `a_ocp_l3_full_cycle` … |
 | Covergroups / coverpoints | 3 / 9 | |
@@ -64,7 +64,5 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 判定：**✅ Sufficient**（12 個 check，mutation score 100%）。
 
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- SCmdAccept low while a request is outstanding
+無已知缺口。
 

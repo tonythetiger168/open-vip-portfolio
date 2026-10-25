@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Automotive |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，12 個 check，全部通過 |
-| Mutation | 6/6 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（12 個 check，mutation score 100%） |
+| 功能測試 | 1 個檔案，25 個 check，全部通過 |
+| Mutation | 8/8 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（25 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_lin_tb.sv`
 
-結果：**PASS**（verilator，12 checks）
+結果：**PASS**（verilator，25 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -43,44 +43,38 @@ Model contract (from tb/lin_slave_model.sv), 8 clocks per bit:
      with a dominant pulse of the measured length (bit-sampled, so up to
      one bit longer) with wakeup_signal.
    * 24 recessive bit times on an idle bus -> sleep_mode.
-Known defects (XFAIL):
-   * the byte receiver samples the middle of the start bit as data bit 0
-     (it does not skip the start bit), so the sync byte 0x55 is read as
-     0xAA and every frame ends in bit_error. The frame-level checks below
-     only run once that is fixed (the XFAIL then turns into an XPASS).
-   * a LIN slave must verify the checksum byte; the model never sets
-     checksum_error.
-   * (seen with the start-bit sampling corrected) the reported checksum
-     and the re-transmitted last byte are rxb[1+len], the last data byte,
-     instead of the checksum byte rxb[2+len].
+   * the checksum byte is checked (checksum_error, cleared by the next
+     break): enhanced over PID and data, classic (data only) for the
+     diagnostic IDs 60-63; it is reported on checksum and re-transmitted.
 ```
 
 | # | Check | 類型 |
 |---|---|---|
 | 1 | PID reference matches the LIN specification table | check |
 | 2 | break field (13 dominant bits + delimiter) detected | check |
-| 3 | sync byte 0x55 received without bit error | XFAIL（模型缺陷） |
+| 3 | sync byte 0x55 received without bit error | check |
 | 4 | PID and parity decoded | check |
-| 5 | 2-byte length from ID[5:4]=00 | check |
-| 6 | checksum output carries the received checksum byte | XFAIL（模型缺陷） |
+| 5 | 2-byte length from ID[5:4]=00, enhanced checksum accepted | check |
+| 6 | checksum output carries the received checksum byte | check |
 | 7 | re-transmitted break is 13 bits (%0d clocks) | check |
 | 8 | frame re-transmitted: sync, PID, data (%0d bytes) | check |
-| 9 | re-transmitted frame ends with the checksum | XFAIL（模型缺陷） |
+| 9 | re-transmitted frame ends with the checksum | check |
 | 10 | 4-byte frame (ID[5:4]=10) | check |
 | 11 | 8-byte frame (ID 0x3C) | check |
-| 12 | PID parity error flagged | check |
-| 13 | parity error answered with 0xFF after the sync | check |
-| 14 | wrong checksum byte flagged | XFAIL（模型缺陷） |
-| 15 | stop bit 0 flagged as framing error | check |
-| 16 | sync byte other than 0x55 flagged as bit error | check |
-| 17 | no timeout within 23 bit times after the break | check |
-| 18 | no byte within 24 bit times after the break: timeout | check |
-| 19 | short dominant pulse answered as a wake-up | check |
-| 20 | wake-up answer as long as the pulse, to the bit sampling (%0d clocks) | check |
-| 21 | 8-bit wake-up pulse answered with 9 sampled bit times (%0d clocks) | check |
-| 22 | awake after 23 idle bit times | check |
-| 23 | sleep after 24 idle bit times | check |
-| 24 | bus activity leaves sleep | check |
+| 12 | diagnostic ID 0x3C: classic checksum accepted and re-transmitted | check |
+| 13 | PID parity error flagged | check |
+| 14 | parity error answered with 0xFF after the sync | check |
+| 15 | wrong checksum byte flagged | check |
+| 16 | stop bit 0 flagged as framing error | check |
+| 17 | sync byte other than 0x55 flagged as bit error | check |
+| 18 | no timeout within 24 bit times after the break | check |
+| 19 | timeout exactly 24 bit times after the break delimiter (%0d clocks) | check |
+| 20 | short dominant pulse answered as a wake-up | check |
+| 21 | wake-up answer as long as the pulse, to the bit sampling (%0d clocks) | check |
+| 22 | 8-bit wake-up pulse answered with 9 sampled bit times (%0d clocks) | check |
+| 23 | awake for 24 idle bit times | check |
+| 24 | sleep exactly 24 idle bit times after reset (%0d clocks) | check |
+| 25 | bus activity leaves sleep | check |
 
 ## 3. UVM 測試平台內容
 
@@ -95,12 +89,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（12 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（25 個 check，mutation score 100%）。
 
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- sync byte 0x55 received without bit error
-- checksum output carries the received checksum byte
-- re-transmitted frame ends with the checksum
-- wrong checksum byte flagged
+無已知缺口。
 

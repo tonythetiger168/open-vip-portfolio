@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Memory |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，33 個 check，全部通過 |
-| Mutation | 9/12 個 mutant 被偵測（75%） |
-| 判定 | **🟡 Partial**（mutation score 75%） |
+| 功能測試 | 1 個檔案，35 個 check，全部通過 |
+| Mutation | 10/10 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（35 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_sd_tb.sv`
 
-結果：**PASS**（verilator，33 checks）
+結果：**PASS**（verilator，35 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -42,19 +42,16 @@ Model contract (from tb_top.sv):
      checksum -> err, data_crc_ok low), then busy 32 clocks. CMD38 erases
      blocks 0-15 (busy 64), CMD12 busy 32. Block address >= 2048 is out of
      range; unknown indices and ACMD41 without CMD55 are illegal.
-Known defect (XFAIL): the command CRC7 is computed over {00, index,
-argument} instead of {0, 1, index, argument}; after checking that the test
-sends the CRC the model expects.
-Known deviations (XFAIL): R2 loses its transmission bit (137-bit frame in
-a 136-bit register); R6 puts CURRENT_STATE in bits 15:12 of its 16-bit
-status field instead of 12:9.
+The command CRC7 covers {0, 1, index, argument}; R2 is {0, 0, 111111,
+register[127:1]} with the register's CRC7 over [127:8] in [7:1]; R6 puts
+CURRENT_STATE in bits 12:9 of its 16-bit status field.
 ```
 
 | # | Check | 類型 |
 |---|---|---|
 | 1 | ready, idle state after reset | check |
 | 2 | CMD13 answered with R1 | check |
-| 3 | command with the specified CRC7 is accepted | XFAIL（模型缺陷） |
+| 3 | command with the specified CRC7 is accepted | check |
 | 4 | CMD0: no response, idle | check |
 | 5 | CMD8: R7 echoes voltage and check pattern 0x1AA | check |
 | 6 | ACMD41 without CMD55 is rejected (ILLEGAL_COMMAND) | check |
@@ -62,29 +59,31 @@ status field instead of 12:9.
 | 8 | ACMD41: R3 with OCR | check |
 | 9 | ACMD41 moves to ready, APP_CMD cleared | check |
 | 10 | CMD2: R2 with the CID | check |
-| 11 | R2 starts with 0, 0, 111111 | XFAIL（模型缺陷） |
-| 12 | CMD2 moves to ident | check |
-| 13 | CMD3: R6 publishes RCA 0x0001 | check |
-| 14 | R6 reports CURRENT_STATE (ident) in bits 12:9 | XFAIL（模型缺陷） |
-| 15 | CMD3 moves to stby | check |
-| 16 | CMD9: R2 with the CSD | check |
-| 17 | CMD7: R1 from stby, card selected (tran) | check |
-| 18 | CMD6: 64-byte switch status on DAT, high nibble first | check |
-| 19 | CMD17 reads block 7 (initial pattern) | check |
-| 20 | CMD24: good checksum, busy ~32 clocks (%0d) | check |
-| 21 | back to tran after programming | check |
-| 22 | written block read back through 4-bit DAT | check |
-| 23 | bad data checksum flags err | check |
-| 24 | CMD38: busy ~64 clocks (%0d) | check |
-| 25 | erased block reads 0xFF | check |
-| 26 | erase stops at block 15 | check |
-| 27 | CMD12: R1b, busy ~32 clocks | check |
-| 28 | read beyond capacity: ADDRESS_OUT_OF_RANGE | check |
-| 29 | erase start beyond capacity: ADDRESS_OUT_OF_RANGE | check |
-| 30 | CMD1 is illegal for SD | check |
-| 31 | bad CRC: COM_CRC_ERROR | check |
-| 32 | 47-bit burst ignored | check |
-| 33 | reset aborts the read | check |
+| 11 | R2 ends with the CID CRC7 and the end bit | check |
+| 12 | R2 starts with 0, 0, 111111 | check |
+| 13 | CMD2 moves to ident | check |
+| 14 | CMD3: R6 publishes RCA 0x0001 | check |
+| 15 | R6 reports CURRENT_STATE (ident) in bits 12:9, no error bits | check |
+| 16 | CMD3 moves to stby | check |
+| 17 | CMD9: R2 with the CSD and its CRC7 | check |
+| 18 | CMD7: R1 from stby, card selected (tran) | check |
+| 19 | CMD6: 64-byte switch status on DAT, high nibble first | check |
+| 20 | CMD17 reads block 7 (initial pattern) | check |
+| 21 | CMD17 reads block 0 (initial pattern from address 0) | check |
+| 22 | CMD24: good checksum, busy ~32 clocks (%0d) | check |
+| 23 | back to tran after programming | check |
+| 24 | written block read back through 4-bit DAT | check |
+| 25 | bad data checksum flags err | check |
+| 26 | CMD38: busy ~64 clocks (%0d) | check |
+| 27 | erased block reads 0xFF | check |
+| 28 | erase stops at block 15 | check |
+| 29 | CMD12: R1b, busy ~32 clocks | check |
+| 30 | read beyond capacity: ADDRESS_OUT_OF_RANGE | check |
+| 31 | erase start beyond capacity: ADDRESS_OUT_OF_RANGE | check |
+| 32 | CMD1 is illegal for SD | check |
+| 33 | bad CRC: COM_CRC_ERROR | check |
+| 34 | 47-bit burst ignored | check |
+| 35 | reset aborts the read | check |
 
 ## 3. UVM 測試平台內容
 
@@ -99,17 +98,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 75%）。
+判定：**✅ Sufficient**（35 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_sd_card_dut.sv:60 0 -> 1 [for (int i = 0; i < CAP_BYTES; i++) mem[i] = i[7:0] ^ 8'hA5;]`
-- `dut_sd_card_dut.sv:180 0 -> 1 [if (!bad_addr && !bad_crc) begin data_cnt <= 0; nib <= 0; cs]`
-- `dut_sd_card_dut.sv:201 0 -> 1 [if (idx != 6'd0) bit_cnt <= 0;]`
-
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- command with the specified CRC7 is accepted
-- R2 starts with 0, 0, 111111
-- R6 reports CURRENT_STATE (ident) in bits 12:9
+無已知缺口。
 
