@@ -50,7 +50,9 @@ def run(cmd, cwd, timeout):
         out = e.stdout if isinstance(e.stdout, str) else ""
         return 124, out + "\nTIMEOUT"
 
-def build(vip, suite):
+def build(vip, suite, extra=()):
+    """Verilate the VIP's UVM testbench; ``extra``: more verilator options
+    (tools/coverage.py adds --coverage-user)."""
     vdir = os.path.join(VIPS, vip)
     work = os.path.join(WORK, vip)
     shutil.rmtree(work, ignore_errors=True)
@@ -59,7 +61,7 @@ def build(vip, suite):
            "-j", os.environ.get("UVM_JOBS", str(os.cpu_count() or 1)),
            "-Wno-fatal", "-Wno-lint", "-Wno-style", "--top-module", "top_tb",
            "-Mdir", os.path.join(work, "obj"), "+define+UVM_NO_DPI",
-           "+incdir+" + UVM] + ["+incdir+" + os.path.join(vdir, d) for d in suite["incs"]] \
+           "+incdir+" + UVM] + list(extra) + ["+incdir+" + os.path.join(vdir, d) for d in suite["incs"]] \
           + [os.path.join(UVM, "uvm_pkg.sv")] + [os.path.join(vdir, f) for f in suite["files"]]
     rc, out = run(cmd, work, 3600)
     with open(os.path.join(work, "build.log"), "w") as f:

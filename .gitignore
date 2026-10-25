@@ -49,3 +49,4 @@ uvm-core/
 func_report.csv
 mutation_report.csv
 uvm_report.csv
+coverage_report.csv
