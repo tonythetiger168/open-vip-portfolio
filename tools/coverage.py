@@ -46,7 +46,7 @@ and per VIP the merged
 executed). Env: VIPS_DIR, VERILATOR_COVERAGE (default verilator_coverage).
 """
 import os, re, sys, csv, shutil, importlib.util
-from multiprocessing import Pool
+from multiprocessing import Pool, Lock
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WORK = os.path.join(ROOT, "build", "cov")
@@ -73,6 +73,8 @@ def rf():
         spec.loader.exec_module(_rf)
     return _rf
 
+UVM_LOCK = Lock()   # inherited by the fork()ed Pool workers
+
 _ru = None
 def ru():
     global _ru
@@ -88,7 +90,10 @@ def cover_uvm(vip):
     """Run the VIP's Verilator UVM tests with covergroup coverage.
     Returns ({metric: [hit, total]} or None, detail)."""
     suite = ru().SUITES[vip]
-    exe, err = ru().build(vip, suite, ["--coverage-user"])
+    # one UVM build at a time: each takes several GB, and parallel ones
+    # get the C++ compiler OOM-killed
+    with UVM_LOCK:
+        exe, err = ru().build(vip, suite, ["--coverage-user"])
     if exe is None:
         return None, "UVM build: " + err
     dats = []
