@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Storage |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，37 個 check，全部通過 |
-| Mutation | 9/12 個 mutant 被偵測（75%） |
-| 判定 | **🟡 Partial**（mutation score 75%） |
+| 功能測試 | 1 個檔案，42 個 check，全部通過 |
+| Mutation | 10/10 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（42 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_sas_tb.sv`
 
-結果：**PASS**（verilator，37 checks）
+結果：**PASS**（verilator，42 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -39,55 +39,58 @@ Model contract (from tb/top_tb.sv and sas_defs.sv), an abstracted SAS link:
    the DATA frame then CREDIT (bad checksum -> NAK), last_payload_len =
    word count; DATA without a connection is ignored; CLOSE closes.
 
-Model defect: the zero-run counter is not cleared on entering speed
-negotiation, so a zero run longer than 32 clocks bounces SN -> DOWN and
-the link only comes up when the run is 32 (mod 34) clocks long. The VIP
-driver's COMRESET (48 clocks low, then toggles) never brings it up (XFAIL).
-The target is single-threaded: it listens again only after the trailing
-idle bit of its own response, so a frame started right after the response
-(as sas_driver does) is missed; the test leaves an 8-clock gap and checks
-the back-to-back case as XFAIL.
+A zero run of any length >= 32 clocks starts speed negotiation (the VIP
+driver's COMRESET is 48 clocks low, then 32 toggles). The byte receiver
+runs alongside the frame server, so a frame may start right after a
+response's stop bit; it arms once txp has idled high after negotiation,
+so toggles sent after phy_ready rises are ignored. An oversize DATA frame
+is consumed whole and not answered.
 ```
 
 | # | Check | 類型 |
 |---|---|---|
 | 1 | reset: PHY not ready, rxp idle high, no credits | check |
 | 2 | 20-clock zero run is not an OOB signal | check |
-| 3 | VIP driver OOB (48 zero clocks, 32 toggles) brings the PHY ready | XFAIL（模型缺陷） |
+| 3 | VIP driver OOB (48 zero clocks, 32 toggles) brings the PHY ready | check |
 | 4 | 32-clock zero run enters speed negotiation; 16 toggles are not enough | check |
-| 5 | 30 toggles complete speed negotiation: PHY ready | check |
-| 6 | IDENTIFY answered with IDENTIFY from the target address | check |
-| 7 | response bytes have valid stop bits | check |
-| 8 | frame sent right after the response's stop bit is received | XFAIL（模型缺陷） |
-| 9 | DATA without an open connection is ignored | check |
-| 10 | OPEN to another address -> REJECT | check |
-| 11 | OPEN with a bad checksum -> REJECT | check |
-| 12 | OPEN_WRITE to the target -> ACCEPT | check |
-| 13 | ACCEPT grants 4 credits | check |
-| 14 | DATA (4 words) echoed with its address and payload | check |
-| 15 | CREDIT frame follows the echo | check |
-| 16 | last_payload_len = 4, data_frame_active pulsed | check |
-| 17 | one credit consumed by DATA, returned with CREDIT | check |
-| 18 | 1-word DATA echoed | check |
-| 19 | CREDIT, last_payload_len = 1 | check |
-| 20 | empty DATA echoed | check |
-| 21 | CREDIT, last_payload_len = 0 | check |
-| 22 | DATA with a bad checksum -> NAK, credits unchanged | check |
-| 23 | no echo / CREDIT after a NAK | check |
-| 24 | DATA with more than 4 words is not echoed | check |
-| 25 | remainder of an oversize DATA frame is not parsed as new frames | XFAIL（模型缺陷） |
-| 26 | link re-established: OPEN_READ accepted | check |
-| 27 | byte with a bad stop bit is dropped (no response) | check |
-| 28 | connection open before CLOSE | check |
-| 29 | CLOSE clears the credits | check |
-| 30 | DATA after CLOSE is ignored | check |
-| 31 | OPEN_READ re-opens the connection | check |
-| 32 | 33+ zero clocks while up drop phy_ready | check |
-| 33 | OOB brings the link back; the connection is closed | check |
-| 34 | IDENTIFY after link recovery | check |
-| 35 | link up after a full 32-toggle speed negotiation | check |
-| 36 | first frame after 32 SN toggles is received correctly | XFAIL（模型缺陷） |
-| 37 | reset drops phy_ready | check |
+| 5 | a 32-clock zero run during speed negotiation restarts the toggle count | check |
+| 6 | a full set of toggles then completes speed negotiation: PHY ready | check |
+| 7 | IDENTIFY answered with IDENTIFY from the target address | check |
+| 8 | response bytes have valid stop bits | check |
+| 9 | frame sent right after the response's stop bit is received | check |
+| 10 | DATA without an open connection is ignored | check |
+| 11 | OPEN to another address -> REJECT | check |
+| 12 | OPEN with a bad checksum -> REJECT | check |
+| 13 | OPEN_WRITE to the target -> ACCEPT | check |
+| 14 | ACCEPT grants 4 credits | check |
+| 15 | DATA (4 words) echoed with its address and payload | check |
+| 16 | CREDIT frame follows the echo | check |
+| 17 | last_payload_len = 4, data_frame_active pulsed | check |
+| 18 | one credit consumed by DATA, returned with CREDIT | check |
+| 19 | 1-word DATA echoed | check |
+| 20 | CREDIT, last_payload_len = 1 | check |
+| 21 | empty DATA echoed | check |
+| 22 | CREDIT, last_payload_len = 0 | check |
+| 23 | DATA with a bad checksum -> NAK, credits unchanged | check |
+| 24 | no echo / CREDIT after a NAK | check |
+| 25 | DATA with more than 4 words is not echoed | check |
+| 26 | remainder of an oversize DATA frame is not parsed as new frames | check |
+| 27 | link re-established: OPEN_READ accepted | check |
+| 28 | byte with a bad stop bit is dropped (no response) | check |
+| 29 | connection open before CLOSE | check |
+| 30 | CLOSE clears the credits | check |
+| 31 | DATA after CLOSE is ignored | check |
+| 32 | OPEN_READ re-opens the connection | check |
+| 33 | OPEN to another address while open -> REJECT | check |
+| 34 | DATA after a rejected OPEN is ignored | check |
+| 35 | OPEN_READ accepted again | check |
+| 36 | dropping to speed negotiation starts with no toggles counted | check |
+| 37 | 33+ zero clocks while up drop phy_ready | check |
+| 38 | OOB brings the link back; the connection is closed | check |
+| 39 | IDENTIFY after link recovery | check |
+| 40 | link up after a full 32-toggle speed negotiation | check |
+| 41 | first frame after 32 SN toggles is received correctly | check |
+| 42 | reset drops phy_ready | check |
 
 ## 3. UVM 測試平台內容
 
@@ -102,18 +105,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 75%）。
+判定：**✅ Sufficient**（42 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_sas_target_model.sv:24 0 -> 1 [int zero_cnt   = 0;]`
-- `dut_sas_target_model.sv:49 1'b0 inverted [if (vif_txp == 1'b0)      zero_cnt   <= zero_cnt + 1;]`
-- `dut_sas_target_model.sv:88 0 -> 1 [int io_nwords = 0;]`
-
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- VIP driver OOB (48 zero clocks, 32 toggles) brings the PHY ready
-- frame sent right after the response's stop bit is received
-- remainder of an oversize DATA frame is not parsed as new frames
-- first frame after 32 SN toggles is received correctly
+無已知缺口。
 

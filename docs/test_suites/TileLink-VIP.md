@@ -9,7 +9,7 @@
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，10 個 check，全部通過 |
-| Mutation | 7/7 個 mutant 被偵測（100%） |
+| Mutation | 9/9 個 mutant 被偵測（100%） |
 | 判定 | **✅ Sufficient**（10 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
@@ -44,7 +44,7 @@ Model contract (from tb/top_tb.sv), TL-UL A/D channels:
 | 5 | Get of an unwritten address returns 0 | check |
 | 6 | 50 random Put/Get: opcodes and data match the reference | check |
 | 7 | exactly one D beat per A request | check |
-| 8 | a_ready low while a request is outstanding | XFAIL（模型缺陷） |
+| 8 | a_ready low while a request is outstanding | check |
 | 9 | unsupported A opcode (PutPartialData) answered with AccessAck | check |
 | 10 | reset clears ready and D valid | check |
 
@@ -54,7 +54,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 3 | `tilelink_base_test`, `tilelink_random_test`, `tilelink_regression_test` |
+| UVM tests | 4 | `tilelink_base_test`, `tilelink_random_test`, `tilelink_regression_test`, `tilelink_ral_test` |
 | Sequences | 12 | `tilelink_base_sequence`, `tilelink_put_seq`, `tilelink_get_seq`, `tilelink_wr_rd_same_addr_seq`, `tilelink_size_sweep_seq`, `tilelink_data_corner_seq`, `tilelink_addr_sweep_seq`, `tilelink_error_inject_seq`, `tilelink_reset_seq`, `tilelink_random_sequence`, `tilelink_regression_sequence`, `tilelink_transaction` |
 | SVA（assert / cover property） | 18 / 3 | `a_tilelink_l1_clk`, `a_tilelink_l1_rst`, `a_tilelink_l1_state`, `a_tilelink_l1_valid`, `a_tilelink_trans_idle`, `a_tilelink_trans_a_channel`, `a_tilelink_trans_d_channel`, `a_tilelink_trans_retry`, `a_tilelink_l3_reset_idle`, `a_tilelink_l3_no_stuck`, `a_tilelink_l3_full_cycle`, `a_tilelink_l3_back_idle` … |
 | Covergroups / coverpoints | 3 / 8 | |
@@ -63,7 +63,5 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 判定：**✅ Sufficient**（10 個 check，mutation score 100%）。
 
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- a_ready low while a request is outstanding
+無已知缺口。
 

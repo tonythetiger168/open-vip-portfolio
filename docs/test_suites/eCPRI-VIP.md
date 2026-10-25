@@ -9,8 +9,8 @@
 | 類別 | Telecom |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，20 個 check，全部通過 |
-| Mutation | 27/30 個 mutant 被偵測（90%） |
-| 判定 | **✅ Sufficient**（20 個 check，mutation score 90%） |
+| Mutation | 28/30 個 mutant 被偵測（93%） |
+| 判定 | **✅ Sufficient**（20 個 check，mutation score 93%） |
 
 ## 2. 可執行的功能測試
 
@@ -34,7 +34,10 @@ valid/ready on both directions:
    payload, LSB byte first}. tx_ready is low one clock in five.
    A bad FCS pulses fcs_err. A Remote Memory Access request (type 4) with a
    good FCS is answered on rx: header with type 5 (same size, PC_ID,
-   SEQ_ID), the payload echoed, and the response FCS.
+   SEQ_ID), the payload echoed, and the response FCS. rx_valid does not
+   wait for rx_ready and holds each word until it is taken; responses to
+   requests that arrive while one is being sent are queued. A zero-length
+   request is header + FCS.
 ```
 
 | # | Check | 類型 |
@@ -52,10 +55,10 @@ valid/ready on both directions:
 | 11 | request with a bad FCS is not answered | check |
 | 12 | FCS checked on IQ data frames too | check |
 | 13 | next good request answered after an FCS error | check |
-| 14 | rx_valid asserted without waiting for rx_ready | XFAIL（模型缺陷） |
-| 15 | FCS beat held while rx_ready is low | XFAIL（模型缺陷） |
-| 16 | request received while a response is pending is answered too | XFAIL（模型缺陷） |
-| 17 | zero-length request is terminated by its FCS word and answered | XFAIL（模型缺陷） |
+| 14 | rx_valid asserted without waiting for rx_ready | check |
+| 15 | FCS beat held while rx_ready is low | check |
+| 16 | request received while a response is pending is answered too | check |
+| 17 | zero-length request is terminated by its FCS word and answered | check |
 | 18 | reset clears the response path | check |
 | 19 | request answered after reset | check |
 
@@ -72,18 +75,10 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（20 個 check，mutation score 90%）。
+判定：**✅ Sufficient**（20 個 check，mutation score 93%）。
 
 未被偵測的 mutant（測試缺口或等價 mutant）：
 
-- `dut_ecpri_endpoint_dut.sv:110 1'b1 inverted [vif_tx_ready <= 1'b1;]`
-- `dut_ecpri_endpoint_dut.sv:114 0 -> 1 [rd_stall    <= 0;]`
-- `dut_ecpri_endpoint_dut.sv:117 0 -> 1 [rsp_idx     <= 0;]`
-
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- rx_valid asserted without waiting for rx_ready
-- FCS beat held while rx_ready is low
-- request received while a response is pending is answered too
-- zero-length request is terminated by its FCS word and answered
+- `dut_ecpri_endpoint_dut.sv:104 1'b1 inverted [vif_tx_ready <= 1'b1;]`
+- `dut_ecpri_endpoint_dut.sv:108 0 -> 1 [rd_stall    <= 0;]`
 

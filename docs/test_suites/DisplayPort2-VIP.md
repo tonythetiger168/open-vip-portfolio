@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Storage/Debug |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，14 個 check，全部通過 |
-| Mutation | 18/18 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（14 個 check，mutation score 100%） |
+| 功能測試 | 1 個檔案，16 個 check，全部通過 |
+| Mutation | 23/23 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（16 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_displayport2_tb.sv`
 
-結果：**PASS**（iverilog，14 checks）
+結果：**PASS**（iverilog，16 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -35,27 +35,27 @@ Model contract (from top/top_tb.sv), one event per clock:
    * sdp_valid counts an SDP; type 0x30 (PSR) is also counted as PSR.
    * the sink becomes "trained" on K28.5 (0xBC) on all four lanes; after
      that a K character during active video is counted (`uvm_warning).
-Known defect (XFAIL): lane_data is 4 bits wide but is compared with the
-32-bit {4{8'hBC}}, so the sink never becomes trained and K characters in
-the video stream are never flagged.
+     lane_data carries one 8-bit symbol per lane (lane 0 in [7:0]).
 ```
 
 | # | Check | 類型 |
 |---|---|---|
-| 1 | K28.5 on all four lanes completes training | XFAIL（模型缺陷） |
-| 2 | three legal 1080p MSAs counted, no error | check |
-| 3 | active == total and sync end == start are legal | check |
-| 4 | hactive > htotal flagged | check |
-| 5 | vactive > vtotal flagged | check |
-| 6 | hsync end before start flagged | check |
-| 7 | vsync end before start flagged | check |
-| 8 | active and sync violations in one MSA are both flagged | check |
-| 9 | MSA without main stream counted, not checked | check |
-| 10 | every SDP counted | check |
-| 11 | PSR SDPs (type 0x30) counted | check |
-| 12 | K character during active video after training is flagged | XFAIL（模型缺陷） |
-| 13 | no K-character check before link training is done | check |
-| 14 | reset clears the training state | check |
+| 1 | K28.5 on only three lanes does not train | check |
+| 2 | K flag missing on lane 3 does not train | check |
+| 3 | K28.5 on all four lanes completes training | check |
+| 4 | three legal 1080p MSAs counted, no error | check |
+| 5 | active == total and sync end == start are legal | check |
+| 6 | hactive > htotal flagged | check |
+| 7 | vactive > vtotal flagged | check |
+| 8 | hsync end before start flagged | check |
+| 9 | vsync end before start flagged | check |
+| 10 | active and sync violations in one MSA are both flagged | check |
+| 11 | MSA without main stream counted, not checked | check |
+| 12 | every SDP counted | check |
+| 13 | PSR SDPs (type 0x30) counted | check |
+| 14 | K character during active video after training is flagged | check |
+| 15 | no K-character check before link training is done | check |
+| 16 | reset clears the training state | check |
 
 ## 3. UVM 測試平台內容
 
@@ -70,10 +70,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（14 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（16 個 check，mutation score 100%）。
 
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- K28.5 on all four lanes completes training
-- K character during active video after training is flagged
+無已知缺口。
 

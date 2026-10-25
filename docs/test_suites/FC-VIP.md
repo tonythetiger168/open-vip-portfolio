@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Networking |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，28 個 check，全部通過 |
-| Mutation | 11/12 個 mutant 被偵測（92%） |
-| 判定 | **✅ Sufficient**（28 個 check，mutation score 92%） |
+| 功能測試 | 1 個檔案，30 個 check，全部通過 |
+| Mutation | 12/12 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（30 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_fc_tb.sv`
 
-結果：**PASS**（verilator，28 checks）
+結果：**PASS**（verilator，30 checks）
 
 | # | Check | 類型 |
 |---|---|---|
@@ -30,26 +30,28 @@
 | 6 | link leaves DOWN on the 6th clock after reset release | check |
 | 7 | ready / credit_rdy / fc_rdy high once the link is up | check |
 | 8 | 40-byte frame: one fcs_valid, crc_ok, no errors | check |
-| 9 | second identical frame with a correct CRC accepted | XFAIL（模型缺陷） |
-| 10 | frame with the model's running CRC: crc_ok | check |
-| 11 | 2084-byte frame with idle gaps: crc_ok | check |
-| 12 | partial last beat (be = 0x03) honoured | check |
-| 13 | corrupted CRC: crc_error pulse, crc_ok low | check |
-| 14 | fcs_valid / crc_error are single-clock pulses | check |
-| 15 | 32-byte frame (< 36) raises len_error | check |
-| 16 | crc_ok recovers on the next good frame | check |
-| 17 | (2152-byte frame carries a CRC the model accepts) | check |
-| 18 | frame longer than 2148 bytes raises len_error | XFAIL（模型缺陷） |
-| 19 | EOP without SOP raises framing_error | XFAIL（模型缺陷） |
-| 20 | fcs_error / fec_uncorrectable stay low | check |
-| 21 | 4 frames consume credits | check |
-| 22 | 4 back-to-back SOPs exhaust BB_Credit: ready low | check |
-| 23 | no SOP accepted with zero credit | check |
-| 24 | 4 R_RDY pulses, 8 clocks apart, return the credits | check |
-| 25 | all credits restored | check |
-| 26 | frame without fc_valid consumes no credit | check |
-| 27 | credit consumed in the R_RDY clock is counted (3 left) | XFAIL（模型缺陷） |
-| 28 | reset drops the link, clears crc_ok and restores credits | check |
+| 9 | second identical frame with a correct CRC accepted | check |
+| 10 | 2084-byte frame with idle gaps: crc_ok | check |
+| 11 | partial last beat (be = 0x03) honoured | check |
+| 12 | corrupted CRC: crc_error pulse, crc_ok low | check |
+| 13 | fcs_valid / crc_error are single-clock pulses | check |
+| 14 | 32-byte frame (< 36) raises len_error | check |
+| 15 | crc_ok recovers on the next good frame | check |
+| 16 | 2152-byte frame: CRC still checked (good) | check |
+| 17 | frame longer than 2148 bytes raises len_error | check |
+| 18 | 2144-byte frame (within 2148): no len_error | check |
+| 19 | EOP without SOP raises framing_error | check |
+| 20 | EOP without SOP is not evaluated as a frame | check |
+| 21 | fcs_error / fec_uncorrectable stay low | check |
+| 22 | next frame (SOP) clears framing_error | check |
+| 23 | 4 frames consume credits | check |
+| 24 | 4 back-to-back SOPs exhaust BB_Credit: ready low | check |
+| 25 | no SOP accepted with zero credit | check |
+| 26 | 4 R_RDY pulses, 8 clocks apart, return the credits | check |
+| 27 | all credits restored | check |
+| 28 | frame without fc_valid consumes no credit | check |
+| 29 | credit consumed in the R_RDY clock is counted (3 left) | check |
+| 30 | reset drops the link, clears crc_ok and restores credits | check |
 
 ## 3. UVM 測試平台內容
 
@@ -64,16 +66,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（28 個 check，mutation score 92%）。
+判定：**✅ Sufficient**（30 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_net_fc_model.sv:136 < -> <= in condition [if (frame_q.size() < 36) begin]`
-
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- second identical frame with a correct CRC accepted
-- frame longer than 2148 bytes raises len_error
-- EOP without SOP raises framing_error
-- credit consumed in the R_RDY clock is counted (3 left)
+無已知缺口。
 

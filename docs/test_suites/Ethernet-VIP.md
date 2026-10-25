@@ -9,8 +9,8 @@
 | 類別 | Networking |
 | 類型 | UVM VIP |
 | 功能測試 | 2 個檔案，37 個 check，全部通過 |
-| Mutation | 25/27 個 mutant 被偵測（93%） |
-| 判定 | **✅ Sufficient**（37 個 check，mutation score 93%） |
+| Mutation | 24/26 個 mutant 被偵測（92%） |
+| 判定 | **✅ Sufficient**（37 個 check，mutation score 92%） |
 
 ## 2. 可執行的功能測試
 
@@ -31,7 +31,7 @@
 | 7 | 64-byte frame over 2 beats (partial BE): crc_ok | check |
 | 8 | fcs_valid is a one-clock pulse | check |
 | 9 | corrupted FCS: crc_error, crc_ok cleared | check |
-| 10 | 56-byte frame (under the 64-byte minimum) gives len_error | XFAIL（模型缺陷） |
+| 10 | 56-byte frame (under the 64-byte minimum) gives len_error | check |
 | 11 | 48-byte frame gives len_error | check |
 | 12 | PAUSE frame drops ready for 4 clocks (%0d) | check |
 | 13 | PAUSE frame itself is a good frame | check |
@@ -80,14 +80,10 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（37 個 check，mutation score 93%）。
+判定：**✅ Sufficient**（37 個 check，mutation score 92%）。
 
 未被偵測的 mutant（測試缺口或等價 mutant）：
 
-- `dut_net_mac_model.sv:119 4 -> 5 [for (int i = 0; i < 4; i++)]`
+- `dut_net_mac_model.sv:117 0 -> 1 [in_frame <= 0;]`
 - `dut_net_mac_model.sv:132 && flipped [if (frame_q.size() > 22 && frame_q[20] == 8'h88 && frame_q[2]`
-
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- 56-byte frame (under the 64-byte minimum) gives len_error
 

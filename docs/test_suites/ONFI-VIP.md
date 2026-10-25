@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Memory |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，37 個 check，全部通過 |
-| Mutation | 7/8 個 mutant 被偵測（88%） |
-| 判定 | **✅ Sufficient**（37 個 check，mutation score 88%） |
+| 功能測試 | 1 個檔案，39 個 check，全部通過 |
+| Mutation | 8/8 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（39 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_onfi_tb.sv`
 
-結果：**PASS**（verilator，37 checks）
+結果：**PASS**（verilator，39 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -34,7 +34,10 @@ cycles as the VIP driver sends them: column, page, block (erase: page,
 block); the model uses the last two bytes. 64 blocks x 64 pages x
 256 bytes, erased = 0xFF. R/B# low for tR = 25, tPROG = 200,
 tBERS = 2000, tRST = 10 clocks. Status: [7] WP# (1 = not protected),
-[6] ready, [0] FAIL. READ ID / parameter page return "ONFI".
+[6] ready, [0] FAIL. READ ID returns "ONFI" + 01h; the parameter page
+starts with "ONFI" and ends with its CRC-16. 80h fills the page register
+with FFh; SET/GET FEATURES carry P1..P4; 00h after 70h during a page read
+resumes the data output.
 
 Not modelled (limitations, not tested): column addressing, the ONFI
 2-column + 3-row address format, multi-plane/cache operations.
@@ -46,39 +49,41 @@ Not modelled (limitations, not tested): column addressing, the ONFI
 | 2 | READ ID (address 20h) returns the ONFI signature | check |
 | 3 | READ ID 5th byte 01h, then wraps | check |
 | 4 | IO not driven with CE# high | check |
-| 5 | parameter page starts with the ONFI signature | check |
-| 6 | parameter page integrity CRC (bytes 254-255) valid | XFAIL（模型缺陷） |
-| 7 | READ STATUS: C0h (not protected, ready, pass) | check |
-| 8 | READ STATUS bit 7 low with WP# asserted | check |
-| 9 | READ (00h-30h): R/B# low for tR = 25 clocks | check |
-| 10 | erased page reads FFh (and FFh past the page end) | check |
-| 11 | PROGRAM (80h-10h): R/B# low for tPROG = 200 clocks | check |
-| 12 | status after program: ready, pass | check |
-| 13 | programmed page reads back | check |
-| 14 | page read with RE# high for 1..4 clocks between bytes | check |
-| 15 | pages in other blocks / pages are independent | check |
-| 16 | partial program: written bytes stored | check |
-| 17 | partial program: unwritten bytes of the page stay FFh | XFAIL（模型缺陷） |
-| 18 | ERASE (60h-D0h): R/B# low for tBERS = 2000 clocks | check |
-| 19 | status after erase: ready, pass | check |
-| 20 | erased block reads FFh | check |
-| 21 | erase leaves other blocks intact | check |
-| 22 | erase clears the first and last page of the block | check |
-| 23 | erase leaves the last page of the previous block intact | check |
-| 24 | program with WP# asserted: status protected + FAIL | check |
-| 25 | erase with WP# asserted: status protected + FAIL | check |
-| 26 | write-protected program / erase leave the array unchanged | check |
-| 27 | next program with WP# released passes (FAIL cleared) | check |
-| 28 | GET FEATURES returns P1 written by SET FEATURES | check |
-| 29 | GET FEATURES returns P2..P4 | XFAIL（模型缺陷） |
-| 30 | unwritten feature address reads 00h | check |
-| 31 | status bit 6 low while the array is busy | check |
-| 32 | status bit 6 high once ready | check |
-| 33 | 00h after 70h resumes page data output | XFAIL（模型缺陷） |
-| 34 | RESET (FFh): R/B# low for tRST = 10 clocks | check |
-| 35 | status after RESET: C0h | check |
-| 36 | busy during erase | check |
-| 37 | reset pin ends the busy period | check |
+| 5 | one byte per RE# pulse however long RE# is low; RE# pulses with CE# high are ignored | check |
+| 6 | parameter page starts with the ONFI signature | check |
+| 7 | parameter page integrity CRC (bytes 254-255) valid | check |
+| 8 | parameter page geometry: 256-byte pages, 64 pages, 64 blocks | check |
+| 9 | READ STATUS: C0h (not protected, ready, pass) | check |
+| 10 | READ STATUS bit 7 low with WP# asserted | check |
+| 11 | READ (00h-30h): R/B# low for tR = 25 clocks | check |
+| 12 | erased page reads FFh (and FFh past the page end) | check |
+| 13 | PROGRAM (80h-10h): R/B# low for tPROG = 200 clocks | check |
+| 14 | status after program: ready, pass | check |
+| 15 | programmed page reads back | check |
+| 16 | page read with RE# high for 1..4 clocks between bytes | check |
+| 17 | pages in other blocks / pages are independent | check |
+| 18 | partial program: written bytes stored | check |
+| 19 | partial program: unwritten bytes of the page stay FFh | check |
+| 20 | ERASE (60h-D0h): R/B# low for tBERS = 2000 clocks | check |
+| 21 | status after erase: ready, pass | check |
+| 22 | erased block reads FFh | check |
+| 23 | erase leaves other blocks intact | check |
+| 24 | erase clears the first and last page of the block | check |
+| 25 | erase leaves the last page of the previous block intact | check |
+| 26 | program with WP# asserted: status protected + FAIL | check |
+| 27 | erase with WP# asserted: status protected + FAIL | check |
+| 28 | write-protected program / erase leave the array unchanged | check |
+| 29 | next program with WP# released passes (FAIL cleared) | check |
+| 30 | GET FEATURES returns P1 written by SET FEATURES | check |
+| 31 | GET FEATURES returns P2..P4 | check |
+| 32 | unwritten feature address reads 00h | check |
+| 33 | status bit 6 low while the array is busy | check |
+| 34 | status bit 6 high once ready | check |
+| 35 | 00h after 70h resumes page data output | check |
+| 36 | RESET (FFh): R/B# low for tRST = 10 clocks | check |
+| 37 | status after RESET: C0h | check |
+| 38 | busy during erase | check |
+| 39 | reset pin ends the busy period | check |
 
 ## 3. UVM 測試平台內容
 
@@ -93,18 +98,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（37 個 check，mutation score 88%）。
-
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_onfi_nand_model.sv:195 1'b1 inverted [if (!vif_ce_n && prev_re_n == 1'b0 && vif_re_n == 1'b1) begi]`
-
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- parameter page integrity CRC (bytes 254-255) valid
-- partial program: unwritten bytes of the page stay FFh
-- GET FEATURES returns P2..P4
-- 00h after 70h resumes page data output
+判定：**✅ Sufficient**（39 個 check，mutation score 100%）。
 
 模型未實作的功能（不在測試範圍）：
 

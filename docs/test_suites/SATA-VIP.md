@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Storage/Debug |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，26 個 check，全部通過 |
+| 功能測試 | 1 個檔案，28 個 check，全部通過 |
 | Mutation | 10/11 個 mutant 被偵測（91%） |
-| 判定 | **✅ Sufficient**（26 個 check，mutation score 91%） |
+| 判定 | **✅ Sufficient**（28 個 check，mutation score 91%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_sata_tb.sv`
 
-結果：**PASS**（verilator，26 checks）
+結果：**PASS**（verilator，28 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -34,12 +34,11 @@ Model contract (from tb/top_tb.sv):
    * once the link is up the host sends Register H2D FISes (fis_type 0x27)
      cycling the commands IDENTIFY 0xEC, READ DMA EXT 0x25, WRITE SECTORS
      0x30, WRITE DMA 0xCA. Each FIS is three dwords D, D+1, D+2 with
-     D = {8'h00, command, 8'h00, 8'hA0}; fis_start marks the first dword,
+     D = {8'h00, command, 8'h80, 8'h27} (Features, Command, C bit, FIS
+     type 0x27 as in Register H2D dword 0); fis_start marks the first dword,
      fis_end the last. A dword advances only when ready is high and sync
      is low; one idle clock separates FISes.
-Known deviations (XFAIL): FIS dword 0 should carry the FIS type 0x27 in
-bits [7:0] and the C bit (bit 15) set for a command; a reset after the
-link is up should drop link_up and repeat OOB.
+   * a reset at any time drops link_up and restarts OOB from COMRESET.
 ```
 
 | # | Check | 類型 |
@@ -56,12 +55,14 @@ link is up should drop link_up and repeat OOB.
 | 10 | FIS %0d is Register H2D (0x27) | check |
 | 11 | FIS %0d: command %h in three consecutive dwords | check |
 | 12 | fis_count counts completed FISes | check |
-| 13 | dword 0 carries FIS type 0x27 and the C bit | XFAIL（模型缺陷） |
+| 13 | dword 0 carries FIS type 0x27 and the C bit | check |
 | 14 | ready low holds the FIS dword | check |
 | 15 | transfer resumes intact after backpressure | check |
 | 16 | SYNC holds the FIS dword | check |
 | 17 | reset clears the FIS engine | check |
-| 18 | reset drops link_up and restarts OOB | XFAIL（模型缺陷） |
+| 18 | reset drops link_up | check |
+| 19 | OOB restarts with COMRESET after reset | check |
+| 20 | link comes back up after the repeated OOB | check |
 
 ## 3. UVM 測試平台內容
 
@@ -76,14 +77,9 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（26 個 check，mutation score 91%）。
+判定：**✅ Sufficient**（28 個 check，mutation score 91%）。
 
 未被偵測的 mutant（測試缺口或等價 mutant）：
 
-- `dut_sata_host_model.sv:38 0 -> 1 [vif_fis_start = 0; vif_fis_end = 0;]`
-
-DUT 模型缺陷（XFAIL check，修好模型後會變成 XPASS 提醒移除標記）：
-
-- dword 0 carries FIS type 0x27 and the C bit
-- reset drops link_up and restarts OOB
+- `dut_sata_host_model.sv:40 0 -> 1 [vif_link_up = 0; vif_link_speed = 3'd3;]`
 
