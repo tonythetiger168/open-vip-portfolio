@@ -15,7 +15,9 @@ need no randomize() are run by default.
 A test passes when the simulation finishes, reports no UVM_ERROR/UVM_FATAL
 and no UVM_WARNING from the VIP's own code (its protocol checkers / SVA warn
 rather than error, and legal register traffic must not trip them), and
-prints ``RAL_PASS checks=<n>`` (RAL tests). Output: one line per test
+prints ``RAL_PASS checks=<n>`` (RAL tests) or ``SB_PASS checks=<n>`` (the
+agent tests of the template-built VIPs: scoreboard checks against the
+reference model of the DUT). Output: one line per test
 ``UVM_PASS|UVM_FAIL|UVM_ERROR <VIP>/<test> -- detail`` and, for a full run,
 ``uvm_report.csv`` (vip,test,result,checks,detail) in the repo root.
 Exit status is non-zero when any test fails or cannot be built.
@@ -50,6 +52,26 @@ SUITES = {
                          incs=["common", "tilelink", "env", "tests", "tb"],
                          tests=["tilelink_ral_test"]),
 }
+
+# The template-built agents (tools/uvm_agents/<prefix>.py, rendered by
+# tools/gen_uvm_agents.py) share one layout: <dir>/<p>_{defs,if,pkg}.sv,
+# env/<p>_env.sv, tests/<p>_tests.sv, <dir>/sva/*.sv. Their <p>_func_test runs
+# directed + random traffic against the tb/top_tb.sv DUT model.
+def agent_suites():
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from gen_uvm_agents import all_specs
+    out = {}
+    for vip, s in all_specs().items():
+        d, p = s["dir"], s["p"]
+        out[vip] = dict(
+            files=["common/common_pkg.sv", "%s/%s_defs.sv" % (d, p), "%s/%s_if.sv" % (d, p),
+                   "%s/%s_pkg.sv" % (d, p), "env/%s_env.sv" % p, "tests/%s_tests.sv" % p,
+                   "%s/sva/%s_compliance_checker.sv" % (d, p), "tb/top_tb.sv"],
+            incs=[d, d + "/sva", "common", "env", "tests", "tb"],
+            tests=["%s_func_test" % p])
+    return out
+
+SUITES.update(agent_suites())
 
 def run(cmd, cwd, timeout):
     try:
@@ -89,7 +111,7 @@ def classify(rc, out):
     warns = [l for l in out.splitlines()
              if l.startswith("UVM_WARNING ") and not re.match(r'UVM_WARNING\s*:', l)
              and not l.startswith("UVM_WARNING uvm-core") and "/uvm-core/" not in l.split("@")[0]]
-    m = re.search(r'^RAL_PASS checks=(\d+)', out, re.M)
+    m = re.search(r'^(?:RAL|SB)_PASS checks=(\d+)', out, re.M)
     if rc == 0 and m and errs == 0 and fatals == 0 and not warns:
         return "PASS", int(m.group(1)), ""
     first = [l for l in out.splitlines() if l.startswith(("UVM_ERROR ", "UVM_FATAL "))
