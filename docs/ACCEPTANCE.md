@@ -10,7 +10,7 @@ L1–L4 分層 SVA checker / functional DUT model / README，以及 `scripts/` �
 
 | 層級 | 名稱 | 工具需求 | 通過標準 |
 |------|------|----------|----------|
-| L1 | 開源靜態閘（elaboration gate + DUT 冒煙測試） | iverilog 11、pyslang 11、uvm-core | 87/87 `ELAB_ERRORS=0` 且全部 `SMOKE_PASS` |
+| L1 | 開源靜態閘（elaboration gate + DUT 冒煙測試 + 功能測試） | iverilog、Verilator 5.052、pyslang 12.0.0、uvm-core | 87/87 `ELAB_ERRORS=0` 且全部 `SMOKE_PASS` |
 | L2 | 單一 VIP 動態回歸（coverage-driven） | VCS 或 Xcelium 或 Questa（擇一） | line/fsm/toggle/assert 四項 coverage 皆達 100% |
 | L3 | 全 87 VIP 批次回歸 | 同 L2 | 87/87 `REGRESSION PASSED` |
 
@@ -49,12 +49,24 @@ iverilog -V | head -1                          # 預期：Icarus Verilog version
 > functional DUT model 冒煙測試**；UVM testbench 本身的編譯由 (b) 的 pyslang 靜態閘與
 > L2/L3 的商用模擬器負責。
 
-**(b) pyslang 11（elaboration gate 用）**
+**(b) pyslang 12.0.0（elaboration gate 用）**
 
 ```bash
-python3 -m pip install "pyslang>=11,<12"
-python3 -c "import pyslang; print(pyslang.VersionInfo.getMajor())"   # 預期輸出：11
+python3 -m pip install "pyslang==12.0.0"
+python3 -c "import pyslang; print(pyslang.__version__)"   # 預期輸出：12.0.0
 ```
+
+**(b2) Verilator v5.052（功能測試用，Icarus 無法解析的 DUT model 改由 Verilator 編譯）**
+
+```bash
+bash tools/install_tools.sh                 # 一次安裝 iverilog、Verilator v5.052、pyslang 12.0.0、uvm-core
+export PATH=/opt/verilator-5.052/bin:$PATH
+verilator --version                         # 預期：Verilator 5.052
+python3 tools/run_func_tests.py             # 全部功能測試，結果寫入 func_report.csv
+```
+
+> Ubuntu 套件庫的 Verilator 5.020 會在部分 DUT model（`fork ... join_none` 內的
+> `repeat`）觸發 V3Fork internal error，請使用 v5.052。
 
 **(c) Accellera uvm-core（UVM 標準庫原始碼）**
 

@@ -365,7 +365,8 @@ def flatten_module(vip_dir, mod_name, seg):
         if leftover:
             return None, None, "unresolved ifc refs: %s" % sorted(set(leftover))[:5]
 
-    hdr = "module %s (\n" % mod_name
+    # keep the parameter block so tests can override it (e.g. SLAVE_ADDR)
+    hdr = "module %s %s(\n" % (mod_name, ("#(%s) " % params.strip()) if params and params.strip() else "")
     plines = []
     for pm in ports_meta:
         dims = (" " + pm['dims']) if pm['dims'] else ""
