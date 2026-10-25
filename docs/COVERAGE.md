@@ -4,11 +4,11 @@
 
 ## 1. 結論
 
-- 135 個 VIP 中 134 個量到 code coverage（151 個功能測試中 150 個在 Verilator 上帶 coverage 執行）。
-- Line / branch coverage（全部 DUT model 合計）：90.6%（3395/3748）。
-- Toggle coverage（全部 DUT model 合計）：50.7%（45222/89228）。
-- Expression coverage（全部 DUT model 合計）：90.0%（2477/2753）。
-- Line coverage 100% 的 VIP 62 個，≥ 90% 的 113 個，低於 90% 的 21 個（見第 4 節）。
+- 132 個 VIP 中 131 個量到 code coverage（148 個功能測試中 147 個在 Verilator 上帶 coverage 執行）。
+- Line / branch coverage（全部 DUT model 合計）：90.5%（3326/3677）。
+- Toggle coverage（全部 DUT model 合計）：51.6%（44432/86160）。
+- Expression coverage（全部 DUT model 合計）：90.0%（2423/2692）。
+- Line coverage 100% 的 VIP 60 個，≥ 90% 的 111 個，低於 90% 的 20 個（見第 4 節）。
 - Functional coverage（covergroup bins，AHB-VIP / APB-VIP / AXI-VIP 的 UVM RAL test）：31.4%（172/547），其餘 UVM 環境的 covergroup 需商用模擬器（見第 2 節）。
 
 ## 2. 方法
@@ -132,7 +132,7 @@
 | [TileLink-VIP](test_suites/TileLink-VIP.md) | 1/1 | 100.0% (13/13) | 82.0% (287/350) | 100.0% (5/5) | - | - |
 | [ToggleNAND-VIP](test_suites/ToggleNAND-VIP.md) | 1/1 | 95.7% (45/47) | 50.8% (128/252) | 100.0% (38/38) | - | - |
 | [TypeC-VIP](test_suites/TypeC-VIP.md) | 1/1 | 88.9% (8/9) | 100.0% (18/18) | 100.0% (2/2) | - | - |
-| [UALink-VIP](test_suites/UALink-VIP.md) | 1/1 | 100.0% (10/10) | 15.9% (55/346) | 100.0% (8/8) | - | - |
+| [UALink-VIP](test_suites/UALink-VIP.md) | 1/1 | 100.0% (11/11) | 15.9% (55/346) | 100.0% (8/8) | - | - |
 | [UART-VIP](test_suites/UART-VIP.md) | 1/1 | 90.0% (18/20) | 90.0% (9/10) | 75.0% (3/4) | - | - |
 | [UCIe-VIP](test_suites/UCIe-VIP.md) | 1/1 | 100.0% (10/10) | 10.3% (137/1336) | 100.0% (14/14) | - | - |
 | [UEC-VIP](test_suites/UEC-VIP.md) | 1/1 | 100.0% (4/4) | 13.5% (566/4204) | 100.0% (12/12) | - | - |
@@ -150,7 +150,6 @@
 | [Wishbone-VIP](test_suites/Wishbone-VIP.md) | 1/1 | 96.3% (26/27) | 98.2% (432/440) | 100.0% (44/44) | - | - |
 | [XGMII-UVM-VIP](test_suites/XGMII-UVM-VIP.md) | 1/1 | 100.0% (3/3) | 99.3% (147/148) | 100.0% (2/2) | - | - |
 | [XGMII-VIP](test_suites/XGMII-VIP.md) | 1/1 | 58.8% (20/34) | 97.3% (617/634) | 85.7% (24/28) | - | - |
-| [ddr5-VIP](test_suites/ddr5-VIP.md) | 1/1 | 100.0% (23/23) | 16.3% (207/1272) | 95.2% (20/21) | - | - |
 | [ddr6-VIP](test_suites/ddr6-VIP.md) | 1/1 | 100.0% (23/23) | 16.3% (207/1272) | 95.2% (20/21) | - | - |
 | [ddr7-VIP](test_suites/ddr7-VIP.md) | 1/1 | 100.0% (23/23) | 16.3% (207/1272) | 95.2% (20/21) | - | - |
 | [eCPRI-VIP](test_suites/eCPRI-VIP.md) | 1/1 | 92.1% (35/38) | 73.4% (420/572) | 100.0% (20/20) | - | - |
@@ -161,11 +160,9 @@
 | [gddr7-VIP](test_suites/gddr7-VIP.md) | 1/1 | 85.7% (12/14) | 67.9% (186/274) | 58.3% (7/12) | - | - |
 | [hbm2-VIP](test_suites/hbm2-VIP.md) | 1/1 | 85.7% (12/14) | 67.9% (186/274) | 58.3% (7/12) | - | - |
 | [hbm3-VIP](test_suites/hbm3-VIP.md) | 1/1 | 85.7% (12/14) | 67.9% (186/274) | 58.3% (7/12) | - | - |
-| [hbm3e-VIP](test_suites/hbm3e-VIP.md) | 1/1 | 85.7% (12/14) | 67.9% (186/274) | 58.3% (7/12) | - | - |
 | [hbm4-VIP](test_suites/hbm4-VIP.md) | 1/1 | 85.7% (12/14) | 67.9% (186/274) | 58.3% (7/12) | - | - |
 | [lpddr5-VIP](test_suites/lpddr5-VIP.md) | 1/1 | 85.7% (12/14) | 67.9% (186/274) | 58.3% (7/12) | - | - |
 | [lpddr5x-VIP](test_suites/lpddr5x-VIP.md) | 1/1 | 100.0% (35/35) | 26.1% (397/1522) | 96.4% (27/28) | - | - |
-| [lpddr6-VIP](test_suites/lpddr6-VIP.md) | 1/1 | 100.0% (35/35) | 26.1% (397/1522) | 96.4% (27/28) | - | - |
 | [lpddr7-VIP](test_suites/lpddr7-VIP.md) | 1/1 | 100.0% (35/35) | 26.1% (397/1522) | 96.4% (27/28) | - | - |
 
 ## 4. Line coverage 低於 90% 的 VIP
@@ -189,7 +186,6 @@
 | gddr7-VIP | 85.7% | dut_gddr7_mem_model.sv:64 |
 | hbm2-VIP | 85.7% | dut_hbm2_mem_model.sv:64 |
 | hbm3-VIP | 85.7% | dut_hbm3_mem_model.sv:64 |
-| hbm3e-VIP | 85.7% | dut_hbm3e_mem_model.sv:64 |
 | hbm4-VIP | 85.7% | dut_hbm4_mem_model.sv:64 |
 | lpddr5-VIP | 85.7% | dut_lpddr5_mem_model.sv:64 |
 | JESD204-VIP | 86.1% | dut_jesd204_adc_dut.sv:30,32-34,131 |
