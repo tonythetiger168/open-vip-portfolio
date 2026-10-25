@@ -28,6 +28,15 @@ VIPS = os.environ.get("VIPS_DIR", os.path.join(ROOT, "build", "vips"))
 OUT = os.path.join(ROOT, "docs", "test_suites")
 SUMMARY = os.path.join(ROOT, "docs", "TEST_SUITE.md")
 
+
+def agent_test(vip):
+    """Name of the Verilator agent test of a generated-agent VIP, else None."""
+    for f in glob.glob(os.path.join(VIPS, vip, "tests", "*_tests.sv")):
+        m = re.search(r"class\s+(\w+_func_test)\s+extends", open(f, errors="ignore").read())
+        if m:
+            return m.group(1)
+    return None
+
 def read_csv(path):
     if not os.path.exists(path):
         return []
@@ -225,6 +234,10 @@ def vip_doc(vip, meta, frows, mut):
             L.append("UVM RAL test（`amba_ral_test`：hw_reset / bit_bash / mirror 等）在 Verilator 上以 "
                      "`python3 tools/run_uvm_tests.py %s` 執行（見 [docs/RAL.md](../RAL.md)）；其餘 UVM 測試需商用模擬器"
                      "（VCS / Xcelium / Questa），開源流程只做 elaboration（L1a）。" % vip)
+        elif agent_test(vip):
+            L.append("UVM agent test（`%s`：directed + constrained-random 流量，scoreboard 以 DUT 模型的參考模型逐筆比對，"
+                     "並比對 driver 與 monitor 的 transaction）在 Verilator 上以 `python3 tools/run_uvm_tests.py %s` 執行；"
+                     "agent 由 `tools/gen_uvm_agents.py` 依 `tools/uvm_agents/` 的協定 spec 產生。" % (agent_test(vip), vip))
         else:
             L.append("UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只做 elaboration（L1a）。")
         L.append("")
@@ -318,7 +331,8 @@ def main():
              "Verilator 5.052 執行，結果寫入 `func_report.csv`。")
     S.append("2. **UVM 測試平台**（tests / sequences / scoreboard / SVA / coverage）：需商用模擬器執行，開源流程以 "
              "pyslang elaboration 檢查（`tools/elab_scan.py`）；有 register model 的 VIP（APB / AHB / AXI / OCP / TileLink）另以 "
-             "`tools/run_uvm_tests.py` 在 Verilator 上執行 UVM RAL test（見 [RAL.md](RAL.md)）。")
+             "`tools/run_uvm_tests.py` 在 Verilator 上執行 UVM RAL test（見 [RAL.md](RAL.md)）；由 `tools/gen_uvm_agents.py` 產生 agent 的 "
+             "29 個 VIP 另在 Verilator 上執行 `<prefix>_func_test`（scoreboard 以 DUT 參考模型比對）。")
     S.append("3. **Mutation testing**（`tools/mutation_score.py`）：對 DUT 模型注入運算子與常數錯誤，檢查功能測試能否偵測，"
              "作為「測試是否足夠」的客觀指標，結果寫入 `mutation_report.csv`。")
     S.append("")
