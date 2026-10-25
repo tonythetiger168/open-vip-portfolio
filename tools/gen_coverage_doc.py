@@ -80,7 +80,7 @@ def main():
     L.append("- Toggle 包含寬資料匯流排的高位元與測試中固定不動的 sideband / 其他協定的 tie-off，"
              "所以普遍低於 line coverage，是參考值而非目標。")
     L.append("- Functional coverage 只在 UVM 測試能在 Verilator 上跑的 VIP 量測（APB / AHB / AXI 的 "
-             "`amba_ral_test`，見 [RAL.md](RAL.md)）；AMBA VIP 共用 APB/AHB/AXI checker，只計算該 VIP "
+             "`amba_ral_test`、OCP 的 `ocp_ral_test`、TileLink 的 `tilelink_ral_test`，見 [RAL.md](RAL.md)）；AMBA VIP 共用 APB/AHB/AXI checker，只計算該 VIP "
              "協定與共用 interface 的 covergroup。其他 VIP 的 covergroup 在 UVM monitor / coverage "
              "collector 裡，需用各 VIP 的 `scripts/coverage.mk`（VCS / Xcelium / Questa）量測。")
     L.append("- 只能在 Icarus 上跑的測試（例如要比對 `1'bz` 的 tri-state 檢查）量不到 coverage；"

@@ -1,7 +1,8 @@
 # UVM RAL（register model）
 
 本文件記錄 132 個 VIP 的 UVM RAL（`uvm_reg`）掃描結果、目前已加入 register model 的 VIP、
-測試方法與結果，以及下一批候選。
+測試方法與結果，以及下一批候選。目前有 RAL 的 VIP：APB-VIP、AHB-VIP、AXI-VIP（2026-10-24）、
+OCP-VIP、TileLink-VIP（2026-10-25，見第 6 節）。
 
 ## 1. 掃描結果（2026-10-24）
 
@@ -99,6 +100,76 @@ UVM_PASS AXI-VIP/amba_ral_test [checks=1074]
 
 | 狀態 | VIP | 原因 |
 |---|---|---|
-| 可直接加 RAL | OCP-VIP、TileLink-VIP | driver 會把 read data 寫回 item，DUT 模型有 memory/register |
+| 已完成（第 6 節） | OCP-VIP、TileLink-VIP | driver 會把 read data 寫回 item，DUT 模型有 memory/register |
 | 需先確認 driver 讀回 | I2C、I3C、SPMI、RFFE、SoundWire、AVSBus、MDIO-VIP、SWD、JTAG、CSE、DBI | DUT 模型有 register map，driver 為 bit-level，需確認 read data 回填 item 與 monitor 完成時機 |
 | 需先重寫 agent | Avalon_MM-UVM、Wishbone-UVM、MDIO-UVM、PWM-UVM、WTB-UVM、SDIO-UVM、GPIO-UVM 等 29 個 | monitor 每個 clock 都送 item（`if (1'b1)`）、driver 只驅動一拍不看握手也不讀回資料、scoreboard 只比對 tag；RAL 無法建立在這種 agent 上 |
+
+## 6. OCP-VIP 與 TileLink-VIP（2026-10-25）
+
+做法與 AMBA 相同：register model 依 `tb/top_tb.sv` 的 DUT 模型建立，adapter 把一次暫存器存取轉成
+一筆 agent transaction，env 以 explicit predictor（`set_auto_predict(0)`）接 monitor 的 `ap`
+維護 mirror。兩個 monitor 都在 response 完成的那個 clock edge 送出 item，不需要像 APB 另加
+`beat_ap`。
+
+| 元件 | OCP-VIP | TileLink-VIP |
+|---|---|---|
+| Register model | `env/ocp_reg_model.svh`（`ocp_reg_block`，include 在 `env_pkg`） | `env/tilelink_reg_model.svh`（`tilelink_reg_block`） |
+| Adapter | `ocp/ocp_reg_adapter.svh`：WR / RD `ocp_transaction`；`SResp=DVA` → `UVM_IS_OK`，其他 → `UVM_NOT_OK` | `tilelink/tilelink_reg_adapter.svh`：write → PutFullData、read → Get，`a_size=2`；D opcode 與 request 相符（AccessAck / AccessAckData）才是 `UVM_IS_OK` |
+| Predictor | `ocp_env`：`uvm_reg_predictor #(ocp_transaction)` | `tilelink_env`：`uvm_reg_predictor #(tilelink_transaction)` |
+| RAL test | `tests/ocp_tests.sv`：`ocp_ral_test` | `tests/tilelink_tests.sv`：`tilelink_ral_test` |
+
+Address map（皆為 32-bit、4 bytes、reset 0、單一 RW 欄位）：
+
+| VIP | Map | 內容 |
+|---|---|---|
+| OCP-VIP | `ocp_map` | `REG0..REG15` @ 0x000–0x03C、`MEM` 944×32 @ 0x040–0xEFC、`ERR_PROBE` @ 0xF00（`maddr[11:8]==0xF`，SResp=ERR，`NO_REG_TESTS`） |
+| TileLink-VIP | `tl_map` | `REG0..REG15` @ 0x000–0x03C、`MEM` 1008×32 @ 0x040–0xFFC |
+
+兩個 DUT 都用 associative memory 存所有位址（未寫過讀 0），所以 model 的 reset 值為 0。
+TileLink device 的 64 KB 空間沒有再細分，model 只映射前 4 KB。
+
+RAL test 內容與 AHB / AXI 相同：`uvm_reg_hw_reset_seq`、`uvm_reg_bit_bash_seq`、
+`uvm_mem_walk_seq`、每個暫存器 random write + `mirror(UVM_CHECK)` + read、32 次 random `MEM`
+round trip；OCP 另檢查 `ERR_PROBE` 的 write / read 回 `UVM_NOT_OK`。
+
+### 6.1 結果
+
+```
+$ PATH=/opt/verilator-5.052/bin:$PATH python3 tools/run_uvm_tests.py OCP-VIP TileLink-VIP
+UVM_PASS OCP-VIP/ocp_ral_test [checks=1538]
+UVM_PASS TileLink-VIP/tilelink_ral_test [checks=1600]
+```
+
+同一個 run 中既有的 end-to-end scoreboard 也全部吻合（OCP 5009 筆、2032 次 read data 比對；
+TileLink 5199 筆、2096 次 Get data 比對），沒有任何 VIP 自身的 `UVM_WARNING`。
+uvm-core 對 `ERR_PROBE` 印出的 `PREDICT_NOK`（status 為 `UVM_NOT_OK` 時不更新 mirror）是預期行為。
+
+加入時修正的問題：
+
+| VIP | 問題 | 修正 |
+|---|---|---|
+| OCP / TileLink | `cg_fsm` 的 transition bins 寫成 enum 名稱（`(IDLE => WRITE => ...)`），Verilator 5.052 直接 internal error（`V3Ast.h: ... ENUMITEMREF`），整個 UVM 環境無法建置 | `ifdef VERILATOR` 改用對應的數值編碼，其他模擬器仍用 enum 名稱 |
+
+### 6.2 RAL test 的偵錯能力（DUT mutation）
+
+| Mutant | VIP | 注入的錯誤 | 結果 |
+|---|---|---|---|
+| m1 | OCP | error region 不回 ERR | FAIL：`ERR_PROBE write did not return UVM_NOT_OK` |
+| m2 | OCP | 寫入時 bit 7 卡 1 | FAIL：1021 個錯誤 |
+| m3 | OCP | 讀取忽略位址 bit 8（alias） | FAIL：931 個錯誤 |
+| m4 | OCP | `REG5`（0x14）未寫過讀 0x100 | FAIL：hw_reset `REG5` 讀值不符 mirror |
+| m5 | TileLink | Get 回 AccessAck（沒有 data） | FAIL：4721 個錯誤 |
+| m6 | TileLink | 寫入丟掉 bit 31 | FAIL：2157 個錯誤 |
+| m7 | TileLink | 讀取忽略位址 bit 10（alias） | FAIL：1061 個錯誤（其中 512 個來自 `uvm_mem_walk_seq`） |
+
+7/7 被偵測。
+
+### 6.3 已知限制
+
+- TileLink interface 沒有 `d_denied` / `d_corrupt` / `a_mask`，device 不會回錯誤，因此沒有
+  error-region 測試，也不支援 byte enable；OCP 沒有 `MByteEn`，同樣是整個 word 存取。
+- 兩個 VIP 的 `sva/*_compliance_checker.sv` 沒有在 `tb/top_tb.sv` 中 bind，所以 RAL 流量不會經過
+  它們；其中 L2 FSM 規則（例如 OCP 的 `IDLE |=> {IDLE, WRITE}`）與 driver 的實際狀態轉移
+  （IDLE → READ）不符，要 bind 之前得先修正。
+- Random sequence 一樣受第 4 節的 z3 限制，只在商用模擬器上執行。
+
