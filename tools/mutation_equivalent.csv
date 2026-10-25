@@ -283,3 +283,56 @@ LPDDR4-VIP,MEMCORE_top.sv:74,1'b0 inverted,rd_pending is reassigned from hcmd wh
 LPDDR4-VIP,MEMCORE_top.sv:105,1'b0 inverted,LPDDR4 exposes only addr[2:0] on CA; the zero-extended upper bits are dropped
 AHB-VIP,dut_amba_dut.sv:37,1024 -> 1025,initial loop index 1024 is out of range of mem[0:1023]
 AHB-VIP,dut_amba_dut.sv:58,1'b0 inverted,"ap_write reset value is only used together with ap_valid, which resets to 0"
+CAN-VIP,dut_can_node_model.sv:91,0 -> 1,"early-out of frame_bits(): n = c+4 still lies 15+ bits before the computed frame end, so returning 0 there changes nothing"
+CAN-VIP,dut_can_node_model.sv:212,0 -> 1,initial value overwritten by IDLE on the first clock after reset
+Ethernet_AVB_TSN-VIP,dut_eth_avb_tsn_dut.sv:84,0 -> 1,eg_total is loaded from the FIFO before EG_SEND reads it
+Ethernet_AVB_TSN-VIP,dut_eth_avb_tsn_dut.sv:85,0 -> 1,fwd_timer is loaded (4) before EG_WAIT reads it
+Ethernet_AVB_TSN-VIP,dut_eth_avb_tsn_dut.sv:118,8 -> 9,frames are whole 8-byte beats: the remainder is 0 or a multiple of 8 and n stays 8
+Ethernet_AVB_TSN-VIP,dut_eth_avb_tsn_dut.sv:118,< -> <= in condition,frames are whole 8-byte beats: a remainder of 8 gives n = 8 either way
+Ethernet_AVB_TSN-VIP,dut_eth_avb_tsn_dut.sv:134,0 -> 1,the capture queue holds 0 or a multiple of 8 bytes and is never empty while in_frame
+Ethernet_AVB_TSN-VIP,dut_eth_avb_tsn_dut.sv:134,> -> >= in condition,the capture queue is never empty while in_frame
+FlexRay-VIP,dut_flexray_node_model.sv:91,0 -> 1,initial value overwritten by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:94,0 -> 1,initial value overwritten by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:96,0 -> 1,initial value overwritten by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:98,0 -> 1,initial value overwritten by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:100,0 -> 1,receiver counters are reloaded at the start of every frame before use
+FlexRay-VIP,dut_flexray_node_model.sv:101,0 -> 1,tx_len is set when a frame is evaluated, before the transmitter reads it
+FlexRay-VIP,dut_flexray_node_model.sv:156,16 -> 17,"length bit 16 (64 words) only matters above MAX_WORDS = 4, which the model clamps; such frames are out of scope"
+FlexRay-VIP,dut_flexray_node_model.sv:161,>= -> > in condition,need >= HDR_BITS + 26 so rcnt + 1 >= need already implies rcnt > HDR_BITS
+FlexRay-VIP,dut_flexray_node_model.sv:169,11 -> 12,loop index 11 writes frame_id[-1] / hc_rx[-1] (out of range, ignored)
+FlexRay-VIP,dut_flexray_node_model.sv:181,7 -> 8,loop index 7 writes payload_length[-1] (out of range, ignored)
+LIN-VIP,dut_lin_slave_model.sv:107,0 -> 1,initial value overwritten by the reset branch
+LIN-VIP,dut_lin_slave_model.sv:112,0 -> 1,tx_len is set by build_tx / the wake-up path before the transmitter reads it
+LIN-VIP,dut_lin_slave_model.sv:120,0 -> 1,nrx is cleared again at every break before a byte is received
+LIN-VIP,dut_lin_slave_model.sv:203,2 -> 3,exp_bytes >= 5 once the PID is in (nrx = 1): nrx + 1 >= exp_bytes already implies nrx >= 4
+ONFI-VIP,dut_onfi_nand_model.sv:45,0 -> 1,initial value overwritten by the reset branch
+ONFI-VIP,dut_onfi_nand_model.sv:71,12 -> 13,"manuf[12] reads past the string (0) into param_page[44], which the model-name loop then overwrites"
+ONFI-VIP,dut_onfi_nand_model.sv:134,0 -> 1,addr_cnt is cleared by every command latch before an address cycle uses it
+ONFI-VIP,dut_onfi_nand_model.sv:225,&& flipped,"reloads out_byte while RE# stays low: the pointer has not moved, so the same byte is reloaded; with CE# high IO is not driven"
+SAS-VIP,dut_sas_target_model.sv:24,0 -> 1,initial value overwritten by the reset branch
+SAS-VIP,dut_sas_target_model.sv:147,3 -> 4,"samples each 2-clock bit 1 clock later, still inside the same bit cell (stop bit included)"
+SD-VIP,dut_sd_card_dut.sv:98,0 -> 1,rsp_cnt is loaded when a response starts before it is read
+SD-VIP,dut_sd_card_dut.sv:143,1 -> 2,err_cnt is a statistic printed at the end of the run (not an output)
+eMMC-VIP,dut_emmc_device_dut.sv:155,1 -> 2,err_cnt is a statistic printed at the end of the run (not an output)
+eMMC-VIP,dut_emmc_device_dut.sv:223,!= flipped,bit_cnt is reloaded (1) by the next command's start bit before it is read
+DDR4-VIP,MEMCORE_top.sv:13,15 -> 16,parameter default overridden by MEMCH_top
+LPDDR4-VIP,MEMCORE_top.sv:13,15 -> 16,parameter default overridden by MEMCH_top
+LPDDR4-VIP,MEMCORE_top.sv:119,1'b0 inverted,LPDDR4 exposes only addr[2:0] on CA; the zero-extended upper bits are dropped
+AXI-VIP,dut_amba_dut.sv:89,1'b0 inverted,wr_error is reloaded by every AW before it is used
+AXI-VIP,dut_amba_dut.sv:108,8 -> 9,wstrb[8] does not exist (X): no write
+AXI-VIP,dut_amba_dut.sv:134,1'b0 inverted,rd_error is reloaded by every AR before it is used
+AXI-VIP,dut_amba_dut.sv:164,1'b0 inverted,AHB tie-off of the shared AMBA shell (not AXI)
+AXI-VIP,dut_amba_dut.sv:165,1'b0 inverted,APB tie-off of the shared AMBA shell (not AXI)
+OCP-VIP,dut_ocp_slave_model.sv:47,0 -> 1,only changes the random SCmdAccept throttle probability
+OCP-VIP,dut_ocp_slave_model.sv:47,!= flipped,only changes the random SCmdAccept throttle probability
+TileLink-VIP,dut_tilelink_device_model.sv:48,4 -> 5,only changes the random a_ready throttle probability
+TileLink-VIP,dut_tilelink_device_model.sv:48,!= flipped,only changes the random a_ready throttle probability
+LTI-VIP,dut_lti_translation_unit_model.sv:50,4 -> 5,only changes the random la_ready throttle probability
+LTI-VIP,dut_lti_translation_unit_model.sv:50,0 -> 1,only changes the random la_ready throttle probability
+LTI-VIP,dut_lti_translation_unit_model.sv:50,!= flipped,only changes the random la_ready throttle probability
+Avalon_ST-UVM-VIP,dut_avalon_st_model.sv:34,1'b0 inverted,skid_sop is reloaded with the beat before skid_valid makes it visible
+Avalon_ST-UVM-VIP,dut_avalon_st_model.sv:35,1'b0 inverted,skid_eop is reloaded with the beat before skid_valid makes it visible
+MDIO-UVM-VIP,dut_mdio_model.sv:40,1'b0 inverted,mdc_q reset value only matters if MDC is high when reset is released (an extra rise before any frame)
+MDIO-UVM-VIP,dut_mdio_model.sv:46,1'b1 inverted,dout is only visible while drive is set and is loaded before drive rises
+MDIO-UVM-VIP,dut_mdio_model.sv:78,1'b1 inverted,dout is not visible once drive is cleared
+Bluetooth5-VIP,dut_bluetooth5_dut.sv:55,0 -> 1,tx_idx is reloaded at the end of the turnaround before PEER_SEND reads it
