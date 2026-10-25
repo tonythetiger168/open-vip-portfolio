@@ -26,7 +26,8 @@ Metrics (hit / total coverage points, a point is hit with count > 0):
               code (interface, monitor and coverage collectors). Only for
               the VIPs whose UVM tests run on Verilator
               (tools/run_uvm_tests.py: APB / AHB / AXI / OCP / TileLink
-              register tests); the other UVM environments need a commercial
+              register tests and the <prefix>_func_test of the 29 generated
+              agents); the other UVM environments need a commercial
               simulator (scripts/coverage.mk in each VIP)
 
 A test that only builds on Icarus contributes nothing (Verilator cannot

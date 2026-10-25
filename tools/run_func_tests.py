@@ -4,8 +4,8 @@
 """run_func_tests.py [VIP ...] -- run every self-checking functional test.
 
 Functional tests are the executable part of each VIP's test suite that runs
-on open-source tools (UVM register-model tests run on Verilator through
-tools/run_uvm_tests.py; the other UVM tests need a commercial simulator):
+on open-source tools (UVM register-model tests and the agent tests of the
+generated agents run on Verilator through tools/run_uvm_tests.py):
 
   * UVM VIPs: ``tb/smoke_func_tb.sv`` and ``tb/func_*_tb.sv``. Each is a
     stand-alone module guarded by ``VIP_SMOKE_FLATTENED`` that drives the
