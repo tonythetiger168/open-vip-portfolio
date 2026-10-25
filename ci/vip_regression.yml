@@ -32,6 +32,8 @@ on:
 env:
   # uvm-core 的 src 目錄（elab_scan.py 透過 UVM_CORE 環境變數取得）
   UVM_CORE: ${{ github.workspace }}/tools/uvm-core/src
+  # elab_scan.py：slang engine 判為 error 的 LRM 違規（重複定義、clocking 重複宣告等）也算失敗
+  ELAB_STRICT: "1"
   # vips/ 只存放 zip；解壓後的 VIP 原始碼樹（tools/extract_vips.sh 產生）
   VIPS_DIR: ${{ github.workspace }}/build/vips
 
@@ -107,6 +109,15 @@ jobs:
           # 每個 VIP 的 tb/smoke_func_tb.sv、tb/func_*_tb.sv 與 RTL IP 的 directed tb
           python3 tools/run_func_tests.py | tee reports/func/func.log
           cp -f func_report.csv reports/func/
+
+      - name: UVM RAL 測試（Verilator + uvm-core）
+        run: |
+          set -o pipefail
+          mkdir -p reports/uvm
+          # 有 UVM register model 的 VIP：uvm_reg_hw_reset / bit_bash / mem_walk
+          # 加 frontdoor mirror 與錯誤回應檢查（每個 VIP 編譯數分鐘）
+          python3 tools/run_uvm_tests.py | tee reports/uvm/uvm.log
+          cp -f uvm_report.csv reports/uvm/
 
       - name: 上傳 L1 報告 artifact
         if: always()          # 即使 gate 失敗也要保留日誌供排查

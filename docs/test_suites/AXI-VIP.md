@@ -69,11 +69,11 @@
 
 ## 3. UVM 測試平台內容
 
-UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只做 elaboration（L1a）。
+UVM RAL test（`amba_ral_test`：hw_reset / bit_bash / mirror 等）在 Verilator 上以 `python3 tools/run_uvm_tests.py AXI-VIP` 執行（見 [docs/RAL.md](../RAL.md)）；其餘 UVM 測試需商用模擬器（VCS / Xcelium / Questa），開源流程只做 elaboration（L1a）。
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 4 | `amba_base_test`, `amba_axi_test`, `amba_axi_test`, `amba_apb_test` |
+| UVM tests | 5 | `amba_base_test`, `amba_axi_test`, `amba_axi_burst_test`, `amba_apb_test`, `amba_ral_test` |
 | Sequences | 11 | `axi_base_sequence`, `axi_single_seq`, `axi_incr_burst_seq`, `axi_wrap_burst_seq`, `axi_back_to_back_seq`, `axi_error_inject_seq`, `axi_reset_seq`, `axi_stress_seq`, `axi_random_sequence`, `axi_regression_sequence`, `amba_seq_item` |
 | SVA（assert / cover property） | 32 / 15 | `assert_axi_aw`, `assert_axi_wlast`, `assert_axi_bresp`, `assert_ahb_trans`, `assert_apb_en`, `assert_p_axi_awvalid_stable`, `cover_p_axi_awvalid_stable`, `assert_p_axi_awburst_valid`, `cover_p_axi_awburst_valid`, `assert_p_axi_awsize_valid`, `cover_p_axi_awsize_valid`, `assert_p_axi_bresp_valid` … |
 | Covergroups / coverpoints | 8 / 42 | |
