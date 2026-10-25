@@ -46,7 +46,9 @@ def classify_ports(ports):
         nm, w = pm['name'], dim_width(pm['dims'])
         low = nm.lower()
         if pm['dir'] == 'input':
-            if w == 1 and re.search(r'(clk|clock|^ck$|_ck$|^ck_|tck|sck)', low):
+            # clock-named enables / selects / requests are not clocks
+            if w == 1 and re.search(r'(clk|clock|^ck$|_ck$|^ck_|tck|sck)', low) \
+                    and not re.search(r'(_?en|_ena|_enable|_sel|_req|_ack|_div|_gate|_stop|_cnt|_ok|_lock)$', low):
                 clocks.append(pm)
             elif w == 1 and re.search(r'(rst|reset|resn|preset)', low):
                 resets.append(pm)
@@ -94,7 +96,12 @@ def gen_tb(mod, ports):
     rst_init, rst_rel = [], []
     for r in resets:
         low = r['name'].lower()
-        active_low = low.endswith('n') or low.endswith('_n') or '_n' in low
+        # rst_n / rstn / aresetn / presetn / rst_b / rst_l / nrst / n_reset;
+        # not rst_in / reset_in (the old "endswith('n') or '_n' in low" held
+        # those in reset for the whole test)
+        active_low = bool(re.search(r'(rst|reset|resn)(_?n|_b|_l)$', low)
+                          or re.match(r'(n_?(rst|reset)|resn)', low)
+                          or low.endswith('_n'))
         rst_init.append("    %s = 1'b%d;" % (r['name'], 0 if active_low else 1))
         rst_rel.append("    %s = 1'b%d;" % (r['name'], 1 if active_low else 0))
     # int timing params: small fixed value
@@ -299,6 +306,9 @@ def run_vip(vip):
         # flatten on demand
         subprocess.run([sys.executable, os.path.join(SMOKE, "flatten.py"), vip],
                        capture_output=True, text=True, timeout=600)
+    if not os.path.exists(man):
+        # nothing to flatten (RTL IPs ship rtl/ + a directed tb, no tb DUT model)
+        return "SKIP", "no flattenable DUT model", []
     entries = json.loads(read_retry(man) or "[]")
     logf = open(os.path.join(outdir, "smoke.log"), "w")
     results = []
@@ -316,6 +326,9 @@ def run_vip(vip):
             st = "PASS"
         elif st == "FAIL_COMPILE":
             st, note = "SKIP", "compile: unsupported SV (see smoke.log)"
+        elif st == "FAIL_NOSIM":
+            # vvp crashed or printed no result: a failure, not a pass/skip
+            st, note = "FAIL", "simulation produced no result (see smoke.log)"
         elif st == "FAIL":
             m = re.search(r'x_hits=(\d+) toggles=(\d+)', out)
             note = ("x_hits=%s toggles=%s" % m.groups()) if m else "X/Z or timeout"
@@ -351,7 +364,8 @@ if __name__ == "__main__":
         try:
             agg, detail, _ = run_vip(v)
         except Exception as ex:
-            agg, detail = "SKIP", "harness error: %s" % ex
+            # a harness bug must not hide as SKIP
+            agg, detail = "FAIL", "harness error: %s" % ex
         print("%s %s -- %s" % ("SMOKE_" + agg, v, detail[:200]))
         write_retry(os.path.join(SMOKE, v, "row.csv"),
                     "%s,%s,%s\n" % (v, agg, detail.replace(",", ";")))

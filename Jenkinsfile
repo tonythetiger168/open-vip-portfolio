@@ -28,6 +28,8 @@ pipeline {
         UVM_CORE = "${WORKSPACE}/tools/uvm-core/src"
         // vips/ 只存放 zip；解壓後的 VIP 原始碼樹（tools/extract_vips.sh 產生）
         VIPS_DIR = "${WORKSPACE}/build/vips"
+        // elab_scan.py：slang engine 判為 error 的 LRM 違規（重複定義、clocking 重複宣告等）也算失敗
+        ELAB_STRICT = "1"
         // tools/install_tools.sh 安裝的 Verilator v5.052
         PATH = "/opt/verilator-5.052/bin:${env.PATH}"
     }
