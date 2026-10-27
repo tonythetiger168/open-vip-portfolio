@@ -12,11 +12,15 @@
 
 Inputs: the extracted VIP trees (build/vips, see tools/pack_vips.sh),
 func_report.csv (tools/run_func_tests.py), mutation_report.csv
-(tools/mutation_score.py) and vip_individual_portfolio.csv.
+(tools/mutation_score.py), coverage_report.csv (tools/coverage.py, optional)
+and vip_individual_portfolio.csv.
 
 Verdict (sufficiency of the functional tests for the DUT model):
-  Sufficient    tests pass, >= 10 checks, mutation score >= 80 %
-  Partial       tests pass, but < 10 checks or mutation score 50..79 %
+  Sufficient    tests pass, >= 10 checks, mutation score >= 80 % and DUT-model
+                line coverage >= 80 % (when coverage_report.csv exists)
+  Partial       tests pass, but < 10 checks, mutation score 50..79 % or line
+                coverage < 80 % (mutants are only placed on lines the tests can
+                reach, so a high score alone does not show the model is tested)
   Insufficient  no test, a failing test, or mutation score < 50 %
 Model defects (XFAIL checks) and features the model does not implement are
 listed as gaps separately: they are limits of the DUT model, not of the tests.
@@ -127,7 +131,12 @@ def n_sva(rows):
     return sum(int(r["checks"] or 0) for r in rows if sva_counted(r))
 
 # ---------------------------------------------------------------- verdict
-def verdict(rows, mut):
+LINE_COV_MIN = 80.0
+
+def line_cov(cov):
+    return float(cov["line_pct"]) if cov and cov.get("line_pct") not in (None, "") else None
+
+def verdict(rows, mut, cov=None):
     if not rows:
         return "Insufficient", "沒有功能測試"
     if any(r["result"] != "PASS" for r in rows):
@@ -140,6 +149,9 @@ def verdict(rows, mut):
         return "Partial", "只有 %d 個 check" % n_checks(rows)
     if score is not None and score < 80:
         return "Partial", "mutation score %d%%" % score
+    line = line_cov(cov)
+    if line is not None and line < LINE_COV_MIN:
+        return "Partial", "DUT model line coverage %.1f%%" % line
     what = ("%d 個 check" % n_checks(rows)) if n_checks(rows) else "self-checking testbench"
     if score is None:
         return "Sufficient", "%s（尚無 mutation 數據）" % what
@@ -151,14 +163,14 @@ def md_escape(s):
     return s.replace("|", "\\|")
 
 # ---------------------------------------------------------------- per VIP
-def vip_doc(vip, meta, frows, mut):
+def vip_doc(vip, meta, frows, mut, cov=None):
     vdir = os.path.join(VIPS, vip)
     tests, seqs, sva, cgs, cps = uvm_inventory(vdir)
     tbs = sorted(glob.glob(os.path.join(vdir, "tb", "*_tb.sv")) +
                  glob.glob(os.path.join(vdir, "*", "tb", "*_tb.sv")))
     rtl = os.path.isdir(os.path.join(vdir, "rtl"))
     func_tbs = [t for t in tbs if os.path.basename(t) in {r["test"] for r in frows}]
-    v, why = verdict(frows, mut)
+    v, why = verdict(frows, mut, cov)
     xfails, limits = [], []
     L = []
     L.append("# %s 測試套件（%s）" % (meta.get("Protocol", vip.replace("-VIP", "")), vip))
@@ -286,11 +298,13 @@ def main():
     meta = {r["VIP檔案"].replace(".zip", ""): r for r in read_csv(os.path.join(ROOT, "vip_individual_portfolio.csv"))}
     func = read_csv(os.path.join(ROOT, "func_report.csv"))
     muts = {r["vip"]: r for r in read_csv(os.path.join(ROOT, "mutation_report.csv"))}
+    cov_csv = os.path.join(ROOT, "coverage_report.csv")
+    covs = {r["vip"]: r for r in read_csv(cov_csv)} if os.path.exists(cov_csv) else {}
     vips = sorted(d for d in os.listdir(VIPS) if os.path.isdir(os.path.join(VIPS, d)))
     rows = []
     for vip in vips:
         frows = [r for r in func if r["vip"] == vip and r["result"] != "NONE"]
-        doc, v, why, checks, xf, lim = vip_doc(vip, meta.get(vip, {}), frows, muts.get(vip))
+        doc, v, why, checks, xf, lim = vip_doc(vip, meta.get(vip, {}), frows, muts.get(vip), covs.get(vip))
         open(os.path.join(OUT, vip + ".md"), "w").write(doc)
         rows.append((vip, meta.get(vip, {}), frows, muts.get(vip), v, why, checks, xf, lim))
 
@@ -343,9 +357,12 @@ def main():
     S.append("")
     S.append("| 判定 | 條件 |")
     S.append("|---|---|")
-    S.append("| ✅ Sufficient | 功能測試通過，≥ 10 個 check，mutation score ≥ 80% |")
-    S.append("| 🟡 Partial | 功能測試通過，但 check < 10 或 mutation score 50–79% |")
+    S.append("| ✅ Sufficient | 功能測試通過，≥ 10 個 check，mutation score ≥ 80%，DUT model line coverage ≥ 80% |")
+    S.append("| 🟡 Partial | 功能測試通過，但 check < 10、mutation score 50–79% 或 line coverage < 80% |")
     S.append("| ❌ Insufficient | 沒有功能測試、測試失敗或 mutation score < 50% |")
+    S.append("")
+    S.append("Mutant 只會放在測試跑得到的程式碼上才可能被偵測，所以另以 `coverage_report.csv`（`tools/coverage.py`）的 "
+             "line coverage 把關：測試只跑到一小部分 model 時，mutation score 再高也只算 Partial。")
     S.append("")
     S.append("模型缺陷（XFAIL）與模型未實作的功能另列為缺口：它們是 DUT 模型的限制，不是測試的不足。")
     S.append("")
@@ -375,7 +392,8 @@ def main():
     S.append("```bash")
     S.append("bash tools/extract_vips.sh                # 解開 vips/*.zip 到 build/vips")
     S.append("python3 smoke/flatten.py && python3 tools/run_func_tests.py   # func_report.csv")
-    S.append("python3 tools/mutation_score.py -j 4       # mutation_report.csv（數小時）")
+    S.append("python3 tools/mutation_score.py -j 4       # mutation_report.csv（約 15 分鐘）")
+    S.append("python3 tools/coverage.py -j 2             # coverage_report.csv")
     S.append("python3 tools/gen_test_suite_docs.py       # 本文件與 docs/test_suites/")
     S.append("```")
     open(SUMMARY, "w").write("\n".join(S) + "\n")

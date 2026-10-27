@@ -50,3 +50,5 @@ func_report.csv
 mutation_report.csv
 uvm_report.csv
 coverage_report.csv
+uvm_smoke_report.csv
+sb_mutation_report.csv

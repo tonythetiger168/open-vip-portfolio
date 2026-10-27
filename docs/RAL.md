@@ -2,7 +2,7 @@
 
 本文件記錄 132 個 VIP 的 UVM RAL（`uvm_reg`）掃描結果、目前已加入 register model 的 VIP、
 測試方法與結果，以及下一批候選。目前有 RAL 的 VIP：APB-VIP、AHB-VIP、AXI-VIP（2026-10-24）、
-OCP-VIP、TileLink-VIP（2026-10-25，見第 6 節）。
+OCP-VIP、TileLink-VIP（2026-10-25，見第 6 節）、Avalon_MM-UVM-VIP、Wishbone-UVM-VIP（2026-10-27，見第 7 節）。
 
 ## 1. 掃描結果（2026-10-24）
 
@@ -101,8 +101,9 @@ UVM_PASS AXI-VIP/amba_ral_test [checks=1074]
 | 狀態 | VIP | 原因 |
 |---|---|---|
 | 已完成（第 6 節） | OCP-VIP、TileLink-VIP | driver 會把 read data 寫回 item，DUT 模型有 memory/register |
-| 需先確認 driver 讀回 | I2C、I3C、SPMI、RFFE、SoundWire、AVSBus、MDIO-VIP、SWD、JTAG、CSE、DBI | DUT 模型有 register map，driver 為 bit-level，需確認 read data 回填 item 與 monitor 完成時機 |
-| 需先重寫 agent | Avalon_MM-UVM、Wishbone-UVM、MDIO-UVM、PWM-UVM、WTB-UVM、SDIO-UVM、GPIO-UVM 等 29 個 | monitor 每個 clock 都送 item（`if (1'b1)`）、driver 只驅動一拍不看握手也不讀回資料、scoreboard 只比對 tag；RAL 無法建立在這種 agent 上 |
+| 已完成（第 7 節） | Avalon_MM-UVM、Wishbone-UVM | 產生器（`tools/gen_uvm_agents.py`）的 spec 加 `ral=` 即產生 register model、adapter、predictor 與 `<p>_ral_test` |
+| 需先讓 UVM 環境在 Verilator 上跑起來 | I2C、I3C、SPMI、RFFE、SoundWire、AVSBus、MDIO-VIP、SWD、JTAG、CSE、DBI | DUT 模型有 register map，但這些手寫 UVM 環境 2026-10-27 才第一次在 Verilator 上建置（`tools/run_uvm_tests.py --smoke`，見 `docs/UVM_SMOKE.md`），多數還有建置或 runtime 問題；driver 為 bit-level，也需確認 read data 回填 item 與 monitor 完成時機 |
+| 不適用 | MDIO-UVM、SDIO-UVM 等其他產生式 agent | DUT 模型沒有可寫的 register file（MDIO-UVM 只回傳 `phy_status`、寫入被忽略；SDIO-UVM 回固定 R1） |
 
 ## 6. OCP-VIP 與 TileLink-VIP（2026-10-25）
 
@@ -172,4 +173,35 @@ uvm-core 對 `ERR_PROBE` 印出的 `PREDICT_NOK`（status 為 `UVM_NOT_OK` 時�
   它們；其中 L2 FSM 規則（例如 OCP 的 `IDLE |=> {IDLE, WRITE}`）與 driver 的實際狀態轉移
   （IDLE → READ）不符，要 bind 之前得先修正。
 - Random sequence 一樣受第 4 節的 z3 限制，只在商用模擬器上執行。
+
+## 7. Avalon_MM-UVM-VIP 與 Wishbone-UVM-VIP（2026-10-27）
+
+這兩個是 `tools/gen_uvm_agents.py` 產生的 agent。spec（`tools/uvm_agents/<p>.py`）加上
+`ral=dict(n_regs=, desc=, reg2bus=, bus2reg=)` 後，產生器在 `env/<p>_env.sv` 的 package 中產生
+`<p>_data_reg`、`<p>_reg_block`（`n_regs` 個 32-bit RW 暫存器，位址 4*i，reset 0）、
+`<p>_reg_adapter`，env 加上 `regmodel`、`reg_adapter` 與接 monitor `ap` 的 explicit predictor，
+`tests/<p>_tests.sv` 加上 `<p>_ral_test`，`tools/run_uvm_tests.py` 自動把它加入該 VIP 的 test 清單。
+
+| VIP | Register map | Adapter |
+|---|---|---|
+| Avalon_MM-UVM-VIP | `REG0..REG63` @ 0x00–0xFC（`avalon_mm_model` 的 64-word memory，`address[7:2]`） | write/read 對應 `write`；read data 取 `readdata`；`response != OKAY` → `UVM_NOT_OK` |
+| Wishbone-UVM-VIP | `REG0..REG15` @ 0x00–0x3C（`wishbone_model` 的 16 個暫存器，`ADR[5:2]`） | write/read 對應 `we`；read data 取 `rdat`；classic cycle 一律 `UVM_IS_OK` |
+
+RAL test：`uvm_reg_hw_reset_seq`、`uvm_reg_bit_bash_seq`、每個暫存器 pseudo-random write +
+`mirror(UVM_CHECK)` + read（xorshift，不用 `randomize()`）。同一批流量也經過 agent 的
+reference-model scoreboard。
+
+```
+$ PATH=/opt/verilator-5.052/bin:$PATH python3 tools/run_uvm_tests.py Avalon_MM-UVM-VIP Wishbone-UVM-VIP
+UVM_PASS Wishbone-UVM-VIP/wishbone_func_test [checks=136]
+UVM_PASS Wishbone-UVM-VIP/wishbone_ral_test [checks=4224]
+UVM_PASS Avalon_MM-UVM-VIP/avalon_mm_func_test [checks=112]
+UVM_PASS Avalon_MM-UVM-VIP/avalon_mm_ral_test [checks=16896]
+```
+
+（`checks` 是 scoreboard 的比對數；RAL test 另印 `RAL_PASS`。）
+
+Avalon-MM 的 DUT 模型同時改成符合規格的 waitrequest：命令第一個 clock `waitrequest` 為高，
+在 `waitrequest` 為低的那個 clock 完成傳輸（之前模型在自己的 registered `waitrequest` 為高時收命令，
+照規格寫的 host 會被忽略）；read 的位址在傳輸完成時鎖存，`readdatavalid` 在兩個 clock 後回來。
 

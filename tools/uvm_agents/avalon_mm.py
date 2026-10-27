@@ -1,13 +1,9 @@
 # Avalon-MM host (tb/top_tb.sv avalon_mm_model: 64 x 32-bit words at
-# address[7:2]; after a command the model raises waitrequest for one clock and
-# takes the command on that clock, read data returns with readdatavalid two
-# clocks later).
-#
-# NOTE: in the Avalon-MM specification a command completes on the clock where
-# waitrequest is LOW; this model instead samples the command on the clock its
-# registered waitrequest is HIGH (a by-the-spec host that drops the command
-# after the first clock is never served). The driver follows the model's
-# contract so the tests can run; the deviation is a DUT-model finding.
+# address[7:2]; waitrequest is high on the first clock of each command, and
+# the command completes on the clock where waitrequest is low, as in the
+# Avalon-MM specification; read data returns with readdatavalid two clocks
+# after the transfer). Until 2026-10-27 the model took the command on the
+# clock its registered waitrequest was HIGH; fixed in the model and here.
 from _lib import wait_cb
 
 SPEC = dict(
@@ -23,7 +19,7 @@ SPEC = dict(
 constraint c_addr { address[1:0] == 2'b00; }
 constraint c_data { !write -> writedata == 0; }
 """,
-    drv_desc="single read / write, held through the model's wait state",
+    drv_desc="single read / write, held until the clock where waitrequest is low",
     drv_idle="""
 vif.drv_cb.av_write <= 1'b0; vif.drv_cb.av_read <= 1'b0;
 vif.drv_cb.av_address <= '0; vif.drv_cb.av_writedata <= '0;
@@ -34,7 +30,7 @@ vif.drv_cb.av_address   <= t.address;
 vif.drv_cb.av_writedata <= t.writedata;
 vif.drv_cb.av_write     <= t.write;
 vif.drv_cb.av_read      <= !t.write;
-""" + wait_cb("vif.drv_cb.av_waitrequest === 1'b1", "Avalon-MM command accept") + """
+""" + wait_cb("vif.drv_cb.av_waitrequest === 1'b0", "Avalon-MM command accept") + """
 vif.drv_cb.av_write <= 1'b0;
 vif.drv_cb.av_read  <= 1'b0;
 t.response = 2'b00;
@@ -44,7 +40,7 @@ if (!t.write) begin
   t.response = vif.drv_cb.av_response;
 end
 """,
-    mon_desc="command taken on the stalled clock, reads completed by readdatavalid",
+    mon_desc="transfer on each clock with read/write high and waitrequest low, reads completed by readdatavalid",
     mon_run="""
 avalon_mm_transaction rd;
 forever begin
@@ -58,7 +54,7 @@ forever begin
       rd = null;
     end
   end
-  if ((vif.mon_cb.av_write || vif.mon_cb.av_read) && vif.mon_cb.av_waitrequest) begin
+  if ((vif.mon_cb.av_write || vif.mon_cb.av_read) && !vif.mon_cb.av_waitrequest) begin
     avalon_mm_transaction t = avalon_mm_transaction::type_id::create("t");
     t.write     = vif.mon_cb.av_write;
     t.address   = vif.mon_cb.av_address;
@@ -97,4 +93,19 @@ t = item(); t.write = 1; t.address = 8'hFC; t.writedata = '1; send(t);
 t = item(); t.write = 1; t.address = 8'hFC; t.writedata = 32'h1; send(t);
 t = item(); t.write = 0; t.address = 8'hFC; send(t);
 """,
+    ral=dict(
+        n_regs=64,
+        desc="avalon_mm_model memory, 64 x 32-bit words at address[7:2], reset 0",
+        reg2bus="""
+t.write     = (rw.kind == UVM_WRITE);
+t.address   = rw.addr[7:0];
+t.writedata = t.write ? rw.data[31:0] : 32'h0;
+""",
+        bus2reg="""
+rw.kind   = t.write ? UVM_WRITE : UVM_READ;
+rw.addr   = t.address;
+rw.data   = t.write ? t.writedata : t.readdata;
+rw.status = (t.response == 2'b00) ? UVM_IS_OK : UVM_NOT_OK;
+""",
+    ),
 )
