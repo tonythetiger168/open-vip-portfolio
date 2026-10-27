@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，34 個 check，全部通過 |
-| Mutation | 8/15 個 mutant 被偵測（53%） |
-| 判定 | **🟡 Partial**（mutation score 53%） |
+| 功能測試 | 1 個檔案，73 個 check，全部通過 |
+| Mutation | 11/11 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（73 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,20 +18,33 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，34 checks）
+結果：**PASS**（iverilog，73 checks）
 
 | # | Check | 類型 |
 |---|---|---|
 | 1 | waitrequest reset low | check |
-| 2 | response reset OKAY | check |
-| 3 | write stalls on waitrequest | check |
-| 4 | waitrequest released | check |
-| 5 | read stalls on waitrequest | check |
-| 6 | read waitrequest released | check |
-| 7 | readdatavalid after read | check |
-| 8 | read data integrity | check |
-| 9 | response OKAY | check |
-| 10 | no readdatavalid when idle | check |
+| 2 | waitrequest stays low in reset even with a command | check |
+| 3 | response reset OKAY | check |
+| 4 | readdatavalid reset low | check |
+| 5 | no readdatavalid out of reset | check |
+| 6 | write: waitrequest high on the first clock | check |
+| 7 | write: waitrequest low on the second clock | check |
+| 8 | write not taken while waitrequest was high | check |
+| 9 | write taken on the clock waitrequest was low | check |
+| 10 | a write returns no readdatavalid | check |
+| 11 | read: waitrequest high on the first clock | check |
+| 12 | read: waitrequest low on the second clock | check |
+| 13 | readdatavalid two clocks after the transfer | check |
+| 14 | read data from the accepted address | check |
+| 15 | response OKAY | check |
+| 16 | readdatavalid lasts one clock | check |
+| 17 | held command: next transfer starts with a wait state | check |
+| 18 | second transfer not taken during its wait state | check |
+| 19 | back-to-back writes both stored, once each | check |
+| 20 | waitrequest low while idle | check |
+| 21 | no readdatavalid when idle | check |
+| 22 | command at reset release: waitrequest high on its first clock | check |
+| 23 | word %0d reads 0 after reset | check |
 
 ## 3. UVM 測試平台內容
 
@@ -39,22 +52,14 @@ UVM agent test（`avalon_mm_func_test`：directed + constrained-random 流量，
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 2 | `avalon_mm_base_test`, `avalon_mm_func_test` |
+| UVM tests | 3 | `avalon_mm_base_test`, `avalon_mm_func_test`, `avalon_mm_ral_test` |
 | Sequences | 3 | `avalon_mm_base_sequence`, `avalon_mm_directed_sequence`, `avalon_mm_transaction` |
 | SVA（assert / cover property） | 4 / 2 | - |
 | Covergroups / coverpoints | 1 / 2 | |
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 53%）。
+判定：**✅ Sufficient**（73 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_avalon_mm_model.sv:27 1'b0 inverted [av_readdatavalid  <= 1'b0;]`
-- `dut_avalon_mm_model.sv:29 1'b0 inverted [rd_d              <= 1'b0;]`
-- `dut_avalon_mm_model.sv:30 0 -> 1 [for (int i = 0; i < 64; i++) mem[i] <= '0;]`
-- `dut_avalon_mm_model.sv:30 64 -> 65 [for (int i = 0; i < 64; i++) mem[i] <= '0;]`
-- `dut_avalon_mm_model.sv:33 || flipped [av_waitrequest <= (av_write || av_read) && !av_waitrequest;]`
-- `dut_avalon_mm_model.sv:33 && flipped [av_waitrequest <= (av_write || av_read) && !av_waitrequest;]`
-- `dut_avalon_mm_model.sv:40 && flipped [rd_d             <= av_read && av_waitrequest;]`
+無已知缺口。
 

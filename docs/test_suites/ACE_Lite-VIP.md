@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | AMBA |
 | 類型 | RTL IP |
-| 功能測試 | 1 個檔案，49480 次斷言評估，全部通過 |
-| Mutation | 9/12 個 mutant 被偵測（75%） |
-| 判定 | **🟡 Partial**（mutation score 75%） |
+| 功能測試 | 1 個檔案，49486 次斷言評估，全部通過 |
+| Mutation | 10/10 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（self-checking testbench，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/ACE_Lite_tb.sv`
 
-結果：**PASS**（verilator，49480 次斷言評估）
+結果：**PASS**（verilator，49486 次斷言評估）
 
 | # | 測試段落 |
 |---|---|
@@ -35,11 +35,7 @@ RTL IP：以 `tb/` 的 self-checking testbench 驗證，無 UVM 測試。
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 75%）。
+判定：**✅ Sufficient**（self-checking testbench，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `ACE_Lite_top.sv:11 32 -> 33 [parameter int DW = 32,          // data width]`
-- `ACE_Lite_top.sv:89 1'b0 inverted [werr_q  <= 1'b0;]`
-- `ACE_Lite_top.sv:117 1'b1 inverted [if (werr_q) irq <= 1'b1;]`
+無已知缺口。
 

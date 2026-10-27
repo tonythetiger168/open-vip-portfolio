@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Automotive |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，12 個 check，全部通過 |
-| Mutation | 12/16 個 mutant 被偵測（75%） |
-| 判定 | **🟡 Partial**（mutation score 75%） |
+| 功能測試 | 1 個檔案，16 個 check，全部通過 |
+| Mutation | 15/15 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（16 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，12 checks）
+結果：**PASS**（iverilog，16 checks）
 
 | # | Check | 類型 |
 |---|---|---|
@@ -30,6 +30,8 @@
 | 6 | second nibble strobe | check |
 | 7 | nibble 12 decoded (15 ticks) | check |
 | 8 | illegal short pulse ignored | check |
+| 9 | %0d-tick pulse decodes to nibble %0d | check |
+| 10 | %0d-tick pulse is not a nibble | check |
 
 ## 3. UVM 測試平台內容
 
@@ -44,12 +46,7 @@ UVM agent test（`sent_func_test`：directed + constrained-random 流量，score
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 75%）。
+判定：**✅ Sufficient**（16 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_sent_model.sv:22 1'b1 inverted [so_d         <= 1'b1;]`
-- `dut_sent_model.sv:33 && flipped [if (low_cnt >= 8'd3 && low_cnt <= 8'd27) begin]`
-- `dut_sent_model.sv:33 >= -> > in condition [if (low_cnt >= 8'd3 && low_cnt <= 8'd27) begin]`
-- `dut_sent_model.sv:33 <= -> < in condition [if (low_cnt >= 8'd3 && low_cnt <= 8'd27) begin]`
+無已知缺口。
 

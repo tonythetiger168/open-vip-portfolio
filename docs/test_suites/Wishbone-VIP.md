@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Interconnect |
 | 類型 | RTL IP |
-| 功能測試 | 1 個檔案，6177 次斷言評估，全部通過 |
-| Mutation | 8/12 個 mutant 被偵測（67%） |
-| 判定 | **🟡 Partial**（mutation score 67%） |
+| 功能測試 | 1 個檔案，6218 次斷言評估，全部通過 |
+| Mutation | 9/9 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（self-checking testbench，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/Wishbone_tb.sv`
 
-結果：**PASS**（verilator，6177 次斷言評估）
+結果：**PASS**（verilator，6218 次斷言評估）
 
 ## 3. UVM 測試平台內容
 
@@ -26,12 +26,7 @@ RTL IP：以 `tb/` 的 self-checking testbench 驗證，無 UVM 測試。
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 67%）。
+判定：**✅ Sufficient**（self-checking testbench，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `Wishbone_top.sv:12 32 -> 33 [parameter int DW    = 32,   // data width]`
-- `Wishbone_top.sv:91 1'b0 inverted [q_we[0]   <= 1'b0;  q_we[1]   <= 1'b0;]`
-- `Wishbone_top.sv:96 1'b0 inverted [q_rsv[0]  <= 1'b0;  q_rsv[1]  <= 1'b0;]`
-- `Wishbone_top.sv:98 1'b0 inverted [cls_blk   <= 1'b0;]`
+無已知缺口。
 

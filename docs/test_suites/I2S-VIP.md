@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Audio |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，11 個 check，全部通過 |
+| 功能測試 | 1 個檔案，14 個 check，全部通過 |
 | Mutation | 5/5 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（11 個 check，mutation score 100%） |
+| 判定 | **✅ Sufficient**（14 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_i2s_tb.sv`
 
-結果：**PASS**（verilator，11 checks）
+結果：**PASS**（verilator，14 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -48,8 +48,11 @@ Model contract (from tb/top_tb.sv and i2s_driver.svh):
 | 7 | single-bit samples keep bit order | check |
 | 8 | short (16-bit) left slot is not stored | check |
 | 9 | right sample after a short left slot still stored | check |
-| 10 | SD looped back on sd_i half an SCK cycle later | check |
-| 11 | reset clears the frame index and sd_i | check |
+| 10 | num_frames() returns the frame count | check |
+| 11 | read_left()/read_right() return the stored samples | check |
+| 12 | SD looped back on sd_i half an SCK cycle later | check |
+| 13 | reset clears the frame index and sd_i | check |
+| 14 | first frame after reset is stored at index 0 again | check |
 
 ## 3. UVM 測試平台內容
 
@@ -64,7 +67,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（11 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（14 個 check，mutation score 100%）。
 
 無已知缺口。
 

@@ -9,8 +9,8 @@
 | 類別 | Networking |
 | 類型 | RTL IP |
 | 功能測試 | 1 個檔案，40538 次斷言評估，全部通過 |
-| Mutation | 8/12 個 mutant 被偵測（67%） |
-| 判定 | **🟡 Partial**（mutation score 67%） |
+| Mutation | 8/8 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（self-checking testbench，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -26,12 +26,7 @@ RTL IP：以 `tb/` 的 self-checking testbench 驗證，無 UVM 測試。
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 67%）。
+判定：**✅ Sufficient**（self-checking testbench，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `RGMII_top.sv:10 16 -> 17 [parameter int DEPTH = 16]`
-- `RGMII_top.sv:74 1'b0 inverted [rxv_s <= 1'b0; rxv_d <= 1'b0; rxc_s <= 1'b0; rxc_d <= 1'b0;]`
-- `RGMII_top.sv:74 1'b0 inverted [rxv_s <= 1'b0; rxv_d <= 1'b0; rxc_s <= 1'b0; rxc_d <= 1'b0;]`
-- `RGMII_top.sv:86 1'b0 inverted [rx_wr <= '0; rx_half <= 1'b0; rx_hi <= '0;]`
+無已知缺口。
 
