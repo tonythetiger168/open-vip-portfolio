@@ -68,11 +68,15 @@ def main():
     out += ["", "## Verilator 5.052 的已知限制", "",
             "- `x dist {...}` 被當成硬性約束：先依權重選值，再和 inline `with { x == ... }` 衝突時整個 "
             "randomize 失敗（商用模擬器把 dist 當分布，不會失敗）。帶錯誤注入 dist 的 sequence 因此會偶發 "
-            "`randomize() failed`；DDR / LPDDR 的固定命令已用 `c_cmd_dist.constraint_mode(0)` 繞過，其餘 VIP 列為已知限制。",
+            "`randomize() failed`。directed 的 `with {...}` 會先 `constraint_mode(0)` 關掉該變數的 dist 約束"
+            "（DDR / LPDDR、SD、eMMC、UFS、UniPro_Mem、MIPI 家族）；JESD204、eCPRI 把 dist 拆成獨立的 `c_*_dist` "
+            "約束，彼此相依的錯誤注入用 `(a == 0) -> b dist {...}` 表示。",
             "- 巢狀 rand 物件裡的 dynamic array `size()` 約束解不出來：MIPI、USB、CXL/PCIe、Ethernet/FC "
             "的 sequence 改為直接 randomize `item.txn`。",
             "- 非 rand 陣列的 `size()` 約束會把長度變數釘在目前大小（0）：DDR / HBM / LPDDR 改在 "
             "`post_randomize()` 配置 `rdata`。",
+            "- 2-state：`'z` 讀成 0，所以用 `=== 1'bz` 判斷「腳位放開」的邏輯永遠不成立。SPI 用 MOSI 的 "
+            "`'z` 表示 CPHA=1，monitor 與 slave model 改讀新增的 `mosi_oe`（pad output enable）。",
             "",
             "## 逐 VIP 結果", "", "| VIP | Test | 結果 | 原因 | 第一個問題 |", "|---|---|---|---|---|"]
     order = {k: i for i, (k, _) in enumerate(MEANING)}

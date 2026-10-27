@@ -212,6 +212,9 @@ def run_to_file(cmd, cwd, timeout, log, keep=4 << 20, max_log=512 << 20):
     """Run with stdout/stderr to ``log`` (a checker can print millions of
     warnings; captured in memory that once took 9 GB) and return the first
     and last ``keep`` bytes of it."""
+    if shutil.which("stdbuf"):
+        # line-buffered, so a sim killed on timeout still leaves its log
+        cmd = ["stdbuf", "-oL", "-eL"] + list(cmd)
     with open(log, "w") as f:
         p = subprocess.Popen(cmd, cwd=cwd, stdout=f, stderr=subprocess.STDOUT)
         t0, rc = time.time(), None
@@ -275,15 +278,15 @@ def main_smoke(argv, tests_override):
         shutil.rmtree(os.path.join(WORK, vip, "obj"), ignore_errors=True)
     if tests_override is None:
         # a run on some VIPs updates their rows in the existing report
-        keep = []
+        merged = {}
         if argv and os.path.exists(SMOKE_REPORT):
-            done = {r[0] for r in rows}
             with open(SMOKE_REPORT) as f:
-                keep = [r for r in list(csv.reader(f))[1:] if r and r[0] not in done]
+                merged = {r[0]: r for r in list(csv.reader(f))[1:] if r}
+        merged.update((r[0], list(r)) for r in rows)    # one row per VIP
         with open(SMOKE_REPORT, "w", newline="") as f:
             w = csv.writer(f)
             w.writerow(["vip", "test", "result", "checks", "detail"])
-            w.writerows(sorted(keep + [list(r) for r in rows], key=lambda r: r[0].lower()))
+            w.writerows(sorted(merged.values(), key=lambda r: r[0].lower()))
     return 1 if bad else 0
 
 def main(argv):
