@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | AMBA |
 | 類型 | RTL IP |
-| 功能測試 | 1 個檔案，45337 次斷言評估，全部通過 |
-| Mutation | 8/12 個 mutant 被偵測（67%） |
-| 判定 | **🟡 Partial**（mutation score 67%） |
+| 功能測試 | 1 個檔案，43636 次斷言評估，全部通過 |
+| Mutation | 10/10 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（self-checking testbench，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/ACE_tb.sv`
 
-結果：**PASS**（verilator，45337 次斷言評估）
+結果：**PASS**（verilator，43636 次斷言評估）
 
 | # | 測試段落 |
 |---|---|
@@ -27,8 +27,9 @@
 | 3 | 3. snoop ReadShared hit on dirty line |
 | 4 | 4. snoop miss (never-written address) |
 | 5 | 5. MakeUnique invalidation |
-| 6 | 6. error injection: out-of-range -> SLVERR + irq |
-| 7 | 7. back-to-back transactions |
+| 6 | 5b. CleanInvalid on a dirty line |
+| 7 | 6. error injection: out-of-range -> SLVERR + irq |
+| 8 | 7. back-to-back transactions |
 
 ## 3. UVM 測試平台內容
 
@@ -36,12 +37,7 @@ RTL IP：以 `tb/` 的 self-checking testbench 驗證，無 UVM 測試。
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 67%）。
+判定：**✅ Sufficient**（self-checking testbench，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `ACE_top.sv:10 32 -> 33 [parameter int DW = 32,          // data width]`
-- `ACE_top.sv:140 1'b0 inverted [snp_xfer_q  <= 1'b0;]`
-- `ACE_top.sv:192 1'b1 inverted [if (rerr_q) irq <= 1'b1;]`
-- `ACE_top.sv:222 1'b0 inverted [line_valid[acaddr[7:2]] <= 1'b0;]`
+無已知缺口。
 

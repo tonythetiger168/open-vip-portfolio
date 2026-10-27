@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | AMBA |
 | 類型 | RTL IP |
-| 功能測試 | 1 個檔案，6489 次斷言評估，全部通過 |
-| Mutation | 8/12 個 mutant 被偵測（67%） |
-| 判定 | **🟡 Partial**（mutation score 67%） |
+| 功能測試 | 2 個檔案，86 個 check，6489 次斷言評估，全部通過 |
+| Mutation | 12/12 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（86 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -20,18 +20,30 @@
 
 結果：**PASS**（verilator，6489 次斷言評估）
 
+### `tb/func_chi_tb.sv`
+
+結果：**PASS**（iverilog，86 checks）
+
+| # | Check | 類型 |
+|---|---|---|
+| 1 | request accepted with a free credit | check |
+| 2 | response valid RSP_LAT+1 clocks after the accepting edge (%0d) | check |
+| 3 | response flit carries opcode OK, txnID and addr[15:0] | check |
+| 4 | one response per request, then idle | check |
+| 5 | irq pulses with the response (irq=%0d rsp=%0d mismatch=%0d) | check |
+| 6 | response held without a response credit | check |
+| 7 | response sent once the credit arrives | check |
+| 8 | request accepted on the last credit | check |
+| 9 | a request is accepted on the last credit (%0d) | check |
+| 10 | irq mirrors rxrspflitv throughout | check |
+
 ## 3. UVM 測試平台內容
 
 RTL IP：以 `tb/` 的 self-checking testbench 驗證，無 UVM 測試。
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 67%）。
+判定：**✅ Sufficient**（86 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `CHI_top.sv:44 == flipped [assign irq         = (cstate == C_SEND) && (tx_crd != 0);]`
-- `CHI_top.sv:44 && flipped [assign irq         = (cstate == C_SEND) && (tx_crd != 0);]`
-- `CHI_top.sv:61 0 -> 1 [C_IDLE: if (txreqflitv && rx_crd != 0) begin]`
-- `CHI_top.sv:66 == flipped [C_LAT: if (lat_cnt == 0) cstate <= C_SEND;]`
+無已知缺口。
 

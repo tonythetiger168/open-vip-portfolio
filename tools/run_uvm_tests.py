@@ -36,7 +36,7 @@ gen_uvm_smoke_doc.py renders it as docs/UVM_SMOKE.md).
 Env: VIPS_DIR (default build/vips), VERILATOR (default verilator on PATH),
      UVM_JOBS (verilator -j, default nproc).
 """
-import os, re, sys, csv, glob, shutil, subprocess
+import os, re, sys, csv, glob, shutil, subprocess, time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VIPS = os.environ.get("VIPS_DIR", os.path.join(ROOT, "build", "vips"))
@@ -184,9 +184,37 @@ def classify(rc, out):
     detail = "rc=%d UVM_ERROR=%d UVM_FATAL=%d VIP_WARNINGS=%d" % (rc, errs, fatals, len(warns))
     if "TIMEOUT" in out:
         detail += " timeout"
+    if "LOG_FLOOD" in out:
+        detail += " log flood (>512 MB, killed)"
     if first:
         detail += ": " + first[0]
     return "FAIL", 0, detail[:300]
+
+def run_to_file(cmd, cwd, timeout, log, keep=4 << 20, max_log=512 << 20):
+    """Run with stdout/stderr to ``log`` (a checker can print millions of
+    warnings; captured in memory that once took 9 GB) and return the first
+    and last ``keep`` bytes of it."""
+    with open(log, "w") as f:
+        p = subprocess.Popen(cmd, cwd=cwd, stdout=f, stderr=subprocess.STDOUT)
+        t0, rc = time.time(), None
+        while rc is None:
+            try:
+                rc = p.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                if time.time() - t0 > timeout:
+                    p.kill(); p.wait(); rc = 124
+                elif os.path.getsize(log) > max_log:
+                    # a log flood fills the disk long before the timeout
+                    p.kill(); p.wait(); rc = 125
+    size = os.path.getsize(log)
+    with open(log, errors="replace") as f:
+        if size <= 2 * keep:
+            out = f.read()
+        else:
+            head = f.read(keep)
+            f.seek(size - keep)
+            out = head + "\n...\n" + f.read()
+    return rc, out + {124: "\nTIMEOUT", 125: "\nLOG_FLOOD: log exceeded %d MB, killed" % (max_log >> 20)}.get(rc, "")
 
 def classify_smoke(rc, out):
     st, n, detail = classify(rc, out + "\nSB_PASS checks=0")
@@ -196,6 +224,9 @@ def classify_smoke(rc, out):
         if re.search(r"\$finish at 0s", out):
             return "FAIL", 0, "finished at time 0: the test drove no traffic"
         return "PASS", 0, ""
+    crash = [l for l in out.splitlines() if l.startswith("%Error")]
+    if rc != 0 and crash:
+        detail += ": " + crash[0]
     if rc == 0 and "UVM_FATAL :" in out and re.search(r"UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=[1-9]", detail):
         return "WARN", 0, detail
     return st, n, detail
@@ -216,9 +247,8 @@ def main_smoke(argv, tests_override):
             if exe is None:
                 st, detail = "ERROR", err
             else:
-                rc, out = run([exe, "+UVM_TESTNAME=" + t], os.path.dirname(exe), 900)
-                with open(os.path.join(WORK, vip, "run_%s.log" % t), "w") as f:
-                    f.write(out)
+                log = os.path.join(WORK, vip, "run_%s.log" % t)
+                rc, out = run_to_file([exe, "+UVM_TESTNAME=" + t], os.path.dirname(exe), 900, log)
                 st, _, detail = classify_smoke(rc, out)
             rows.append((vip, t, st, 0, detail))
             bad += st not in ("PASS", "WARN")

@@ -9,8 +9,8 @@
 | 類別 | Storage |
 | 類型 | RTL IP |
 | 功能測試 | 1 個檔案，125541 次斷言評估，全部通過 |
-| Mutation | 8/12 個 mutant 被偵測（67%） |
-| 判定 | **🟡 Partial**（mutation score 67%） |
+| Mutation | 8/8 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（self-checking testbench，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -26,12 +26,7 @@ RTL IP：以 `tb/` 的 self-checking testbench 驗證，無 UVM 測試。
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 67%）。
+判定：**✅ Sufficient**（self-checking testbench，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `SDIO_top.sv:32 32 -> 33 [parameter int DW = 32,       // data width (kept for interfa]`
-- `SDIO_top.sv:161 1 -> 2 [wire bit_tick = (BIT_CLKS <= 1) || (bd_cnt == BIT_CLKS-1);]`
-- `SDIO_top.sv:187 1'b0 inverted [rd_phase    <= 1'b0;]`
-- `SDIO_top.sv:195 0 -> 1 [for (int l = 0; l < 4;   l++) crc16_rd[l] <= 16'h0000;]`
+無已知缺口。
 

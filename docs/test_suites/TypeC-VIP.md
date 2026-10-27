@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | USB |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，9 個 check，全部通過 |
+| 功能測試 | 1 個檔案，11 個 check，全部通過 |
 | Mutation | 1/1 個 mutant 被偵測（100%） |
-| 判定 | **🟡 Partial**（只有 9 個 check） |
+| 判定 | **✅ Sufficient**（11 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_typec_tb.sv`
 
-結果：**PASS**（iverilog，9 checks）
+結果：**PASS**（iverilog，11 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -45,6 +45,8 @@ Model contract (from tb/top_tb.sv and typec_defs_pkg):
 | 7 | terminations restored after the glitch | check |
 | 8 | mode change takes effect on the next clock edge | check |
 | 9 | asynchronous reset opens both lines | check |
+| 10 | terminations follow the mode after reset | check |
+| 11 | a held glitch request keeps both lines open | check |
 
 ## 3. UVM 測試平台內容
 
@@ -59,7 +61,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（只有 9 個 check）。
+判定：**✅ Sufficient**（11 個 check，mutation score 100%）。
 
 無已知缺口。
 

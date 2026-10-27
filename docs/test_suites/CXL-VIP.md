@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，11 個 check，全部通過 |
-| Mutation | 4/7 個 mutant 被偵測（57%） |
-| 判定 | **🟡 Partial**（mutation score 57%） |
+| 功能測試 | 1 個檔案，12 個 check，全部通過 |
+| Mutation | 5/5 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（12 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,21 +18,22 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（verilator，11 checks）
+結果：**PASS**（verilator，12 checks）
 
 | # | Check | 類型 |
 |---|---|---|
 | 1 | channel beat during reset is ignored | check |
-| 2 | single-beat transaction counted once | check |
-| 3 | single-beat transaction data stored at address | check |
-| 4 | channel busy between SOP and EOP | check |
-| 5 | multi-beat transaction counted once at EOP | check |
-| 6 | channel idle after EOP | check |
-| 7 | payload DW0 at addr+0 | check |
-| 8 | payload DW1 at addr+4 | check |
-| 9 | payload DW2 at addr+8 | check |
-| 10 | back-to-back transaction counted | check |
-| 11 | later transaction overwrites previous contents | check |
+| 2 | beat without SOP outside a transaction is dropped | check |
+| 3 | single-beat transaction counted once | check |
+| 4 | single-beat transaction data stored at address | check |
+| 5 | channel busy between SOP and EOP | check |
+| 6 | multi-beat transaction counted once at EOP | check |
+| 7 | channel idle after EOP | check |
+| 8 | payload DW0 at addr+0 | check |
+| 9 | payload DW1 at addr+4 | check |
+| 10 | payload DW2 at addr+8 | check |
+| 11 | back-to-back transaction counted | check |
+| 12 | later transaction overwrites previous contents | check |
 
 ## 3. UVM 測試平台內容
 
@@ -47,11 +48,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 57%）。
+判定：**✅ Sufficient**（12 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_mp_endpoint_mem_model.sv:18 0 -> 1 [int wr_count = 0, rd_count = 0;]`
-- `dut_mp_endpoint_mem_model.sv:20 0 -> 1 [bit        in_tlp = 0;]`
-- `dut_mp_endpoint_mem_model.sv:24 0 -> 1 [in_tlp <= 0;]`
+無已知缺口。
 

@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | AMBA |
 | 類型 | UVM VIP |
-| 功能測試 | 2 個檔案，22 個 check，全部通過 |
+| 功能測試 | 2 個檔案，23 個 check，全部通過 |
 | Mutation | 15/15 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（22 個 check，mutation score 100%） |
+| 判定 | **✅ Sufficient**（23 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_apb_tb.sv`
 
-結果：**PASS**（iverilog，11 checks）
+結果：**PASS**（iverilog，12 checks）
 
 | # | Check | 類型 |
 |---|---|---|
@@ -33,6 +33,7 @@
 | 9 | 400 random transfers with PSTRB match the reference registers | check |
 | 10 | PSLVERR only for EEh addresses, wait states only for Fh | check |
 | 11 | PREADY, PSLVERR low and PRDATA 0 in every setup phase | check |
+| 12 | reset clears the registers written before it | check |
 
 ### `tb/smoke_func_tb.sv`
 
@@ -65,7 +66,7 @@ UVM RAL test（`amba_ral_test`：hw_reset / bit_bash / mirror 等）在 Verilato
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（22 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（23 個 check，mutation score 100%）。
 
 無已知缺口。
 

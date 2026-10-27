@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，21 個 check，全部通過 |
-| Mutation | 2/3 個 mutant 被偵測（67%） |
-| 判定 | **🟡 Partial**（mutation score 67%） |
+| 功能測試 | 1 個檔案，22 個 check，全部通過 |
+| Mutation | 3/3 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（22 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,17 +18,18 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，21 checks）
+結果：**PASS**（iverilog，22 checks）
 
 | # | Check | 類型 |
 |---|---|---|
 | 1 | out_valid quiet out of reset | check |
-| 2 | out_valid low without input | check |
-| 3 | symbol forwarded | check |
-| 4 | symbol data integrity | check |
-| 5 | start-of-control passthrough | check |
-| 6 | priority passthrough | check |
-| 7 | out_valid drops after burst | check |
+| 2 | out_soc quiet in reset | check |
+| 3 | out_valid low without input | check |
+| 4 | symbol forwarded | check |
+| 5 | symbol data integrity | check |
+| 6 | start-of-control passthrough | check |
+| 7 | priority passthrough | check |
+| 8 | out_valid drops after burst | check |
 
 ## 3. UVM 測試平台內容
 
@@ -43,9 +44,7 @@ UVM agent test（`rapidio_func_test`：directed + constrained-random 流量，sc
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 67%）。
+判定：**✅ Sufficient**（22 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_rapidio_model.sv:24 1'b0 inverted [out_soc  <= 1'b0;]`
+無已知缺口。
 

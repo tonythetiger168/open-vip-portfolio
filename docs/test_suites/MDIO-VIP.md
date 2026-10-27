@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Networking |
 | 類型 | RTL IP |
-| 功能測試 | 1 個檔案，2263903 次斷言評估，全部通過 |
-| Mutation | 9/12 個 mutant 被偵測（75%） |
-| 判定 | **🟡 Partial**（mutation score 75%） |
+| 功能測試 | 1 個檔案，2293303 次斷言評估，全部通過 |
+| Mutation | 10/10 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（self-checking testbench，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/MDIO_tb.sv`
 
-結果：**PASS**（verilator，2263903 次斷言評估）
+結果：**PASS**（verilator，2293303 次斷言評估）
 
 ## 3. UVM 測試平台內容
 
@@ -26,11 +26,7 @@ RTL IP：以 `tb/` 的 self-checking testbench 驗證，無 UVM 測試。
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 75%）。
+判定：**✅ Sufficient**（self-checking testbench，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `MDIO_top.sv:28 1'b1 inverted [mdc_s <= 1'b0; mdc_d <= 1'b0; mdio_s <= 1'b1;]`
-- `MDIO_top.sv:49 0 -> 1 [for (int i = 0; i < 32; i++) regs[i] <= 16'h0000;]`
-- `MDIO_top.sv:71 && flipped [read_frame <= (mdio_s == 1'b0) && (shift[0] == 1'b1); // OP ]`
+無已知缺口。
 

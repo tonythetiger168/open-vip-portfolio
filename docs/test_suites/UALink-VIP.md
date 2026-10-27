@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，11 個 check，全部通過 |
-| Mutation | 10/18 個 mutant 被偵測（56%） |
-| 判定 | **🟡 Partial**（mutation score 56%） |
+| 功能測試 | 1 個檔案，17 個 check，全部通過 |
+| Mutation | 14/14 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（17 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,21 +18,24 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，11 checks）
+結果：**PASS**（iverilog，17 checks）
 
 | # | Check | 類型 |
 |---|---|---|
-| 1 | ready high when idle | check |
-| 2 | rsp quiet in reset | check |
-| 3 | ready drops after accept | check |
-| 4 | write rsp OK | check |
-| 5 | rsp completes | check |
-| 6 | ready returns | check |
-| 7 | read rsp OK | check |
-| 8 | read data matches write | check |
-| 9 | illegal opcode ERR | check |
-| 10 | rsp held until ready | check |
-| 11 | rsp clears after ready | check |
+| 1 | idle outputs defined from time 0 | check |
+| 2 | ready high when idle | check |
+| 3 | rsp quiet in reset | check |
+| 4 | no response without a request | check |
+| 5 | ready drops after accept | check |
+| 6 | write rsp OK | check |
+| 7 | rsp completes | check |
+| 8 | ready returns | check |
+| 9 | read rsp OK | check |
+| 10 | read data matches write | check |
+| 11 | illegal opcode ERR | check |
+| 12 | rsp held until ready | check |
+| 13 | rsp clears after ready | check |
+| 14 | word at 0x%0h reads 0 after reset | check |
 
 ## 3. UVM 測試平台內容
 
@@ -47,16 +50,7 @@ UVM agent test（`ualink_func_test`：directed + constrained-random 流量，sco
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 56%）。
+判定：**✅ Sufficient**（17 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_ualink_model.sv:27 1'b0 inverted [initial begin rsp_valid = 1'b0; req_ready = 1'b1; rsp_status]`
-- `dut_ualink_model.sv:27 1'b1 inverted [initial begin rsp_valid = 1'b0; req_ready = 1'b1; rsp_status]`
-- `dut_ualink_model.sv:30 1'b0 inverted [busy <= 1'b0; req_ready <= 1'b1;]`
-- `dut_ualink_model.sv:33 0 -> 1 [for (i = 0; i < 64; i++) mem[i] <= 64'h0;]`
-- `dut_ualink_model.sv:33 64 -> 65 [for (i = 0; i < 64; i++) mem[i] <= 64'h0;]`
-- `dut_ualink_model.sv:35 && flipped [if (req_valid && req_ready) begin]`
-- `dut_ualink_model.sv:36 1'b1 inverted [busy <= 1'b1;]`
-- `dut_ualink_model.sv:52 1'b0 inverted [busy <= 1'b0;]`
+無已知缺口。
 

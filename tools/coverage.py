@@ -35,7 +35,8 @@ compare against ``1'bz``, so tri-state checks stay on Icarus); a test that
 fails only in the coverage build still contributes its points. Both are
 named in the report detail.
 
-Output: one line per VIP, ``coverage_report.csv``
+Output: one line per VIP, ``coverage_report.csv`` (a run naming VIPs replaces
+just their rows)
 (vip,tests,covered_tests,line_hit,line_total,line_pct,toggle_hit,
 toggle_total,toggle_pct,expr_hit,expr_total,expr_pct,assert_hit,
 assert_total,assert_pct,func_hit,func_total,func_pct,line_missed,
@@ -300,14 +301,18 @@ def main(argv):
                 "%s=%s%%" % (m, rw[5 + 3 * i]) for i, m in enumerate(METRICS) if rw[4 + 3 * i]),
                 (" -- " + rw[-1]) if rw[-1] else ""))
             sys.stdout.flush()
-    if not argv:
-        with open(REPORT, "w", newline="") as f:
-            w = csv.writer(f)
-            w.writerow(["vip", "tests", "covered_tests"]
-                       + ["%s_%s" % (m, k) for m in METRICS for k in ("hit", "total", "pct")]
-                       + ["line_missed", "func_missed", "detail"])
-            w.writerows(rows)
-    return 0 if all(r[2] for r in rows) else 1
+    if argv and os.path.exists(REPORT):
+        # partial run: replace just these VIPs' rows in the existing report
+        done = {r[0] for r in rows}
+        old = [r for r in list(csv.reader(open(REPORT)))[1:] if r and r[0] not in done]
+        rows = sorted(old + rows, key=lambda r: r[0])
+    with open(REPORT, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["vip", "tests", "covered_tests"]
+                   + ["%s_%s" % (m, k) for m in METRICS for k in ("hit", "total", "pct")]
+                   + ["line_missed", "func_missed", "detail"])
+        w.writerows(rows)
+    return 0 if all(int(r[2]) for r in rows) else 1
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))

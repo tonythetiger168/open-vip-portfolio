@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | AMBA |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，12 個 check，全部通過 |
-| Mutation | 12/19 個 mutant 被偵測（63%） |
-| 判定 | **🟡 Partial**（mutation score 63%） |
+| 功能測試 | 1 個檔案，27 個 check，全部通過 |
+| Mutation | 18/18 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（27 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,17 +18,26 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，12 checks）
+結果：**PASS**（iverilog，27 checks）
 
 | # | Check | 類型 |
 |---|---|---|
 | 1 | channels reset quiet | check |
-| 2 | AW accepted | check |
-| 3 | W accepted | check |
-| 4 | BVALID after write | check |
-| 5 | BRESP OKAY | check |
-| 6 | BVALID completes | check |
-| 7 | no spurious BVALID | check |
+| 2 | no ready / BVALID out of reset while idle | check |
+| 3 | AW accepted | check |
+| 4 | W accepted | check |
+| 5 | BVALID after write | check |
+| 6 | BRESP OKAY | check |
+| 7 | BVALID completes | check |
+| 8 | no spurious BVALID | check |
+| 9 | full-strobe write stored at awaddr[6:3] | check |
+| 10 | BVALID after the partial write | check |
+| 11 | WSTRB 0x0F writes byte lanes 0-3 only | check |
+| 12 | WSTRB 0x01 writes byte lane 0 only | check |
+| 13 | WREADY never high two cycles in a row | check |
+| 14 | WREADY on every other cycle while WVALID is held (%0d of 8) | check |
+| 15 | B held while AWVALID waits for AWREADY | check |
+| 16 | B issued once the AW is accepted | check |
 
 ## 3. UVM 測試平台內容
 
@@ -43,15 +52,7 @@ UVM agent test（`ace_lite_func_test`：directed + constrained-random 流量，s
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 63%）。
+判定：**✅ Sufficient**（27 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_ace_lite_model.sv:32 1'b0 inverted [wpend   <= 1'b0;]`
-- `dut_ace_lite_model.sv:34 && flipped [awready <= awvalid && !awready;]`
-- `dut_ace_lite_model.sv:35 && flipped [wready  <= wvalid  && !wready;]`
-- `dut_ace_lite_model.sv:36 && flipped [if (wvalid && wready) begin]`
-- `dut_ace_lite_model.sv:37 0 -> 1 [for (int i = 0; i < 8; i++)]`
-- `dut_ace_lite_model.sv:37 8 -> 9 [for (int i = 0; i < 8; i++)]`
-- `dut_ace_lite_model.sv:43 ! dropped in condition [else if (wpend && !(awvalid && !awready)) begin]`
+無已知缺口。
 
