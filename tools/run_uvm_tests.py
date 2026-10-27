@@ -87,14 +87,29 @@ def agent_suites():
 SUITES.update(agent_suites())
 
 def pkg_order(files):
-    """Stable reorder so that a file declaring ``package P`` comes before every
-    file that imports P (elab_scan's order puts interfaces first; pyslang
-    tolerates a forward package reference, Verilator does not)."""
-    prov, need = {}, {}
+    """Stable reorder so that a file declaring ``package P`` (or a $unit class)
+    comes before every file that imports P (or names the class); elab_scan's
+    order puts interfaces first, pyslang tolerates a forward reference,
+    Verilator does not."""
+    prov, need, words, incs = {}, {}, {}, set()
     for f in files:
         src = re.sub(r"//[^\n]*", "", open(f, errors="replace").read())
         prov[f] = set(re.findall(r"^\s*package\s+(\w+)\s*;", src, re.M))
         need[f] = set(re.findall(r"\bimport\s+(\w+)\s*::", src)) - prov[f]
+        words[f] = set(re.findall(r"\w+", src))
+        incs.update(os.path.basename(i) for i in re.findall(r'`include\s+"([^"]+)"', src))
+    for f in files:
+        if not prov[f] and os.path.basename(f) not in incs:
+            # a class declared in $unit (outside any package, and not a file
+            # some package `includes) must also come before the files using it
+            src = re.sub(r"//[^\n]*", "", open(f, errors="replace").read())
+            prov[f] = set(re.findall(r"^\s*(?:virtual\s+)?class\s+(\w+)", src, re.M))
+    # ...unless some file imports a package into $unit: the files after it
+    # rely on that import, so their order must stay as it is
+    if not any(re.search(r"^import\s+(?!uvm_pkg\b)", open(f, errors="replace").read(), re.M) for f in files):
+        unit = set().union(*prov.values()) if prov else set()
+        for f in files:
+            need[f] |= (words[f] & unit) - prov[f]
     out, done = [], set()
     def visit(f, stack):
         if f in done or f in stack:
@@ -126,14 +141,17 @@ def smoke_suite(vip):
         m = re.search(r"^\s*module\s+(\w+)(?:(?!^\s*endmodule).)*?\brun_test\s*\(", src, re.M | re.S)
         if m:
             top = m.group(1)
-    # the base test usually starts no sequence: run the first test derived from it
+    # the base test usually starts no sequence: run a test derived from it,
+    # preferring one named after the VIP (a shared MIPI package carries a
+    # test per protocol)
     test = base
     if base:
+        derived = []
         for f in sorted(glob.glob(os.path.join(vdir, "**", "*.sv*"), recursive=True)):
-            m = re.search(r"\bclass\s+(\w+)\s+extends\s+%s\b" % base, open(f, errors="replace").read())
-            if m:
-                test = m.group(1)
-                break
+            derived += re.findall(r"\bclass\s+(\w+)\s+extends\s+%s\b" % base, open(f, errors="replace").read())
+        stem = re.sub(r"[^a-z0-9]", "", vip.lower().replace("-uvm-vip", "").replace("-vip", ""))
+        named = [t for t in derived if stem and stem in t.lower().replace("_", "")]
+        test = (named or derived or [base])[0]
     return dict(top=top, files=[os.path.relpath(f, vdir) for f in pkg_order(files[1:])],
                 incs=sorted({os.path.relpath(os.path.dirname(f), vdir) for f in allsv}),
                 tests=[test] if test else [])
