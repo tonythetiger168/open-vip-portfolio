@@ -189,7 +189,9 @@ def summarize(dats, dut_files, suffix_ok=False, scope=None):
     Points are merged per design unit, not per instance: the key leaves out
     the hierarchy, which differs between tests (each test has its own top
     module and instance names), so a point counts as hit when any test, in
-    any instance, reached it."""
+    any instance, reached it. Verilator names each parameterization of a
+    module ``<module>__P...`` in the point's page; that suffix is dropped
+    too, so two differently parameterized instances share their points."""
     names = set(canon(f) for f in dut_files)
     hits = {}
     for dat in dats:
@@ -204,7 +206,7 @@ def summarize(dats, dut_files, suffix_ok=False, scope=None):
                 continue
             # covergroup points are told apart by bin and coverpoint path
             # ("h" is cg.<coverpoint>.<bin> there, not the instance)
-            k = (metric, fn, f.get("page"), f.get("l"), f.get("n"), f.get("o"), f.get("bin"),
+            k = (metric, fn, re.sub(r"__P\w*$", "", f.get("page", "")), f.get("l"), f.get("n"), f.get("o"), f.get("bin"),
                  f.get("h") if metric == "func" else None)
             hits[k] = hits.get(k, 0) + cnt
     res = {m: [0, 0] for m in METRICS}

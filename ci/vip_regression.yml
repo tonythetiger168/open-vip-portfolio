@@ -1,5 +1,5 @@
 # =============================================================================
-# VIP Portfolio v1.7.4 — CI 回歸（GitHub Actions 範例）
+# VIP Portfolio v1.8.0 — CI 回歸（GitHub Actions 範例）
 #
 # !! 部署注意 !!
 #   本檔因 OAuth workflow scope 限制暫置於 ci/ 目錄。
@@ -7,14 +7,14 @@
 #
 # 內容：
 #   - Job 1「elab-gate」：在 ubuntu runner 上以開源工具鏈（pyslang 12 +
-#     Accellera uvm-core）對全部 87 個 VIP 執行 L1a elaboration gate，
+#     Accellera uvm-core）對全部 132 個 VIP 執行 L1a elaboration gate，
 #     並在 smoke harness 存在時加跑 L1b iverilog DUT 冒煙測試，
 #     最後上傳報告 artifact。
 #   - 檔案尾端以註解示範 Job 2：在 self-hosted runner（具 VCS/Xcelium/Questa
 #     license）上執行 L2/L3 coverage-driven 回歸。
 #
 # 假設 repo 版面：
-#   <repo>/vips/<協定>-VIP/            ← 87 個 VIP 目錄
+#   <repo>/vips/<協定>-VIP.zip        ← 132 個 VIP zip（tools/extract_vips.sh 解壓到 build/vips）
 #   <repo>/tools/elab_scan.py          ← elaboration gate 腳本
 #   <repo>/smoke/run_smoke.sh          ← iverilog DUT 冒煙測試 harness（選配）
 # =============================================================================
@@ -39,7 +39,7 @@ env:
 
 jobs:
   elab-gate:
-    name: L1 elaboration gate（87 VIP）
+    name: L1 elaboration gate（132 VIP）
     runs-on: ubuntu-latest
     steps:
       - name: 取出 portfolio 原始碼
@@ -102,6 +102,14 @@ jobs:
             echo "smoke/run_smoke.sh 尚未納入 repo，略過 L1b（參見 docs/ACCEPTANCE.md）"
           fi
 
+      - name: SVA 恆真式檢查（pyslang）
+        run: |
+          set -o pipefail
+          mkdir -p reports/sva
+          # assert/property 中永遠成立的式子（例如 2-bit 訊號 inside {0..3}、8-bit <= 8'hFF）
+          # 只會在 X/Z 時失敗，等於沒有檢查；有任何一條就 exit 1
+          python3 tools/sva_lint.py | tee reports/sva/sva_lint.log
+
       - name: 功能測試（self-checking functional tests，iverilog / Verilator）
         run: |
           set -o pipefail
@@ -160,7 +168,7 @@ jobs:
 #         vcs -ID || true               # VCS 無 -version，-ID 可檢查安裝與 license
 #         lmstat -a -c "$LM_LICENSE_FILE" | head
 #
-#     - name: 全 87 VIP coverage 回歸（L3）
+#     - name: 全 132 VIP coverage 回歸（L3）
 #       run: |
 #         set -u
 #         mkdir -p reports/l3
