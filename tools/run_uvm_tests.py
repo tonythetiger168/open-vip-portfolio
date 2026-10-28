@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Copyright 2026 VIP Portfolio Contributors
 # SPDX-License-Identifier: Apache-2.0
-"""run_uvm_tests.py [VIP ...] [--test NAME] [--smoke] -- build a VIP's UVM
+"""run_uvm_tests.py [VIP ...] [--test NAME[,NAME...]] [--smoke] -- build a VIP's UVM
 testbench with Verilator and run its UVM tests (default: the RAL test).
 
 The UVM environment (agent, env, register model, tests, tb/top_tb.sv) is
@@ -293,7 +293,7 @@ def main(argv):
     tests_override = None
     if "--test" in argv:
         i = argv.index("--test")
-        tests_override = [argv[i + 1]]
+        tests_override = argv[i + 1].split(",")   # NAME or NAME1,NAME2,...
         argv = argv[:i] + argv[i + 2:]
     if not os.path.exists(os.path.join(UVM, "uvm_pkg.sv")):
         print("ERROR: uvm-core not found at %s (set UVM_CORE)" % UVM, file=sys.stderr)
