@@ -89,15 +89,15 @@ All source files are licensed under **Apache License 2.0**.
 | Avalon-ST | RTL IP | `Avalon_ST-VIP.zip` | 7KB |
 | Avalon-ST | UVM VIP | `Avalon_ST-UVM-VIP.zip` | 24KB |
 | CCIX Cache Coherent Interconnect | UVM VIP | `CCIX-VIP.zip` | 28KB |
-| CXL | UVM VIP | `CXL-VIP.zip` | 40KB |
+| CXL | UVM VIP | `CXL-VIP.zip` | 47KB |
 | CXS CCIX Stream Interface | UVM VIP | `CXS-VIP.zip` | 28KB |
 | OBI | UVM VIP | `OBI-UVM-VIP.zip` | 21KB |
 | OCP-IP Open Core Protocol | UVM VIP | `OCP-VIP.zip` | 28KB |
-| PCIe | UVM VIP | `PCIe-VIP.zip` | 41KB |
+| PCIe | UVM VIP | `PCIe-VIP.zip` | 57KB |
 | RapidIO | UVM VIP | `RapidIO-VIP.zip` | 23KB |
 | TileLink (TL-UL/TL-C) | UVM VIP | `TileLink-VIP.zip` | 29KB |
-| UALink | UVM VIP | `UALink-VIP.zip` | 22KB |
-| UCIe | UVM VIP | `UCIe-VIP.zip` | 22KB |
+| UALink | UVM VIP | `UALink-VIP.zip` | 33KB |
+| UCIe | UVM VIP | `UCIe-VIP.zip` | 36KB |
 | Wishbone | RTL IP | `Wishbone-VIP.zip` | 10KB |
 | Wishbone | UVM VIP | `Wishbone-UVM-VIP.zip` | 24KB |
 
@@ -128,7 +128,7 @@ All source files are licensed under **Apache License 2.0**.
 |----------|------|------|------|
 | DDR | UVM VIP | `DDR-VIP.zip` | 29KB |
 | DDR4 | RTL IP | `DDR4-VIP.zip` | 11KB |
-| DDR5 | UVM VIP | `DDR5-VIP.zip` | 22KB |
+| DDR5 | UVM VIP | `DDR5-VIP.zip` | 37KB |
 | DDR6 | UVM VIP | `ddr6-VIP.zip` | 27KB |
 | DDR7 | UVM VIP | `ddr7-VIP.zip` | 27KB |
 | DFI 5.0 (MC-PHY Interface) | UVM VIP | `DFI-VIP.zip` | 32KB |
@@ -138,7 +138,7 @@ All source files are licensed under **Apache License 2.0**.
 | HBM | UVM VIP | `HBM-VIP.zip` | 29KB |
 | HBM2 | UVM VIP | `hbm2-VIP.zip` | 29KB |
 | HBM3 | UVM VIP | `hbm3-VIP.zip` | 29KB |
-| HBM3E | UVM VIP | `HBM3E-VIP.zip` | 22KB |
+| HBM3E | UVM VIP | `HBM3E-VIP.zip` | 37KB |
 | HBM4 | UVM VIP | `hbm4-VIP.zip` | 30KB |
 | HBM5 | UVM VIP | `HBM5-VIP.zip` | 27KB |
 | LPDDR | UVM VIP | `LPDDR-VIP.zip` | 29KB |
