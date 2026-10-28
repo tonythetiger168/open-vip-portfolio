@@ -336,3 +336,21 @@ MDIO-UVM-VIP,dut_mdio_model.sv:40,1'b0 inverted,mdc_q reset value only matters i
 MDIO-UVM-VIP,dut_mdio_model.sv:46,1'b1 inverted,dout is only visible while drive is set and is loaded before drive rises
 MDIO-UVM-VIP,dut_mdio_model.sv:78,1'b1 inverted,dout is not visible once drive is cleared
 Bluetooth5-VIP,dut_bluetooth5_dut.sv:55,0 -> 1,tx_idx is reloaded at the end of the turnaround before PEER_SEND reads it
+OBI-UVM-VIP,dut_obi_model.sv:45,0 -> 1,response FIFO entries are written before they are read; reset contents are never observed
+OBI-UVM-VIP,dut_obi_model.sv:45,4 -> 5,initialises an index past the 4-entry response FIFO
+OBI-UVM-VIP,dut_obi_model.sv:44,256 -> 257,initialises an index past the 256-word memory
+OBI-UVM-VIP,dut_obi_model.sv:52,4 -> 5,byte-lane loop index 4 is past the 4-byte word
+xSPI-UVM-VIP,dut_xspi_model.sv:47,0 -> 1,page buffer bytes are only committed where pmask is set; pmask is cleared in reset
+xSPI-UVM-VIP,dut_xspi_model.sv:47,256 -> 257,initialises an index past the 256-byte page buffer
+xSPI-UVM-VIP,dut_xspi_model.sv:58,256 -> 257,index 256 is past the page mask
+xSPI-UVM-VIP,dut_xspi_model.sv:61,4096 -> 4097,the extra index wraps to the first byte of the same sector which is erased anyway
+xSPI-UVM-VIP,dut_xspi_model.sv:48,1'b0 inverted,ext_ok is rewritten by the second command byte before any use
+xSPI-UVM-VIP,dut_xspi_model.sv:67,1'b0 inverted,rd is an unused status register in the model
+SMBus-UVM-VIP,dut_smbus_model.sv:54,1'b1 inverted,scl_p/sda_p reset values are overwritten on the first clock while the bus idles high
+SGMII-UVM-VIP,dut_sgmii_model.sv:73,1'b1 inverted,default symk of the always_comb block is overwritten in every state branch
+CAN_XL-UVM-VIP,dut_can_xl_model.sv:67,1'b0 inverted,rx_ok/rx_err reset values are overwritten on the first clock
+CAN_XL-UVM-VIP,dut_can_xl_model.sv:103,1'b1 inverted,an ADS stuff position at bit 17 needs FDF/XLF already in error which flags code 3 first
+OBI-UVM-VIP,dut_obi_model.sv:33,== flipped,the LFSR grant-stall pattern is arbitrary back-pressure; any pattern is legal OBI
+xSPI-UVM-VIP,dut_xspi_model.sv:93,! dropped in condition,end-of-command actions then fire one clock later and repeat idempotently while the opcode register holds
+SMBus-UVM-VIP,dut_smbus_model.sv:55,1'b0 inverted,reset values of tx/mack/pec_ok/pre are rewritten at START or before use (active and rep are killed)
+SGMII-UVM-VIP,dut_sgmii_model.sv:110,&& flipped,i1 is rewritten at every idle comma before its only use in the next code group
