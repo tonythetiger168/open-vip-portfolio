@@ -336,3 +336,71 @@ MDIO-UVM-VIP,dut_mdio_model.sv:40,1'b0 inverted,mdc_q reset value only matters i
 MDIO-UVM-VIP,dut_mdio_model.sv:46,1'b1 inverted,dout is only visible while drive is set and is loaded before drive rises
 MDIO-UVM-VIP,dut_mdio_model.sv:78,1'b1 inverted,dout is not visible once drive is cleared
 Bluetooth5-VIP,dut_bluetooth5_dut.sv:55,0 -> 1,tx_idx is reloaded at the end of the turnaround before PEER_SEND reads it
+OBI-UVM-VIP,dut_obi_model.sv:45,0 -> 1,response FIFO entries are written before they are read; reset contents are never observed
+OBI-UVM-VIP,dut_obi_model.sv:45,4 -> 5,initialises an index past the 4-entry response FIFO
+OBI-UVM-VIP,dut_obi_model.sv:44,256 -> 257,initialises an index past the 256-word memory
+OBI-UVM-VIP,dut_obi_model.sv:52,4 -> 5,byte-lane loop index 4 is past the 4-byte word
+xSPI-UVM-VIP,dut_xspi_model.sv:47,0 -> 1,page buffer bytes are only committed where pmask is set; pmask is cleared in reset
+xSPI-UVM-VIP,dut_xspi_model.sv:47,256 -> 257,initialises an index past the 256-byte page buffer
+xSPI-UVM-VIP,dut_xspi_model.sv:58,256 -> 257,index 256 is past the page mask
+xSPI-UVM-VIP,dut_xspi_model.sv:61,4096 -> 4097,the extra index wraps to the first byte of the same sector which is erased anyway
+xSPI-UVM-VIP,dut_xspi_model.sv:48,1'b0 inverted,ext_ok is rewritten by the second command byte before any use
+xSPI-UVM-VIP,dut_xspi_model.sv:67,1'b0 inverted,rd is an unused status register in the model
+SMBus-UVM-VIP,dut_smbus_model.sv:54,1'b1 inverted,scl_p/sda_p reset values are overwritten on the first clock while the bus idles high
+SGMII-UVM-VIP,dut_sgmii_model.sv:73,1'b1 inverted,default symk of the always_comb block is overwritten in every state branch
+CAN_XL-UVM-VIP,dut_can_xl_model.sv:67,1'b0 inverted,rx_ok/rx_err reset values are overwritten on the first clock
+CAN_XL-UVM-VIP,dut_can_xl_model.sv:103,1'b1 inverted,an ADS stuff position at bit 17 needs FDF/XLF already in error which flags code 3 first
+OBI-UVM-VIP,dut_obi_model.sv:33,== flipped,the LFSR grant-stall pattern is arbitrary back-pressure; any pattern is legal OBI
+xSPI-UVM-VIP,dut_xspi_model.sv:93,! dropped in condition,end-of-command actions then fire one clock later and repeat idempotently while the opcode register holds
+SMBus-UVM-VIP,dut_smbus_model.sv:55,1'b0 inverted,reset values of tx/mack/pec_ok/pre are rewritten at START or before use (active and rep are killed)
+SGMII-UVM-VIP,dut_sgmii_model.sv:110,&& flipped,i1 is rewritten at every idle comma before its only use in the next code group
+PCIe-VIP,dut_pcie_dl_model.sv:9,40 -> 41,default CRED_LAT; the test instantiates the model with CRED_LAT 200
+PCIe-VIP,dut_pcie_dl_model.sv:173,4096 -> 4097,initialises a byte past the 4 KB BAR memory
+PCIe-VIP,dut_pcie_dl_model.sv:238,1'b0 inverted,replay_req set at link down replays nothing (the replay buffer is emptied in the same clock) and is cleared in the first L0 clock
+CXL-VIP,dut_cxl_mem_model.sv:47,16 -> 17,pending-table size; at most REQ_CRD + RWD_CRD = 12 entries are ever in use
+CXL-VIP,dut_cxl_mem_model.sv:76,256 -> 257,initialises a line past the 256-line memory
+CXL-VIP,dut_cxl_mem_model.sv:81,1'b0 inverted,s2m_drs_poison reset value; only read with s2m_drs_valid
+CXL-VIP,dut_cxl_mem_model.sv:101,1 -> 2,free-slot search skips the last entry; at most 12 of 16 entries are ever in use
+CXL-VIP,dut_cxl_mem_model.sv:105,1'b0 inverted,p_pois of a write entry; NDR responses carry no poison
+CXL-VIP,dut_cxl_mem_model.sv:110,64 -> 65,byte-enable loop past byte 63 (no such byte)
+CXL-VIP,dut_cxl_mem_model.sv:133,1 -> 2,free-slot search skips the last entry; at most 12 of 16 entries are ever in use
+CXL-VIP,dut_cxl_mem_model.sv:134,1'b1 inverted,no free entry is unreachable (credits limit the table to 12 of 16)
+CXL-VIP,dut_cxl_mem_model.sv:153,1 -> 2,no-candidate marker -1 vs -2; only its sign is tested
+CXL-VIP,dut_cxl_mem_model.sv:156,< -> <= in condition,due times of pending entries never differ by exactly 2^15 clocks
+CXL-VIP,dut_cxl_mem_model.sv:157,< -> <= in condition,due times of pending entries never differ by exactly 2^15 clocks
+CXL-VIP,dut_mp_endpoint_mem_model.sv:20,0 -> 1,declaration value of in_tlp; reset rewrites it before any beat
+DDR5-VIP,dut_ddr5_dev_model.sv:9,16 -> 17,default timing parameter; the test sets every parameter
+DDR5-VIP,dut_ddr5_dev_model.sv:9,12 -> 13,default timing parameter; the test sets every parameter
+DDR5-VIP,dut_ddr5_dev_model.sv:10,8 -> 9,default timing parameter; the test sets every parameter
+DDR5-VIP,dut_ddr5_dev_model.sv:64,8 -> 9,reset loop past bank 7 (no such bank)
+DDR5-VIP,dut_ddr5_dev_model.sv:66,100000 -> 100001,"""long ago"" reset time; any value below -tFAW behaves the same"
+DDR5-VIP,dut_ddr5_dev_model.sv:68,100000 -> 100001,"""long ago"" reset time; any value below -tFAW behaves the same"
+DDR5-VIP,dut_ddr5_dev_model.sv:69,100000 -> 100001,"""long ago"" reset time; any value below -tFAW behaves the same"
+DDR5-VIP,dut_ddr5_dev_model.sv:70,100000 -> 100001,"""long ago"" reset time; any value below -tFAW behaves the same"
+DDR5-VIP,dut_ddr5_dev_model.sv:102,8 -> 9,auto-precharge loop past bank 7 (no such bank)
+DDR5-VIP,dut_ddr5_dev_model.sv:103,>= -> > in condition,an auto-precharge time is never 0 (it is set after at least one clock)
+DDR5-VIP,dut_ddr5_dev_model.sv:149,8 -> 9,"with the test's timing CWL + 8 + tWR always exceeds tRAS, so the WRA comparison is decided either way"
+DDR5-VIP,dut_ddr5_dev_model.sv:157,> -> >= in condition,both branches give the same time when they are equal
+DDR5-VIP,dut_ddr5_dev_model.sv:172,8 -> 9,PREab loop past bank 7 (no such bank)
+HBM3E-VIP,dut_hbm_dev_model.sv:9,12 -> 13,default timing parameter; the test sets every parameter
+HBM3E-VIP,dut_hbm_dev_model.sv:10,3 -> 4,default timing parameter; the test sets every parameter
+HBM3E-VIP,dut_hbm_dev_model.sv:11,8 -> 9,default timing parameter; the test sets every parameter
+HBM3E-VIP,dut_hbm_dev_model.sv:61,2 -> 3,reset loop past pseudo channel 1 (no such channel)
+HBM3E-VIP,dut_hbm_dev_model.sv:64,100000 -> 100001,"""long ago"" reset time; any value below -tFAW behaves the same"
+HBM3E-VIP,dut_hbm_dev_model.sv:109,32 -> 33,auto-precharge loop past bank 31 (no such bank)
+UCIe-VIP,dut_ucie_d2d_model.sv:9,120 -> 121,default REPLAY_TO; the test sets the parameter
+UCIe-VIP,dut_ucie_d2d_model.sv:112,> -> >= in condition,when equal the assignment leaves rp_left unchanged
+UCIe-VIP,dut_ucie_d2d_model.sv:200,0 -> 1,the MBTRAIN response is always followed in the same clock by a degrade or a state change that resets t_wait
+UCIe-VIP,dut_ucie_d2d_model.sv:204,1'b0 inverted,li_tx left set after the LINKINIT response is never read again before MBTRAIN clears it
+UCIe-VIP,dut_ucie_d2d_model.sv:278,0 -> 1,rp_num is cleared again on every LINKINIT -> ACTIVE transition
+UALink-VIP,dut_ualink_model.sv:27,1'b0 inverted,initial value of rsp_valid; reset rewrites it before the first clock edge
+UALink-VIP,dut_ualink_model.sv:52,1'b0 inverted,busy is written but never read
+UALink-VIP,dut_ualink_tl_model.sv:31,16 -> 17,pending-table size; at most REQ_CRD = 8 entries are ever in use
+UALink-VIP,dut_ualink_tl_model.sv:45,0 -> 1,time base offset; only differences of now are used
+UALink-VIP,dut_ualink_tl_model.sv:70,1 -> 2,no-slot marker -1 vs -2; only its sign is tested
+UALink-VIP,dut_ualink_tl_model.sv:72,0 -> 1,free-slot search skips entry 0; at most 8 of 16 entries are ever in use
+UALink-VIP,dut_ualink_tl_model.sv:74,1'b1 inverted,no free entry is unreachable (credits limit the table to 8 of 16)
+UALink-VIP,dut_ualink_tl_model.sv:85,64 -> 65,byte-enable loop past byte 63 (no such byte)
+UALink-VIP,dut_ualink_tl_model.sv:108,1 -> 2,arrival numbers spaced by 2 keep the same order
+UALink-VIP,dut_ualink_tl_model.sv:115,< -> <= in condition,re-selecting while a response waits finds the same entry: later arrivals are due later
+HBM3E-VIP,dut_hbm_dev_model.sv:227,16 -> 17,MRS loop upper bound past bank 31 on pseudo channel 1 (no such bank; reads as closed)
