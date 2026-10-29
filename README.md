@@ -314,4 +314,4 @@ Contributions are welcome! Please see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.m
 
 ---
 
-*Release v1.8.0 -- generated from vip_individual_portfolio.csv*
+*Release v1.9.0 -- generated from vip_individual_portfolio.csv*
