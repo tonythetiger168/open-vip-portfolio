@@ -23,13 +23,15 @@ from the RTL under test:
             the serial output (ipcheck/hdmi_xchk_tb.sv); the expected AVI and
             SPD InfoFrames, their checksums and BCH ECC bytes come from this
             script.
-  * uart, spi, i2c, gpio, pwm
+  * uart, spi, i2c, gpio, pwm, i2s, sd
             the APB wrappers through the register map of docs/ip/<IP>.md,
             with line / bus models written from the protocol rules: an 8N1
             receiver and driver at the nominal baud (+-2.5 %), a mode-0 SPI
             controller, an I2C controller on an open-drain bus with a monitor
-            for SDA changes while SCL is high, a GPIO board model, and the
-            PWM waveform computed from the documented rule.
+            for SDA changes while SCL is high, a GPIO board model, the
+            PWM waveform computed from the documented rule, an I2S bus
+            master, and an SD memory card (CRC7 / CRC16, R1..R7, injected
+            card faults; sd_sc runs it as a standard-capacity card).
   * ddr4, lpddr5x
             DDR4_Lite_top / LPDDR5X_Lite_top through their front-end, with
             ipcheck/ddr_pin_mon.sv on the DRAM pins: the JESD79-4 command
@@ -66,6 +68,9 @@ IPS = {
     "i2c":     (["I2C_top.sv", "I2C_apb.sv"], "i2c_xchk_tb.sv", []),
     "gpio":    (["GPIO_top.sv", "GPIO_apb.sv"], "gpio_xchk_tb.sv", []),
     "pwm":     (["PWM_top.sv", "PWM_apb.sv"], "pwm_xchk_tb.sv", []),
+    "i2s":     (["I2S_top.sv", "I2S_apb.sv"], "i2s_xchk_tb.sv", []),
+    "sd":      (["SD_top.sv", "SD_apb.sv"], "sd_xchk_tb.sv", []),
+    "sd_sc":   (["SD_top.sv", "SD_apb.sv"], "sd_xchk_tb.sv", []),
     "ddr4":    (["DDR4_Lite_top.sv"], "ddr_xchk_tb.sv", ["ddr_pin_mon.sv"]),
     "lpddr5x": (["LPDDR5X_Lite_top.sv"], "ddr_xchk_tb.sv", ["ddr_pin_mon.sv"]),
 }
@@ -373,8 +378,11 @@ def gen_seed(d, rng):
 def gen_lpddr(d, rng):
     return dict(gen_seed(d, rng), LPDDR=1)
 
+def gen_sd_sc(d, rng):
+    return dict(gen_seed(d, rng), SC=1)
+
 GEN = {"crypto": gen_crypto, "eth": gen_eth, "csi2": gen_csi2, "hdmi": gen_hdmi,
-       "uart": gen_seed, "spi": gen_seed, "i2c": gen_seed, "gpio": gen_seed, "pwm": gen_seed,
+       "uart": gen_seed, "spi": gen_seed, "i2c": gen_seed, "gpio": gen_seed, "pwm": gen_seed, "i2s": gen_seed, "sd": gen_seed, "sd_sc": gen_sd_sc,
        "ddr4": gen_seed, "lpddr5x": gen_lpddr}
 
 # ----------------------------------------------------------------------------
