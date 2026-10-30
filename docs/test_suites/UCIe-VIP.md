@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
-| 功能測試 | 2 個檔案，83 個 check，全部通過 |
-| Mutation | 43/43 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（83 個 check，mutation score 100%） |
+| 功能測試 | 3 個檔案，119 個 check，全部通過 |
+| Mutation | 89/89 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（119 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -129,6 +129,71 @@ Run: python3 tools/run_func_tests.py UCIe-VIP
 | 63 | no LINKINIT response: TRAINERROR %0d clocks after the partner's request | check |
 | 64 | every flit from the model has a good CRC | check |
 
+### `ucie_sb3/tb/func_ucie_sb3_tb.sv`
+
+結果：**PASS**（iverilog，36 checks）
+
+模型合約與範圍（摘自測試檔頭）：
+
+```text
+FUNC_SIM: iverilog
+
+func_ucie_sb3_tb.sv -- sideband partner for ucie_sb3_model (UCIe 3.0
+sideband additions) with a reference written out independently of the
+model:
+   * register reads / byte-enabled writes, UR outside the register file,
+     completion tag, status, data and parity
+   * priority packets overtake the normal queue, queue-full drops
+   * management transport: in-order reassembly, 1..8 dwords, SOM restart,
+     wrong fragment seq, fragment without SOM, overflow
+   * runtime recalibration: pause length, RecalDone, busy while running,
+     RecalDone held while the normal queue is full
+   * throttle levels, emergency shutdown held until reset, parity errors,
+     unknown opcodes
+   * 3000 random packets with random back-pressure, checked clock by
+     clock against the reference
+Run: python3 tools/run_func_tests.py UCIe-VIP
+```
+
+| # | Check | 類型 |
+|---|---|---|
+| 1 | MemWr32: Cpl, tag 3, status 0, even parity | check |
+| 2 | byte-enabled write, read back | check |
+| 3 | read outside the register file: UR | check |
+| 4 | UR write did not alias into the register file | check |
+| 5 | register 15 is inside the file | check |
+| 6 | queues empty | check |
+| 7 | fifth normal request with the normal queue full: dropped (err 2) | check |
+| 8 | priority Cpl replaces the waiting normal one | check |
+| 9 | priority queue (2) drained first, third priority dropped, then normal in order | check |
+| 10 | 3-fragment message reassembled in order | check |
+| 11 | single-fragment message (SOM and EOM) | check |
+| 12 | SOM restarts the message (err 3 for the dropped partial one) | check |
+| 13 | wrong fragment seq: message dropped (err 3) | check |
+| 14 | fragment without a started message: dropped | check |
+| 15 | 8-dword message | check |
+| 16 | 9 dwords: message dropped (err 4) | check |
+| 17 | management fragments get no Cpl | check |
+| 18 | RecalReq: mainband paused for RECAL_T clocks (%0d) | check |
+| 19 | RecalReq accepted (Cpl status 0) | check |
+| 20 | RecalDone sent when the pause ends | check |
+| 21 | RecalReq accepted | check |
+| 22 | second RecalReq while running: busy (status 2) | check |
+| 23 | one RecalDone for the accepted request | check |
+| 24 | pause continues while RecalDone cannot be queued | check |
+| 25 | priority RecalReq while RecalDone waits: busy | check |
+| 26 | RecalDone queued after the 4 waiting packets | check |
+| 27 | fast throttle level 2 | check |
+| 28 | throttle released | check |
+| 29 | parity error: dropped (err 0) | check |
+| 30 | two flipped bits keep parity: handled as a read | check |
+| 31 | unknown opcode: dropped (err 1) | check |
+| 32 | emergency shutdown | check |
+| 33 | shutdown held; directed packets as the reference | check |
+| 34 | %0d random packets: every output as the reference (%0d sent, %0d messages) | check |
+| 35 | reset clears shutdown, throttle and queues | check |
+| 36 | registers cleared by reset | check |
+
 ## 3. UVM 測試平台內容
 
 UVM agent test（`ucie_func_test`：directed + constrained-random 流量，scoreboard 以 DUT 模型的參考模型逐筆比對，並比對 driver 與 monitor 的 transaction）在 Verilator 上以 `python3 tools/run_uvm_tests.py UCIe-VIP` 執行；agent 由 `tools/gen_uvm_agents.py` 依 `tools/uvm_agents/` 的協定 spec 產生。
@@ -142,7 +207,7 @@ UVM agent test（`ucie_func_test`：directed + constrained-random 流量，score
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（83 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（119 個 check，mutation score 100%）。
 
 無已知缺口。
 

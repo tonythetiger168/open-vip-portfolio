@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
-| 功能測試 | 2 個檔案，34 個 check，全部通過 |
-| Mutation | 38/38 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（34 個 check，mutation score 100%） |
+| 功能測試 | 3 個檔案，90 個 check，全部通過 |
+| Mutation | 58/58 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（90 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -36,9 +36,87 @@
 | 12 | no response without a request | check |
 | 13 | word 0 reads zero after reset | check |
 
+### `ualink_inc/tb/func_ualink_inc_tb.sv`
+
+結果：**PASS**（iverilog，55 checks）
+
+模型合約與範圍（摘自測試檔頭）：
+
+```text
+FUNC_SIM: iverilog
+
+func_ualink_inc_tb.sv -- accelerator ports and a host for
+ualink_inc_model (UALink 2.0 In-Network Compute), with a reference of the
+collective rules written out independently of the model:
+   * all-reduce SUM / MIN / MAX / AND / OR / XOR over 4 signed lanes,
+     hand-computed results, multicast mask and round sequence
+   * SUM saturation (both signs) and the saturated status, reset per round
+   * every rejection code (non-member, disabled group, busy, wrong round,
+     duplicate, bad opcode, opcode mismatch) with no effect on the round
+   * round timeout and its exact boundary, partial multicast mask
+   * held results under back-pressure, lowest group first, reconfiguration
+   * 1500 random contributions on 4 groups with random back-pressure,
+     checked clock by clock against the reference
+Run: python3 tools/run_func_tests.py UALink-VIP
+```
+
+| # | Check | 類型 |
+|---|---|---|
+| 1 | 3 of 4 contributions accepted, no result yet | check |
+| 2 | SUM all-reduce: (10, 0, 250, 0) multicast to ports 0-3, round 0 | check |
+| 3 | result delivered exactly once | check |
+| 4 | MIN is signed per lane | check |
+| 5 | MAX is signed per lane | check |
+| 6 | AND per lane | check |
+| 7 | OR per lane | check |
+| 8 | XOR per lane | check |
+| 9 | op %0d: round %0d, status OK | check |
+| 10 | SUM saturates at both ends, status saturated | check |
+| 11 | exact max is not saturated; flag reset per round | check |
+| 12 | exact min is not saturated | check |
+| 13 | port not in the group: rejected (1) | check |
+| 14 | disabled group: rejected (1) | check |
+| 15 | wrong round: rejected (3) | check |
+| 16 | first contribution accepted | check |
+| 17 | second contribution from the same port: rejected (2) | check |
+| 18 | opcode 6: rejected (5) | check |
+| 19 | opcode 7: rejected (5) | check |
+| 20 | opcode differs from the round: rejected (4) | check |
+| 21 | rejections do not complete the round | check |
+| 22 | rejected data left out of the result | check |
+| 23 | round 1 completes and is held | check |
+| 24 | contribution while the result is held: busy (6) | check |
+| 25 | round 1 result still held under back-pressure | check |
+| 26 | round advanced to 2 on completion, not on the busy contribution | check |
+| 27 | round 2 accepts after delivery | check |
+| 28 | no abort before the timeout | check |
+| 29 | timeout: status 2, data 0, multicast to the ports that contributed | check |
+| 30 | completion on the last clock of the window | check |
+| 31 | single contribution: no abort one clock early | check |
+| 32 | single contribution times out | check |
+| 33 | late contribution after delivery: round has advanced (3) | check |
+| 34 | single-member group completes on its own contribution | check |
+| 35 | delivery held stable under back-pressure | check |
+| 36 | group 7 (on the bus first) then group 6 | check |
+| 37 | reconfiguring a group drops its held result | check |
+| 38 | results held behind a delivery leave lowest group first | check |
+| 39 | reconfiguration clears the partial round | check |
+| 40 | round restarts from the reconfiguration | check |
+| 41 | mask 0 disables the group | check |
+| 42 | %0d random contributions: every acknowledge and code as expected | check |
+| 43 | random rounds: every delivered result as expected (%0d delivered) | check |
+| 44 | every held result delivered | check |
+| 45 | group 0: MAX result held under back-pressure | check |
+| 46 | group 0 result delivered | check |
+| 47 | group 0 round times out | check |
+| 48 | group 0 as the reference | check |
+| 49 | reset clears the delivery | check |
+| 50 | after reset every group is disabled | check |
+| 51 | after reset group 0 is disabled too | check |
+
 ### `ualink_tl/tb/func_ualink_tl_tb.sv`
 
-結果：**PASS**（verilator，21 checks）
+結果：**PASS**（verilator，22 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -83,7 +161,8 @@ Run: python3 tools/run_func_tests.py UALink-VIP
 | 18 | 600 random requests within credits: no error | check |
 | 19 | every random request answered once with the expected status and data (%0d bad, %0d missing) | check |
 | 20 | every credit returned (%0d of %0d) | check |
-| 21 | after reset line 0 reads zero, not poisoned | check |
+| 21 | every response not accepted stayed on the bus unchanged | check |
+| 22 | after reset line 0 reads zero, not poisoned | check |
 
 ## 3. UVM 測試平台內容
 
@@ -98,7 +177,7 @@ UVM agent test（`ualink_func_test`：directed + constrained-random 流量，sco
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（34 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（90 個 check，mutation score 100%）。
 
 無已知缺口。
 

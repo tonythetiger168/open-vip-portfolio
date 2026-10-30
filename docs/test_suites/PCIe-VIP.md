@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
-| 功能測試 | 2 個檔案，100 個 check，全部通過 |
-| Mutation | 45/45 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（100 個 check，mutation score 100%） |
+| 功能測試 | 3 個檔案，128 個 check，全部通過 |
+| Mutation | 91/91 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（128 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -101,6 +101,41 @@
 | 77 | tx_valid only inside TLP frames | check |
 | 78 | every TLP from the model has a good LCRC | check |
 
+### `pcie_flit/tb/func_pcie_flit_tb.sv`
+
+結果：**PASS**（iverilog，28 checks）
+
+| # | Check | 類型 |
+|---|---|---|
+| 1 | payload flit 0 delivered, no Ack yet | check |
+| 2 | Ack after 4 unacknowledged flits | check |
+| 3 | flits 0-3 delivered in order | check |
+| 4 | no Ack before the Ack timer | check |
+| 5 | Ack for the single flit after ACK_TMO clocks | check |
+| 6 | NOP flit: Ack field passed on, no TLP | check |
+| 7 | Nak field on a payload flit passed on | check |
+| 8 | Ack field type 3 ignored | check |
+| 9 | one bad byte in each interleave: corrected (3) | check |
+| 10 | bad parity bytes corrected | check |
+| 11 | bad CRC and sequence bytes corrected | check |
+| 12 | two bad bytes in one interleave: dropped, Nak | check |
+| 13 | next flit out of sequence: no second Nak while one is scheduled | check |
+| 14 | replayed flit accepted, its Ack field passed on | check |
+| 15 | a new gap sends a new Nak | check |
+| 16 | bad flit: dropped, Ack field ignored, Nak | check |
+| 17 | flit CRC failure: dropped, Nak | check |
+| 18 | duplicate: dropped, Ack at once | check |
+| 19 | 512 behind is a duplicate | check |
+| 20 | 511 ahead is a gap | check |
+| 21 | flit type 2 dropped | check |
+| 22 | sequence wraps 1023 -> 0 | check |
+| 23 | directed flits: every output as the reference | check |
+| 24 | %0d random flits: deliveries, Ack / Nak, corrections and errors as the reference (%0d TLPs, %0d Acks, %0d Naks) | check |
+| 25 | random flits exercised Naks and corrections | check |
+| 26 | reset clears outputs, counter and errors | check |
+| 27 | after reset no Nak is scheduled: a gap sends one | check |
+| 28 | after reset the expected sequence is 0 | check |
+
 ### `tb/smoke_func_tb.sv`
 
 結果：**PASS**（verilator，12 checks）
@@ -133,7 +168,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（100 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（128 個 check，mutation score 100%）。
 
 無已知缺口。
 
