@@ -461,3 +461,7 @@ MACsec-UVM-VIP,dut_macsec_model.sv:93,16 -> 17,block fetch loop: byte 16 lands o
 MACsec-UVM-VIP,dut_macsec_model.sv:132,< -> <= in condition,frame of exactly SecTAG + ICV (no data): the SL rules reject it as a bad tag either way
 MACsec-UVM-VIP,dut_macsec_model.sv:157,16 -> 17,decrypt byte loop: byte 16 is X from outside the block and is overwritten by the next block's byte 0 (later assignment)
 MACsec-UVM-VIP,dut_macsec_model.sv:158,< -> <= in condition,decrypt bound: the extra byte lands at ob[12 + dn] after the delivered length and is never sent
+RVFI-UVM-VIP,dut_rvfi_model.sv:60,32 -> 33,register-file reset loop: x[32] is outside the register file and the write is dropped
+RVFI-UVM-VIP,dut_rvfi_model.sv:85,20 -> 21,S-immediate sign replication: the 33-bit concatenation is truncated to the same 32-bit value
+RVFI-UVM-VIP,dut_rvfi_model.sv:87,11 -> 12,J-immediate sign replication: the 33-bit concatenation is truncated to the same 32-bit value
+RVFI-UVM-VIP,dut_rvfi_model.sv:90,1'b0 inverted,initial branch-taken flag: every legal branch funct3 assigns it and the others trap (PC goes to MTVEC)
