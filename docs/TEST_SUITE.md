@@ -4,17 +4,17 @@
 
 ## 1. 結論
 
-- 137 個 VIP 中 137 個有可在開源工具上執行的 self-checking 功能測試，共 3050 個 check（另有 RTL IP testbench 的 57772771 次斷言評估）；137 個 VIP 的測試全部通過。
-- 判定：✅ Sufficient 112、🟡 Partial 25、❌ Insufficient 0。
-- Mutation testing：2100 個有效 mutant 中 1912 個被功能測試偵測（91%）。
+- 118 個 VIP 中 118 個有可在開源工具上執行的 self-checking 功能測試，共 3123 個 check；118 個 VIP 的測試全部通過（RTL IP 已移到 open-ip-portfolio，其 testbench 不在此計）。
+- 判定：✅ Sufficient 101、🟡 Partial 17、❌ Insufficient 0。
+- Mutation testing：1967 個有效 mutant 中 1822 個被功能測試偵測（93%）。
 - 沒有未修正的 DUT 模型缺陷：功能測試中沒有 XFAIL check（先前記錄的缺陷都已在模型中修正）。
 
 ## 2. 方法
 
 每個 VIP 的測試套件分三層：
 
-1. **功能測試**（`tb/func_*_tb.sv`、`tb/smoke_func_tb.sv`、RTL IP 的 `tb/*_tb.sv`）：直接驅動 VIP 內的 DUT 模型，依協定規格與模型合約逐項比對，輸出 `FUNC_PASS checks=N`。由 `tools/run_func_tests.py` 以 Icarus Verilog 或 Verilator 5.052 執行，結果寫入 `func_report.csv`。
-2. **UVM 測試平台**（tests / sequences / scoreboard / SVA / coverage）：需商用模擬器執行，開源流程以 pyslang elaboration 檢查（`tools/elab_scan.py`）；有 register model 的 VIP（APB / AHB / AXI / OCP / TileLink）另以 `tools/run_uvm_tests.py` 在 Verilator 上執行 UVM RAL test（見 [RAL.md](RAL.md)）；由 `tools/gen_uvm_agents.py` 產生 agent 的 34 個 VIP 另在 Verilator 上執行 `<prefix>_func_test`（scoreboard 以 DUT 參考模型比對）。
+1. **功能測試**（`tb/func_*_tb.sv`、`tb/smoke_func_tb.sv`）：直接驅動 VIP 內的 DUT 模型，依協定規格與模型合約逐項比對，輸出 `FUNC_PASS checks=N`。由 `tools/run_func_tests.py` 以 Icarus Verilog 或 Verilator 5.052 執行，結果寫入 `func_report.csv`。
+2. **UVM 測試平台**（tests / sequences / scoreboard / SVA / coverage）：需商用模擬器執行，開源流程以 pyslang elaboration 檢查（`tools/elab_scan.py`）；有 register model 的 VIP（APB / AHB / AXI / OCP / TileLink）另以 `tools/run_uvm_tests.py` 在 Verilator 上執行 UVM RAL test（見 [RAL.md](RAL.md)）；由 `tools/gen_uvm_agents.py` 產生 agent 的 37 個 VIP 另在 Verilator 上執行 `<prefix>_func_test`（scoreboard 以 DUT 參考模型比對）。
 3. **Mutation testing**（`tools/mutation_score.py`）：對 DUT 模型注入運算子與常數錯誤，檢查功能測試能否偵測，作為「測試是否足夠」的客觀指標，結果寫入 `mutation_report.csv`。
 
 判定標準：
@@ -29,33 +29,25 @@
 
 ## 3. 各 VIP 判定
 
-Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）。
-
 | VIP | 類別 | 功能測試 | Checks | 模擬器 | Mutation | 模型缺陷 | 判定 |
 |---|---|---|---|---|---|---|---|
-| [ACE-VIP](test_suites/ACE-VIP.md) | AMBA | `ACE_tb.sv` | 0 | verilator | 8/12 | 0 | 🟡 Partial |
+| [ACE-UVM-VIP](test_suites/ACE-UVM-VIP.md) | AMBA | `smoke_func_tb.sv` | 19 | verilator | 43/43 | 0 | ✅ Sufficient |
 | [ACE_Lite-UVM-VIP](test_suites/ACE_Lite-UVM-VIP.md) | AMBA | `smoke_func_tb.sv` | 12 | iverilog | 12/19 | 0 | 🟡 Partial |
-| [ACE_Lite-VIP](test_suites/ACE_Lite-VIP.md) | AMBA | `ACE_Lite_tb.sv` | 0 | verilator | 9/12 | 0 | 🟡 Partial |
 | [AHB-VIP](test_suites/AHB-VIP.md) | AMBA | `smoke_func_tb.sv`, `func_ahb_tb.sv` | 38 | iverilog | 28/28 | 0 | ✅ Sufficient |
 | [APB-VIP](test_suites/APB-VIP.md) | AMBA | `smoke_func_tb.sv`, `func_apb_tb.sv` | 22 | iverilog | 15/15 | 0 | ✅ Sufficient |
 | [ATB-UVM-VIP](test_suites/ATB-UVM-VIP.md) | Debug | `smoke_func_tb.sv` | 9 | iverilog | 4/6 | 0 | 🟡 Partial |
-| [ATB-VIP](test_suites/ATB-VIP.md) | Debug | `ATB_tb.sv` | 0 | verilator | 9/10 | 0 | ✅ Sufficient |
 | [AVSBus-VIP](test_suites/AVSBus-VIP.md) | Power | `func_avsbus_tb.sv` | 14 | verilator | 11/12 | 0 | ✅ Sufficient |
 | [AXI-VIP](test_suites/AXI-VIP.md) | AMBA | `smoke_func_tb.sv`, `func_axi_tb.sv` | 51 | iverilog | 23/23 | 0 | ✅ Sufficient |
-| [AXI4-VIP](test_suites/AXI4-VIP.md) | AMBA | `AXI4_tb.sv` | 0 | verilator | 10/12 | 0 | ✅ Sufficient |
-| [AXI4_Lite-VIP](test_suites/AXI4_Lite-VIP.md) | AMBA | `AXI4_Lite_tb.sv` | 0 | verilator | 11/12 | 0 | ✅ Sufficient |
-| [AXI_Stream-VIP](test_suites/AXI_Stream-VIP.md) | AMBA | `AXI_Stream_tb.sv` | 0 | verilator | 5/6 | 0 | ✅ Sufficient |
+| [AXI4_Lite-UVM-VIP](test_suites/AXI4_Lite-UVM-VIP.md) | AMBA | `smoke_func_tb.sv` | 172 | iverilog | 32/32 | 0 | ✅ Sufficient |
+| [AXI_Stream-UVM-VIP](test_suites/AXI_Stream-UVM-VIP.md) | AMBA | `smoke_func_tb.sv` | 17 | iverilog | 22/22 | 0 | ✅ Sufficient |
 | [Avalon_MM-UVM-VIP](test_suites/Avalon_MM-UVM-VIP.md) | Interconnect | `smoke_func_tb.sv` | 34 | iverilog | 8/15 | 0 | 🟡 Partial |
-| [Avalon_MM-VIP](test_suites/Avalon_MM-VIP.md) | Interconnect | `Avalon_MM_tb.sv`, `func_avalon_mm_tb.sv` | 33 | verilator | 9/9 | 0 | ✅ Sufficient |
 | [Avalon_ST-UVM-VIP](test_suites/Avalon_ST-UVM-VIP.md) | Interconnect | `smoke_func_tb.sv`, `func_avalon_st_tb.sv` | 31 | iverilog | 17/17 | 0 | ✅ Sufficient |
-| [Avalon_ST-VIP](test_suites/Avalon_ST-VIP.md) | Interconnect | `Avalon_ST_tb.sv` | 0 | verilator | 6/7 | 0 | ✅ Sufficient |
 | [Bluetooth5-VIP](test_suites/Bluetooth5-VIP.md) | Storage/Debug | `func_bluetooth5_tb.sv` | 28 | verilator | 11/11 | 0 | ✅ Sufficient |
 | [CAN-VIP](test_suites/CAN-VIP.md) | Automotive | `func_can_tb.sv` | 19 | verilator | 10/10 | 0 | ✅ Sufficient |
 | [CAN_FD-UVM-VIP](test_suites/CAN_FD-UVM-VIP.md) | Automotive | `smoke_func_tb.sv` | 14 | iverilog | 13/16 | 0 | ✅ Sufficient |
 | [CAN_XL-UVM-VIP](test_suites/CAN_XL-UVM-VIP.md) | Automotive | `smoke_func_tb.sv` | 38 | verilator | 28/28 | 0 | ✅ Sufficient |
 | [CCIX-VIP](test_suites/CCIX-VIP.md) | Interconnect | `func_ccix_tb.sv` | 13 | iverilog | 15/15 | 0 | ✅ Sufficient |
 | [CHI-UVM-VIP](test_suites/CHI-UVM-VIP.md) | AMBA | `smoke_func_tb.sv` | 11 | iverilog | 7/10 | 0 | 🟡 Partial |
-| [CHI-VIP](test_suites/CHI-VIP.md) | AMBA | `CHI_tb.sv` | 0 | verilator | 8/12 | 0 | 🟡 Partial |
 | [CPRI-VIP](test_suites/CPRI-VIP.md) | Telecom | `func_cpri_tb.sv` | 17 | iverilog | 19/19 | 0 | ✅ Sufficient |
 | [CSE-VIP](test_suites/CSE-VIP.md) | MIPI | `func_cse_tb.sv` | 34 | iverilog | 25/25 | 0 | ✅ Sufficient |
 | [CSI_2-VIP](test_suites/CSI_2-VIP.md) | MIPI | `func_mipi_tb.sv` | 29 | verilator | 11/11 | 0 | ✅ Sufficient |
@@ -64,7 +56,6 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [C_PHY-VIP](test_suites/C_PHY-VIP.md) | MIPI | `func_mipi_tb.sv` | 29 | verilator | 11/11 | 0 | ✅ Sufficient |
 | [DBI-VIP](test_suites/DBI-VIP.md) | MIPI | `func_dbi_tb.sv` | 15 | verilator | 9/10 | 0 | ✅ Sufficient |
 | [DDR-VIP](test_suites/DDR-VIP.md) | Memory | `func_mem_tb.sv` | 20 | verilator | 7/7 | 0 | ✅ Sufficient |
-| [DDR4-VIP](test_suites/DDR4-VIP.md) | Memory | `DDR4_tb.sv`, `func_ddr4_tb.sv` | 39 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [DDR5-VIP](test_suites/DDR5-VIP.md) | Memory | `smoke_func_tb.sv`, `func_ddr5_tb.sv`, `func_ddr5_dev_tb.sv` | 103 | iverilog/verilator | 33/33 | 0 | ✅ Sufficient |
 | [DFI-VIP](test_suites/DFI-VIP.md) | Memory | `func_dfi_tb.sv` | 29 | verilator | 12/12 | 0 | ✅ Sufficient |
 | [DPI-VIP](test_suites/DPI-VIP.md) | MIPI | `func_dpi_tb.sv` | 10 | iverilog | 20/20 | 0 | ✅ Sufficient |
@@ -79,9 +70,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [FC-VIP](test_suites/FC-VIP.md) | Networking | `func_fc_tb.sv` | 30 | verilator | 12/12 | 0 | ✅ Sufficient |
 | [FlexRay-VIP](test_suites/FlexRay-VIP.md) | Automotive | `func_flexray_tb.sv` | 38 | iverilog | 20/20 | 0 | ✅ Sufficient |
 | [GMII-UVM-VIP](test_suites/GMII-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 22 | iverilog | 2/3 | 0 | 🟡 Partial |
-| [GMII-VIP](test_suites/GMII-VIP.md) | Networking | `GMII_tb.sv` | 0 | verilator | 9/12 | 0 | 🟡 Partial |
 | [GPIO-UVM-VIP](test_suites/GPIO-UVM-VIP.md) | Peripherals | `smoke_func_tb.sv` | 42 | iverilog | 1/1 | 0 | ✅ Sufficient |
-| [GPIO-VIP](test_suites/GPIO-VIP.md) | Peripherals | `GPIO_tb.sv` | 0 | verilator | 5/5 | 0 | ✅ Sufficient |
 | [HBM-VIP](test_suites/HBM-VIP.md) | Memory | `func_mem_tb.sv` | 20 | verilator | 6/6 | 0 | ✅ Sufficient |
 | [HBM3E-VIP](test_suites/HBM3E-VIP.md) | Memory | `smoke_func_tb.sv`, `func_hbm3e_tb.sv`, `func_hbm_dev_tb.sv` | 116 | iverilog/verilator | 40/40 | 0 | ✅ Sufficient |
 | [HBM5-VIP](test_suites/HBM5-VIP.md) | Memory | `func_mem_tb.sv` | 16 | verilator | 5/5 | 0 | ✅ Sufficient |
@@ -97,12 +86,10 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [JTAG-VIP](test_suites/JTAG-VIP.md) | Storage/Debug | `func_jtag_tb.sv` | 25 | verilator | 10/12 | 0 | ✅ Sufficient |
 | [LIN-VIP](test_suites/LIN-VIP.md) | Automotive | `func_lin_tb.sv` | 25 | verilator | 8/8 | 0 | ✅ Sufficient |
 | [LPDDR-VIP](test_suites/LPDDR-VIP.md) | Memory | `func_mem_tb.sv` | 14 | verilator | 4/4 | 0 | ✅ Sufficient |
-| [LPDDR4-VIP](test_suites/LPDDR4-VIP.md) | Memory | `LPDDR4_tb.sv`, `func_lpddr4_tb.sv` | 43 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [LPDDR6-VIP](test_suites/LPDDR6-VIP.md) | Memory | `smoke_func_tb.sv`, `func_lpddr6_tb.sv` | 36 | iverilog | 21/21 | 0 | ✅ Sufficient |
 | [LPI-VIP](test_suites/LPI-VIP.md) | Power | `func_lpi_tb.sv` | 12 | iverilog | 14/16 | 0 | ✅ Sufficient |
 | [LTI-VIP](test_suites/LTI-VIP.md) | Interconnect | `func_lti_tb.sv` | 10 | iverilog | 18/19 | 0 | ✅ Sufficient |
 | [MDIO-UVM-VIP](test_suites/MDIO-UVM-VIP.md) | Networking | `smoke_func_tb.sv`, `func_mdio_tb.sv` | 23 | iverilog | 20/20 | 0 | ✅ Sufficient |
-| [MDIO-VIP](test_suites/MDIO-VIP.md) | Networking | `MDIO_tb.sv` | 0 | verilator | 9/12 | 0 | 🟡 Partial |
 | [MIL_STD_1553-VIP](test_suites/MIL_STD_1553-VIP.md) | Aerospace | `smoke_func_tb.sv` | 19 | iverilog | 12/15 | 0 | ✅ Sufficient |
 | [M_PHY-VIP](test_suites/M_PHY-VIP.md) | MIPI | `func_mipi_tb.sv` | 29 | verilator | 11/11 | 0 | ✅ Sufficient |
 | [NVMe-VIP](test_suites/NVMe-VIP.md) | Storage/Debug | `smoke_func_tb.sv`, `func_nvme_tb.sv` | 57 | verilator | 8/8 | 0 | ✅ Sufficient |
@@ -110,21 +97,16 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [OCP-VIP](test_suites/OCP-VIP.md) | Interconnect | `func_ocp_tb.sv` | 12 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [ONFI-VIP](test_suites/ONFI-VIP.md) | Memory | `func_onfi_tb.sv` | 39 | verilator | 8/8 | 0 | ✅ Sufficient |
 | [OneWire-UVM-VIP](test_suites/OneWire-UVM-VIP.md) | Peripherals | `smoke_func_tb.sv` | 25 | iverilog | 13/16 | 0 | ✅ Sufficient |
-| [OneWire-VIP](test_suites/OneWire-VIP.md) | Peripherals | `_1_Wire_tb.sv`, `func_onewire_tb.sv` | 20 | verilator | 11/11 | 0 | ✅ Sufficient |
 | [PCIe-VIP](test_suites/PCIe-VIP.md) | Interconnect | `smoke_func_tb.sv`, `func_pcie_dl_tb.sv` | 100 | verilator | 45/45 | 0 | ✅ Sufficient |
 | [PTP-VIP](test_suites/PTP-VIP.md) | Networking | `smoke_func_tb.sv` | 18 | iverilog | 8/10 | 0 | ✅ Sufficient |
 | [PWM-UVM-VIP](test_suites/PWM-UVM-VIP.md) | Peripherals | `smoke_func_tb.sv` | 35 | iverilog | 10/12 | 0 | ✅ Sufficient |
-| [PWM-VIP](test_suites/PWM-VIP.md) | Peripherals | `PWM_tb.sv` | 0 | verilator | 10/12 | 0 | ✅ Sufficient |
-| [QSPI-VIP](test_suites/QSPI-VIP.md) | Serial | `QSPI_tb.sv` | 0 | verilator | 10/12 | 0 | ✅ Sufficient |
 | [RFFE-VIP](test_suites/RFFE-VIP.md) | MIPI | `func_rffe_tb.sv` | 14 | iverilog | 25/29 | 0 | ✅ Sufficient |
 | [RGMII-UVM-VIP](test_suites/RGMII-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 14 | iverilog | 2/2 | 0 | ✅ Sufficient |
-| [RGMII-VIP](test_suites/RGMII-VIP.md) | Networking | `RGMII_tb.sv` | 0 | verilator | 8/12 | 0 | 🟡 Partial |
 | [RapidIO-VIP](test_suites/RapidIO-VIP.md) | Interconnect | `smoke_func_tb.sv` | 21 | iverilog | 2/3 | 0 | 🟡 Partial |
 | [SAS-VIP](test_suites/SAS-VIP.md) | Storage | `func_sas_tb.sv` | 42 | verilator | 10/10 | 0 | ✅ Sufficient |
 | [SATA-VIP](test_suites/SATA-VIP.md) | Storage/Debug | `func_sata_tb.sv` | 28 | verilator | 10/11 | 0 | ✅ Sufficient |
 | [SD-VIP](test_suites/SD-VIP.md) | Memory | `func_sd_tb.sv` | 35 | verilator | 10/10 | 0 | ✅ Sufficient |
 | [SDIO-UVM-VIP](test_suites/SDIO-UVM-VIP.md) | Storage | `smoke_func_tb.sv` | 15 | iverilog | 10/18 | 0 | 🟡 Partial |
-| [SDIO-VIP](test_suites/SDIO-VIP.md) | Storage | `SDIO_tb.sv` | 0 | verilator | 8/12 | 0 | 🟡 Partial |
 | [SENT-VIP](test_suites/SENT-VIP.md) | Automotive | `smoke_func_tb.sv` | 12 | iverilog | 12/16 | 0 | 🟡 Partial |
 | [SGMII-UVM-VIP](test_suites/SGMII-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 23 | verilator | 28/28 | 0 | ✅ Sufficient |
 | [SLIMbus-VIP](test_suites/SLIMbus-VIP.md) | MIPI | `func_slimbus_tb.sv` | 14 | iverilog | 23/23 | 0 | ✅ Sufficient |
@@ -150,11 +132,8 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [UniPro-VIP](test_suites/UniPro-VIP.md) | MIPI | `func_mipi_tb.sv` | 29 | verilator | 11/11 | 0 | ✅ Sufficient |
 | [UniPro_Mem-VIP](test_suites/UniPro_Mem-VIP.md) | Memory | `func_unipro_mem_tb.sv` | 22 | iverilog | 22/22 | 0 | ✅ Sufficient |
 | [WTB-UVM-VIP](test_suites/WTB-UVM-VIP.md) | Debug | `smoke_func_tb.sv` | 9 | iverilog | 4/6 | 0 | 🟡 Partial |
-| [WTB-VIP](test_suites/WTB-VIP.md) | Debug | `WTB_tb.sv` | 0 | verilator | 10/12 | 0 | ✅ Sufficient |
 | [Wishbone-UVM-VIP](test_suites/Wishbone-UVM-VIP.md) | Interconnect | `smoke_func_tb.sv`, `func_wishbone_tb.sv` | 34 | iverilog | 11/11 | 0 | ✅ Sufficient |
-| [Wishbone-VIP](test_suites/Wishbone-VIP.md) | Interconnect | `Wishbone_tb.sv` | 0 | verilator | 8/12 | 0 | 🟡 Partial |
 | [XGMII-UVM-VIP](test_suites/XGMII-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 14 | iverilog | 1/1 | 0 | ✅ Sufficient |
-| [XGMII-VIP](test_suites/XGMII-VIP.md) | Networking | `XGMII_tb.sv` | 0 | verilator | 10/12 | 0 | ✅ Sufficient |
 | [ddr6-VIP](test_suites/ddr6-VIP.md) | Memory | `func_mem_tb.sv` | 16 | verilator | 5/5 | 0 | ✅ Sufficient |
 | [ddr7-VIP](test_suites/ddr7-VIP.md) | Memory | `func_mem_tb.sv` | 16 | verilator | 5/5 | 0 | ✅ Sufficient |
 | [eCPRI-VIP](test_suites/eCPRI-VIP.md) | Telecom | `func_ecpri_tb.sv` | 20 | iverilog | 28/30 | 0 | ✅ Sufficient |

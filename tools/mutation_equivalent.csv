@@ -404,3 +404,13 @@ UALink-VIP,dut_ualink_tl_model.sv:85,64 -> 65,byte-enable loop past byte 63 (no 
 UALink-VIP,dut_ualink_tl_model.sv:108,1 -> 2,arrival numbers spaced by 2 keep the same order
 UALink-VIP,dut_ualink_tl_model.sv:115,< -> <= in condition,re-selecting while a response waits finds the same entry: later arrivals are due later
 HBM3E-VIP,dut_hbm_dev_model.sv:227,16 -> 17,MRS loop upper bound past bank 31 on pseudo channel 1 (no such bank; reads as closed)
+AXI4_Lite-UVM-VIP,dut_axi4_lite_model.sv:55,256 -> 257,reset loop past the last word (no such entry)
+AXI4_Lite-UVM-VIP,dut_axi4_lite_model.sv:63,4 -> 5,strobe loop past lane 3 (no such lane)
+AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:46,4 -> 5,lane loop past lane 3 (TKEEP / TSTRB bit 4 do not exist)
+AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:58,1'b0 inverted,reset value of err: ignored while in_pkt is low (the first transfer starts from 0)
+AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:61,1'b0 inverted,reset value of pkt_err: only read with pkt_done
+ACE-UVM-VIP,dut_ace_model.sv:114,&& flipped,CRREADY high outside the response window: allowed (READY may be high without VALID); the master sends one CR per snoop
+ACE-UVM-VIP,dut_ace_model.sv:115,&& flipped,CDREADY high outside the data window: allowed (READY may be high without VALID); the master sends one CD line per snoop
+ACE-UVM-VIP,dut_ace_model.sv:119,16 -> 17,merge loop past byte 15 (no such byte)
+ACE-UVM-VIP,dut_ace_model.sv:122,4 -> 5,line loop past word 3 (no such word)
+ACE-UVM-VIP,dut_ace_model.sv:130,1'b0 inverted,reset value of cr_got: cleared at every AC handshake before it is read

@@ -523,7 +523,7 @@ def gen_env(s):
         `uvm_error("SB", $sformatf("DUT response mismatch\\n  expected: %s\\n  observed: %s",
                    p.convert2string(), t.convert2string()))
       end
-      if (active) begin
+      if (active{skip}) begin
         obs_q.push_back(t);
         pair();
       end
@@ -583,7 +583,8 @@ def gen_env(s):
   endclass
 endpackage
 """.format(p=p, members=("\n" + ind(s.get("sb_members", ""), 4) + "\n") if s.get("sb_members") else "",
-           predict=ind(s["predict"], 6), agree="e.compare(o)" if drv_rsp else "e.req_equal(o)")
+           predict=ind(s["predict"], 6),
+           skip=(" && !(%s)" % s["pair_skip"]) if s.get("pair_skip") else "", agree="e.compare(o)" if drv_rsp else "e.req_equal(o)")
 
 
 def gen_tests(s):
@@ -662,6 +663,9 @@ endpackage
 #   sva   : body of <p>_compliance_checker (inputs: clk, rst_n, every port)
 #   smoke : body of tb/smoke_func_tb.sv inside `ifdef VIP_SMOKE_FLATTENED
 #   desc, family, about : README text
+# ``pair_skip`` (any spec): expression on a monitored item ``t`` that the
+# driver does not publish (e.g. a snoop the DUT starts); such items are still
+# predicted and checked but not matched against the driver's items.
 # and optionally ``interface`` (replaces the interface rendered from ports)
 # and ``top_wires`` (extra lines in top_tb, e.g. open-drain bus resolution).
 
