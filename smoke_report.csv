@@ -1,27 +1,18 @@
 ﻿vip,result,detail
 vip,result,detail
-ACE-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 ACE_Lite-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-ACE_Lite-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 AHB-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
 APB-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
 ATB-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-ATB-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 AVSBus-VIP,PASS,avsbus_regulator_model:PASS(x_hits=0 toggles=111 [verilator])
 AXI-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-AXI4-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
-AXI4_Lite-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
-AXI_Stream-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 Avalon_MM-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-Avalon_MM-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 Avalon_ST-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-Avalon_ST-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 Bluetooth5-VIP,PASS,bluetooth5_dut:PASS(x_hits=0 toggles=1259 [verilator])
 CAN-VIP,PASS,can_node_model:PASS(x_hits=0 toggles=11)
 CAN_FD-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
 CCIX-VIP,PASS,ccix_agent_model:PASS(x_hits=0 toggles=2232)
 CHI-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-CHI-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 CPRI-VIP,PASS,cpri_slave_dut:PASS(x_hits=0 toggles=0)
 CSE-VIP,PASS,mipi_dut:PASS(x_hits=0 toggles=4202)
 CSI_2-VIP,PASS,mipi_dut:PASS(x_hits=0 toggles=6920 [verilator])
@@ -30,7 +21,6 @@ CXS-VIP,PASS,cxs_receiver_model:PASS(x_hits=0 toggles=741)
 C_PHY-VIP,PASS,mipi_dut:PASS(x_hits=0 toggles=6920 [verilator])
 DBI-VIP,PASS,dbi_display_controller:PASS(x_hits=0 toggles=154 [verilator])
 DDR-VIP,PASS,ddr_mem_model:PASS(x_hits=0 toggles=0 [verilator])
-DDR4-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 DFI-VIP,PASS,dfi_dram_model:PASS(x_hits=0 toggles=183 [verilator])
 DPI-VIP,PASS,dpi_display_sink:PASS(x_hits=0 toggles=0)
 DSI-VIP,PASS,mipi_dut:PASS(x_hits=0 toggles=6920 [verilator])
@@ -43,9 +33,7 @@ Ethernet_AVB_TSN-VIP,PASS,eth_avb_tsn_dut:PASS(x_hits=0 toggles=4044)
 FC-VIP,PASS,net_mac_model:PASS(x_hits=0 toggles=1095 [verilator]); net_fc_model:PASS(x_hits=0 toggles=1836 [verilator]); net_dut:SKIP(interface eth_1g_if passed through to submodule)
 FlexRay-VIP,PASS,flexray_node_model:PASS(x_hits=0 toggles=1525)
 GMII-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-GMII-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 GPIO-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-GPIO-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 HBM-VIP,PASS,hbm_mem_model:PASS(x_hits=0 toggles=0 [verilator])
 HBM5-VIP,PASS,hbm5_mem_model:PASS(x_hits=0 toggles=0 [verilator])
 HDCP-VIP,PASS,hdcp_receiver_model:PASS(x_hits=0 toggles=95)
@@ -60,32 +48,25 @@ JESD204-VIP,PASS,jesd204_adc_dut:PASS(x_hits=0 toggles=1957)
 JTAG-VIP,PASS,jtag_tap_dut:PASS(x_hits=0 toggles=2021)
 LIN-VIP,PASS,lin_slave_model:PASS(x_hits=0 toggles=181)
 LPDDR-VIP,PASS,lpddr_mem_model:PASS(x_hits=0 toggles=0 [verilator])
-LPDDR4-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 LPI-VIP,PASS,lpi_device_model:PASS(x_hits=0 toggles=755)
 LTI-VIP,PASS,lti_translation_unit_model:PASS(x_hits=0 toggles=1355)
 MDIO-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-MDIO-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 MIL_STD_1553-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
 M_PHY-VIP,PASS,mipi_dut:PASS(x_hits=0 toggles=6920 [verilator])
 NVMe-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
 OCP-VIP,PASS,ocp_slave_model:PASS(x_hits=0 toggles=1182 [verilator])
 ONFI-VIP,PASS,onfi_nand_model:PASS(x_hits=0 toggles=55 [verilator])
 OneWire-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-OneWire-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 PCIe-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
 PTP-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
 PWM-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-PWM-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
-QSPI-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 RFFE-VIP,PASS,rffe_slave_model:PASS(x_hits=0 toggles=0)
 RGMII-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-RGMII-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 RapidIO-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
 SAS-VIP,PASS,sas_target_model:PASS(x_hits=0 toggles=1)
 SATA-VIP,PASS,sata_host_model:PASS(x_hits=0 toggles=1222 [verilator])
 SD-VIP,PASS,unipro_endpoint_dut:PASS(x_hits=0 toggles=4274); emmc_device_dut:SKIP(compile: unsupported SV (see smoke.log)); onfi_flash_dut:PASS(x_hits=0 toggles=1); ufs_device_dut:PASS(x_hits=0 toggles=928 [verilator]); sd_card_dut:PASS(x_hits=0 toggles=367)
 SDIO-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-SDIO-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 SENT-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
 SLIMbus-VIP,PASS,slimbus_codec_slave:PASS(x_hits=0 toggles=14)
 SPI-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
@@ -109,11 +90,8 @@ USB_PD-VIP,PASS,usb_dut:SKIP(interface usb2_if passed through to submodule); usb
 UniPro-VIP,PASS,mipi_dut:PASS(x_hits=0 toggles=6920 [verilator])
 UniPro_Mem-VIP,PASS,unipro_endpoint_dut:PASS(x_hits=0 toggles=4979); emmc_device_dut:PASS(x_hits=0 toggles=1470); onfi_flash_dut:PASS(x_hits=0 toggles=1); ufs_device_dut:PASS(x_hits=0 toggles=2199)
 WTB-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-WTB-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 Wishbone-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-Wishbone-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 XGMII-UVM-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
-XGMII-VIP,PASS,legacy RTL IP: self-checking tb TEST PASSED
 ddr6-VIP,PASS,ddr6_mem_model:PASS(x_hits=0 toggles=0 [verilator])
 ddr7-VIP,PASS,ddr7_mem_model:PASS(x_hits=0 toggles=0 [verilator])
 eCPRI-VIP,PASS,ecpri_endpoint_dut:PASS(x_hits=0 toggles=596)
@@ -132,3 +110,6 @@ DDR5-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
 LPDDR6-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
 HBM3E-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
 ETH800G-VIP,PASS,smoke_func_tb:PASS(functional protocol check)
+AXI4_Lite-UVM-VIP,PASS,axi4_lite_model:PASS(x_hits=0 toggles=2653)
+AXI_Stream-UVM-VIP,PASS,axi_stream_model:PASS(x_hits=0 toggles=2289)
+ACE-UVM-VIP,PASS,ace_model:PASS(x_hits=0 toggles=1156)

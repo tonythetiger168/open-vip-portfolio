@@ -19,6 +19,8 @@ of what is verified:
 | `I2C_apb.sv` + `I2C_top.sv` | `i2c_xchk_tb.sv` | `docs/ip/I2C.md`; an I2C-bus (UM10204) controller on an open-drain bus with pull-up, START / repeated START / STOP, ACK and NACK, other addresses, STOP inside a byte, and a monitor that fails on any target SDA change while SCL is high |
 | `GPIO_apb.sv` + `GPIO_top.sv` | `gpio_xchk_tb.sv` | `docs/ip/GPIO.md`; a board model driving or floating each pin, every pin checked as 0 / 1 / Z (X is contention), level HIGH interrupt |
 | `PWM_apb.sv` + `PWM_top.sv` | `pwm_xchk_tb.sv` | `docs/ip/PWM.md`; the waveform computed from the documented rule and compared clock by clock over four periods for 16 PERIOD / DUTY settings (0 %, 100 %, D > P, P = 1, P = 2, random), complement output, PERIOD 0 |
+| `I2S_apb.sv` + `I2S_top.sv` | `i2s_xchk_tb.sv` | `docs/ip/I2S.md`; an I2S bus master from the Philips I2S specification (WS changes on the BCLK falling edge, MSB one BCLK after it), 16-bit slots as a continuous stream (each LSB in the first bit of the next slot) and 32-bit slots with padding, BCLK at the documented minimum and slower, FRAME interrupt on every WS edge |
+| `SD_apb.sv` + `SD_top.sv` | `sd_xchk_tb.sv` (`+define+SC`: standard capacity) | `docs/ip/SD.md`; an SD memory card from the SD Physical Layer Simplified Specification: command frames with CRC7, R1 / R2 (CID CRC7) / R3 / R6 / R7, the identification order and arguments, CMD24 / CMD17 blocks with CRC16 on each DAT line, CRC status token and busy, block or byte addresses by CCS, N_CR = 64, and eight injected card faults the host has to report on IRQ_STATUS.ERR and recover from |
 | `DDR4_Lite_top.sv` | `ddr_xchk_tb.sv` | `docs/ip/DDR4_Lite.md` front-end; `ddr_pin_mon.sv` on the DRAM pins: the JESD79-4 command truth table, tRCD / tRP / tRC / tRAS / tRRD / tWR / tWTR / tRFC, REF only with every bank precharged, RD / WR only to an open row, burst latency CL / CWL, 8 beats with one DQS toggle each, read bursts against a shadow array filled from the write bursts, refresh interval |
 | `LPDDR5X_Lite_top.sv` | `ddr_xchk_tb.sv` (`+define+LPDDR`) | as DDR4_Lite with 8 banks, per-bank REF and tRFCpb, REFRESH of one bank, the two FSP mode-register sets, WCK running only through writes |
 
@@ -30,7 +32,7 @@ in the CSI_2, Ethernet, HDMI and Security VIPs (`ref/`).
 ## Run
 
 ```bash
-python3 tools/run_ip_crosscheck.py --ip-dir ../open-ip-portfolio      # all eleven
+python3 tools/run_ip_crosscheck.py --ip-dir ../open-ip-portfolio      # all of them
 python3 tools/run_ip_crosscheck.py --ip-dir ../open-ip-portfolio eth  # one IP
 ```
 
@@ -42,22 +44,25 @@ Icarus otherwise (about 4 minutes). Vectors and logs are written to
 
 ## Status (2026-10-30, open-ip-portfolio main f683abe)
 
-All eleven IPs pass: crypto 113 checks, eth 39, csi2 101, hdmi 18 (each
-HDMI check covers a whole frame), uart 35, spi 21, i2c 32, gpio 22, pwm 17,
-ddr4 18, lpddr5x 24 (the DDR checks each cover the whole run: about 30 000
+All thirteen IPs pass (fourteen runs): crypto 113 checks, eth 39, csi2 101,
+hdmi 18 (each HDMI check covers a whole frame), uart 35, spi 21, i2c 32,
+gpio 22, pwm 17, i2s 15, sd 38 (high capacity) and sd_sc 38 (standard
+capacity), ddr4 18, lpddr5x 24 (the DDR checks each cover the whole run: about 30 000
 clocks, 600 random line operations and 30 refreshes).
 
 Hand-made faults in copies of the RTL were all caught: TX padding length,
 runt threshold 64 -> 63, PAUSE quanta scale, CSI-2 ECC equation, line-buffer
 length clamp, flag clearing at Frame Start, HMAC outer length, SHA-256
 padding corner (len 56), HDMI back porch, an AVI InfoFrame byte, the TMDS
-disparity branch and the XNOR tie rule; for the peripherals and DDR (16 of
-16): UART baud 3 % slow, missing stop bit, framing check removed; SPI MISO
+disparity branch and the XNOR tie rule; for the peripherals and DDR (21 of
+21): UART baud 3 % slow, missing stop bit, framing check removed; SPI MISO
 LSB first, MOSI sampled on the falling edge; I2C address LSB ignored, ACK
 driven on the SCL rise; a GPIO pin driven with OE 0; PWM duty one clock long,
 PERIOD_END in the first clock; DDR4 tRCD one clock short, CL one clock
 early, PREA sent as PRE of bank 0, tWR not enforced; LPDDR5X tRFCpb halved,
-one bank never refreshed.
+one bank never refreshed; I2S FRAME only on the right channel, TX left /
+right swapped; SD DAT1 CRC16 computed over DAT0, a negative CRC status
+token accepted, ACMD41 polled without CMD55.
 
 ### Notes (pin-level, reported but not failed)
 
@@ -74,12 +79,23 @@ one bank never refreshed.
   without an MRS command on the pins, so a separate DRAM device would keep
   its old latency. (The array lives inside the model, so the data returned
   is still right.)
+- I2S: at the documented minimum of two clocks per BCLK phase SDOUT changes
+  less than one clock before the BCLK rise (474 of 1728 bits), so the
+  receiver gets no setup margin; at three clocks per phase it is stable.
+- SD: the host looks for the response start bit only from the fourth clock
+  after the command's end bit. The SD Physical Layer specification lets a
+  card answer from N_CR = 2 clocks on, so a card that answers at N_CR = 2
+  or 3 fails identification (the bench answers at 4 after probing 2).
+- SD: identification runs at the full sd_clk (PCLK / 4, 12.5 MHz here); the
+  specification limits identification mode to 400 kHz.
+- SD: the host changes CMD and DAT on the sd_clk rising edge, the edge the
+  card samples on in default speed, so there is no hold time.
 - LPDDR5X_Lite: the LPDDR5 CA bus is shown as DDR4-style pins (documented
   in the IP), so the pin rules checked are the DDR4 ones.
 
 ## Not covered yet
 
-SD / eMMC, I2S and USB on the same plan have no cross-check here. The CSI-2
+eMMC and USB on the same plan have no cross-check here yet. The CSI-2
 IP models a 1-bit serial lane rather than D-PHY, and the HDMI IP is a
 1-bit-per-clock TMDS source, so lane-level (D-PHY / FRL) behaviour is
 outside what these benches can check. The DDR checks are pin-level only:

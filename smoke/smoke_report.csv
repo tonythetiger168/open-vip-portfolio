@@ -1,27 +1,18 @@
 vip,result,detail
-ACE-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/ACE-VIP/smoke.log'
 ACE_Lite-UVM-VIP,PASS,ace_lite_model:PASS(x_hits=0 toggles=2390)
-ACE_Lite-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/ACE_Lite-VIP/smoke.log'
 AHB-VIP,PASS,amba_dut:PASS(x_hits=0 toggles=122)
 APB-VIP,PASS,amba_dut:PASS(x_hits=0 toggles=1038)
 ATB-UVM-VIP,PASS,atb_model:PASS(x_hits=0 toggles=1596)
-ATB-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/ATB-VIP/smoke.log'
 AVSBus-VIP,SKIP,avsbus_regulator_model:SKIP(compile: unsupported SV (see smoke.log))
 AXI-VIP,PASS,amba_dut:PASS(x_hits=0 toggles=1230)
-AXI4-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/AXI4-VIP/smoke.log'
-AXI4_Lite-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/AXI4_Lite-VIP/smoke.log'
-AXI_Stream-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/AXI_Stream-VIP/smoke.log'
 Avalon_MM-UVM-VIP,PASS,avalon_mm_model:PASS(x_hits=0 toggles=2178)
-Avalon_MM-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/Avalon_MM-VIP/smoke.log'
 Avalon_ST-UVM-VIP,PASS,avalon_st_model:PASS(x_hits=0 toggles=2244)
-Avalon_ST-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/Avalon_ST-VIP/smoke.log'
 Bluetooth5-VIP,SKIP,bluetooth5_dut:SKIP(compile: unsupported SV (see smoke.log))
 CAN-VIP,PASS,can_node_model:PASS(x_hits=0 toggles=11)
 CAN_FD-UVM-VIP,PASS,can_fd_model:PASS(x_hits=0 toggles=432)
 CAN_XL-UVM-VIP,PASS,can_xl_model:PASS(x_hits=0 toggles=1)
 CCIX-VIP,PASS,ccix_agent_model:PASS(x_hits=0 toggles=2232)
 CHI-UVM-VIP,PASS,chi_model:PASS(x_hits=0 toggles=1450)
-CHI-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/CHI-VIP/smoke.log'
 CPRI-VIP,PASS,cpri_slave_dut:PASS(x_hits=0 toggles=0)
 CSE-VIP,PASS,mipi_dut:PASS(x_hits=0 toggles=4202)
 CSI_2-VIP,SKIP,mipi_dut:SKIP(compile: unsupported SV (see smoke.log))
@@ -30,7 +21,6 @@ CXS-VIP,PASS,cxs_receiver_model:PASS(x_hits=0 toggles=741)
 C_PHY-VIP,SKIP,mipi_dut:SKIP(compile: unsupported SV (see smoke.log))
 DBI-VIP,SKIP,dbi_display_controller:SKIP(compile: unsupported SV (see smoke.log))
 DDR-VIP,SKIP,ddr_mem_model:SKIP(compile: unsupported SV (see smoke.log))
-DDR4-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/DDR4-VIP/smoke.log'
 DDR5-VIP,PASS,ddr5_model:PASS(x_hits=0 toggles=326)
 DFI-VIP,SKIP,dfi_dram_model:SKIP(compile: unsupported SV (see smoke.log))
 DPI-VIP,PASS,dpi_display_sink:PASS(x_hits=0 toggles=0)
@@ -45,9 +35,7 @@ Ethernet_AVB_TSN-VIP,PASS,eth_avb_tsn_dut:PASS(x_hits=0 toggles=4044)
 FC-VIP,SKIP,net_mac_model:SKIP(compile: unsupported SV (see smoke.log)); net_fc_model:SKIP(compile: unsupported SV (see smoke.log)); net_dut:SKIP(interface eth_1g_if passed through to submodule)
 FlexRay-VIP,PASS,flexray_node_model:PASS(x_hits=0 toggles=1525)
 GMII-UVM-VIP,PASS,gmii_model:PASS(x_hits=0 toggles=2970)
-GMII-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/GMII-VIP/smoke.log'
 GPIO-UVM-VIP,PASS,gpio_model:PASS(x_hits=0 toggles=2960)
-GPIO-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/GPIO-VIP/smoke.log'
 HBM-VIP,SKIP,hbm_mem_model:SKIP(compile: unsupported SV (see smoke.log))
 HBM3E-VIP,PASS,hbm3e_model:PASS(x_hits=0 toggles=322)
 HBM5-VIP,SKIP,hbm5_mem_model:SKIP(compile: unsupported SV (see smoke.log))
@@ -63,12 +51,10 @@ JESD204-VIP,PASS,jesd204_adc_dut:PASS(x_hits=0 toggles=1957)
 JTAG-VIP,PASS,jtag_tap_dut:PASS(x_hits=0 toggles=2021)
 LIN-VIP,PASS,lin_slave_model:PASS(x_hits=0 toggles=181)
 LPDDR-VIP,SKIP,lpddr_mem_model:SKIP(compile: unsupported SV (see smoke.log))
-LPDDR4-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/LPDDR4-VIP/smoke.log'
 LPDDR6-VIP,PASS,lpddr6_model:PASS(x_hits=0 toggles=4)
 LPI-VIP,PASS,lpi_device_model:PASS(x_hits=0 toggles=755)
 LTI-VIP,PASS,lti_translation_unit_model:PASS(x_hits=0 toggles=1432)
 MDIO-UVM-VIP,PASS,mdio_model:PASS(x_hits=0 toggles=1487)
-MDIO-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/MDIO-VIP/smoke.log'
 MIL_STD_1553-VIP,PASS,mil_std_1553_model:PASS(x_hits=0 toggles=68)
 M_PHY-VIP,SKIP,mipi_dut:SKIP(compile: unsupported SV (see smoke.log))
 NVMe-VIP,SKIP,nvme_controller_model:SKIP(compile: unsupported SV (see smoke.log))
@@ -76,21 +62,16 @@ OBI-UVM-VIP,PASS,obi_model:PASS(x_hits=0 toggles=1908)
 OCP-VIP,SKIP,ocp_slave_model:SKIP(compile: unsupported SV (see smoke.log))
 ONFI-VIP,SKIP,onfi_nand_model:SKIP(compile: unsupported SV (see smoke.log))
 OneWire-UVM-VIP,PASS,onewire_model:PASS(x_hits=0 toggles=331)
-OneWire-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/OneWire-VIP/smoke.log'
 PCIe-VIP,SKIP,mp_dut:SKIP(interface pcie5_if passed through to submodule); mp_endpoint_mem_model:SKIP(compile: unsupported SV (see smoke.log))
 PTP-VIP,PASS,ptp_model:PASS(x_hits=0 toggles=4086)
 PWM-UVM-VIP,PASS,pwm_model:PASS(x_hits=0 toggles=1494)
-PWM-VIP,SKIP,no flattenable DUT model
-QSPI-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/QSPI-VIP/smoke.log'
 RFFE-VIP,PASS,rffe_slave_model:PASS(x_hits=0 toggles=0)
 RGMII-UVM-VIP,PASS,rgmii_model:PASS(x_hits=0 toggles=2126)
-RGMII-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/RGMII-VIP/smoke.log'
 RapidIO-VIP,PASS,rapidio_model:PASS(x_hits=0 toggles=2536)
 SAS-VIP,PASS,sas_target_model:PASS(x_hits=0 toggles=1)
 SATA-VIP,SKIP,sata_host_model:SKIP(compile: unsupported SV (see smoke.log))
 SD-VIP,PASS,unipro_endpoint_dut:PASS(x_hits=0 toggles=4274); emmc_device_dut:SKIP(compile: unsupported SV (see smoke.log)); onfi_flash_dut:PASS(x_hits=0 toggles=1); ufs_device_dut:SKIP(compile: unsupported SV (see smoke.log)); sd_card_dut:PASS(x_hits=0 toggles=367)
 SDIO-UVM-VIP,PASS,sdio_model:PASS(x_hits=0 toggles=174)
-SDIO-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/SDIO-VIP/smoke.log'
 SENT-VIP,PASS,sent_model:PASS(x_hits=0 toggles=1737)
 SGMII-UVM-VIP,PASS,sgmii_model:PASS(x_hits=0 toggles=1393)
 SLIMbus-VIP,PASS,slimbus_codec_slave:PASS(x_hits=0 toggles=14)
@@ -116,11 +97,8 @@ USB_PD-VIP,PASS,usb_dut:SKIP(interface usb2_if passed through to submodule); usb
 UniPro-VIP,SKIP,mipi_dut:SKIP(compile: unsupported SV (see smoke.log))
 UniPro_Mem-VIP,PASS,unipro_endpoint_dut:PASS(x_hits=0 toggles=4979); emmc_device_dut:PASS(x_hits=0 toggles=1470); onfi_flash_dut:PASS(x_hits=0 toggles=1); ufs_device_dut:PASS(x_hits=0 toggles=2199)
 WTB-UVM-VIP,PASS,wtb_model:PASS(x_hits=0 toggles=1596)
-WTB-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/WTB-VIP/smoke.log'
 Wishbone-UVM-VIP,PASS,wishbone_model:PASS(x_hits=0 toggles=963)
-Wishbone-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/Wishbone-VIP/smoke.log'
 XGMII-UVM-VIP,PASS,xgmii_model:PASS(x_hits=0 toggles=2875)
-XGMII-VIP,FAIL,harness error: [Errno 2] No such file or directory: '/home/claude/open-vip-portfolio/smoke/XGMII-VIP/smoke.log'
 ddr6-VIP,SKIP,ddr6_mem_model:SKIP(compile: unsupported SV (see smoke.log))
 ddr7-VIP,SKIP,ddr7_mem_model:SKIP(compile: unsupported SV (see smoke.log))
 eCPRI-VIP,PASS,ecpri_endpoint_dut:PASS(x_hits=0 toggles=596)
@@ -136,3 +114,6 @@ lpddr5-VIP,SKIP,lpddr5_mem_model:SKIP(compile: unsupported SV (see smoke.log))
 lpddr5x-VIP,PASS,lpddr5x_mem_model:PASS(x_hits=0 toggles=0)
 lpddr7-VIP,PASS,lpddr7_mem_model:PASS(x_hits=0 toggles=0)
 xSPI-UVM-VIP,PASS,xspi_model:PASS(x_hits=0 toggles=0)
+AXI4_Lite-UVM-VIP,PASS,axi4_lite_model:PASS(x_hits=0 toggles=2653)
+AXI_Stream-UVM-VIP,PASS,axi_stream_model:PASS(x_hits=0 toggles=2289)
+ACE-UVM-VIP,PASS,ace_model:PASS(x_hits=0 toggles=1156)
