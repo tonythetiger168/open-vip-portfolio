@@ -465,3 +465,19 @@ RVFI-UVM-VIP,dut_rvfi_model.sv:60,32 -> 33,register-file reset loop: x[32] is ou
 RVFI-UVM-VIP,dut_rvfi_model.sv:85,20 -> 21,S-immediate sign replication: the 33-bit concatenation is truncated to the same 32-bit value
 RVFI-UVM-VIP,dut_rvfi_model.sv:87,11 -> 12,J-immediate sign replication: the 33-bit concatenation is truncated to the same 32-bit value
 RVFI-UVM-VIP,dut_rvfi_model.sv:90,1'b0 inverted,initial branch-taken flag: every legal branch funct3 assigns it and the others trap (PC goes to MTVEC)
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:30,8 -> 9,GF(2^8) multiply loop: b[8] is out of range (X) so the extra step adds nothing
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:61,4 -> 5,SubBytes/ShiftRows column loop: column 4 writes outside the 128-bit state and is dropped
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:65,4 -> 5,MixColumns loop: column 4 is outside the state; its writes are dropped
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:104,16 -> 17,block fetch loop: byte 16 lands outside the 128-bit block
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:140,< -> <= in condition,plain-TLP copy bound: the extra DW lands after the delivered length (nd = n / 4) and is never sent
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:156,2 -> 3,GHASH payload block loop: a third block needs a payload over 32 bytes, which is rejected as bad (status 2) first
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:160,16 -> 17,MAC fetch limit: one more byte is read into mac[31:24]; only mac[127:32] is compared
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:166,2 -> 3,decrypt block loop: a third block needs a payload over 32 bytes, rejected first
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:169,16 -> 17,decrypt fetch limit: the extra byte (first MAC byte) falls in a DW at or past plen, which is not written
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:170,16 -> 17,decrypt DW guard 17*b + 4*j < plen: plen and 16*b + 4*j are multiples of 4 so the comparison does not change
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:136,6 -> 7,counter reset loop of K_SET_GO: ctr[6] is outside the six counters and the write is dropped
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:140,48 -> 49,plain-TLP copy loop: ob[48] is outside the output buffer
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:147,1024 -> 1025,length 0 (1024 DW): rejected as over the 8-DW limit either way
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:156,16 -> 17,GHASH block guard 17*b < plen: plen is a multiple of 4 so 16 < plen and 17 < plen agree
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:167,< -> <= in condition,decrypt block guard: the extra block (16*b == plen) writes nothing (every DW guard is false)
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:170,< -> <= in condition,decrypt DW guard: the extra DW lands at ob[3 + plen / 4] after the delivered length
