@@ -452,3 +452,12 @@ NC-SI-UVM-VIP,dut_ncsi_model.sv:125,20 -> 21,checksum loop bound: the extra word
 NC-SI-UVM-VIP,dut_ncsi_model.sv:131,100 -> 101,FCS loop bound: the body is guarded by i < fl and fl is at most 78
 NC-SI-UVM-VIP,dut_ncsi_model.sv:133,4 -> 5,FCS copy loop: the fifth byte lands after the frame and is never sent (tlen stops at the FCS)
 NC-SI-UVM-VIP,dut_ncsi_model.sv:146,2 -> 3,width of the RXD part-select: a 3-bit select truncated to the 2-bit RXD gives the same dibit
+MACsec-UVM-VIP,dut_macsec_model.sv:31,8 -> 9,GF(2^8) multiply loop: b[8] is out of range (X) so the extra step adds nothing to the product
+MACsec-UVM-VIP,dut_macsec_model.sv:52,4 -> 5,SubBytes/ShiftRows column loop: column 4 writes outside the 128-bit state and is dropped
+MACsec-UVM-VIP,dut_macsec_model.sv:53,4 -> 5,SubBytes/ShiftRows row loop: row 4 of column c rewrites byte 0 of column c+1 with the same value (or falls outside the state)
+MACsec-UVM-VIP,dut_macsec_model.sv:56,4 -> 5,MixColumns loop: column 4 is outside the state; its writes are dropped
+MACsec-UVM-VIP,dut_macsec_model.sv:77,128 -> 129,GHASH multiply loop: x[-1] is out of range (X) so z is unchanged
+MACsec-UVM-VIP,dut_macsec_model.sv:93,16 -> 17,block fetch loop: byte 16 lands outside the 128-bit block
+MACsec-UVM-VIP,dut_macsec_model.sv:132,< -> <= in condition,frame of exactly SecTAG + ICV (no data): the SL rules reject it as a bad tag either way
+MACsec-UVM-VIP,dut_macsec_model.sv:157,16 -> 17,decrypt byte loop: byte 16 is X from outside the block and is overwritten by the next block's byte 0 (later assignment)
+MACsec-UVM-VIP,dut_macsec_model.sv:158,< -> <= in condition,decrypt bound: the extra byte lands at ob[12 + dn] after the delivered length and is never sent
