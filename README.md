@@ -3,8 +3,8 @@
 > A comprehensive, open-source collection of **118 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
 
 [![License](https://img.shields.io/badge/License-Apache%%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![VIP Count](https://img.shields.io/badge/VIPs-118-brightgreen.svg)]()
-[![Protocols](https://img.shields.io/badge/Protocols-118-orange.svg)]()
+[![VIP Count](https://img.shields.io/badge/VIPs-124-brightgreen.svg)]()
+[![Protocols](https://img.shields.io/badge/Protocols-124-orange.svg)]()
 
 ---
 
@@ -12,9 +12,9 @@
 
 This repository provides a **modular, per-protocol verification IP library** covering major interface standards used in modern semiconductor design. Each entry is packaged as a standalone zip file.
 
-- **118 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
+- **124 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
 - **RTL IPs** -- the synthesizable reference RTL lives in [open-ip-portfolio](https://github.com/tonythetiger168/open-ip-portfolio); the column `open-ip 對應` of the CSV maps each VIP to its IP there
-- **118 distinct protocols** across 20 families
+- **124 distinct protocols** across 20 families
 
 All source files are licensed under **Apache License 2.0**.
 
@@ -35,22 +35,25 @@ All source files are licensed under **Apache License 2.0**.
 | AXI4-Lite | UVM VIP | `AXI4_Lite-UVM-VIP.zip` | 24KB |
 | CHI | UVM VIP | `CHI-UVM-VIP.zip` | 24KB |
 
-### Aerospace (1)
+### Aerospace (2)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | MIL-STD-1553 | UVM VIP | `MIL_STD_1553-VIP.zip` | 24KB |
+| SpaceWire (ECSS-E-ST-50-12C) | UVM VIP | `SpaceWire-UVM-VIP.zip` | 27KB |
 
-### Audio (1)
+### Audio (2)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | I2S Audio | UVM VIP | `I2S-VIP.zip` | 35KB |
+| TDM audio (DSP mode) | UVM VIP | `TDM-UVM-VIP.zip` | 20KB |
 
-### Automotive (7)
+### Automotive (8)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
+| 10BASE-T1S PLCA (IEEE 802.3cg) | UVM VIP | `T1S_PLCA-UVM-VIP.zip` | 23KB |
 | CAN | UVM VIP | `CAN-VIP.zip` | 42KB |
 | CAN XL | UVM VIP | `CAN_XL-UVM-VIP.zip` | 27KB |
 | CAN-FD | UVM VIP | `CAN_FD-UVM-VIP.zip` | 23KB |
@@ -114,7 +117,7 @@ All source files are licensed under **Apache License 2.0**.
 | MIPI SoundWire | UVM VIP | `SoundWire-VIP.zip` | 32KB |
 | UniPro | UVM VIP | `UniPro-VIP.zip` | 36KB |
 
-### Memory (24)
+### Memory (25)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
@@ -132,6 +135,7 @@ All source files are licensed under **Apache License 2.0**.
 | HBM3E | UVM VIP | `HBM3E-VIP.zip` | 37KB |
 | HBM4 | UVM VIP | `hbm4-VIP.zip` | 30KB |
 | HBM5 | UVM VIP | `HBM5-VIP.zip` | 27KB |
+| HyperBus / HyperRAM | UVM VIP | `HyperBus-UVM-VIP.zip` | 26KB |
 | LPDDR | UVM VIP | `LPDDR-VIP.zip` | 29KB |
 | LPDDR5 | UVM VIP | `lpddr5-VIP.zip` | 30KB |
 | LPDDR5X | UVM VIP | `lpddr5x-VIP.zip` | 43KB |
@@ -159,20 +163,22 @@ All source files are licensed under **Apache License 2.0**.
 | UEC | UVM VIP | `UEC-VIP.zip` | 22KB |
 | XGMII | UVM VIP | `XGMII-UVM-VIP.zip` | 23KB |
 
-### Peripherals (3)
+### Peripherals (4)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | 1-Wire | UVM VIP | `OneWire-UVM-VIP.zip` | 23KB |
 | GPIO | UVM VIP | `GPIO-UVM-VIP.zip` | 29KB |
 | PWM | UVM VIP | `PWM-UVM-VIP.zip` | 29KB |
+| eSPI (Enhanced SPI) | UVM VIP | `eSPI-UVM-VIP.zip` | 26KB |
 
-### Power (3)
+### Power (4)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | ARM Q-Channel Low Power Interface | UVM VIP | `LPI-VIP.zip` | 29KB |
 | AVSBus (Adaptive Voltage Scaling) | UVM VIP | `AVSBus-VIP.zip` | 31KB |
+| MCTP over SMBus (DMTF DSP0237) | UVM VIP | `MCTP-UVM-VIP.zip` | 25KB |
 | SMBus/PMBus | UVM VIP | `SMBus-UVM-VIP.zip` | 26KB |
 
 ### Security (2)
@@ -248,7 +254,7 @@ All source files are licensed under **Apache License 2.0**.
 open-vip-portfolio/
 |-- LICENSE
 |-- README.md
-|-- vip_individual_portfolio.csv   # machine-readable index (118 entries)
+|-- vip_individual_portfolio.csv   # machine-readable index (124 entries)
 |-- smoke_report.csv               # full open-toolchain L1b smoke results
 |-- vips/                          # 118 individual VIP zip files
 |-- .github/workflows/             # CI validation

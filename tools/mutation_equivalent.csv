@@ -414,3 +414,32 @@ ACE-UVM-VIP,dut_ace_model.sv:115,&& flipped,CDREADY high outside the data window
 ACE-UVM-VIP,dut_ace_model.sv:119,16 -> 17,merge loop past byte 15 (no such byte)
 ACE-UVM-VIP,dut_ace_model.sv:122,4 -> 5,line loop past word 3 (no such word)
 ACE-UVM-VIP,dut_ace_model.sv:130,1'b0 inverted,reset value of cr_got: cleared at every AC handshake before it is read
+T1S_PLCA-UVM-VIP,dut_t1s_plca_model.sv:40,1'b0 inverted,reset value of busy/o_tx: the first BEACON clears busy and o_tx follows tx_en before any check
+T1S_PLCA-UVM-VIP,dut_t1s_plca_model.sv:41,1'b0 inverted,reset value of tx_d/lo/err: rewritten on the first clock after reset before they are read or reported
+T1S_PLCA-UVM-VIP,dut_t1s_plca_model.sv:43,1'b0 inverted,reset value of rep_ok/rep_err: only read while rep_valid is high and rewritten with it
+T1S_PLCA-UVM-VIP,dut_t1s_plca_model.sv:51,== flipped,cur/tmr/busy are already held at 0 on every earlier BEACON clock so the last-clock reset is redundant
+T1S_PLCA-UVM-VIP,dut_t1s_plca_model.sv:72,|| flipped,cur is never LOCAL while a BEACON is counting so the two terms never differ
+MCTP-UVM-VIP,dut_mctp_model.sv:61,1'b1 inverted,reset value of scl_d/sda_d: a spurious edge right after reset only arms the receiver that the next START re-initialises
+MCTP-UVM-VIP,dut_mctp_model.sv:61,1'b0 inverted,reset value of active/mine/nbit: every packet begins with a START that reloads them
+MCTP-UVM-VIP,dut_mctp_model.sv:64,1'b0 inverted,reset value of dropping/seq_exp/m_len: written at the SOM packet before they are read
+MCTP-UVM-VIP,dut_mctp_model.sv:112,< -> <= in condition,a ninth shift on the ACK clock is overwritten before the next byte uses sh
+TDM-UVM-VIP,dut_tdm_model.sv:24,1'b0 inverted,reset value of sh/err: both reloaded by the FSYNC that opens the first frame
+TDM-UVM-VIP,dut_tdm_model.sv:25,1'b0 inverted,reset value of rep_slots/rep_err: only read while rep_valid is high and rewritten with it
+TDM-UVM-VIP,dut_tdm_model.sv:33,127 -> 128,width of the zero fill: the 129-bit concat truncates to the same 128 bits
+TDM-UVM-VIP,dut_tdm_model.sv:33,1'b0 inverted,fill bits of the first shift: all shifted out (full frame) or dropped by the left alignment (cut frame)
+eSPI-UVM-VIP,dut_espi_model.sv:61,16 -> 17,reset loop one past the I/O array: the extra write is out of range and dropped
+eSPI-UVM-VIP,dut_espi_model.sv:63,0 -> 1,reset value of cb[0]: every command stores its opcode byte before it is read
+eSPI-UVM-VIP,dut_espi_model.sv:64,1'b1 inverted,reset value of cs_p: CS# is high in reset so the first clock copies it before a CS# fall can be seen
+eSPI-UVM-VIP,dut_espi_model.sv:64,1'b0 inverted,reset value of sclk_p/tar: SCLK is low in reset and tar is cleared again when a command completes
+eSPI-UVM-VIP,dut_espi_model.sv:72,1'b0 inverted,tar cleared at CS# fall: also cleared when the command completes before the turn-around starts
+eSPI-UVM-VIP,dut_espi_model.sv:116,4 -> 5,data loop bound: iterations past the cycle length are masked by k < n
+HyperBus-UVM-VIP,dut_hyperbus_model.sv:60,256 -> 257,reset loop one past the memory: the extra write is out of range and dropped
+HyperBus-UVM-VIP,dut_hyperbus_model.sv:61,1'b1 inverted,reset value of cs_p/hi: CS# is high in reset (cs_p copies it on the first clock) and hi is set at every CS# fall
+HyperBus-UVM-VIP,dut_hyperbus_model.sv:61,1'b0 inverted,reset value of ck_p/lat2x: CK edges only count while CS# is low and lat2x is loaded at every CS# fall
+HyperBus-UVM-VIP,dut_hyperbus_model.sv:63,1'b0 inverted,reset value of rwds_s: not driven (rwds_s_oe 0) and forced low on the first clock with CS# high
+HyperBus-UVM-VIP,dut_hyperbus_model.sv:68,1'b0 inverted,rwds_s level while CS# is high: not driven then and reloaded at the next CS# fall
+SpaceWire-UVM-VIP,dut_spacewire_model.sv:57,1'b0 inverted,reset value of d_p/s_p/rx_on/p/f/par/esc: the receiver is held off through the 40 silent clocks after reset and all are reloaded at the first bit after quiet
+SpaceWire-UVM-VIP,dut_spacewire_model.sv:59,1'b0 inverted,reset value of tx_par/tx_fct_next: forced to 0 on every silent clock after reset
+SpaceWire-UVM-VIP,dut_spacewire_model.sv:61,1'b0 inverted,reset value of rep_kind/rep_eop: only read while rep_valid is high and rewritten with it
+SpaceWire-UVM-VIP,dut_spacewire_model.sv:62,1'b0 inverted,reset value of rep_err/rep_tick: only read while rep_valid is high and rewritten with it
+SpaceWire-UVM-VIP,dut_spacewire_model.sv:159,1'b0 inverted,rx_on/esc cleared at an error: rx_on is forced off on every silent clock and esc is cleared at the next start
