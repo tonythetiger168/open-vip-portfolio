@@ -45,7 +45,7 @@ All source files are licensed under **Apache License 2.0**.
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| I2S Audio | UVM VIP | `I2S-VIP.zip` | 29KB |
+| I2S Audio | UVM VIP | `I2S-VIP.zip` | 35KB |
 
 ### Automotive (7)
 
@@ -118,7 +118,7 @@ All source files are licensed under **Apache License 2.0**.
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| DDR | UVM VIP | `DDR-VIP.zip` | 29KB |
+| DDR | UVM VIP | `DDR-VIP.zip` | 40KB |
 | DDR5 | UVM VIP | `DDR5-VIP.zip` | 37KB |
 | DDR6 | UVM VIP | `ddr6-VIP.zip` | 27KB |
 | DDR7 | UVM VIP | `ddr7-VIP.zip` | 27KB |
@@ -134,14 +134,14 @@ All source files are licensed under **Apache License 2.0**.
 | HBM5 | UVM VIP | `HBM5-VIP.zip` | 27KB |
 | LPDDR | UVM VIP | `LPDDR-VIP.zip` | 29KB |
 | LPDDR5 | UVM VIP | `lpddr5-VIP.zip` | 30KB |
-| LPDDR5X | UVM VIP | `lpddr5x-VIP.zip` | 32KB |
+| LPDDR5X | UVM VIP | `lpddr5x-VIP.zip` | 43KB |
 | LPDDR6 | UVM VIP | `LPDDR6-VIP.zip` | 22KB |
 | LPDDR7 | UVM VIP | `lpddr7-VIP.zip` | 32KB |
 | ONFI | UVM VIP | `ONFI-VIP.zip` | 53KB |
-| SD | UVM VIP | `SD-VIP.zip` | 44KB |
+| SD | UVM VIP | `SD-VIP.zip` | 55KB |
 | UFS | UVM VIP | `UFS-VIP.zip` | 35KB |
 | UniPro-Mem | UVM VIP | `UniPro_Mem-VIP.zip` | 39KB |
-| eMMC | UVM VIP | `eMMC-VIP.zip` | 41KB |
+| eMMC | UVM VIP | `eMMC-VIP.zip` | 53KB |
 
 ### Networking (11)
 
@@ -164,8 +164,8 @@ All source files are licensed under **Apache License 2.0**.
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | 1-Wire | UVM VIP | `OneWire-UVM-VIP.zip` | 23KB |
-| GPIO | UVM VIP | `GPIO-UVM-VIP.zip` | 23KB |
-| PWM | UVM VIP | `PWM-UVM-VIP.zip` | 23KB |
+| GPIO | UVM VIP | `GPIO-UVM-VIP.zip` | 29KB |
+| PWM | UVM VIP | `PWM-UVM-VIP.zip` | 29KB |
 
 ### Power (3)
 
@@ -192,9 +192,9 @@ All source files are licensed under **Apache License 2.0**.
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| I2C | UVM VIP | `I2C-VIP.zip` | 29KB |
-| SPI | UVM VIP | `SPI-VIP.zip` | 31KB |
-| UART | UVM VIP | `UART-VIP.zip` | 31KB |
+| I2C | UVM VIP | `I2C-VIP.zip` | 33KB |
+| SPI | UVM VIP | `SPI-VIP.zip` | 35KB |
+| UART | UVM VIP | `UART-VIP.zip` | 36KB |
 | xSPI (JESD251) | UVM VIP | `xSPI-UVM-VIP.zip` | 23KB |
 
 ### Storage (3)
@@ -226,7 +226,7 @@ All source files are licensed under **Apache License 2.0**.
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| USB | UVM VIP | `USB-VIP.zip` | 63KB |
+| USB | UVM VIP | `USB-VIP.zip` | 74KB |
 | USB Type-C Port Controller | UVM VIP | `TypeC-VIP.zip` | 31KB |
 | USB-PD | UVM VIP | `USB_PD-VIP.zip` | 61KB |
 | USB2 | UVM VIP | `USB2-VIP.zip` | 64KB |

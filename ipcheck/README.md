@@ -118,6 +118,17 @@ after seven ones.
 - LPDDR5X_Lite: the LPDDR5 CA bus is shown as DDR4-style pins (documented
   in the IP), so the pin rules checked are the DDR4 ones.
 
+## Shipped in the VIPs
+
+The protocol models of the peripheral and DDR benches also ship inside the
+matching VIP zips, as `<VIP>/xchk/` with the bench, its helper files and a
+README with the run command against an open-ip-portfolio checkout:
+UART-VIP, SPI-VIP, I2C-VIP, GPIO-UVM-VIP, PWM-UVM-VIP, I2S-VIP, SD-VIP,
+eMMC-VIP, USB-VIP, DDR-VIP (DDR4_Lite) and lpddr5x-VIP (LPDDR5X_Lite).
+The files here are the master copy: after changing a bench, run
+`python3 tools/sync_xchk_models.py --check ../open-ip-portfolio`, which
+repacks the zips and runs every shipped bench from inside its VIP.
+
 ## Not covered yet
 
 The eMMC bench runs the documented 32-byte blocks in 1-bit mode, and
