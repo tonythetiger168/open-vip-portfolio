@@ -4,6 +4,8 @@
 
 ## 1. 結論
 
+> 2026-10-30：22 個 RTL IP 已移到 [open-ip-portfolio](https://github.com/tonythetiger168/open-ip-portfolio)，其列已從下表刪除；以下合計數字仍是上次完整量測（含那些 RTL IP）的結果，下次重跑 `tools/coverage.py` 後更新。
+
 - 132 個 VIP 中 131 個量到 code coverage（148 個功能測試中 147 個在 Verilator 上帶 coverage 執行）。
 - Line / branch coverage（全部 DUT model 合計）：90.5%（3326/3677）。
 - Toggle coverage（全部 DUT model 合計）：51.6%（44432/86160）。
@@ -32,28 +34,19 @@
 
 | VIP | 測試 | Line / branch | Toggle | Expression | Cover (SVA) | Functional (covergroup) |
 |---|---|---|---|---|---|---|
-| [ACE-VIP](test_suites/ACE-VIP.md) | 1/1 | 93.5% (58/62) | 90.2% (1017/1128) | 99.1% (112/113) | - | - |
 | [ACE_Lite-UVM-VIP](test_suites/ACE_Lite-UVM-VIP.md) | 1/1 | 90.9% (10/11) | 3.7% (85/2282) | 88.9% (16/18) | - | - |
-| [ACE_Lite-VIP](test_suites/ACE_Lite-VIP.md) | 1/1 | 95.0% (38/40) | 98.8% (583/590) | 99.0% (97/98) | - | - |
 | [AHB-VIP](test_suites/AHB-VIP.md) | 2/2 | 100.0% (13/13) | 56.3% (364/646) | 100.0% (15/15) | 56.2% (9/16) | 38.8% (47/121) |
 | [APB-VIP](test_suites/APB-VIP.md) | 2/2 | 100.0% (20/20) | 37.6% (195/518) | 100.0% (19/19) | 100.0% (14/14) | 47.7% (53/111) |
 | [ATB-UVM-VIP](test_suites/ATB-UVM-VIP.md) | 1/1 | 100.0% (3/3) | 18.8% (15/80) | 100.0% (8/8) | - | - |
-| [ATB-VIP](test_suites/ATB-VIP.md) | 1/1 | 100.0% (8/8) | 95.9% (1191/1242) | 100.0% (12/12) | - | - |
 | [AVSBus-VIP](test_suites/AVSBus-VIP.md) | 1/1 | 95.7% (22/23) | 64.3% (18/28) | 87.5% (14/16) | - | - |
 | [AXI-VIP](test_suites/AXI-VIP.md) | 2/2 | 92.1% (35/38) | 61.5% (547/890) | 96.9% (31/32) | 73.3% (11/15) | 22.9% (72/315) |
-| [AXI4-VIP](test_suites/AXI4-VIP.md) | 1/1 | 96.7% (58/60) | 99.7% (688/690) | 100.0% (75/75) | - | - |
-| [AXI4_Lite-VIP](test_suites/AXI4_Lite-VIP.md) | 1/1 | 95.0% (38/40) | 98.1% (504/514) | 100.0% (36/36) | - | - |
-| [AXI_Stream-VIP](test_suites/AXI_Stream-VIP.md) | 1/1 | 100.0% (5/5) | 87.4% (1045/1196) | 100.0% (8/8) | - | - |
 | [Avalon_MM-UVM-VIP](test_suites/Avalon_MM-UVM-VIP.md) | 1/1 | 100.0% (10/10) | 69.8% (113/162) | 100.0% (16/16) | - | - |
-| [Avalon_MM-VIP](test_suites/Avalon_MM-VIP.md) | 2/2 | 98.0% (49/50) | 95.5% (336/352) | 100.0% (51/51) | - | - |
 | [Avalon_ST-UVM-VIP](test_suites/Avalon_ST-UVM-VIP.md) | 2/2 | 100.0% (5/5) | 67.9% (148/218) | 100.0% (8/8) | - | - |
-| [Avalon_ST-VIP](test_suites/Avalon_ST-VIP.md) | 1/1 | 100.0% (4/4) | 99.8% (1192/1194) | 100.0% (9/9) | - | - |
 | [Bluetooth5-VIP](test_suites/Bluetooth5-VIP.md) | 1/1 | 95.5% (21/22) | 34.7% (131/378) | 90.9% (10/11) | - | - |
 | [CAN-VIP](test_suites/CAN-VIP.md) | 1/1 | 27.7% (23/83) | 8.1% (97/1196) | 17.2% (5/29) | - | - |
 | [CAN_FD-UVM-VIP](test_suites/CAN_FD-UVM-VIP.md) | 1/1 | 100.0% (11/11) | 75.0% (24/32) | 100.0% (9/9) | - | - |
 | [CCIX-VIP](test_suites/CCIX-VIP.md) | 1/1 | 91.7% (11/12) | 73.4% (207/282) | 85.7% (6/7) | - | - |
 | [CHI-UVM-VIP](test_suites/CHI-UVM-VIP.md) | 1/1 | 91.7% (11/12) | 30.2% (70/232) | 100.0% (2/2) | - | - |
-| [CHI-VIP](test_suites/CHI-VIP.md) | 1/1 | 94.7% (18/19) | 94.3% (279/296) | 85.7% (12/14) | - | - |
 | [CPRI-VIP](test_suites/CPRI-VIP.md) | 1/1 | 94.4% (17/18) | 92.1% (140/152) | 100.0% (9/9) | - | - |
 | [CSE-VIP](test_suites/CSE-VIP.md) | 1/1 | 72.7% (32/44) | 20.7% (130/628) | 100.0% (7/7) | - | - |
 | [CSI_2-VIP](test_suites/CSI_2-VIP.md) | 1/1 | 100.0% (13/13) | 51.7% (187/362) | 100.0% (10/10) | - | - |
@@ -62,7 +55,6 @@
 | [C_PHY-VIP](test_suites/C_PHY-VIP.md) | 1/1 | 100.0% (13/13) | 51.7% (187/362) | 100.0% (10/10) | - | - |
 | [DBI-VIP](test_suites/DBI-VIP.md) | 1/1 | 100.0% (28/28) | 91.2% (62/68) | 100.0% (10/10) | - | - |
 | [DDR-VIP](test_suites/DDR-VIP.md) | 1/1 | 100.0% (23/23) | 17.0% (216/1274) | 91.7% (22/24) | - | - |
-| [DDR4-VIP](test_suites/DDR4-VIP.md) | 2/2 | 94.3% (33/35) | 94.3% (1090/1156) | 94.4% (17/18) | - | - |
 | [DDR5-VIP](test_suites/DDR5-VIP.md) | 2/2 | 100.0% (12/12) | 100.0% (1586/1586) | 100.0% (10/10) | - | - |
 | [DFI-VIP](test_suites/DFI-VIP.md) | 1/1 | 96.3% (26/27) | 46.5% (318/684) | 81.8% (9/11) | - | - |
 | [DPI-VIP](test_suites/DPI-VIP.md) | 1/1 | 100.0% (20/20) | 66.7% (44/66) | 100.0% (15/15) | - | - |
@@ -77,9 +69,7 @@
 | [FC-VIP](test_suites/FC-VIP.md) | 1/1 | 96.2% (51/53) | 97.6% (1079/1106) | 92.9% (26/28) | - | - |
 | [FlexRay-VIP](test_suites/FlexRay-VIP.md) | 1/1 | 98.0% (50/51) | 33.2% (390/1174) | 100.0% (9/9) | - | - |
 | [GMII-UVM-VIP](test_suites/GMII-UVM-VIP.md) | 1/1 | 100.0% (3/3) | 97.7% (43/44) | 100.0% (2/2) | - | - |
-| [GMII-VIP](test_suites/GMII-VIP.md) | 1/1 | 100.0% (15/15) | 99.4% (525/528) | 100.0% (20/20) | - | - |
 | [GPIO-UVM-VIP](test_suites/GPIO-UVM-VIP.md) | 1/1 | 100.0% (3/3) | 98.5% (67/68) | 100.0% (2/2) | - | - |
-| [GPIO-VIP](test_suites/GPIO-VIP.md) | 1/1 | 100.0% (11/11) | 99.2% (121/122) | 100.0% (25/25) | - | - |
 | [HBM-VIP](test_suites/HBM-VIP.md) | 1/1 | 100.0% (23/23) | 23.8% (342/1434) | 95.7% (22/23) | - | - |
 | [HBM3E-VIP](test_suites/HBM3E-VIP.md) | 2/2 | 100.0% (13/13) | 100.0% (2610/2610) | 100.0% (10/10) | - | - |
 | [HBM5-VIP](test_suites/HBM5-VIP.md) | 1/1 | 100.0% (23/23) | 16.3% (207/1272) | 95.2% (20/21) | - | - |
@@ -95,33 +85,26 @@
 | [JTAG-VIP](test_suites/JTAG-VIP.md) | 1/1 | 98.6% (68/69) | 82.4% (216/262) | 100.0% (41/41) | - | - |
 | [LIN-VIP](test_suites/LIN-VIP.md) | 1/1 | 46.1% (35/76) | 4.5% (35/780) | 7.0% (3/43) | - | - |
 | [LPDDR-VIP](test_suites/LPDDR-VIP.md) | 1/1 | 95.7% (22/23) | 8.0% (94/1170) | 100.0% (3/3) | - | - |
-| [LPDDR4-VIP](test_suites/LPDDR4-VIP.md) | 2/2 | 94.3% (33/35) | 96.1% (1289/1342) | 95.5% (21/22) | - | - |
 | [LPDDR6-VIP](test_suites/LPDDR6-VIP.md) | 2/2 | 100.0% (14/14) | 100.0% (1080/1080) | 100.0% (12/12) | - | - |
 | [LPI-VIP](test_suites/LPI-VIP.md) | 1/1 | 100.0% (10/10) | 100.0% (12/12) | 100.0% (12/12) | - | - |
 | [LTI-VIP](test_suites/LTI-VIP.md) | 1/1 | 100.0% (12/12) | 80.9% (304/376) | 100.0% (5/5) | - | - |
 | [MDIO-UVM-VIP](test_suites/MDIO-UVM-VIP.md) | 2/2 | 55.6% (10/18) | 81.1% (146/180) | 55.6% (10/18) | - | - |
-| [MDIO-VIP](test_suites/MDIO-VIP.md) | 1/1 | 100.0% (23/23) | 56.0% (655/1170) | 96.8% (30/31) | - | - |
 | [MIL_STD_1553-VIP](test_suites/MIL_STD_1553-VIP.md) | 1/1 | 100.0% (9/9) | 32.3% (31/96) | 100.0% (6/6) | - | - |
 | [M_PHY-VIP](test_suites/M_PHY-VIP.md) | 1/1 | 100.0% (13/13) | 51.7% (187/362) | 100.0% (10/10) | - | - |
 | [NVMe-VIP](test_suites/NVMe-VIP.md) | 2/2 | 100.0% (19/19) | 10.4% (282/2720) | 100.0% (12/12) | - | - |
 | [OCP-VIP](test_suites/OCP-VIP.md) | 1/1 | 100.0% (16/16) | 85.8% (295/344) | 100.0% (5/5) | - | 93.1% (27/29) |
 | [ONFI-VIP](test_suites/ONFI-VIP.md) | 1/1 | 91.5% (75/82) | 82.9% (116/140) | 100.0% (27/27) | - | - |
 | [OneWire-UVM-VIP](test_suites/OneWire-UVM-VIP.md) | 1/1 | 90.9% (10/11) | 87.5% (21/24) | 85.7% (6/7) | - | - |
-| [OneWire-VIP](test_suites/OneWire-VIP.md) | 2/2 | 97.6% (41/42) | 92.6% (150/162) | 90.9% (20/22) | - | - |
 | [PCIe-VIP](test_suites/PCIe-VIP.md) | 1/1 | 100.0% (14/14) | 88.1% (1025/1164) | 100.0% (4/4) | - | - |
 | [PTP-VIP](test_suites/PTP-VIP.md) | 1/1 | 100.0% (7/7) | 6.3% (25/398) | 100.0% (5/5) | - | - |
 | [PWM-UVM-VIP](test_suites/PWM-UVM-VIP.md) | 1/1 | 100.0% (6/6) | 19.8% (21/106) | 100.0% (9/9) | - | - |
-| [PWM-VIP](test_suites/PWM-VIP.md) | 1/1 | 100.0% (11/11) | 92.4% (255/276) | 100.0% (18/18) | - | - |
-| [QSPI-VIP](test_suites/QSPI-VIP.md) | 1/1 | 98.0% (49/50) | 97.9% (137/140) | 97.6% (41/42) | - | - |
 | [RFFE-VIP](test_suites/RFFE-VIP.md) | 1/1 | 94.3% (33/35) | 4.6% (24/524) | 100.0% (18/18) | - | - |
 | [RGMII-UVM-VIP](test_suites/RGMII-UVM-VIP.md) | 1/1 | 100.0% (3/3) | 95.8% (23/24) | 100.0% (2/2) | - | - |
-| [RGMII-VIP](test_suites/RGMII-VIP.md) | 1/1 | 100.0% (21/21) | 99.8% (551/552) | 100.0% (22/22) | - | - |
 | [RapidIO-VIP](test_suites/RapidIO-VIP.md) | 1/1 | 100.0% (5/5) | 73.0% (111/152) | 100.0% (2/2) | - | - |
 | [SAS-VIP](test_suites/SAS-VIP.md) | 1/1 | 90.6% (87/96) | 14.0% (238/1700) | 84.6% (22/26) | - | - |
 | [SATA-VIP](test_suites/SATA-VIP.md) | 1/1 | 100.0% (19/19) | 19.9% (61/306) | 88.9% (8/9) | - | - |
 | [SD-VIP](test_suites/SD-VIP.md) | 1/1 | 91.9% (91/99) | 40.6% (916/2256) | 82.9% (68/82) | - | - |
 | [SDIO-UVM-VIP](test_suites/SDIO-UVM-VIP.md) | 1/1 | 92.3% (12/13) | 89.9% (214/238) | 80.0% (4/5) | - | - |
-| [SDIO-VIP](test_suites/SDIO-VIP.md) | 1/1 | 95.0% (76/80) | 68.4% (2291/3348) | 95.3% (61/64) | - | - |
 | [SENT-VIP](test_suites/SENT-VIP.md) | 1/1 | 100.0% (9/9) | 64.0% (32/50) | 90.0% (9/10) | - | - |
 | [SLIMbus-VIP](test_suites/SLIMbus-VIP.md) | 1/1 | 80.9% (38/47) | 80.8% (181/224) | 90.9% (10/11) | - | - |
 | [SPI-VIP](test_suites/SPI-VIP.md) | 0/1 | - | - | - | - | - |
@@ -145,11 +128,8 @@
 | [UniPro-VIP](test_suites/UniPro-VIP.md) | 1/1 | 100.0% (13/13) | 51.7% (187/362) | 100.0% (10/10) | - | - |
 | [UniPro_Mem-VIP](test_suites/UniPro_Mem-VIP.md) | 1/1 | 100.0% (18/18) | 65.8% (96/146) | 100.0% (14/14) | - | - |
 | [WTB-UVM-VIP](test_suites/WTB-UVM-VIP.md) | 1/1 | 100.0% (3/3) | 18.8% (15/80) | 100.0% (8/8) | - | - |
-| [WTB-VIP](test_suites/WTB-VIP.md) | 1/1 | 95.7% (111/116) | 96.3% (1277/1326) | 91.8% (56/61) | - | - |
 | [Wishbone-UVM-VIP](test_suites/Wishbone-UVM-VIP.md) | 2/2 | 100.0% (9/9) | 95.6% (1174/1228) | 100.0% (18/18) | - | - |
-| [Wishbone-VIP](test_suites/Wishbone-VIP.md) | 1/1 | 96.3% (26/27) | 98.2% (432/440) | 100.0% (44/44) | - | - |
 | [XGMII-UVM-VIP](test_suites/XGMII-UVM-VIP.md) | 1/1 | 100.0% (3/3) | 99.3% (147/148) | 100.0% (2/2) | - | - |
-| [XGMII-VIP](test_suites/XGMII-VIP.md) | 1/1 | 58.8% (20/34) | 97.3% (617/634) | 85.7% (24/28) | - | - |
 | [ddr6-VIP](test_suites/ddr6-VIP.md) | 1/1 | 100.0% (23/23) | 16.3% (207/1272) | 95.2% (20/21) | - | - |
 | [ddr7-VIP](test_suites/ddr7-VIP.md) | 1/1 | 100.0% (23/23) | 16.3% (207/1272) | 95.2% (20/21) | - | - |
 | [eCPRI-VIP](test_suites/eCPRI-VIP.md) | 1/1 | 92.1% (35/38) | 73.4% (420/572) | 100.0% (20/20) | - | - |

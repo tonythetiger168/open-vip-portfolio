@@ -6,7 +6,7 @@ check open-ip-portfolio RTL against references that do not come from it.
 
 The RTL in open-ip-portfolio is verified there by its own testbenches; this
 runner adds a second, independent opinion for the IPs on its TV / STB /
-IP-camera plan (CSI-2, Ethernet, HDMI, Crypto). Expected values never come
+IP-camera plan (CSI-2, Ethernet, HDMI, Crypto, peripherals, DDR). Expected values never come
 from the RTL under test:
 
   * crypto  SHA-256 and HMAC-SHA-256 digests from Python ``hashlib`` (FIPS
@@ -23,6 +23,22 @@ from the RTL under test:
             the serial output (ipcheck/hdmi_xchk_tb.sv); the expected AVI and
             SPD InfoFrames, their checksums and BCH ECC bytes come from this
             script.
+  * uart, spi, i2c, gpio, pwm, i2s, sd, emmc, usb
+            the APB wrappers through the register map of docs/ip/<IP>.md,
+            with line / bus models written from the protocol rules: an 8N1
+            receiver and driver at the nominal baud (+-2.5 %), a mode-0 SPI
+            controller, an I2C controller on an open-drain bus with a monitor
+            for SDA changes while SCL is high, a GPIO board model, the
+            PWM waveform computed from the documented rule, an I2S bus
+            master, and an SD memory card (CRC7 / CRC16, R1..R7, injected
+            card faults; sd_sc runs it as a standard-capacity card), an
+            e*MMC device (JESD84) and a USB 2.0 full-speed host.
+  * ddr4, lpddr5x
+            DDR4_Lite_top / LPDDR5X_Lite_top through their front-end, with
+            ipcheck/ddr_pin_mon.sv on the DRAM pins: the JESD79-4 command
+            truth table, the timing rules, burst latency and data against a
+            shadow array, refresh intervals. ``[NOTE]`` lines report pin
+            encodings that differ from JESD79-4 without changing the data.
 
 Before any RTL runs, the Python references check themselves against the
 fixed public vectors (``REF_SELFTEST``) and the SystemVerilog reference
@@ -42,11 +58,24 @@ IPCHK = os.path.join(ROOT, "ipcheck")
 WORK = os.path.join(ROOT, "build", "ipcheck")
 REPORT = os.path.join(ROOT, "ipcheck_report.csv")
 
+# ip -> (open-ip rtl/ files, testbench, other ipcheck/ files)
 IPS = {
-    "crypto": ("Crypto___Security_Engine_top.sv", "crypto_xchk_tb.sv"),
-    "eth":    ("Ethernet_top.sv", "eth_xchk_tb.sv"),
-    "csi2":   ("CSI_2_top.sv", "csi2_xchk_tb.sv"),
-    "hdmi":   ("HDMI_2_1_top.sv", "hdmi_xchk_tb.sv"),
+    "crypto":  (["Crypto___Security_Engine_top.sv"], "crypto_xchk_tb.sv", []),
+    "eth":     (["Ethernet_top.sv"], "eth_xchk_tb.sv", []),
+    "csi2":    (["CSI_2_top.sv"], "csi2_xchk_tb.sv", []),
+    "hdmi":    (["HDMI_2_1_top.sv"], "hdmi_xchk_tb.sv", []),
+    "uart":    (["UART_top.sv", "UART_apb.sv"], "uart_xchk_tb.sv", []),
+    "spi":     (["SPI_top.sv", "SPI_apb.sv"], "spi_xchk_tb.sv", []),
+    "i2c":     (["I2C_top.sv", "I2C_apb.sv"], "i2c_xchk_tb.sv", []),
+    "gpio":    (["GPIO_top.sv", "GPIO_apb.sv"], "gpio_xchk_tb.sv", []),
+    "pwm":     (["PWM_top.sv", "PWM_apb.sv"], "pwm_xchk_tb.sv", []),
+    "i2s":     (["I2S_top.sv", "I2S_apb.sv"], "i2s_xchk_tb.sv", []),
+    "sd":      (["SD_top.sv", "SD_apb.sv"], "sd_xchk_tb.sv", []),
+    "sd_sc":   (["SD_top.sv", "SD_apb.sv"], "sd_xchk_tb.sv", []),
+    "emmc":    (["eMMC_top.sv", "eMMC_apb.sv"], "emmc_xchk_tb.sv", []),
+    "usb":     (["USB_top.sv", "USB_apb.sv"], "usb_xchk_tb.sv", []),
+    "ddr4":    (["DDR4_Lite_top.sv"], "ddr_xchk_tb.sv", ["ddr_pin_mon.sv"]),
+    "lpddr5x": (["LPDDR5X_Lite_top.sv"], "ddr_xchk_tb.sv", ["ddr_pin_mon.sv"]),
 }
 
 # ----------------------------------------------------------------------------
@@ -345,7 +374,19 @@ def gen_hdmi(d, rng):
     write_hex(os.path.join(d, "pkt.hex"), avi + spd)
     return {}
 
-GEN = {"crypto": gen_crypto, "eth": gen_eth, "csi2": gen_csi2, "hdmi": gen_hdmi}
+def gen_seed(d, rng):
+    """Peripheral and DDR benches carry their protocol models; only the seed varies."""
+    return {"SEED": rng.randrange(1, 1 << 30)}
+
+def gen_lpddr(d, rng):
+    return dict(gen_seed(d, rng), LPDDR=1)
+
+def gen_sd_sc(d, rng):
+    return dict(gen_seed(d, rng), SC=1)
+
+GEN = {"crypto": gen_crypto, "eth": gen_eth, "csi2": gen_csi2, "hdmi": gen_hdmi,
+       "uart": gen_seed, "spi": gen_seed, "i2c": gen_seed, "gpio": gen_seed, "pwm": gen_seed, "i2s": gen_seed, "sd": gen_seed, "sd_sc": gen_sd_sc, "emmc": gen_seed, "usb": gen_seed,
+       "ddr4": gen_seed, "lpddr5x": gen_lpddr}
 
 # ----------------------------------------------------------------------------
 # simulation
@@ -354,7 +395,7 @@ def sim(files, top, wd, defines, simulator, timeout=1800):
     defs = ["-D%s=%s" % kv for kv in defines.items()]
     if simulator == "verilator":
         cmd = ["verilator", "--binary", "--timing", "-Wno-fatal", "-Wno-lint", "-Wno-style",
-               "-j", "4", "--Mdir", os.path.join(wd, "obj"), "--top-module", top] + \
+               "-j", "4", "--Mdir", os.path.join(wd, "obj"), "--top-module", top, "-I" + IPCHK] + \
               ["+define+%s=%s" % kv for kv in defines.items()] + files
         p = subprocess.run(cmd, cwd=wd, capture_output=True, text=True, timeout=timeout)
         if p.returncode:
@@ -363,7 +404,7 @@ def sim(files, top, wd, defines, simulator, timeout=1800):
                            text=True, timeout=timeout)
         return p.returncode, p.stdout + p.stderr
     out = os.path.join(wd, "sim.vvp")
-    p = subprocess.run(["iverilog", "-g2012", "-o", out, "-s", top] + defs + files, cwd=wd,
+    p = subprocess.run(["iverilog", "-g2012", "-I", IPCHK, "-o", out, "-s", top] + defs + files, cwd=wd,
                        capture_output=True, text=True, timeout=timeout)
     if p.returncode:
         return None, p.stdout + p.stderr
@@ -375,7 +416,11 @@ def result(log):
     if not m:
         return "XCHK_ERROR", 0, (log.strip().splitlines() or ["no result"])[-1][:200]
     fails = [l.strip() for l in log.splitlines() if "[FAIL]" in l]
-    return "XCHK_" + m.group(1), int(m.group(2)), " | ".join(fails[:4])
+    notes = [l.strip()[7:] for l in log.splitlines() if "[NOTE]" in l]
+    det = " | ".join(fails[:4])
+    if notes:
+        det = (det + " | " if det else "") + "notes: " + " | ".join(notes)
+    return "XCHK_" + m.group(1), int(m.group(2)), det
 
 def main(argv):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
@@ -403,17 +448,19 @@ def main(argv):
     rows.append(["ref_pkg", r, n, det])
     rc |= r != "XCHK_PASS"
     for ip in a.ips:
-        src, tb = IPS[ip]
+        srcs, tb, extra = IPS[ip]
         wd = os.path.join(WORK, ip)
         os.makedirs(wd, exist_ok=True)
         defs = GEN[ip](wd, random.Random(a.seed))
-        dut = os.path.join(rtl, src)
-        if not os.path.exists(dut):
-            print("XCHK_ERROR %s -- %s not found (set --ip-dir or OPEN_IP_DIR)" % (ip, dut))
+        duts = [os.path.join(rtl, f) for f in srcs]
+        missing = [f for f in duts if not os.path.exists(f)]
+        if missing:
+            print("XCHK_ERROR %s -- %s not found (set --ip-dir or OPEN_IP_DIR)" % (ip, missing[0]))
             rows.append([ip, "XCHK_ERROR", 0, "rtl not found"]); rc = 1
             continue
         s = "verilator" if (ip == "hdmi" and shutil.which("verilator") and not a.sim) else simulator
-        code, log = sim([os.path.join(IPCHK, "ref", "xchk_ref_pkg.sv"), dut, os.path.join(IPCHK, tb)],
+        code, log = sim([os.path.join(IPCHK, "ref", "xchk_ref_pkg.sv")] + duts +
+                        [os.path.join(IPCHK, f) for f in extra] + [os.path.join(IPCHK, tb)],
                         tb[:-3], wd, defs, s)
         open(os.path.join(wd, "sim.log"), "w").write(log)
         r, n, det = result(log)
