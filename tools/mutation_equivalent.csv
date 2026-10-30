@@ -481,3 +481,6 @@ PCIe_IDE-UVM-VIP,dut_ide_model.sv:147,1024 -> 1025,length 0 (1024 DW): rejected 
 PCIe_IDE-UVM-VIP,dut_ide_model.sv:156,16 -> 17,GHASH block guard 17*b < plen: plen is a multiple of 4 so 16 < plen and 17 < plen agree
 PCIe_IDE-UVM-VIP,dut_ide_model.sv:167,< -> <= in condition,decrypt block guard: the extra block (16*b == plen) writes nothing (every DW guard is false)
 PCIe_IDE-UVM-VIP,dut_ide_model.sv:170,< -> <= in condition,decrypt DW guard: the extra DW lands at ob[3 + plen / 4] after the delivered length
+SUE-UVM-VIP,dut_sue_model.sv:39,4 -> 5,expected-PSN reset loop: expp[4] is outside the four VCs and the write is dropped
+SUE-UVM-VIP,dut_sue_model.sv:46,< -> <= in condition,receive buffer bound: byte 128 would wrap to rb[0] (DA, never read); frames stop at 90 bytes (64-byte payload limit)
+SUE-UVM-VIP,dut_sue_model.sv:63,128 -> 129,CRC loop bound: the body is guarded by i < n and frames stop at 90 bytes
