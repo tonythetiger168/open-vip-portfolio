@@ -1,8 +1,8 @@
 ﻿#,類別,Protocol,類型,VIP檔案,大小(zip),來源家族,SV檔案數,SV行數,SVA assertions,cover property,covergroups,checker檔案,版本,最後更新,狀態,Smoke測試(L1b),下載路徑,License,open-ip 對應
-1,Interconnect,CXL,UVM VIP,CXL-VIP.zip,47KB,PCIE-VIP,23,3066,24,21,7,2,v1.9.0,2026-10-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/CXL-VIP.zip,Apache-2.0,CXL
-2,Interconnect,PCIe,UVM VIP,PCIe-VIP.zip,57KB,PCIE-VIP,24,3742,28,25,7,2,v1.9.0,2026-10-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/PCIe-VIP.zip,Apache-2.0,PCIe
-3,Interconnect,UCIe,UVM VIP,UCIe-VIP.zip,36KB,PCIE-VIP,20,1988,3,2,1,2,v1.9.0,2026-10-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/UCIe-VIP.zip,Apache-2.0,UCIe
-4,Interconnect,UALink,UVM VIP,UALink-VIP.zip,33KB,PCIE-VIP,20,1599,4,2,1,2,v1.9.0,2026-10-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/UALink-VIP.zip,Apache-2.0,UALink
+1,Interconnect,CXL,UVM VIP,CXL-VIP.zip,54KB,PCIE-VIP,25,3568,24,21,7,2,v1.11.0,2026-10-30,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/CXL-VIP.zip,Apache-2.0,CXL
+2,Interconnect,PCIe,UVM VIP,PCIe-VIP.zip,65KB,PCIE-VIP,26,4264,28,25,7,2,v1.11.0,2026-10-30,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/PCIe-VIP.zip,Apache-2.0,PCIe
+3,Interconnect,UCIe,UVM VIP,UCIe-VIP.zip,43KB,PCIE-VIP,22,2451,3,2,1,2,v1.11.0,2026-10-30,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/UCIe-VIP.zip,Apache-2.0,UCIe
+4,Interconnect,UALink,UVM VIP,UALink-VIP.zip,41KB,PCIE-VIP,22,2168,4,2,1,2,v1.11.0,2026-10-30,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/UALink-VIP.zip,Apache-2.0,UALink
 5,Networking,Ethernet,UVM VIP,Ethernet-VIP.zip,57KB,NET-VIP,28,3918,37,19,5,4,v1.9.0,2026-10-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/Ethernet-VIP.zip,Apache-2.0,Ethernet
 6,Networking,FC,UVM VIP,FC-VIP.zip,48KB,NET-VIP,25,3387,37,19,5,4,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/FC-VIP.zip,Apache-2.0,FC
 7,Networking,UEC,UVM VIP,UEC-VIP.zip,22KB,NET-VIP,18,855,4,2,1,2,v1.8.0,2026-10-02,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/UEC-VIP.zip,Apache-2.0,UEC
@@ -91,7 +91,7 @@
 90,Interconnect,Avalon-MM,UVM VIP,Avalon_MM-UVM-VIP.zip,24KB,wave2-uvm,18,863,4,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/Avalon_MM-UVM-VIP.zip,Apache-2.0,Avalon-MM
 91,Interconnect,Avalon-ST,UVM VIP,Avalon_ST-UVM-VIP.zip,24KB,wave2-uvm,18,862,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/Avalon_ST-UVM-VIP.zip,Apache-2.0,Avalon-ST
 92,Automotive,CAN-FD,UVM VIP,CAN_FD-UVM-VIP.zip,23KB,wave2-uvm,18,811,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/CAN_FD-UVM-VIP.zip,Apache-2.0,CAN
-93,AMBA,CHI,UVM VIP,CHI-UVM-VIP.zip,24KB,wave2-uvm,18,888,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/CHI-UVM-VIP.zip,Apache-2.0,CHI
+93,AMBA,CHI,UVM VIP,CHI-UVM-VIP.zip,34KB,wave2-uvm,20,1618,3,2,1,2,v1.11.0,2026-10-30,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/CHI-UVM-VIP.zip,Apache-2.0,CHI
 94,Industrial,EtherCAT,UVM VIP,EtherCAT-VIP.zip,24KB,wave2-uvm,18,837,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/EtherCAT-VIP.zip,Apache-2.0,-
 95,Networking,GMII,UVM VIP,GMII-UVM-VIP.zip,23KB,wave2-uvm,18,814,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/GMII-UVM-VIP.zip,Apache-2.0,GMII
 96,Peripherals,GPIO,UVM VIP,GPIO-UVM-VIP.zip,29KB,wave2-uvm,20,976,3,2,1,2,v1.7.4,2026-10-30,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/GPIO-UVM-VIP.zip,Apache-2.0,GPIO
