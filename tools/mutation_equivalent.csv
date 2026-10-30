@@ -443,3 +443,12 @@ SpaceWire-UVM-VIP,dut_spacewire_model.sv:59,1'b0 inverted,reset value of tx_par/
 SpaceWire-UVM-VIP,dut_spacewire_model.sv:61,1'b0 inverted,reset value of rep_kind/rep_eop: only read while rep_valid is high and rewritten with it
 SpaceWire-UVM-VIP,dut_spacewire_model.sv:62,1'b0 inverted,reset value of rep_err/rep_tick: only read while rep_valid is high and rewritten with it
 SpaceWire-UVM-VIP,dut_spacewire_model.sv:159,1'b0 inverted,rx_on/esc cleared at an error: rx_on is forced off on every silent clock and esc is cleared at the next start
+USXGMII-UVM-VIP,dut_usxgmii_model.sv:37,1'b0 inverted,reset value of pre_bad: only read at a terminate and rewritten at every start block
+USXGMII-UVM-VIP,dut_usxgmii_model.sv:85,7 -> 8,terminate byte loop bound: the loop body is guarded by i < n and n is at most 7
+NC-SI-UVM-VIP,dut_ncsi_model.sv:95,1 -> 2,unsupported-command marker e = -1: only its sign is used (e < 0)
+NC-SI-UVM-VIP,dut_ncsi_model.sv:99,128 -> 129,clear loop of the response buffer: index 128 is outside f[0:127] and the write is ignored
+NC-SI-UVM-VIP,dut_ncsi_model.sv:112,40 -> 41,Get Version ID copy loop: byte 40 of the version data is 0 and f[82] is already cleared
+NC-SI-UVM-VIP,dut_ncsi_model.sv:125,20 -> 21,checksum loop bound: the extra word read is the not-yet-written checksum field (still 0)
+NC-SI-UVM-VIP,dut_ncsi_model.sv:131,100 -> 101,FCS loop bound: the body is guarded by i < fl and fl is at most 78
+NC-SI-UVM-VIP,dut_ncsi_model.sv:133,4 -> 5,FCS copy loop: the fifth byte lands after the frame and is never sent (tlen stops at the FCS)
+NC-SI-UVM-VIP,dut_ncsi_model.sv:146,2 -> 3,width of the RXD part-select: a 3-bit select truncated to the 2-bit RXD gives the same dibit
