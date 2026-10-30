@@ -279,7 +279,7 @@ bash smoke/run_smoke.sh UART-VIP   # or: python3 smoke/smoke_run.py --smoke-all
 
 - **L1a elaboration**: `python3 tools/elab_scan.py vips/<VIP>` (pyslang + UVM 1.2)
 - **L1b smoke**: `bash smoke/run_smoke.sh <VIP>` (iverilog/verilator; full report in `smoke_report.csv`)
-- **IP cross-check**: `python3 tools/run_ip_crosscheck.py --ip-dir ../open-ip-portfolio` checks the open-ip-portfolio CSI-2, Ethernet, HDMI, Crypto, UART, SPI, I2C, GPIO, PWM, I2S, SD, DDR4_Lite and LPDDR5X_Lite RTL against public vectors, spec-derived references and independent protocol models (see `ipcheck/README.md`)
+- **IP cross-check**: `python3 tools/run_ip_crosscheck.py --ip-dir ../open-ip-portfolio` checks the open-ip-portfolio CSI-2, Ethernet, HDMI, Crypto, UART, SPI, I2C, GPIO, PWM, I2S, SD, eMMC, USB, DDR4_Lite and LPDDR5X_Lite RTL against public vectors, spec-derived references and independent protocol models (see `ipcheck/README.md`)
 
 ---
 
