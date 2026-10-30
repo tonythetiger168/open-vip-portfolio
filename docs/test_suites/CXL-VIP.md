@@ -8,13 +8,54 @@
 |---|---|
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
-| 功能測試 | 2 個檔案，41 個 check，全部通過 |
-| Mutation | 37/37 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（41 個 check，mutation score 100%） |
+| 功能測試 | 3 個檔案，75 個 check，全部通過 |
+| Mutation | 78/78 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（75 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
 執行：`python3 tools/run_func_tests.py CXL-VIP`（Icarus Verilog 或 Verilator 5.052）。
+
+### `cxl_bundle/tb/func_cxl_bundle_tb.sv`
+
+結果：**PASS**（iverilog，34 checks）
+
+| # | Check | 類型 |
+|---|---|---|
+| 1 | bundle of 4 ports: width 4 | check |
+| 2 | 8 flits striped over 4 ports delivered in order | check |
+| 3 | skewed port: flits wait for the late one, no retry | check |
+| 4 | mask 1011: width 3 | check |
+| 5 | striping over ports 0, 1, 3 | check |
+| 6 | flit on a port outside the bundle: dropped (err 0), no retry | check |
+| 7 | flit on the wrong port: dropped, retry from 6 | check |
+| 8 | while the retry is pending later flits are dropped silently | check |
+| 9 | replay from 6 delivered | check |
+| 10 | flit behind next: duplicate, dropped, no retry | check |
+| 11 | duplicate of a buffered flit dropped | check |
+| 12 | flit beyond the window: retry from next | check |
+| 13 | replay fills the window | check |
+| 14 | flit at next + W - 1 is inside the window | check |
+| 15 | bad flit: retry from the next undelivered flit | check |
+| 16 | flits buffered before the bad one in the same clock are cleared | check |
+| 17 | replay delivered after a bad flit | check |
+| 18 | no retry before the gap timeout | check |
+| 19 | gap timeout after GTMO clocks: retry from 0 | check |
+| 20 | gap filled on the last clock: no retry | check |
+| 21 | port 1 lost: width 3, retry from 4 | check |
+| 22 | replay striped over ports 0, 2, 3 | check |
+| 23 | flit on the lost port dropped | check |
+| 24 | port_down on a port already out: no effect | check |
+| 25 | bundle of one port | check |
+| 26 | only buffer slot 0 held (flit 8): gap timeout, retry from 1 | check |
+| 27 | reconfiguration empties every buffer slot | check |
+| 28 | flit 2048 ahead counts as behind: duplicate, no retry | check |
+| 29 | port 0 lost: width 3, retry | check |
+| 30 | directed: every output as the reference | check |
+| 31 | %0d random flits: deliveries, retries, width and errors as the reference (%0d delivered, %0d retries) | check |
+| 32 | random run exercised retries and deliveries | check |
+| 33 | reset clears the bundle | check |
+| 34 | after reset no port is in the bundle | check |
 
 ### `cxl_mem/tb/func_cxl_mem_tb.sv`
 
@@ -84,7 +125,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（41 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（75 個 check，mutation score 100%）。
 
 無已知缺口。
 

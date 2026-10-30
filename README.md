@@ -33,7 +33,7 @@ All source files are licensed under **Apache License 2.0**.
 | AXI | UVM VIP | `AXI-VIP.zip` | 35KB |
 | AXI-Stream | UVM VIP | `AXI_Stream-UVM-VIP.zip` | 23KB |
 | AXI4-Lite | UVM VIP | `AXI4_Lite-UVM-VIP.zip` | 24KB |
-| CHI | UVM VIP | `CHI-UVM-VIP.zip` | 24KB |
+| CHI | UVM VIP | `CHI-UVM-VIP.zip` | 34KB |
 
 ### Aerospace (2)
 
@@ -86,15 +86,15 @@ All source files are licensed under **Apache License 2.0**.
 | Avalon-MM | UVM VIP | `Avalon_MM-UVM-VIP.zip` | 24KB |
 | Avalon-ST | UVM VIP | `Avalon_ST-UVM-VIP.zip` | 24KB |
 | CCIX Cache Coherent Interconnect | UVM VIP | `CCIX-VIP.zip` | 28KB |
-| CXL | UVM VIP | `CXL-VIP.zip` | 47KB |
+| CXL | UVM VIP | `CXL-VIP.zip` | 54KB |
 | CXS CCIX Stream Interface | UVM VIP | `CXS-VIP.zip` | 28KB |
 | OBI | UVM VIP | `OBI-UVM-VIP.zip` | 21KB |
 | OCP-IP Open Core Protocol | UVM VIP | `OCP-VIP.zip` | 28KB |
-| PCIe | UVM VIP | `PCIe-VIP.zip` | 57KB |
+| PCIe | UVM VIP | `PCIe-VIP.zip` | 65KB |
 | RapidIO | UVM VIP | `RapidIO-VIP.zip` | 23KB |
 | TileLink (TL-UL/TL-C) | UVM VIP | `TileLink-VIP.zip` | 29KB |
-| UALink | UVM VIP | `UALink-VIP.zip` | 33KB |
-| UCIe | UVM VIP | `UCIe-VIP.zip` | 36KB |
+| UALink | UVM VIP | `UALink-VIP.zip` | 41KB |
+| UCIe | UVM VIP | `UCIe-VIP.zip` | 43KB |
 | Wishbone | UVM VIP | `Wishbone-UVM-VIP.zip` | 24KB |
 
 ### MIPI (16)
