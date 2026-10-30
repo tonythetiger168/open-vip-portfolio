@@ -19,7 +19,8 @@
 # rep_status:
 #   0 IDE TLP passed (counter of its sub-stream / key set + 1)
 #   1 TLP without an IDE prefix: delivered as it came
-#   2 bad IDE TLP, dropped without counting: another stream, a sub-stream
+#   2 a TLP over 48 DW (the model's buffer), or a bad IDE TLP, dropped
+#     without counting: another stream, a sub-stream
 #     that does not match the TLP type, M = 0, P = 1, an unknown TLP type, a
 #     payload over 8 DW (the model's limit) or a length that does not match
 #     the payload and MAC
@@ -302,7 +303,8 @@ if (!kat_done) begin
     `uvm_error("SB", "IDE: GCM test case 13 tag wrong")
 end
 t.odata.delete();
-if (n < 4 || t.tlp[0] != 8'h92) begin
+if (n > 192) t.status = 2;
+else if (n < 4 || t.tlp[0] != 8'h92) begin
   // no IDE prefix: K_SET_GO for this stream, or delivered as it came
   if (n == 16 && t.tlp[0] == 8'h72 && t.tlp[7] == 8'h7F && t.tlp[12] == 8'h05 && t.tlp[14] == IDE_SID) begin
     t.status = 5;
@@ -474,7 +476,14 @@ module ide_model (
         if (nrb < 8'd48) begin
           rb[4*nrb] <= in_dw[31:24]; rb[4*nrb + 1] <= in_dw[23:16]; rb[4*nrb + 2] <= in_dw[15:8]; rb[4*nrb + 3] <= in_dw[7:0];
         end
-        nrb <= nrb + 8'd1;
+        if (nrb != 8'hFF) nrb <= nrb + 8'd1;
+      end
+      // output first: a TLP that completes now restarts it
+      if (busy) begin
+        out_valid <= 1'b1;
+        out_dw <= ob[opos];
+        opos <= opos + 6'd1;
+        if (opos == olen - 6'd1) begin out_last <= 1'b1; busy <= 1'b0; rep_valid <= 1'b1; end
       end
       if (go) begin : receive
         logic [2:0]   st, ss, want;
@@ -487,7 +496,8 @@ module ide_model (
         n = 4 * nrb;
         nrb <= '0;
         st = 3'd0; nd = 0;
-        if (n < 4 || rb[0] != 8'h92) begin
+        if (n > 192) st = 3'd2;
+        else if (n < 4 || rb[0] != 8'h92) begin
           if (n == 16 && rb[0] == 8'h72 && rb[7] == 8'h7F && rb[12] == 8'h05 && rb[14] == SID) begin
             st = 3'd5;
             for (int i = 0; i < 6; i++) ctr[i] <= 64'd1;
@@ -533,12 +543,6 @@ module ide_model (
         if (nd != 0) begin olen <= 6'(nd); opos <= '0; busy <= 1'b1; end
         else begin rep_valid <= 1'b1; rep_status <= st; end
         rep_status <= st;
-      end
-      if (busy) begin
-        out_valid <= 1'b1;
-        out_dw <= ob[opos];
-        opos <= opos + 6'd1;
-        if (opos == olen - 6'd1) begin out_last <= 1'b1; busy <= 1'b0; rep_valid <= 1'b1; end
       end
     end
   end
@@ -634,7 +638,7 @@ function automatic logic [127:0] r_gmul(input logic [127:0] x, input logic [127:
 endfunction
 
 logic [255:0] KB = 256'h0001_0203_0405_0607_0809_0A0B_0C0D_0E0F_1011_1213_1415_1617_1819_1A1B_1C1D_1E1F;
-logic [7:0] tb_ [0:191];
+logic [7:0] tb_ [0:255];
 logic [7:0] pt [0:63];
 integer tn, plen;
 logic [63:0] txc [0:5];
@@ -650,7 +654,7 @@ task automatic ide(input integer typ, input integer ndw, input integer ss, input
   logic [127:0] hk, x, k2, tag;
   logic [95:0] iv;
   logic [63:0] la, lc;
-  for (int i = 0; i < 192; i++) tb_[i] = 8'h00;
+  for (int i = 0; i < 256; i++) tb_[i] = 8'h00;
   tb_[0] = 8'h92; tb_[1] = {m, ks[0], 1'b1, p, ss[2:0], 1'b0}; tb_[2] = sid; tb_[3] = 8'h00;
   tb_[4] = (typ == 1) ? 8'h00 : (typ == 2) ? 8'h4A : 8'h40; tb_[6] = 8'h00; tb_[7] = ndw;
   for (int i = 8; i < 16; i++) tb_[i] = 8'hC0 + i + ndw;
@@ -683,7 +687,7 @@ end
 task automatic send();
   integer r0, k;
   r0 = nrep; on = 0;
-  for (int i = 0; i < 192; i += 4)
+  for (int i = 0; i < 256; i += 4)
     if (i < tn) begin
       @(negedge clk); in_valid = 1; in_dw = {tb_[i], tb_[i + 1], tb_[i + 2], tb_[i + 3]}; in_last = (i + 4 >= tn);
     end
@@ -705,7 +709,7 @@ task automatic want(input integer s, input integer ndw, input string msg);
   else chk(st == s && on == 0, msg);
 endtask
 task automatic set_go(input integer sid);
-  for (int i = 0; i < 192; i++) tb_[i] = 8'h00;
+  for (int i = 0; i < 256; i++) tb_[i] = 8'h00;
   tb_[0] = 8'h72; tb_[3] = 8'h01; tb_[7] = 8'h7F; tb_[12] = 8'h05; tb_[14] = sid;
   tn = 16;
   send();
@@ -742,8 +746,10 @@ initial begin
   send();
   chk(st == 3'd1 && on == 5 && ob[0] == {tb_[0], tb_[1], tb_[2], tb_[3]} && ob[1] == {tb_[4], tb_[5], tb_[6], tb_[7]} &&
       ob[3] == {pt[0], pt[1], pt[2], pt[3]} && ob[4] == {pt[4], pt[5], pt[6], pt[7]}, "TLP without a prefix: delivered as it came");
-  for (int i = 0; i < 192; i++) tb_[i] = 8'h00;
+  for (int i = 0; i < 256; i++) tb_[i] = 8'h00;
   tb_[0] = 8'h92; tb_[2] = 8'd3; tn = 4; send(); want(2, 0, "a lone IDE prefix DW: dropped");
+  tb_[0] = 8'h40; tn = 192; send(); chk(st == 3'd1 && on == 48, "48-DW plain TLP: delivered");
+  tn = 196; send(); want(2, 0, "49-DW TLP (over the model's buffer): dropped");
   ide(0, 9, 0, 0, 3, 4); tn = 16 + 36 + 12; send(); want(2, 0, "9-DW payload (over the model's 8): dropped");
   // bad IDE TLPs: dropped, not counted
   ide(0, 2, 0, 0, 5, 4); send(); want(2, 0, "stream 5: dropped");
@@ -778,7 +784,7 @@ initial begin
   ide(0, 2, 0, 1, 3, 1); tb_[1][5] = 1'b0; send(); want(3, 0, "T bit is in the AAD");
   set_go(3);
   ide(0, 3, 0, 1, 3, 1); send(); want(0, 3, "key set 1 after the faults");
-  chk(nlast == 15 && ndel == 15, $sformatf("one last-DW strobe per delivered TLP (%0d / %0d)", nlast, ndel));
+  chk(nlast == 16 && ndel == 16, $sformatf("one last-DW strobe per delivered TLP (%0d / %0d)", nlast, ndel));
 
   if (fails == 0) $display("FUNC_PASS checks=%0d", checks);
   else            $display("FUNC_FAIL checks=%0d fails=%0d", checks, fails);
