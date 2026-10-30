@@ -2,9 +2,11 @@
 
 open-ip-portfolio's TV / STB / IP-camera plan
 (`docs/TV_STB_IPCAM_IMPROVEMENT_PLAN_2026-10-26.md` there) asks for its
-camera and display-path IP to be verified by independent VIPs and public
-vectors, not by testbenches that share the RTL's own model. This directory
-does that for the IPs that exist today:
+camera, display-path, peripheral and memory IP to be verified by independent
+VIPs and public vectors, not by testbenches that share the RTL's own model.
+This directory does that for the IPs that exist today. The peripherals are
+checked through their APB wrappers, so the documented register map is part
+of what is verified:
 
 | IP (open-ip `rtl/`) | Testbench | Expected values come from |
 |---|---|---|
@@ -12,6 +14,13 @@ does that for the IPs that exist today:
 | `Ethernet_top.sv` | `eth_xchk_tb.sv` | frames with `zlib.crc32` FCS; padding, inter-frame gap, underrun, DA filter, CRC / length / PHY-error status, VLAN 1522, runts (38 and 63 bytes), PAUSE quanta |
 | `CSI_2_top.sv` | `csi2_xchk_tb.sv` | packets with ECC from the CSI-2 parity equations and CRC-16 anchored to the specification's checksum examples; single-bit correction (data and ECC bits), double-bit drop, CRC error, burst cut, virtual channels, line longer than the buffer |
 | `HDMI_2_1_top.sv` | `hdmi_xchk_tb.sv` | a TMDS sink: every character re-encoded with the DVI 1.0 algorithm, control / guard / TERC4 tables, VIC 1 timing, the R=x G=y B=x^y source, InfoFrames with BCH ECC and checksums computed by the runner |
+| `UART_apb.sv` + `UART_top.sv` | `uart_xchk_tb.sv` | the register map in open-ip `docs/ip/UART.md`; an 8N1 line receiver sampling bit centres at the nominal baud and timing every edge (2 % limit), a line driver at -2.5 .. +2.5 % baud, back-to-back frames, framing error, break, start-bit glitch, loopback |
+| `SPI_apb.sv` + `SPI_top.sv` | `spi_xchk_tb.sv` | `docs/ip/SPI.md`; a mode-0 controller (MSB first, MISO setup before each SCLK rise), SCLK at the documented minimum and slower, three bytes under one CSn, a frame cut by CSn, SCLK with CSn high |
+| `I2C_apb.sv` + `I2C_top.sv` | `i2c_xchk_tb.sv` | `docs/ip/I2C.md`; an I2C-bus (UM10204) controller on an open-drain bus with pull-up, START / repeated START / STOP, ACK and NACK, other addresses, STOP inside a byte, and a monitor that fails on any target SDA change while SCL is high |
+| `GPIO_apb.sv` + `GPIO_top.sv` | `gpio_xchk_tb.sv` | `docs/ip/GPIO.md`; a board model driving or floating each pin, every pin checked as 0 / 1 / Z (X is contention), level HIGH interrupt |
+| `PWM_apb.sv` + `PWM_top.sv` | `pwm_xchk_tb.sv` | `docs/ip/PWM.md`; the waveform computed from the documented rule and compared clock by clock over four periods for 16 PERIOD / DUTY settings (0 %, 100 %, D > P, P = 1, P = 2, random), complement output, PERIOD 0 |
+| `DDR4_Lite_top.sv` | `ddr_xchk_tb.sv` | `docs/ip/DDR4_Lite.md` front-end; `ddr_pin_mon.sv` on the DRAM pins: the JESD79-4 command truth table, tRCD / tRP / tRC / tRAS / tRRD / tWR / tWTR / tRFC, REF only with every bank precharged, RD / WR only to an open row, burst latency CL / CWL, 8 beats with one DQS toggle each, read bursts against a shadow array filled from the write bursts, refresh interval |
+| `LPDDR5X_Lite_top.sv` | `ddr_xchk_tb.sv` (`+define+LPDDR`) | as DDR4_Lite with 8 banks, per-bank REF and tRFCpb, REFRESH of one bank, the two FSP mode-register sets, WCK running only through writes |
 
 `ref/xchk_ref_pkg.sv` holds the SystemVerilog references (CRC-32, CRC-16,
 CSI-2 ECC, TMDS encode/decode, TERC4, HDMI BCH, SHA-256, HMAC-SHA-256). It
@@ -21,28 +30,57 @@ in the CSI_2, Ethernet, HDMI and Security VIPs (`ref/`).
 ## Run
 
 ```bash
-python3 tools/run_ip_crosscheck.py --ip-dir ../open-ip-portfolio      # all four
+python3 tools/run_ip_crosscheck.py --ip-dir ../open-ip-portfolio      # all eleven
 python3 tools/run_ip_crosscheck.py --ip-dir ../open-ip-portfolio eth  # one IP
 ```
 
 `--ip-dir` defaults to `$OPEN_IP_DIR`, then `../open-ip-portfolio`. Icarus
-runs crypto / eth / csi2; HDMI (about 8 M clocks: reset to the first VSYNC,
+runs every IP but HDMI; HDMI (about 8 M clocks: reset to the first VSYNC,
 then one full frame) runs on Verilator when it is on `PATH` (10 s) and on
 Icarus otherwise (about 4 minutes). Vectors and logs are written to
 `build/ipcheck/<ip>/`, results to `ipcheck_report.csv`.
 
-## Status (2026-10-28, open-ip-portfolio main)
+## Status (2026-10-30, open-ip-portfolio main f683abe)
 
-All four IPs pass: crypto 113 checks, eth 39, csi2 101, hdmi 18 (each HDMI
-check covers a whole frame). Hand-made faults in copies of the RTL were all
-caught: TX padding length, runt threshold 64 -> 63, PAUSE quanta scale,
-CSI-2 ECC equation, line-buffer length clamp, flag clearing at Frame Start,
-HMAC outer length, SHA-256 padding corner (len 56), HDMI back porch, an AVI
-InfoFrame byte, the TMDS disparity branch and the XNOR tie rule.
+All eleven IPs pass: crypto 113 checks, eth 39, csi2 101, hdmi 18 (each
+HDMI check covers a whole frame), uart 35, spi 21, i2c 32, gpio 22, pwm 17,
+ddr4 18, lpddr5x 24 (the DDR checks each cover the whole run: about 30 000
+clocks, 600 random line operations and 30 refreshes).
+
+Hand-made faults in copies of the RTL were all caught: TX padding length,
+runt threshold 64 -> 63, PAUSE quanta scale, CSI-2 ECC equation, line-buffer
+length clamp, flag clearing at Frame Start, HMAC outer length, SHA-256
+padding corner (len 56), HDMI back porch, an AVI InfoFrame byte, the TMDS
+disparity branch and the XNOR tie rule; for the peripherals and DDR (16 of
+16): UART baud 3 % slow, missing stop bit, framing check removed; SPI MISO
+LSB first, MOSI sampled on the falling edge; I2C address LSB ignored, ACK
+driven on the SCL rise; a GPIO pin driven with OE 0; PWM duty one clock long,
+PERIOD_END in the first clock; DDR4 tRCD one clock short, CL one clock
+early, PREA sent as PRE of bank 0, tWR not enforced; LPDDR5X tRFCpb halved,
+one bank never refreshed.
+
+### Notes (pin-level, reported but not failed)
+
+- SPI: MISO is driven while CSn is high. On a bus with several targets it
+  has to be released (high impedance) when the target is not selected.
+- DDR4_Lite / LPDDR5X_Lite: an ACT drives RAS_n / CAS_n / WE_n high. In
+  JESD79-4 these pins are row address bits A16..A14 while ACT_n is low, so
+  a DDR4 device would open row 0x1C000 + row; they should be 0 for rows
+  below 2^14.
+- DDR4_Lite / LPDDR5X_Lite: RD / WR drive A12 (BC_n) low, which is a BC4
+  burst chop when MR0 selects on-the-fly burst length; the bursts are 8
+  beats, so A12 should be high.
+- DDR4_Lite / LPDDR5X_Lite: an MRW changes CL / CWL inside the controller
+  without an MRS command on the pins, so a separate DRAM device would keep
+  its old latency. (The array lives inside the model, so the data returned
+  is still right.)
+- LPDDR5X_Lite: the LPDDR5 CA bus is shown as DDR4-style pins (documented
+  in the IP), so the pin rules checked are the DDR4 ones.
 
 ## Not covered yet
 
-Peripherals (I2C / SPI / UART / GPIO) and DDR / LPDDR on the same plan have
-no cross-check here. The CSI-2 IP models a 1-bit serial lane rather than
-D-PHY, and the HDMI IP is a 1-bit-per-clock TMDS source, so lane-level
-(D-PHY / FRL) behaviour is outside what these benches can check.
+SD / eMMC, I2S and USB on the same plan have no cross-check here. The CSI-2
+IP models a 1-bit serial lane rather than D-PHY, and the HDMI IP is a
+1-bit-per-clock TMDS source, so lane-level (D-PHY / FRL) behaviour is
+outside what these benches can check. The DDR checks are pin-level only:
+there is no PHY, training or real DRAM device behind the controllers.
