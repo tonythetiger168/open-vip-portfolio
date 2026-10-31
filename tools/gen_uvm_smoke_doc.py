@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 """gen_uvm_smoke_doc.py -- write docs/UVM_SMOKE.md from uvm_smoke_report.csv
 (tools/run_uvm_tests.py --smoke, full run)."""
-import os, csv, re, collections
+import os, sys, csv, re, collections
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "uvm_smoke_report.csv")
@@ -46,10 +46,14 @@ def main():
     rows = list(csv.DictReader(open(SRC)))
     cnt = collections.Counter(r["result"] for r in rows)
     ran = [r for r in rows if r["result"] != "NONE"]
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import run_uvm_tests
+    n_ral = sum(1 for s in run_uvm_tests.SUITES.values() if any(t.endswith("_ral_test") for t in s["tests"]))
+    n_agent = len(run_uvm_tests.SUITES) - n_ral
     out = ["# 手寫 UVM 環境在 Verilator 上的首次執行（--smoke）", "",
            "本文件由 `tools/gen_uvm_smoke_doc.py` 依 `uvm_smoke_report.csv` 產生"
            "（`python3 tools/run_uvm_tests.py --smoke`，全部 VIP 約需數小時）。", "",
-           "`tools/run_uvm_tests.py` 的正式 suite（5 個 RAL VIP、29 個產生式 agent）以外，其餘 VIP 的 "
+           "`tools/run_uvm_tests.py` 的正式 suite（%d 個 RAL VIP、%d 個產生式 agent）以外，其餘 VIP 的 " % (n_ral, n_agent) +
            "UVM 環境（driver / monitor / scoreboard / checker / covergroup）之前只做過 pyslang "
            "elaboration，從未被模擬器執行。`--smoke` 把 VIP 的全部 `.sv` 以 elab_scan 的順序"
            "（package 排在 import 它的檔案之前）、呼叫 `run_test()` 的 module 為 top 建置，"

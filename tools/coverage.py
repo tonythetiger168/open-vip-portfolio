@@ -108,8 +108,10 @@ def cover_uvm(vip):
             return None, "UVM %s: %s" % (t, detail)
         dats.append(dat)
     vdir = os.path.join(rf().VIPS, vip)
-    return summarize(dats, [os.path.join(vdir, f) for f in suite["files"]], suffix_ok=True,
-                     scope=vip.split("-")[0].lower()), ""
+    res = summarize(dats, [os.path.join(vdir, f) for f in suite["files"]], suffix_ok=True,
+                    scope=vip.split("-")[0].lower())
+    shutil.rmtree(os.path.dirname(exe), ignore_errors=True)   # ~800 MB per UVM build
+    return res, ""
 
 def compile_sets(vip, tb, rtl):
     """(top, defines, [(label, files)]) as run_func_tests.run_test builds them."""

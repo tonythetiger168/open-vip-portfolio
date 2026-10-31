@@ -2,7 +2,7 @@
 
 本文件由 `tools/gen_uvm_smoke_doc.py` 依 `uvm_smoke_report.csv` 產生（`python3 tools/run_uvm_tests.py --smoke`，全部 VIP 約需數小時）。
 
-`tools/run_uvm_tests.py` 的正式 suite（5 個 RAL VIP、29 個產生式 agent）以外，其餘 VIP 的 UVM 環境（driver / monitor / scoreboard / checker / covergroup）之前只做過 pyslang elaboration，從未被模擬器執行。`--smoke` 把 VIP 的全部 `.sv` 以 elab_scan 的順序（package 排在 import 它的檔案之前）、呼叫 `run_test()` 的 module 為 top 建置，執行 base test 的衍生 test（優先選名稱含 VIP 名的那個）。沒有 pass 標記可等，所以 PASS 只代表環境能建置、跑完 sequence 且沒有任何錯誤回報，**不代表** scoreboard 做了有意義的比對。
+`tools/run_uvm_tests.py` 的正式 suite（7 個 RAL VIP、47 個產生式 agent）以外，其餘 VIP 的 UVM 環境（driver / monitor / scoreboard / checker / covergroup）之前只做過 pyslang elaboration，從未被模擬器執行。`--smoke` 把 VIP 的全部 `.sv` 以 elab_scan 的順序（package 排在 import 它的檔案之前）、呼叫 `run_test()` 的 module 為 top 建置，執行 base test 的衍生 test（優先選名稱含 VIP 名的那個）。沒有 pass 標記可等，所以 PASS 只代表環境能建置、跑完 sequence 且沒有任何錯誤回報，**不代表** scoreboard 做了有意義的比對。
 
 | 結果 | 意義 | VIP 數 |
 |---|---|---|
@@ -10,9 +10,9 @@
 | WARN | 建置成功、跑完、沒有 UVM_ERROR / UVM_FATAL，但 VIP 自己的 checker / SVA 發出 `UVM_WARNING` | 29 |
 | FAIL | 建置成功，但執行時有 UVM_ERROR / UVM_FATAL、逾時，或在時間 0 就結束（test 沒有送出任何流量） | 31 |
 | ERROR | Verilator 無法建置（語法、LRM 違規或 Verilator 不支援的寫法） | 1 |
-| NONE | 沒有 UVM test（RTL IP 類 VIP，只有 directed testbench） | 24 |
+| NONE | 沒有 UVM test（RTL IP 類 VIP，只有 directed testbench） | 2 |
 
-共 98 個 VIP，其中 74 個有 UVM test。
+共 76 個 VIP，其中 74 個有 UVM test。
 
 ## 失敗原因分類
 
@@ -111,4 +111,4 @@
 | USB_PD-VIP | `usb_pd_test` | FAIL | 逾時 / log 洪水 | rc=0 UVM_ERROR=3033 UVM_FATAL=0 VIP_WARNINGS=47813: UVM_ERROR vip/usbpd/usbpd_protocol_checker.sv(115) @ 894000: uvm_test_top.env.usbpd_chk [USBPD_CHK] USB-PD GoodCRC timeout |
 | ONFI-VIP | `onfi_deep_test` | ERROR | 建置 | %Error: env/vip/onfi/onfi_timing_checker.sv:41:51: Internal: Unexpected Call |
 
-沒有 UVM test：ACE-VIP、ACE_Lite-VIP、ATB-VIP、AXI4-VIP、AXI4_Lite-VIP、AXI_Stream-VIP、Avalon_MM-VIP、Avalon_ST-VIP、CHI-VIP、DDR4-VIP、GMII-VIP、GPIO-VIP、LPDDR4-VIP、MDIO-VIP、NVMe-VIP、OneWire-VIP、PWM-VIP、QSPI-VIP、RGMII-VIP、SATA-VIP、SDIO-VIP、WTB-VIP、Wishbone-VIP、XGMII-VIP。
+沒有 UVM test：NVMe-VIP、SATA-VIP。

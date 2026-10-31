@@ -350,10 +350,10 @@ class {p}_base_sequence extends uvm_sequence #({p}_transaction);
       if (!req.randomize(){rand_with})
         `uvm_error("RANDFAIL", "{p}_transaction randomize() failed")
 {after}
-      finish_item(req);
+      finish_item(req);{post}
     end
   endtask
-endclass
+{tasks}endclass
 
 // Directed traffic: every transfer type and the corner cases of the DUT model.
 class {p}_directed_sequence extends uvm_sequence #({p}_transaction);
@@ -376,11 +376,13 @@ class {p}_directed_sequence extends uvm_sequence #({p}_transaction);
     {p}_transaction t;
 {directed}
   endtask
-endclass
+{tasks}endclass
 """.format(p=p, members=("\n" + ind(s.get("seq_members", ""), 2) + "\n") if s.get("seq_members") else "",
            rand_with=(" with {%s}" % s["rand_with"]) if s.get("rand_with") else "",
            before=ind(s.get("seq_before", ""), 6),
-           after=ind(s.get("seq_after", ""), 6), directed=ind(s["directed"], 4))
+           after=ind(s.get("seq_after", ""), 6), directed=ind(s["directed"], 4),
+           post=("\n" + ind(s["seq_post"], 6)) if s.get("seq_post") else "",
+           tasks=("\n" + ind(s["seq_tasks"], 2) + "\n") if s.get("seq_tasks") else "")
 
 
 def gen_checker(s):
@@ -522,7 +524,7 @@ def gen_env(s):
         `uvm_error("SB", $sformatf("DUT response mismatch\\n  expected: %s\\n  observed: %s",
                    p.convert2string(), t.convert2string()))
       end
-      if (active) begin
+      if (active{skip}) begin
         obs_q.push_back(t);
         pair();
       end
@@ -582,7 +584,8 @@ def gen_env(s):
   endclass
 endpackage
 """.format(p=p, members=("\n" + ind(s.get("sb_members", ""), 4) + "\n") if s.get("sb_members") else "",
-           predict=ind(s["predict"], 6), agree="e.compare(o)" if drv_rsp else "e.req_equal(o)",
+           predict=ind(s["predict"], 6),
+           skip=(" && !(%s)" % s["pair_skip"]) if s.get("pair_skip") else "", agree="e.compare(o)" if drv_rsp else "e.req_equal(o)",
            ral_classes=gen_ral_classes(s) if ral else "",
            ral_members=RAL_MEMBERS.format(p=p) if ral else "",
            ral_build=RAL_BUILD.format(p=p) if ral else "",
@@ -804,6 +807,227 @@ def gen_tests(s):
 """.format(p=p, drain=s.get("drain_ns", 2000), ral_test=RAL_TEST.format(p=p) if s.get("ral") else "")
 
 
+# ------------------------------------------------------------- scaffold ----
+# Specs of VIPs that were created by this generator (rather than rewritten
+# from a template zip) also carry the static part of the tree:
+#   ports : [(dir, decl, name)] DUT pins, dir "in" (driven by the agent) or
+#           "out" (driven by the DUT model); rst_n and clk are implicit
+#   model : the DUT model module <p>_model (plain ports named as in ports)
+#   sva   : body of <p>_compliance_checker (inputs: clk, rst_n, every port)
+#   smoke : body of tb/smoke_func_tb.sv inside `ifdef VIP_SMOKE_FLATTENED
+#   desc, family, about : README text
+# ``pair_skip`` (any spec): expression on a monitored item ``t`` that the
+# driver does not publish (e.g. a snoop the DUT starts); such items are still
+# predicted and checked but not matched against the driver's items.
+# and optionally ``interface`` (replaces the interface rendered from ports)
+# and ``top_wires`` (extra lines in top_tb, e.g. open-drain bus resolution).
+
+def port_decl(decl, name):
+    return "%s %s" % (decl, name)
+
+
+def gen_interface(s):
+    p, ports = s["p"], s["ports"]
+    sig = "\n".join("  %s;" % port_decl(d.replace("bit", "logic"), n) for _, d, n in ports)
+    ins = [n for d, _, n in ports if d == "in"]
+    outs = [n for d, _, n in ports if d == "out"]
+    allp = [n for _, _, n in ports]
+    return header(p + "_if.sv", s["P"] + " interface") + """interface {p}_if (input logic clk);
+  logic rst_n;
+
+{sig}
+
+  modport DUT (input clk, rst_n{ins_m}{outs_m});
+  modport MON (input clk, rst_n, {allp});
+
+  clocking drv_cb @(posedge clk);
+    input rst_n{outs_cb};
+    inout {ins};   // driven by the agent, sampled back
+  endclocking
+
+  clocking mon_cb @(posedge clk);
+    input rst_n, {allp};
+  endclocking
+endinterface
+""".format(p=p, sig=sig, ins=", ".join(ins), allp=", ".join(allp),
+           ins_m="".join(", input " + n for n in ins), outs_m="".join(", output " + n for n in outs),
+           outs_cb="".join(", " + n for n in outs))
+
+
+def gen_top(s):
+    p, P, ports = s["p"], s["P"], s["ports"]
+    guard = s["vip"].upper().replace("-", "_") + "_TB_SV"
+    conn = ",\n    ".join(".%s(vif.%s)" % (n, n) for _, _, n in ports)
+    return header("top_tb.sv", P + " testbench top with a functional " + P + " DUT model") + """`ifndef {g}
+`define {g}
+`include "uvm_macros.svh"
+import uvm_pkg::*;
+import common_pkg::*;
+import {p}_defs_pkg::*;
+import {p}_pkg::*;
+import {p}_env_pkg::*;
+import {p}_test_pkg::*;
+
+module top_tb;
+  logic clk = 0;
+  always #5ns clk = ~clk;
+
+  {p}_if vif(clk);
+
+  initial begin
+    vif.rst_n = 0;
+    #100ns;
+    vif.rst_n = 1;
+  end
+{wires}
+  // DUT model: plain ports (flattened by smoke/flatten.py for L1b)
+  {p}_model u_dut (
+    .clk(vif.clk), .rst_n(vif.rst_n),
+    {conn}
+  );
+
+  // Concurrent protocol checks
+  {p}_compliance_checker u_chk (
+    .clk(vif.clk), .rst_n(vif.rst_n),
+    {conn}
+  );
+
+  initial begin
+    uvm_config_db#(virtual {p}_if)::set(null, "*", "vif", vif);
+    run_test();
+  end
+endmodule
+
+{model}
+`endif
+""".format(g=guard, p=p, conn=conn, model=s["model"].strip("\n"),
+           wires=("\n" + ind(s["top_wires"], 2) + "\n") if s.get("top_wires") else "")
+
+
+def gen_sva(s):
+    p, P = s["p"], s["P"]
+    ports = ", ".join("input %s %s" % (d.replace("bit", "logic"), n)
+                      for _, d, n in s["ports"])
+    return header(p + "_compliance_checker.sv", P + " concurrent assertion checks (bindable)") + \
+        "module {p}_compliance_checker\n  (input logic clk, input logic rst_n, {ports});\n\n{body}\nendmodule\n".format(
+            p=p, ports=ports, body=ind(s["sva"], 2))
+
+
+def gen_smoke(s):
+    p, P = s["p"], s["P"]
+    return ("// SPDX-License-Identifier: Apache-2.0\n"
+            "// Copyright 2026 VIP Portfolio Contributors\n"
+            "// Functional smoke testbench (%s DUT model)\n`timescale 1ns/1ps\n//\n"
+            "// Self-checking directed test of the flattened %s_model; prints FUNC_PASS/FUNC_FAIL.\n\n"
+            "module smoke_func_tb;\n`ifdef VIP_SMOKE_FLATTENED\n%s\n`endif\nendmodule\n") % (P, p, ind(s["smoke"], 2))
+
+
+def gen_pkg(s):
+    p, P = s["p"], s["P"]
+    inc = "\n".join('  `include "%s_%s.svh"' % (p, x) for x in
+                    ("transaction", "config", "sequencer", "driver", "monitor", "agent",
+                     "sequences", "checker", "coverage"))
+    return header(p + "_pkg.sv", P + " UVM VIP package") + """package {p}_pkg;
+  import uvm_pkg::*;
+  `include "uvm_macros.svh"
+
+  import {p}_defs_pkg::*;
+  export {p}_defs_pkg::*;
+
+{inc}
+endpackage
+""".format(p=p, inc=inc)
+
+
+def gen_sequencer(s):
+    p, P = s["p"], s["P"]
+    return header(p + "_sequencer.svh", P + " sequencer") + """class {p}_sequencer extends uvm_sequencer #({p}_transaction);
+  `uvm_component_utils({p}_sequencer)
+  function new(string name = "{p}_sequencer", uvm_component parent = null);
+    super.new(name, parent);
+  endfunction
+endclass
+""".format(p=p)
+
+
+COMMON_PKG = header("common_pkg.sv", "shared typedefs") + """package common_pkg;
+  import uvm_pkg::*;
+  `include "uvm_macros.svh"
+
+  typedef enum bit [1:0] {VIP_OK, VIP_WARN, VIP_ERROR, VIP_FATAL} vip_status_e;
+
+  class vip_config extends uvm_object;
+    `uvm_object_utils(vip_config)
+    int unsigned seed = 32'hC0FFEE;
+    bit coverage_enable = 1;
+    function new(string name = "vip_config"); super.new(name); endfunction
+  endclass
+endpackage
+"""
+
+
+def gen_readme(s):
+    p, P, v = s["p"], s["P"], s["vip"]
+    return """# {P} UVM VIP ({v})
+
+{desc}
+
+{about}
+
+## Structure
+
+- `{d}/` -- VIP core: interface, agent (driver/monitor/sequencer), sequences,
+  protocol checker, functional coverage, `sva/{p}_compliance_checker.sv` SVA checks
+- `common/` -- shared package
+- `env/` -- environment: scoreboard with a reference model of the DUT (checks
+  every monitored transfer; in an active agent also matches the driver's items
+  against the monitor's), protocol checker, functional coverage
+- `tests/` -- `{p}_base_test` (constrained-random), `{p}_func_test` (directed +
+  random)
+- `tb/top_tb.sv` -- UVM testbench top + behavioural {P} DUT model `{p}_model` (plain
+  ports; flattened by `smoke/flatten.py` for the open-toolchain L1b smoke gate)
+- `tb/smoke_func_tb.sv` -- self-checking directed test of the DUT model
+
+The UVM layer, interface, testbench top and SVA are generated by
+`tools/gen_uvm_agents.py` from `tools/uvm_agents/{p}.py` in the portfolio repo.
+
+## Quality gates
+
+- L1a elaboration: `python3 tools/elab_scan.py vips/{v}` -> `ELAB_ERRORS=0`
+- L1b smoke: `bash smoke/run_smoke.sh {v}` -> `SMOKE_PASS`
+- L1c functional: `python3 tools/run_func_tests.py {v}` -> `FUNC_PASS`
+- L1d UVM (Verilator + uvm-core): `python3 tools/run_uvm_tests.py {v}` -> `UVM_PASS`
+
+## License
+
+Apache-2.0 (SPDX-License-Identifier: Apache-2.0).
+""".format(P=P, v=v, p=p, d=s["dir"], desc=s["desc"], about=s.get("about", "").strip())
+
+
+def scaffold(s, root):
+    """Static files of a generator-created VIP (spec has ``model``)."""
+    p, d = s["p"], s["dir"]
+    out = {
+        "README.md": gen_readme(s),
+        "common/common_pkg.sv": COMMON_PKG,
+        "%s/%s_pkg.sv" % (d, p): gen_pkg(s),
+        "%s/%s_sequencer.svh" % (d, p): gen_sequencer(s),
+        "%s/sva/%s_compliance_checker.sv" % (d, p): gen_sva(s),
+        "tb/top_tb.sv": gen_top(s),
+        "tb/smoke_func_tb.sv": gen_smoke(s),
+    }
+    if not s.get("interface"):
+        out["%s/%s_if.sv" % (d, p)] = gen_interface(s)
+    for rel, text in out.items():
+        path = os.path.join(root, rel)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w") as f:
+            f.write(text)
+    for sub in ("env", "tests"):
+        os.makedirs(os.path.join(root, sub), exist_ok=True)
+    return len(out)
+
+
 def load_spec(path):
     spec = importlib.util.spec_from_file_location(os.path.basename(path)[:-3], path)
     mod = importlib.util.module_from_spec(spec)
@@ -893,11 +1117,15 @@ def main(argv):
         if v not in specs:
             raise SystemExit("ERROR: no spec for %s (have: %s)" % (v, ", ".join(sorted(specs))))
         root = os.path.join(VIPS, v)
-        if not os.path.isdir(root):
+        n = 0
+        if specs[v].get("model"):
+            n += scaffold(specs[v], root)
+        elif not os.path.isdir(root):
             raise SystemExit("ERROR: %s not found (run tools/extract_vips.sh)" % root)
-        n = generate(specs[v], root)
+        n += generate(specs[v], root)
         patch_files(specs[v], root)
-        patch_readme(specs[v], root)
+        if not specs[v].get("model"):
+            patch_readme(specs[v], root)
         print("generated %s (%d files)" % (v, n))
     return 0
 
