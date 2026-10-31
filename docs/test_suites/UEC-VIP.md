@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Networking |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，12 個 check，全部通過 |
-| Mutation | 8/12 個 mutant 被偵測（67%） |
-| 判定 | **🟡 Partial**（mutation score 67%） |
+| 功能測試 | 1 個檔案，16 個 check，全部通過 |
+| Mutation | 12/12 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（16 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,22 +18,24 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，12 checks）
+結果：**PASS**（iverilog，16 checks）
 
 | # | Check | 類型 |
 |---|---|---|
-| 1 | rx quiet in reset | check |
-| 2 | tx_ready high | check |
-| 3 | latency not visible yet | check |
-| 4 | good packet delivered | check |
-| 5 | payload intact | check |
-| 6 | no err on good packet | check |
-| 7 | single-cycle delivery | check |
-| 8 | undersize dropped | check |
-| 9 | undersize err pulse | check |
-| 10 | err is a pulse | check |
-| 11 | oversize dropped with err | check |
-| 12 | err clears | check |
+| 1 | rx outputs defined low from time 0 | check |
+| 2 | rx quiet in reset | check |
+| 3 | tx_ready high | check |
+| 4 | pipeline empty out of reset | check |
+| 5 | latency not visible yet | check |
+| 6 | good packet delivered | check |
+| 7 | payload intact | check |
+| 8 | no err on good packet | check |
+| 9 | single-cycle delivery | check |
+| 10 | undersize dropped | check |
+| 11 | undersize err pulse | check |
+| 12 | err is a pulse | check |
+| 13 | oversize dropped with err | check |
+| 14 | err clears | check |
 
 ## 3. UVM 測試平台內容
 
@@ -48,12 +50,7 @@ UVM agent test（`uec_func_test`：directed + constrained-random 流量，scoreb
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 67%）。
+判定：**✅ Sufficient**（16 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_uec_model.sv:27 1'b0 inverted [initial begin rx_valid = 1'b0; rx_err = 1'b0; end]`
-- `dut_uec_model.sv:27 1'b0 inverted [initial begin rx_valid = 1'b0; rx_err = 1'b0; end]`
-- `dut_uec_model.sv:30 1'b0 inverted [v1 <= 1'b0; v2 <= 1'b0; rx_valid <= 1'b0; rx_err <= 1'b0;]`
-- `dut_uec_model.sv:30 1'b0 inverted [v1 <= 1'b0; v2 <= 1'b0; rx_valid <= 1'b0; rx_err <= 1'b0;]`
+無已知缺口。
 

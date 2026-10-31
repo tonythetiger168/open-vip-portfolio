@@ -9,7 +9,7 @@
 | 類別 | Networking |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，23 個 check，全部通過 |
-| Mutation | 28/28 個 mutant 被偵測（100%） |
+| Mutation | 12/12 個 mutant 被偵測（100%） |
 | 判定 | **✅ Sufficient**（23 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試

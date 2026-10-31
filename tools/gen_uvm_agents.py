@@ -464,6 +464,7 @@ endclass
 def gen_env(s):
     p = s["p"]
     drv_rsp = s.get("drv_rsp", True)
+    ral = s.get("ral")
     return header(p + "_env.sv", s["P"] + " environment: reference-model scoreboard, checker, coverage") + """package {p}_env_pkg;
   import uvm_pkg::*;
   `include "uvm_macros.svh"
@@ -473,7 +474,7 @@ def gen_env(s):
 
   `uvm_analysis_imp_decl(_exp)
   `uvm_analysis_imp_decl(_obs)
-
+{ral_classes}
   // Scoreboard. Every monitored item is checked against a reference model of
   // the DUT (predict() fills the expected response from the request fields);
   // in an active agent the driver's items are also matched in order against
@@ -561,7 +562,7 @@ def gen_env(s):
     {p}_scoreboard sb;
     {p}_checker    chk;
     {p}_coverage   cov;
-
+{ral_members}
     function new(string name, uvm_component parent); super.new(name, parent); endfunction
 
     function void build_phase(uvm_phase phase);
@@ -569,7 +570,7 @@ def gen_env(s):
       agt = {p}_agent     ::type_id::create("agt", this);
       sb  = {p}_scoreboard::type_id::create("sb",  this);
       chk = {p}_checker   ::type_id::create("chk", this);
-      cov = {p}_coverage  ::type_id::create("cov", this);
+      cov = {p}_coverage  ::type_id::create("cov", this);{ral_build}
     endfunction
 
     function void connect_phase(uvm_phase phase);
@@ -578,13 +579,165 @@ def gen_env(s):
         agt.drv.ap.connect(sb.exp_ap);
       agt.mon.ap.connect(sb.obs_ap);
       agt.mon.ap.connect(chk.imp);
-      agt.mon.ap.connect(cov.analysis_export);
+      agt.mon.ap.connect(cov.analysis_export);{ral_connect}
     endfunction
   endclass
 endpackage
 """.format(p=p, members=("\n" + ind(s.get("sb_members", ""), 4) + "\n") if s.get("sb_members") else "",
            predict=ind(s["predict"], 6),
-           skip=(" && !(%s)" % s["pair_skip"]) if s.get("pair_skip") else "", agree="e.compare(o)" if drv_rsp else "e.req_equal(o)")
+           skip=(" && !(%s)" % s["pair_skip"]) if s.get("pair_skip") else "", agree="e.compare(o)" if drv_rsp else "e.req_equal(o)",
+           ral_classes=gen_ral_classes(s) if ral else "",
+           ral_members=RAL_MEMBERS.format(p=p) if ral else "",
+           ral_build=RAL_BUILD.format(p=p) if ral else "",
+           ral_connect=RAL_CONNECT if ral else "")
+
+
+# ------------------------------------------------------------------- RAL ----
+# A spec with ``ral=dict(n_regs=, reg2bus=, bus2reg=, desc=)`` gets a UVM
+# register model of the DUT model's register file (n_regs 32-bit RW
+# registers at byte address 4*i, reset 0), a reg adapter for its transaction,
+# an explicit predictor fed by the monitor, and <p>_ral_test.
+
+RAL_MEMBERS = """
+    // UVM RAL: register model of the DUT model, frontdoor through the agent,
+    // mirror kept by an explicit predictor fed by the monitor
+    {p}_reg_block                         regmodel;
+    {p}_reg_adapter                       reg_adapter;
+    uvm_reg_predictor #({p}_transaction)  reg_predictor;
+"""
+
+RAL_BUILD = """
+      regmodel = {p}_reg_block::type_id::create("regmodel");
+      regmodel.configure(null, "");
+      regmodel.build();
+      regmodel.lock_model();
+      reg_adapter   = {p}_reg_adapter::type_id::create("reg_adapter");
+      reg_predictor = uvm_reg_predictor#({p}_transaction)::type_id::create("reg_predictor", this);"""
+
+RAL_CONNECT = """
+      regmodel.default_map.set_sequencer(agt.sqr, reg_adapter);
+      regmodel.default_map.set_auto_predict(0);
+      reg_predictor.map     = regmodel.default_map;
+      reg_predictor.adapter = reg_adapter;
+      agt.mon.ap.connect(reg_predictor.bus_in);"""
+
+
+def gen_ral_classes(s):
+    p, r = s["p"], s["ral"]
+    return """
+  // ---- UVM RAL model: {desc}
+  class {p}_data_reg extends uvm_reg;
+    `uvm_object_utils({p}_data_reg)
+    rand uvm_reg_field DATA;
+    function new(string name = "{p}_data_reg"); super.new(name, 32, UVM_NO_COVERAGE); endfunction
+    virtual function void build();
+      DATA = uvm_reg_field::type_id::create("DATA");
+      //            parent size lsb access volatile reset has_reset rand individually_accessible
+      DATA.configure(this, 32,  0,  "RW",  0,       32'h0, 1,        1,   1);
+    endfunction
+  endclass
+
+  class {p}_reg_block extends uvm_reg_block;
+    `uvm_object_utils({p}_reg_block)
+    localparam int N_REGS = {n};
+    rand {p}_data_reg REG[N_REGS];
+    uvm_reg_map       map;
+    function new(string name = "{p}_reg_block"); super.new(name, UVM_NO_COVERAGE); endfunction
+    virtual function void build();
+      map = create_map("map", 'h0, 4, UVM_LITTLE_ENDIAN, 1);
+      default_map = map;
+      foreach (REG[i]) begin
+        REG[i] = {p}_data_reg::type_id::create($sformatf("REG%0d", i));
+        REG[i].configure(this, null, "");
+        REG[i].build();
+        map.add_reg(REG[i], i * 4, "RW");
+      end
+    endfunction
+  endclass
+
+  // register access <-> {P} transaction (the driver fills the read data
+  // into the request item, so no separate response is needed)
+  class {p}_reg_adapter extends uvm_reg_adapter;
+    `uvm_object_utils({p}_reg_adapter)
+    function new(string name = "{p}_reg_adapter");
+      super.new(name);
+      supports_byte_enable = 0;
+      provides_responses   = 0;
+    endfunction
+    virtual function uvm_sequence_item reg2bus(const ref uvm_reg_bus_op rw);
+      {p}_transaction t = {p}_transaction::type_id::create("t");
+{reg2bus}
+      return t;
+    endfunction
+    virtual function void bus2reg(uvm_sequence_item bus_item, ref uvm_reg_bus_op rw);
+      {p}_transaction t;
+      if (!$cast(t, bus_item)) begin
+        `uvm_fatal("RAL", "bus2reg: not a {p}_transaction")
+        return;
+      end
+{bus2reg}
+    endfunction
+  endclass
+""".format(p=p, P=s["P"], n=r["n_regs"], desc=r["desc"], reg2bus=ind(r["reg2bus"], 6),
+           bus2reg=ind(r["bus2reg"], 6))
+
+
+RAL_TEST = """
+  // UVM RAL on the DUT model's register file (env regmodel):
+  //   1. uvm_reg_hw_reset_seq  -- every register reads its reset value
+  //   2. uvm_reg_bit_bash_seq  -- every bit of every register writes 0/1 and reads back
+  //   3. pseudo-random write + mirror(UVM_CHECK) + read on every register
+  // The scoreboard checks the same traffic against the reference model.
+  // Uses no randomize(). Prints "RAL_PASS checks=<n>" when nothing was reported.
+  class {p}_ral_test extends {p}_base_test;
+    `uvm_component_utils({p}_ral_test)
+    int unsigned checks;
+    function new(string name, uvm_component parent); super.new(name, parent); endfunction
+
+    task stimulus();
+      uvm_reg_hw_reset_seq rst_seq;
+      uvm_reg_bit_bash_seq bb_seq;
+      uvm_status_e         status;
+      uvm_reg_data_t       val, exp;
+      {p}_reg_block        rm = env.regmodel;
+      bit [31:0]           x = 32'h1357_9BDF;
+
+      rst_seq = uvm_reg_hw_reset_seq::type_id::create("rst_seq");
+      rst_seq.model = rm;
+      rst_seq.start(null);
+      checks += rm.N_REGS;
+
+      bb_seq = uvm_reg_bit_bash_seq::type_id::create("bb_seq");
+      bb_seq.model = rm;
+      bb_seq.start(null);
+      checks += rm.N_REGS * 32;
+
+      foreach (rm.REG[i]) begin
+        x ^= x << 13; x ^= x >> 17; x ^= x << 5;
+        rm.REG[i].write(status, x);
+        if (status != UVM_IS_OK) `uvm_error("RAL", $sformatf("REG%0d write status %s", i, status.name()))
+      end
+      foreach (rm.REG[i]) begin
+        exp = rm.REG[i].get_mirrored_value();
+        rm.REG[i].mirror(status, UVM_CHECK);
+        rm.REG[i].read(status, val);
+        if (status != UVM_IS_OK || val != exp)
+          `uvm_error("RAL", $sformatf("REG%0d read 0x%08h status %s, expected 0x%08h",
+                     i, val, status.name(), exp))
+        checks += 2;
+      end
+    endtask
+
+    function void report_phase(uvm_phase phase);
+      uvm_report_server rs = uvm_report_server::get_server();
+      super.report_phase(phase);
+      if (rs.get_severity_count(UVM_ERROR) + rs.get_severity_count(UVM_FATAL) == 0)
+        $display("RAL_PASS checks=%0d", checks);
+      else
+        $display("RAL_FAIL errors=%0d", rs.get_severity_count(UVM_ERROR));
+    endfunction
+  endclass
+"""
 
 
 def gen_tests(s):
@@ -650,8 +803,8 @@ def gen_tests(s):
       super.stimulus();
     endtask
   endclass
-endpackage
-""".format(p=p, drain=s.get("drain_ns", 2000))
+{ral_test}endpackage
+""".format(p=p, drain=s.get("drain_ns", 2000), ral_test=RAL_TEST.format(p=p) if s.get("ral") else "")
 
 
 # ------------------------------------------------------------- scaffold ----

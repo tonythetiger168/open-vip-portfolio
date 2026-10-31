@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Industrial |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，22 個 check，全部通過 |
-| Mutation | 2/3 個 mutant 被偵測（67%） |
-| 判定 | **🟡 Partial**（mutation score 67%） |
+| 功能測試 | 1 個檔案，23 個 check，全部通過 |
+| Mutation | 3/3 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（23 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,18 +18,19 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，22 checks）
+結果：**PASS**（iverilog，23 checks）
 
 | # | Check | 類型 |
 |---|---|---|
 | 1 | tx_en quiet out of reset | check |
-| 2 | txd idle nibble (0x5) | check |
-| 3 | tx_en low between frames | check |
-| 4 | idle nibble while not forwarding | check |
-| 5 | tx_en high during frame | check |
-| 6 | forwarded nibble integrity | check |
-| 7 | tx_en drops at frame end | check |
-| 8 | process data passthrough | check |
+| 2 | tx_er quiet in reset | check |
+| 3 | txd idle nibble (0x5) | check |
+| 4 | tx_en low between frames | check |
+| 5 | idle nibble while not forwarding | check |
+| 6 | tx_en high during frame | check |
+| 7 | forwarded nibble integrity | check |
+| 8 | tx_en drops at frame end | check |
+| 9 | process data passthrough | check |
 
 ## 3. UVM 測試平台內容
 
@@ -44,9 +45,7 @@ UVM agent test（`ethercat_func_test`：directed + constrained-random 流量，s
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 67%）。
+判定：**✅ Sufficient**（23 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_ethercat_model.sv:25 1'b0 inverted [mii_tx_er <= 1'b0;]`
+無已知缺口。
 

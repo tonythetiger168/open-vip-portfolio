@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Storage |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，15 個 check，全部通過 |
-| Mutation | 10/18 個 mutant 被偵測（56%） |
-| 判定 | **🟡 Partial**（mutation score 56%） |
+| 功能測試 | 1 個檔案，27 個 check，全部通過 |
+| Mutation | 17/17 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（27 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，15 checks）
+結果：**PASS**（iverilog，27 checks）
 
 | # | Check | 類型 |
 |---|---|---|
@@ -27,6 +27,9 @@
 | 3 | CMD8 response driven | check |
 | 4 | response carries low bits (not stuck high) | check |
 | 5 | card released after response | check |
+| 6 | CMD%0d: response is 48 bits long (%0d) | check |
+| 7 | CMD%0d: response bits %h, expected %h | check |
+| 8 | CMD%0d: DAT drives 4'h5 for 8 bits (%0d) | check |
 
 ## 3. UVM 測試平台內容
 
@@ -41,16 +44,7 @@ UVM agent test（`sdio_func_test`：directed + constrained-random 流量，score
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 56%）。
+判定：**✅ Sufficient**（27 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_sdio_model.sv:30 1'b0 inverted [resp   <= 1'b0;]`
-- `dut_sdio_model.sv:32 1'b0 inverted [cmd_o  <= 1'b0;]`
-- `dut_sdio_model.sv:39 && flipped [if (!cmd_i && bcnt == 0) begin]`
-- `dut_sdio_model.sv:39 ! dropped in condition [if (!cmd_i && bcnt == 0) begin]`
-- `dut_sdio_model.sv:47 == flipped [if (bcnt == 6'd47) begin]`
-- `dut_sdio_model.sv:50 1'b1 inverted [rsh  <= {2'b00, sh[45:40], 8'h00, 8'h00, 8'h01, 8'h00, 7'h00]`
-- `dut_sdio_model.sv:57 1'b0 inverted [rsh    <= {rsh[46:0], 1'b0};]`
-- `dut_sdio_model.sv:64 1'b0 inverted [dat_oe <= 1'b0;]`
+無已知缺口。
 

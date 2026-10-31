@@ -9,7 +9,7 @@
 | 類別 | Automotive |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，19 個 check，全部通過 |
-| Mutation | 41/41 個 mutant 被偵測（100%） |
+| Mutation | 9/9 個 mutant 被偵測（100%） |
 | 判定 | **✅ Sufficient**（19 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試

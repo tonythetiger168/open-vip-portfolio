@@ -9,7 +9,7 @@
 | 類別 | Memory |
 | 類型 | UVM VIP |
 | 功能測試 | 3 個檔案，116 個 check，全部通過 |
-| Mutation | 40/40 個 mutant 被偵測（100%） |
+| Mutation | 9/9 個 mutant 被偵測（100%） |
 | 判定 | **✅ Sufficient**（116 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
