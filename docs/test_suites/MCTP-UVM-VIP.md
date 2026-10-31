@@ -9,8 +9,8 @@
 | 類別 | Power |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，23 個 check，全部通過 |
-| Mutation | 44/44 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（23 個 check，mutation score 100%） |
+| Mutation | 26/28 個 mutant 被偵測（93%） |
+| 判定 | **✅ Sufficient**（23 個 check，mutation score 93%） |
 
 ## 2. 可執行的功能測試
 
@@ -65,7 +65,10 @@ UVM agent test（`mctp_func_test`：directed + constrained-random 流量，score
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（23 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（23 個 check，mutation score 93%）。
 
-無已知缺口。
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_mctp_model.sv:65 1'b0 inverted [m_tag <= '0; m_to <= 1'b0; m_crc <= '1; p_crc <= '1; p_len <]`
+- `dut_mctp_model.sv:72 1'b0 inverted [active <= 1'b1; mine <= 1'b0; nbit <= '0; nb <= '0; pec <= ']`
 

@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Industrial |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，7 個 check，全部通過 |
-| Mutation | 23/30 個 mutant 被偵測（77%） |
-| 判定 | **🟡 Partial**（只有 7 個 check） |
+| 功能測試 | 1 個檔案，12 個 check，全部通過 |
+| Mutation | 28/28 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（12 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,17 +18,22 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，7 checks）
+結果：**PASS**（iverilog，12 checks）
 
 | # | Check | 類型 |
 |---|---|---|
 | 1 | tx line idle high | check |
 | 2 | handshakes quiet | check |
-| 3 | tx_cnf after transmission | check |
-| 4 | serial frame observed on tx | check |
-| 5 | serialised data integrity | check |
-| 6 | rx_valid after host byte | check |
-| 7 | received data integrity | check |
+| 3 | no rx_valid for 50 clocks out of reset with rx idle | check |
+| 4 | tx_cnf after transmission | check |
+| 5 | serial frame observed on tx | check |
+| 6 | serialised data integrity | check |
+| 7 | stop bit is high | check |
+| 8 | tx_cnf is a one-clock pulse (%0d) | check |
+| 9 | rx_valid after host byte | check |
+| 10 | received data integrity | check |
+| 11 | rx_valid after the second host byte | check |
+| 12 | second received byte integrity | check |
 
 ## 3. UVM 測試平台內容
 
@@ -43,15 +48,7 @@ UVM agent test（`io_link_func_test`：directed + constrained-random 流量，sc
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（只有 7 個 check）。
+判定：**✅ Sufficient**（12 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_io_link_model.sv:38 1'b0 inverted [rstart  <= 1'b0;]`
-- `dut_io_link_model.sv:59 1'b0 inverted [tsh  <= {1'b0, tsh[7:1]};]`
-- `dut_io_link_model.sv:63 1'b1 inverted [tx  <= 1'b1;]`
-- `dut_io_link_model.sv:75 == flipped [if (tst == TX_IDLE && tx_cnf)]`
-- `dut_io_link_model.sv:75 && flipped [if (tst == TX_IDLE && tx_cnf)]`
-- `dut_io_link_model.sv:76 1'b0 inverted [tx_cnf <= 1'b0;]`
-- `dut_io_link_model.sv:91 1'b0 inverted [rstart   <= 1'b0;]`
+無已知缺口。
 

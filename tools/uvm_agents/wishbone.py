@@ -90,4 +90,19 @@ t = item(); t.we = 0; t.adr = 32'h3C; send(t);
 t = item(); t.we = 1; t.adr = 32'h00; t.wdat = 32'h0; send(t);
 t = item(); t.we = 0; t.adr = 32'h00; send(t);
 """,
+    ral=dict(
+        n_regs=16,
+        desc="wishbone_model register file, 16 x 32-bit registers at ADR[5:2], reset 0",
+        reg2bus="""
+t.we   = (rw.kind == UVM_WRITE);
+t.adr  = rw.addr[31:0];
+t.wdat = t.we ? rw.data[31:0] : 32'h0;
+""",
+        bus2reg="""
+rw.kind   = t.we ? UVM_WRITE : UVM_READ;
+rw.addr   = t.adr;
+rw.data   = t.we ? t.wdat : t.rdat;
+rw.status = UVM_IS_OK;
+""",
+    ),
 )

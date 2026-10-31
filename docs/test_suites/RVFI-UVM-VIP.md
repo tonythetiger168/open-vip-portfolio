@@ -9,8 +9,8 @@
 | 類別 | Debug |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，59 個 check，全部通過 |
-| Mutation | 44/44 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（59 個 check，mutation score 100%） |
+| Mutation | 23/29 個 mutant 被偵測（79%） |
+| 判定 | **🟡 Partial**（mutation score 79%） |
 
 ## 2. 可執行的功能測試
 
@@ -101,7 +101,14 @@ UVM agent test（`rvfi_func_test`：directed + constrained-random 流量，score
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（59 個 check，mutation score 100%）。
+判定：**🟡 Partial**（mutation score 79%）。
 
-無已知缺口。
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_rvfi_model.sv:62 1'b0 inverted [l_rd <= '0; l_f3 <= '0; l_off <= '0; l_ld <= 1'b0;]`
+- `dut_rvfi_model.sv:84 20 -> 21 [ii = {{20{i[31]}}, i[31:20]};]`
+- `dut_rvfi_model.sv:123 1'b1 inverted [if (f3 > 3'd2) trap = 1'b1;]`
+- `dut_rvfi_model.sv:127 0 -> 1 [for (int k = 0; k < 4; k++) if (!m[k]) wd[8*k +: 8] = 8'h00;]`
+- `dut_rvfi_model.sv:152 < -> <= in condition [3'd3: r = (a < b) ? 32'd1 : 32'd0;]`
+- `dut_rvfi_model.sv:195 24 -> 25 [3'd0: r = {{24{sh[7]}}, sh[7:0]};]`
 

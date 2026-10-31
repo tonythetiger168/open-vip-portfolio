@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Networking |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，22 個 check，全部通過 |
-| Mutation | 2/3 個 mutant 被偵測（67%） |
-| 判定 | **🟡 Partial**（mutation score 67%） |
+| 功能測試 | 1 個檔案，23 個 check，全部通過 |
+| Mutation | 3/3 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（23 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,16 +18,17 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，22 checks）
+結果：**PASS**（iverilog，23 checks）
 
 | # | Check | 類型 |
 |---|---|---|
 | 1 | rx path reset quiet | check |
-| 2 | rx_dv low when tx_en low | check |
-| 3 | rx_dv high during stream | check |
-| 4 | loopback data integrity | check |
-| 5 | rx_dv drops after stream | check |
-| 6 | error passthrough | check |
+| 2 | rx_er quiet in reset | check |
+| 3 | rx_dv low when tx_en low | check |
+| 4 | rx_dv high during stream | check |
+| 5 | loopback data integrity | check |
+| 6 | rx_dv drops after stream | check |
+| 7 | error passthrough | check |
 
 ## 3. UVM 測試平台內容
 
@@ -42,9 +43,7 @@ UVM agent test（`gmii_func_test`：directed + constrained-random 流量，score
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 67%）。
+判定：**✅ Sufficient**（23 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_gmii_model.sv:23 1'b0 inverted [rx_er <= 1'b0;]`
+無已知缺口。
 

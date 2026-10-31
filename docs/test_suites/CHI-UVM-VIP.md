@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | AMBA |
 | 類型 | UVM VIP |
-| 功能測試 | 2 個檔案，50 個 check，全部通過 |
-| Mutation | 51/54 個 mutant 被偵測（94%） |
-| 判定 | **✅ Sufficient**（50 個 check，mutation score 94%） |
+| 功能測試 | 2 個檔案，53 個 check，全部通過 |
+| Mutation | 27/28 個 mutant 被偵測（96%） |
+| 判定 | **✅ Sufficient**（53 個 check，mutation score 96%） |
 
 ## 2. 可執行的功能測試
 
@@ -87,19 +87,20 @@ Run: python3 tools/run_func_tests.py CHI-UVM-VIP
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，11 checks）
+結果：**PASS**（iverilog，14 checks）
 
 | # | Check | 類型 |
 |---|---|---|
 | 1 | channels reset quiet | check |
 | 2 | no response without request | check |
-| 3 | REQ accepted | check |
-| 4 | DAT accepted | check |
-| 5 | RSPVALID after request | check |
-| 6 | RSP OK status | check |
-| 7 | RSP completes | check |
-| 8 | second REQ accepted | check |
-| 9 | second RSP received | check |
+| 3 | no ready without request | check |
+| 4 | REQ accepted | check |
+| 5 | DAT accepted | check |
+| 6 | RSPVALID after request | check |
+| 7 | RSP OK status | check |
+| 8 | RSP completes | check |
+| 9 | second REQ accepted | check |
+| 10 | second RSP received | check |
 
 ## 3. UVM 測試平台內容
 
@@ -114,11 +115,9 @@ UVM agent test（`chi_func_test`：directed + constrained-random 流量，scoreb
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（50 個 check，mutation score 94%）。
+判定：**✅ Sufficient**（53 個 check，mutation score 96%）。
 
 未被偵測的 mutant（測試缺口或等價 mutant）：
 
-- `dut_chi_model.sv:29 1'b0 inverted [dat_ready <= 1'b0;]`
-- `dut_chi_model.sv:33 1'b0 inverted [req_ready <= 1'b0;]`
-- `dut_chi_model.sv:34 1'b0 inverted [dat_ready <= 1'b0;]`
+- `dut_chi_hn_model.sv:114 && flipped [WACK: if (ack_valid && ack_rn == rn) st <= IDLE;]`
 

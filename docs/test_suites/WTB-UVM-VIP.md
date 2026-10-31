@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Debug |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，9 個 check，全部通過 |
-| Mutation | 4/6 個 mutant 被偵測（67%） |
-| 判定 | **🟡 Partial**（只有 9 個 check） |
+| 功能測試 | 1 個檔案，15 個 check，全部通過 |
+| Mutation | 6/6 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（15 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，9 checks）
+結果：**PASS**（iverilog，15 checks）
 
 | # | Check | 類型 |
 |---|---|---|
@@ -26,8 +26,10 @@
 | 2 | no afready without afvalid | check |
 | 3 | afready after afvalid | check |
 | 4 | afready drops after afvalid | check |
-| 5 | trace beats accepted over time | check |
-| 6 | flush suppresses afready | check |
+| 5 | ready never held two cycles in a row | check |
+| 6 | ready on every other cycle while valid is held (%0d of 10) | check |
+| 7 | flush suppresses afready | check |
+| 8 | afready on the first clock after reset (flush history cleared) | check |
 
 ## 3. UVM 測試平台內容
 
@@ -42,10 +44,7 @@ UVM agent test（`wtb_func_test`：directed + constrained-random 流量，scoreb
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（只有 9 個 check）。
+判定：**✅ Sufficient**（15 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_wtb_model.sv:24 1'b0 inverted [flush_d    <= 1'b0;]`
-- `dut_wtb_model.sv:27 && flipped [wt_ready   <= wt_valid && !wt_ready;]`
+無已知缺口。
 

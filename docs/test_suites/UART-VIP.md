@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Serial |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，11 個 check，全部通過 |
-| Mutation | 13/19 個 mutant 被偵測（68%） |
-| 判定 | **🟡 Partial**（mutation score 68%） |
+| 功能測試 | 1 個檔案，61 個 check，全部通過 |
+| Mutation | 18/18 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（61 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,13 +18,14 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，11 checks）
+結果：**PASS**（iverilog，61 checks）
 
 | # | Check | 類型 |
 |---|---|---|
 | 1 | : echo received | check |
 | 2 | : echo byte matches | check |
-| 3 | rxd idle high after reset | check |
+| 3 | : echo parity slot and stop bit | check |
+| 4 | rxd idle high after reset | check |
 
 ## 3. UVM 測試平台內容
 
@@ -39,14 +40,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 68%）。
+判定：**✅ Sufficient**（61 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_uart_loopback_model.sv:27 2 -> 3 [repeat (BAUD_DIV/2) @(posedge vif_clk);]`
-- `dut_uart_loopback_model.sv:39 && flipped [if (stopb === 1'b1 && !(slot === 1'b0 && ^d === 1'b1)) begin]`
-- `dut_uart_loopback_model.sv:39 1'b0 inverted [if (stopb === 1'b1 && !(slot === 1'b0 && ^d === 1'b1)) begin]`
-- `dut_uart_loopback_model.sv:39 1'b1 inverted [if (stopb === 1'b1 && !(slot === 1'b0 && ^d === 1'b1)) begin]`
-- `dut_uart_loopback_model.sv:57 0 -> 1 [echo_pending = (echo_q.size() > 0);]`
-- `dut_uart_loopback_model.sv:61 8 -> 9 [for (int i = 0; i < 8; i++) begin]`
+無已知缺口。
 

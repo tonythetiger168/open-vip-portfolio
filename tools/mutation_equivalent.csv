@@ -22,13 +22,6 @@ LPDDR6-VIP,dut_lpddr6_model.sv:33,6 -> 7,clears a pipeline stage past the array
 LPDDR6-VIP,dut_lpddr6_model.sv:53,6 -> 7,clears a pipeline stage past the array
 Wishbone-UVM-VIP,dut_wishbone_model.sv:25,16 -> 17,reset loop index 16 is out of range (write ignored)
 Wishbone-UVM-VIP,dut_wishbone_model.sv:32,&& flipped,DAT_O is only defined while ACK is high; the change is visible only outside a cycle
-APB-VIP,dut_amba_dut.sv:39,64 -> 65,init loop index 64 is out of range (write ignored)
-APB-VIP,dut_amba_dut.sv:59,< -> <= in condition,wait_cnt saturates at 2 either way within the observed 2-clock wait
-APB-VIP,dut_amba_dut.sv:62,4 -> 5,PSTRB[4] is out of range (reads X; branch not taken)
-APB-VIP,dut_amba_dut.sv:71,1'b0 inverted,tie-off of an unused sibling protocol (AXI) in the shared AMBA model
-APB-VIP,dut_amba_dut.sv:72,1'b0 inverted,tie-off of an unused sibling protocol (AXI) in the shared AMBA model
-APB-VIP,dut_amba_dut.sv:73,1'b0 inverted,tie-off of an unused sibling protocol (AXI/AXI-Stream) in the shared AMBA model
-APB-VIP,dut_amba_dut.sv:74,1'b0 inverted,tie-off of an unused sibling protocol (AHB) in the shared AMBA model
 NVMe-VIP,dut_nvme_controller_model.sv:35,0 -> 1,initial value overwritten by the synchronous reset before any doorbell
 NVMe-VIP,dut_nvme_controller_model.sv:40,0 -> 1,initial value overwritten by the synchronous reset before it is observed
 NVMe-VIP,dut_nvme_controller_model.sv:50,0 -> 1,initial value overwritten by the synchronous reset before it is observed
@@ -188,8 +181,8 @@ M_PHY-VIP,dut_mipi_dut.sv:48,0 -> 1,initial value overwritten by the reset branc
 CSE-VIP,dut_mipi_dut.sv:38,1'b0 inverted,initial value overwritten by the reset branch
 CSE-VIP,dut_mipi_dut.sv:42,0 -> 1,initial value overwritten by the reset branch
 CSE-VIP,dut_mipi_dut.sv:43,0 -> 1,initial value overwritten by the reset branch
-CSE-VIP,dut_mipi_dut.sv:74,0 -> 1,busy_cnt is reloaded when a command is accepted before it is used
-CSE-VIP,dut_mipi_dut.sv:75,0 -> 1,resp_cnt is reloaded on entering CSE_RESP before it is used
+CSE-VIP,dut_mipi_dut.sv:76,0 -> 1,busy_cnt is reloaded when a command is accepted before it is used
+CSE-VIP,dut_mipi_dut.sv:77,0 -> 1,resp_cnt is reloaded on entering CSE_RESP before it is used
 Security-VIP,dut_security_engine_model.sv:29,0 -> 1,statistics counter (op_count / err_count) is not an output
 Security-VIP,dut_security_engine_model.sv:40,0 -> 1,latency is reloaded on every start before it is used
 Security-VIP,dut_security_engine_model.sv:81,1 -> 2,a latency of 2 reaches the done branch after one decrement either way (2 -> 1 or 2 -> 0)
@@ -336,6 +329,39 @@ MDIO-UVM-VIP,dut_mdio_model.sv:40,1'b0 inverted,mdc_q reset value only matters i
 MDIO-UVM-VIP,dut_mdio_model.sv:46,1'b1 inverted,dout is only visible while drive is set and is loaded before drive rises
 MDIO-UVM-VIP,dut_mdio_model.sv:78,1'b1 inverted,dout is not visible once drive is cleared
 Bluetooth5-VIP,dut_bluetooth5_dut.sv:55,0 -> 1,tx_idx is reloaded at the end of the turnaround before PEER_SEND reads it
+ACE_Lite-UVM-VIP,dut_ace_lite_model.sv:37,8 -> 9,byte-lane loop index past WSTRB[7]: wstrb[8] is out of range and never enables a write
+SDIO-UVM-VIP,dut_sdio_model.sv:28,39 -> 40,CRC7 loop starts one bit past the 40-bit input: d[40] is out of range (X) and only shifts a leading zero through the zero-initialised register
+SDIO-UVM-VIP,dut_sdio_model.sv:71,1'b0 inverted,dat_oe is already low here (busy ends after 8 of the 48 response bits)
+SDIO-UVM-VIP,dut_sdio_model.sv:76,1'b0 inverted,fill bit shifted into the response register after all 48 bits are queued; never driven
+UALink-VIP,dut_ualink_model.sv:30,1'b0 inverted,busy is never read (req_ready carries the flow control)
+UALink-VIP,dut_ualink_model.sv:36,1'b1 inverted,busy is never read (req_ready carries the flow control)
+UALink-VIP,dut_ualink_model.sv:52,1'b0 inverted,busy is never read (req_ready carries the flow control)
+UALink-VIP,dut_ualink_model.sv:33,64 -> 65,reset loop index past the 64-word memory (out-of-range write is ignored)
+CXL-VIP,dut_mp_endpoint_mem_model.sv:18,0 -> 1,rd_count is never used (the model has no read path)
+CXL-VIP,dut_mp_endpoint_mem_model.sv:20,0 -> 1,time-0 value of in_tlp; the synchronous reset clears it before any beat is taken
+PCIe-VIP,dut_mp_endpoint_mem_model.sv:18,0 -> 1,rd_count is never used (the model has no read path)
+PCIe-VIP,dut_mp_endpoint_mem_model.sv:20,0 -> 1,time-0 value of in_tlp; the synchronous reset clears it before any beat is taken
+I2C-VIP,dut_i2c_slave_model.sv:21,0 -> 1,time-0 value of sda_o while sda_oe is 0 (SDA not driven)
+I2C-VIP,dut_i2c_slave_model.sv:86,0 -> 1,skipping the STOP / repeated-START wait after a write is equivalent: the START detector at the top of the loop catches the next START or repeated START the same way
+I2C-VIP,dut_i2c_slave_model.sv:87,! dropped in condition,skipping the STOP / repeated-START wait after a write is equivalent: the START detector at the top of the loop catches the next START or repeated START the same way
+IO_Link-VIP,dut_io_link_model.sv:59,1'b0 inverted,fill bit shifted into tsh[7]; tx takes tsh[1] before each shift so the fill bit never reaches the line within 8 data bits
+IO_Link-VIP,dut_io_link_model.sv:75,&& flipped,tx_cnf is only set on the edge that returns to TX_IDLE so clearing it on (TX_IDLE || tx_cnf) clears it on the same next edge
+SENT-VIP,dut_sent_model.sv:22,1'b1 inverted,reset value of so_d: a rising edge seen on the first clock after reset finds low_cnt = 0 and gives no nibble either way
+SPI-VIP,dut_spi_slave_model.sv:37,> -> >= in condition,pop_front on an empty queue returns 8'h00 which is the same value the else branch gives
+SPI-VIP,dut_spi_slave_model.sv:49,2 -> 3,mode decode delay after CS falls; the master waits 4 clocks before the first SCLK edge so 2 and 3 sample the same idle levels
+SPI-VIP,dut_spi_slave_model.sv:89,0 -> 1,ibit > 1 vs ibit > 0 only differs at ibit = 1 which is not a whole byte anyway
+UART-VIP,dut_uart_loopback_model.sv:27,2 -> 3,start-bit sample point at 1/3 instead of 1/2 of a bit; with clean edges both land inside the start bit and every later sample shifts by the same amount inside its bit
+USB2-VIP,dut_usb2_smoke_model.sv:70,1'b0 inverted,reset value of setup_pending; every OUT token clears it and every SETUP token sets it before a data stage can use it
+USB2-VIP,dut_usb2_smoke_model.sv:126,1'b0 inverted,setup_pending left set after the SETUP data stage; the next OUT clears it and the next SETUP sets it before any data stage reads it
+APB-VIP,dut_amba_dut.sv:55,64 -> 65,reset loop index 64 is out of range (write ignored)
+APB-VIP,dut_amba_dut.sv:60,< -> <= in condition,wait_cnt saturates at 2 either way within the observed 2-clock wait
+APB-VIP,dut_amba_dut.sv:63,4 -> 5,PSTRB[4] is out of range (reads X; branch not taken)
+APB-VIP,dut_amba_dut.sv:72,1'b0 inverted,tie-off of an unused sibling protocol (AXI) in the shared AMBA model
+APB-VIP,dut_amba_dut.sv:73,1'b0 inverted,tie-off of an unused sibling protocol (AXI) in the shared AMBA model
+APB-VIP,dut_amba_dut.sv:74,1'b0 inverted,tie-off of an unused sibling protocol (AXI/AXI-Stream) in the shared AMBA model
+APB-VIP,dut_amba_dut.sv:75,1'b0 inverted,tie-off of an unused sibling protocol (AHB) in the shared AMBA model
+Avalon_MM-UVM-VIP,dut_avalon_mm_model.sv:40,64 -> 65,reset loop index past the 64-word memory (out-of-range write is ignored)
+Avalon_MM-UVM-VIP,dut_avalon_mm_model.sv:46,&& flipped,rd_word also latched on a completed write; only a completed read's rd_d uses it and that read latches its own word first
 OBI-UVM-VIP,dut_obi_model.sv:45,0 -> 1,response FIFO entries are written before they are read; reset contents are never observed
 OBI-UVM-VIP,dut_obi_model.sv:45,4 -> 5,initialises an index past the 4-entry response FIFO
 OBI-UVM-VIP,dut_obi_model.sv:44,256 -> 257,initialises an index past the 256-word memory

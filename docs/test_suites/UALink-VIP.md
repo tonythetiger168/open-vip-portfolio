@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
-| 功能測試 | 3 個檔案，90 個 check，全部通過 |
-| Mutation | 58/58 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（90 個 check，mutation score 100%） |
+| 功能測試 | 3 個檔案，96 個 check，全部通過 |
+| Mutation | 8/8 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（96 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,23 +18,26 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，13 checks）
+結果：**PASS**（iverilog，19 checks）
 
 | # | Check | 類型 |
 |---|---|---|
-| 1 | ready high when idle | check |
-| 2 | rsp quiet in reset | check |
-| 3 | ready drops after accept | check |
-| 4 | write rsp OK | check |
-| 5 | rsp completes | check |
-| 6 | ready returns | check |
-| 7 | read rsp OK | check |
-| 8 | read data matches write | check |
-| 9 | illegal opcode ERR | check |
-| 10 | rsp held until ready | check |
-| 11 | rsp clears after ready | check |
-| 12 | no response without a request | check |
-| 13 | word 0 reads zero after reset | check |
+| 1 | idle outputs defined from time 0 | check |
+| 2 | ready high when idle | check |
+| 3 | rsp quiet in reset | check |
+| 4 | no response without a request | check |
+| 5 | ready drops after accept | check |
+| 6 | write rsp OK | check |
+| 7 | rsp completes | check |
+| 8 | ready returns | check |
+| 9 | read rsp OK | check |
+| 10 | read data matches write | check |
+| 11 | illegal opcode ERR | check |
+| 12 | rsp held until ready | check |
+| 13 | rsp clears after ready | check |
+| 14 | no response without a request | check |
+| 15 | word 0 reads zero after reset | check |
+| 16 | word at 0x%0h reads 0 after reset | check |
 
 ### `ualink_inc/tb/func_ualink_inc_tb.sv`
 
@@ -177,7 +180,7 @@ UVM agent test（`ualink_func_test`：directed + constrained-random 流量，sco
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（90 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（96 個 check，mutation score 100%）。
 
 無已知缺口。
 

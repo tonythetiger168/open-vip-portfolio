@@ -9,8 +9,8 @@
 | 類別 | Peripherals |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，54 個 check，全部通過 |
-| Mutation | 42/42 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（54 個 check，mutation score 100%） |
+| Mutation | 26/28 個 mutant 被偵測（93%） |
+| 判定 | **✅ Sufficient**（54 個 check，mutation score 93%） |
 
 ## 2. 可執行的功能測試
 
@@ -68,7 +68,10 @@ UVM agent test（`espi_func_test`：directed + constrained-random 流量，score
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（54 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（54 個 check，mutation score 93%）。
 
-無已知缺口。
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_espi_model.sv:63 10 -> 11 [for (int i = 0; i < 10; i++) cb[i] <= '0;]`
+- `dut_espi_model.sv:139 1'b1 inverted [miso <= rsp[63]; miso_oe <= 1'b1; rsp <= rsp << 1; rbits <= ]`
 

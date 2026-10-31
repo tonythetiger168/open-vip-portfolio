@@ -9,8 +9,8 @@
 | 類別 | Security |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，50 個 check，全部通過 |
-| Mutation | 39/39 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（50 個 check，mutation score 100%） |
+| Mutation | 25/26 個 mutant 被偵測（96%） |
+| 判定 | **✅ Sufficient**（50 個 check，mutation score 96%） |
 
 ## 2. 可執行的功能測試
 
@@ -51,7 +51,9 @@ UVM agent test（`macsec_func_test`：directed + constrained-random 流量，sco
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（50 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（50 個 check，mutation score 96%）。
 
-無已知缺口。
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_macsec_model.sv:100 8 -> 9 [for (int b = 0; b < 8; b++) if (from + 16*b < lim) x = gmul(]`
 

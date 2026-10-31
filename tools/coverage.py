@@ -35,7 +35,8 @@ compare against ``1'bz``, so tri-state checks stay on Icarus); a test that
 fails only in the coverage build still contributes its points. Both are
 named in the report detail.
 
-Output: one line per VIP, ``coverage_report.csv``
+Output: one line per VIP, ``coverage_report.csv`` (a run naming VIPs replaces
+just their rows)
 (vip,tests,covered_tests,line_hit,line_total,line_pct,toggle_hit,
 toggle_total,toggle_pct,expr_hit,expr_total,expr_pct,assert_hit,
 assert_total,assert_pct,func_hit,func_total,func_pct,line_missed,
@@ -107,8 +108,10 @@ def cover_uvm(vip):
             return None, "UVM %s: %s" % (t, detail)
         dats.append(dat)
     vdir = os.path.join(rf().VIPS, vip)
-    return summarize(dats, [os.path.join(vdir, f) for f in suite["files"]], suffix_ok=True,
-                     scope=vip.split("-")[0].lower()), ""
+    res = summarize(dats, [os.path.join(vdir, f) for f in suite["files"]], suffix_ok=True,
+                    scope=vip.split("-")[0].lower())
+    shutil.rmtree(os.path.dirname(exe), ignore_errors=True)   # ~800 MB per UVM build
+    return res, ""
 
 def compile_sets(vip, tb, rtl):
     """(top, defines, [(label, files)]) as run_func_tests.run_test builds them."""
@@ -189,7 +192,9 @@ def summarize(dats, dut_files, suffix_ok=False, scope=None):
     Points are merged per design unit, not per instance: the key leaves out
     the hierarchy, which differs between tests (each test has its own top
     module and instance names), so a point counts as hit when any test, in
-    any instance, reached it."""
+    any instance, reached it. Verilator names each parameterization of a
+    module ``<module>__P...`` in the point's page; that suffix is dropped
+    too, so two differently parameterized instances share their points."""
     names = set(canon(f) for f in dut_files)
     hits = {}
     for dat in dats:
@@ -204,7 +209,7 @@ def summarize(dats, dut_files, suffix_ok=False, scope=None):
                 continue
             # covergroup points are told apart by bin and coverpoint path
             # ("h" is cg.<coverpoint>.<bin> there, not the instance)
-            k = (metric, fn, f.get("page"), f.get("l"), f.get("n"), f.get("o"), f.get("bin"),
+            k = (metric, fn, re.sub(r"__P\w*$", "", f.get("page", "")), f.get("l"), f.get("n"), f.get("o"), f.get("bin"),
                  f.get("h") if metric == "func" else None)
             hits[k] = hits.get(k, 0) + cnt
     res = {m: [0, 0] for m in METRICS}
@@ -298,14 +303,18 @@ def main(argv):
                 "%s=%s%%" % (m, rw[5 + 3 * i]) for i, m in enumerate(METRICS) if rw[4 + 3 * i]),
                 (" -- " + rw[-1]) if rw[-1] else ""))
             sys.stdout.flush()
-    if not argv:
-        with open(REPORT, "w", newline="") as f:
-            w = csv.writer(f)
-            w.writerow(["vip", "tests", "covered_tests"]
-                       + ["%s_%s" % (m, k) for m in METRICS for k in ("hit", "total", "pct")]
-                       + ["line_missed", "func_missed", "detail"])
-            w.writerows(rows)
-    return 0 if all(r[2] for r in rows) else 1
+    if argv and os.path.exists(REPORT):
+        # partial run: replace just these VIPs' rows in the existing report
+        done = {r[0] for r in rows}
+        old = [r for r in list(csv.reader(open(REPORT)))[1:] if r and r[0] not in done]
+        rows = sorted(old + rows, key=lambda r: r[0])
+    with open(REPORT, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["vip", "tests", "covered_tests"]
+                   + ["%s_%s" % (m, k) for m in METRICS for k in ("hit", "total", "pct")]
+                   + ["line_missed", "func_missed", "detail"])
+        w.writerows(rows)
+    return 0 if all(int(r[2]) for r in rows) else 1
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))

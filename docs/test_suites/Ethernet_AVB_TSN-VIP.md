@@ -72,9 +72,9 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 | 項目 | 數量 | 名稱 |
 |---|---|---|
 | UVM tests | 8 | `base_test`, `avb_stream_test`, `tsn_preempt_test`, `ptp_sync_test`, `error_inject_test`, `gate_control_test`, `corner_test`, `regression_test` |
-| Sequences | 23 | `base_tx`, `eth_avb_tsn_base_sequence`, `eth_avb_tsn_random_sequence`, `eth_avb_stream_sequence`, `eth_tsn_preempt_sequence`, `eth_ptp_sync_sequence`, `eth_vlan_sequence`, `eth_error_inject_sequence`, `eth_avb_tsn_transaction`, `eth_avb_tsn_base_sequence`, `eth_avb_tsn_random_sequence`, `eth_avb_stream_sequence`, `eth_tsn_preempt_sequence`, `eth_ptp_sync_sequence`, `eth_vlan_sequence`, `eth_error_inject_sequence`, `eth_back_to_back_sequence`, `eth_max_frame_sequence`, `eth_min_frame_sequence`, `eth_reset_sequence` |
-| SVA（assert / cover property） | 59 / 59 | `assert_p_avb_pcp`, `cover_p_avb_pcp`, `assert_p_avb_vid`, `cover_p_avb_vid`, `assert_p_avb_sr_class`, `cover_p_avb_sr_class`, `assert_p_avb_ethertype`, `cover_p_avb_ethertype`, `assert_p_avb_fcs`, `cover_p_avb_fcs`, `assert_p_avb_stream`, `cover_p_avb_stream` … |
-| Covergroups / coverpoints | 5 / 25 | |
+| Sequences | 15 | `base_tx`, `eth_avb_tsn_base_sequence`, `eth_avb_tsn_random_sequence`, `eth_avb_stream_sequence`, `eth_tsn_preempt_sequence`, `eth_ptp_sync_sequence`, `eth_vlan_sequence`, `eth_error_inject_sequence`, `eth_back_to_back_sequence`, `eth_max_frame_sequence`, `eth_min_frame_sequence`, `eth_reset_sequence`, `eth_gate_sequence`, `eth_regression_sequence`, `eth_avb_tsn_transaction` |
+| SVA（assert / cover property） | 32 / 32 | `assert_p_avb_pcp`, `cover_p_avb_pcp`, `assert_p_avb_vid`, `cover_p_avb_vid`, `assert_p_avb_sr_class`, `cover_p_avb_sr_class`, `assert_p_avb_ethertype`, `cover_p_avb_ethertype`, `assert_p_avb_fcs`, `cover_p_avb_fcs`, `assert_p_avb_stream`, `cover_p_avb_stream` … |
+| Covergroups / coverpoints | 3 / 15 | |
 
 ## 4. 充分度判定與缺口
 

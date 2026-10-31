@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Serial |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，6 個 check，全部通過 |
-| Mutation | 17/23 個 mutant 被偵測（74%） |
-| 判定 | **🟡 Partial**（只有 6 個 check） |
+| 功能測試 | 1 個檔案，15 個 check，全部通過 |
+| Mutation | 24/24 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（15 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,16 +18,25 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，6 checks）
+結果：**PASS**（iverilog，15 checks）
 
 | # | Check | 類型 |
 |---|---|---|
-| 1 | write: addr 0x50+W ACKed | check |
-| 2 | write: data byte ACKed | check |
-| 3 | read: addr 0x50+R ACKed | check |
-| 4 | read: data == 0xA6 (write/read consistency) | check |
-| 5 | wrong address 0x51 not ACKed | check |
-| 6 | read: data == 0x5A after overwrite | check |
+| 1 | slave releases SDA from time 0 | check |
+| 2 | no response to SCL pulses without a START | check |
+| 3 | write: addr 0x50+W ACKed | check |
+| 4 | write: data byte ACKed | check |
+| 5 | read: addr 0x50+R ACKed | check |
+| 6 | read: data == 0xA6 (write/read consistency) | check |
+| 7 | wrong address 0x51 not ACKed | check |
+| 8 | read: data == 0x5A after overwrite | check |
+| 9 | multi-byte read: first byte | check |
+| 10 | multi-byte read: second byte after master ACK | check |
+| 11 | write before repeated START: data ACKed | check |
+| 12 | repeated START: addr 0x50+R ACKed | check |
+| 13 | repeated START: read returns the byte just written | check |
+| 14 | slave never drives SDA while the master sends (%0d) | check |
+| 15 | SDA released after the last transfer | check |
 
 ## 3. UVM 測試平台內容
 
@@ -42,14 +51,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（只有 6 個 check）。
+判定：**✅ Sufficient**（15 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_i2c_slave_model.sv:21 0 -> 1 [vif_slv_sda_o  = 0;]`
-- `dut_i2c_slave_model.sv:22 0 -> 1 [vif_slv_sda_oe = 0;]`
-- `dut_i2c_slave_model.sv:32 0 -> 1 [vif_slv_sda_oe = 0;]`
-- `dut_i2c_slave_model.sv:80 0 -> 1 [stop = 0;]`
-- `dut_i2c_slave_model.sv:81 ! dropped in condition [while (!stop) begin]`
-- `dut_i2c_slave_model.sv:88 ! dropped in condition [while (!nack) send_byte(mem[cur_addr], nack);]`
+無已知缺口。
 

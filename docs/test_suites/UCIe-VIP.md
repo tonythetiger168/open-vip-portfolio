@@ -9,8 +9,8 @@
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
 | 功能測試 | 3 個檔案，119 個 check，全部通過 |
-| Mutation | 89/89 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（119 個 check，mutation score 100%） |
+| Mutation | 9/12 個 mutant 被偵測（75%） |
+| 判定 | **🟡 Partial**（mutation score 75%） |
 
 ## 2. 可執行的功能測試
 
@@ -207,7 +207,11 @@ UVM agent test（`ucie_func_test`：directed + constrained-random 流量，score
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（119 個 check，mutation score 100%）。
+判定：**🟡 Partial**（mutation score 75%）。
 
-無已知缺口。
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_ucie_d2d_model.sv:113 0 -> 1 [if (mb_rx_flit[8] && rb_cnt != 0) begin]`
+- `dut_ucie_d2d_model.sv:228 0 -> 1 [if (pat_seen != 2'd2 && sb_div % 4 == 0 && !sb_rx_valid) sb_]`
+- `dut_ucie_d2d_model.sv:275 == flipped [if (ns == S_RETRAIN || ns == S_MBTRAIN) begin tr_tx = 1'b0; ]`
 

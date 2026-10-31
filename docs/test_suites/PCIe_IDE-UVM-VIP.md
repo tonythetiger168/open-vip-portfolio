@@ -9,8 +9,8 @@
 | 類別 | Security |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，44 個 check，全部通過 |
-| Mutation | 37/37 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（44 個 check，mutation score 100%） |
+| Mutation | 25/28 個 mutant 被偵測（89%） |
+| 判定 | **✅ Sufficient**（44 個 check，mutation score 89%） |
 
 ## 2. 可執行的功能測試
 
@@ -55,7 +55,11 @@ UVM agent test（`ide_func_test`：directed + constrained-random 流量，scoreb
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（44 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（44 個 check，mutation score 89%）。
 
-無已知缺口。
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_ide_model.sv:104 16 -> 17 [for (int j = 0; j < 16; j++) v[127 - 8*j -: 8] = (from + j <]`
+- `dut_ide_model.sv:173 3 -> 4 [for (int i = 0; i < 3; i++) ob[i] <= {rb[4 + 4*i], rb[5 + 4*]`
+- `dut_ide_model.sv:178 4 -> 5 [for (int j = 0; j < 4; j++) if (16*b + 4*j < plen) ob[3 + 4*]`
 

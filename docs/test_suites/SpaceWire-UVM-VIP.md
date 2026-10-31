@@ -9,8 +9,8 @@
 | 類別 | Aerospace |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，38 個 check，全部通過 |
-| Mutation | 40/40 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（38 個 check，mutation score 100%） |
+| Mutation | 25/26 個 mutant 被偵測（96%） |
+| 判定 | **✅ Sufficient**（38 個 check，mutation score 96%） |
 
 ## 2. 可執行的功能測試
 
@@ -78,7 +78,9 @@ UVM agent test（`spacewire_func_test`：directed + constrained-random 流量，
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（38 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（38 個 check，mutation score 96%）。
 
-無已知缺口。
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_spacewire_model.sv:96 0 -> 1 [if (outst == 0) e = 3'd4;]`
 

@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Serial |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，8 個 check，全部通過 |
-| Mutation | 22/28 個 mutant 被偵測（79%） |
-| 判定 | **🟡 Partial**（只有 8 個 check） |
+| 功能測試 | 1 個檔案，10 個 check，全部通過 |
+| Mutation | 25/25 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（10 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，8 checks）
+結果：**PASS**（iverilog，10 checks）
 
 | # | Check | 類型 |
 |---|---|---|
@@ -30,6 +30,8 @@
 | 6 | frame 3 byte 1 = 0x00 (queue drained) | check |
 | 7 | frame 4 echoes both bytes of frame 3 | check |
 | 8 | MISO released after final frame | check |
+| 9 | frame 5 echoes both bytes of frame 4 | check |
+| 10 | partial / empty frames do not replace the echo data | check |
 
 ## 3. UVM 測試平台內容
 
@@ -44,14 +46,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（只有 8 個 check）。
+判定：**✅ Sufficient**（10 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_spi_slave_model.sv:35 8 -> 9 [if (obit % 8 == 0)]`
-- `dut_spi_slave_model.sv:36 > -> >= in condition [tx_byte = (tx_q.size() > 0) ? tx_q.pop_front() : 8'h00;]`
-- `dut_spi_slave_model.sv:48 2 -> 3 [repeat (2) @(posedge vif_clk);]`
-- `dut_spi_slave_model.sv:86 0 -> 1 [if (ibit > 0 && ibit % 8 == 0) lb_q = cur_q;]`
-- `dut_spi_slave_model.sv:86 && flipped [if (ibit > 0 && ibit % 8 == 0) lb_q = cur_q;]`
-- `dut_spi_slave_model.sv:86 > -> >= in condition [if (ibit > 0 && ibit % 8 == 0) lb_q = cur_q;]`
+無已知缺口。
 

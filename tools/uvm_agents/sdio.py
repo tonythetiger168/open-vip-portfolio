@@ -2,11 +2,10 @@
 # a 48-bit command on cmd_i is answered on cmd_o/cmd_oe with a fixed R1-style
 # response, and dat_oe/dat_o busy for the first 8 clocks of it).
 #
-# The model's response carries {transmission bit, index[5:1]} where the
-# command index belongs (it takes sh[45:40] of the shifted frame instead of
-# sh[44:39]), a zero CRC7 and no end bit (cmd_oe drops after 47 bits). The
-# reference model predicts exactly that; it is a DUT-model finding, not an
-# agent choice.
+# Response: 48 bits, start 0, transmission 0, the command index, card status
+# 0x00000100, CRC7, end 1. (Until 2026-10-27 the model sent {transmission
+# bit, index[5:1]} as the index, a zero CRC7 and no end bit; fixed in the
+# model and here together.)
 SPEC = dict(
     vip="SDIO-UVM-VIP", p="sdio", P="SDIO", dir="sdio",
     cfg="int unsigned resp_timeout = 64;   // NCR: clocks to wait for the response start",
@@ -14,7 +13,7 @@ SPEC = dict(
         ("bit [5:0]", "cmd", "req"),
         ("bit [31:0]", "arg", "req"),
         ("bit [6:0]", "crc", "req", "norand"),   # CRC7 of the command (computed by build())
-        ("bit [46:0]", "resp", "rsp"),           # bits driven while cmd_oe, MSB first
+        ("bit [47:0]", "resp", "rsp"),           # bits driven while cmd_oe, MSB first
         ("bit [5:0]", "resp_len", "rsp"),
         ("bit [3:0]", "busy_clks", "rsp"),       # clocks dat_oe was high during the response
     ],
@@ -55,7 +54,7 @@ vif.drv_cb.cmd_i <= 1'b1;
 end
 t.resp = 0; t.resp_len = 0; t.busy_clks = 0;
 while (vif.drv_cb.cmd_oe === 1'b1) begin
-  t.resp = {t.resp[45:0], vif.drv_cb.cmd_o};
+  t.resp = {t.resp[46:0], vif.drv_cb.cmd_o};
   t.resp_len++;
   if (vif.drv_cb.dat_oe === 1'b1) t.busy_clks++;
   @(vif.drv_cb);
@@ -78,7 +77,7 @@ forever begin
     if (f[46] != 1'b1 || f[0] != 1'b1) `uvm_error("MON", "SDIO command without transmission / end bit")
     do begin @(vif.mon_cb); to++; end while (vif.mon_cb.cmd_oe !== 1'b1 && to < cfg.resp_timeout);
     while (vif.mon_cb.cmd_oe === 1'b1) begin
-      t.resp = {t.resp[45:0], vif.mon_cb.cmd_o};
+      t.resp = {t.resp[46:0], vif.mon_cb.cmd_o};
       t.resp_len++;
       if (vif.mon_cb.dat_oe === 1'b1) begin
         t.busy_clks++;
@@ -91,15 +90,18 @@ forever begin
 end
 """,
     predict="""
-// model response: {2'b00, transmission bit, index[5:1], status 0x00000100,
-// CRC 7'h00}, 47 bits, busy on DAT for 8 clocks
-t.resp = {2'b00, 1'b1, t.cmd[5:1], 32'h0000_0100, 7'h00};
-t.resp_len = 47;
+// R1-style response: start 0, transmission 0, index, status 0x00000100,
+// CRC7, end 1 (48 bits), busy on DAT for 8 clocks
+t.resp = {2'b00, t.cmd, 32'h0000_0100,
+          sdio_transaction::crc7({2'b00, t.cmd, 32'h0000_0100}), 1'b1};
+t.resp_len = 48;
 t.busy_clks = 8;
 """,
     checks="""
 if (t.crc != sdio_transaction::crc7({1'b0, 1'b1, t.cmd, t.arg})) fail(t, "command CRC7 mismatch");
-if (t.resp[46:45] != 2'b00) fail(t, "response start/transmission bits not 0");
+if (t.resp[47:46] != 2'b00) fail(t, "response start/transmission bits not 0");
+if (t.resp[0] != 1'b1) fail(t, "response end bit not 1");
+if (t.resp[7:1] != sdio_transaction::crc7(t.resp[47:8])) fail(t, "response CRC7 mismatch");
 """,
     coverage="""
 cp_cmd : coverpoint tr.cmd { bins go_idle = {0}; bins send_if_cond = {8}; bins io_rw_direct = {52};

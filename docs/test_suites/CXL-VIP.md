@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
-| 功能測試 | 3 個檔案，75 個 check，全部通過 |
-| Mutation | 78/78 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（75 個 check，mutation score 100%） |
+| 功能測試 | 3 個檔案，76 個 check，全部通過 |
+| Mutation | 9/10 個 mutant 被偵測（90%） |
+| 判定 | **✅ Sufficient**（76 個 check，mutation score 90%） |
 
 ## 2. 可執行的功能測試
 
@@ -95,22 +95,23 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（verilator，12 checks）
+結果：**PASS**（verilator，13 checks）
 
 | # | Check | 類型 |
 |---|---|---|
 | 1 | channel beat during reset is ignored | check |
 | 2 | no transfer in progress after reset | check |
-| 3 | single-beat transaction counted once | check |
-| 4 | single-beat transaction data stored at address | check |
-| 5 | channel busy between SOP and EOP | check |
-| 6 | multi-beat transaction counted once at EOP | check |
-| 7 | channel idle after EOP | check |
-| 8 | payload DW0 at addr+0 | check |
-| 9 | payload DW1 at addr+4 | check |
-| 10 | payload DW2 at addr+8 | check |
-| 11 | back-to-back transaction counted | check |
-| 12 | later transaction overwrites previous contents | check |
+| 3 | beat without SOP outside a transaction is dropped | check |
+| 4 | single-beat transaction counted once | check |
+| 5 | single-beat transaction data stored at address | check |
+| 6 | channel busy between SOP and EOP | check |
+| 7 | multi-beat transaction counted once at EOP | check |
+| 8 | channel idle after EOP | check |
+| 9 | payload DW0 at addr+0 | check |
+| 10 | payload DW1 at addr+4 | check |
+| 11 | payload DW2 at addr+8 | check |
+| 12 | back-to-back transaction counted | check |
+| 13 | later transaction overwrites previous contents | check |
 
 ## 3. UVM 測試平台內容
 
@@ -125,7 +126,9 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（75 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（76 個 check，mutation score 90%）。
 
-無已知缺口。
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_cxl_mem_model.sv:102 1'b1 inverted [if (k < 0) err[1] <= 1'b1;]`
 

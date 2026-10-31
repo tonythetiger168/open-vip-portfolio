@@ -1,6 +1,6 @@
-# CI 接入說明 — VIP Portfolio v1.7.3
+# CI 接入說明 — VIP Portfolio v1.8.0
 
-本目錄提供 VIP portfolio（87 個 UVM VIP）的 CI pipeline 範例與使用者驗收文件。
+本目錄提供 VIP portfolio（132 個 UVM VIP）的 CI pipeline 範例與使用者驗收文件。
 四個檔案的角色：
 
 | 檔案 | 用途 | 接入位置 |
@@ -12,15 +12,21 @@
 
 ## 假設的 repo 版面
 
-CI 範例假設 portfolio repo 根目錄長這樣（本環境對應
-`/mnt/agents/output/work_v174/` 與 `/mnt/agents/output/tools/`）：
+CI 範例假設 portfolio repo 根目錄長這樣：
 
 ```
 <repo>/
-├── vips/                     # 87 個 VIP 目錄（唯讀，各含 scripts/ 四件組）
+├── vips/                     # 132 個 <VIP>.zip（tools/extract_vips.sh 解壓到 build/vips/）
 ├── tools/
+│   ├── install_tools.sh      # 安裝 Verilator 5.052、pyslang 12.0.0、uvm-core、iverilog、z3
+│   ├── extract_vips.sh       # vips/*.zip -> build/vips/
 │   ├── elab_scan.py          # pyslang elaboration gate（L1a）
-│   └── setup_eda_tools.sh    # 離線還原 iverilog/yosys（本環境用）
+│   ├── sva_lint.py           # SVA 恆真式檢查（永遠成立的 assert 式子）
+│   ├── run_func_tests.py     # 功能測試
+│   ├── run_uvm_tests.py      # Verilator 上的 UVM test（RAL、產生式 agent；--smoke 跑手寫 UVM 環境）
+│   ├── sb_mutation.py        # 產生式 agent 的 scoreboard 偵錯能力（DUT mutation + UVM test）
+│   ├── mutation_score.py     # mutation testing
+│   └── coverage.py           # Verilator code / functional coverage
 ├── smoke/
 │   └── run_smoke.sh          # iverilog DUT 冒煙測試 harness（L1b，選配）
 └── ci/                       # 本目錄
@@ -30,11 +36,11 @@ CI 範例假設 portfolio repo 根目錄長這樣（本環境對應
 
 ```bash
 mkdir -p .github/workflows
-cp ci/.github/workflows/vip_regression.yml .github/workflows/
+cp ci/vip_regression.yml .github/workflows/
 ```
 
-- ubuntu runner 上自動安裝 iverilog、`pip install "pyslang>=11,<12"`、clone
-  Accellera uvm-core，接著對 `vips/*/` 逐個跑 `tools/elab_scan.py`，
+- ubuntu runner 上自動安裝 iverilog、`pyslang==12.0.0`、Verilator 5.052、clone
+  Accellera uvm-core，接著對 `build/vips/*/` 逐個跑 `tools/elab_scan.py`，
   標準為 `ELAB_ERRORS=0`；smoke harness 存在時加跑 L1b。
 - 報告（每 VIP 日誌 + 彙總）以 artifact 上傳，保留 30 天。
 - 商用模擬器的 L2/L3 回歸在檔案尾端以註解示範：需改用
@@ -55,5 +61,6 @@ cp ci/Jenkinsfile <repo>/Jenkinsfile
 
 - 兩個 pipeline 都以「輸出字樣」判定成敗（elab gate 看 `ELAB_ERRORS=0`，smoke 看
   有無 `SMOKE_FAIL`），因為 `elab_scan.py` 一律 exit 0；請勿改成只看 exit code。
+  `sva_lint.py` 則以 exit code 判定（有恆真式就 exit 1）。
 - 商用回歸（L2/L3）正式驗收門檻固定 `COV_GOAL=100`；調低僅供除錯摸底。
 - 詳細指令、預期輸出與排查順序請見 `ACCEPTANCE.md`。

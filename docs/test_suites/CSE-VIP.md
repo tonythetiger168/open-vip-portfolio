@@ -66,7 +66,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 | UVM tests | 10 | `mipi_base_test`, `mipi_csi2_test`, `mipi_dsi_test`, `mipi_dphy_test`, `mipi_cphy_test`, `mipi_mphy_test`, `mipi_unipro_test`, `mipi_digrf_test`, `mipi_hsi_test`, `mipi_cse_test` |
 | Sequences | 11 | `mipi_seq_item`, `cse_base_seq`, `cse_wr_reg_seq`, `cse_rd_seq`, `cse_mem_seq`, `cse_error_seq`, `cse_reset_seq`, `cse_b2b_seq`, `cse_stress_seq`, `cse_corner_seq`, `cse_regression_seq` |
 | SVA（assert / cover property） | 24 / 17 | `assert_dphy_hs`, `assert_cphy_sym`, `assert_mphy_gear`, `assert_unipro_tc`, `assert_digrf`, `assert_hsi_wake`, `assert_cse_cmd`, `assert_l1_cmd_known`, `cover_l1_cmd_known`, `assert_l1_data_known`, `cover_l1_data_known`, `assert_l1_ctrl_known` … |
-| Covergroups / coverpoints | 5 / 22 | |
+| Covergroups / coverpoints | 6 / 22 | |
 
 ## 4. 充分度判定與缺口
 
