@@ -341,24 +341,6 @@ CXL-VIP,dut_mp_endpoint_mem_model.sv:18,0 -> 1,rd_count is never used (the model
 CXL-VIP,dut_mp_endpoint_mem_model.sv:20,0 -> 1,time-0 value of in_tlp; the synchronous reset clears it before any beat is taken
 PCIe-VIP,dut_mp_endpoint_mem_model.sv:18,0 -> 1,rd_count is never used (the model has no read path)
 PCIe-VIP,dut_mp_endpoint_mem_model.sv:20,0 -> 1,time-0 value of in_tlp; the synchronous reset clears it before any beat is taken
-ACE-VIP,ACE_top.sv:10,32 -> 33,parameter default; the testbench instantiates the IP with an explicit DW
-ACE-VIP,ACE_top.sv:140,1'b0 inverted,reset value of snp_xfer_q; it is cleared when every snoop is accepted before it is read
-ACE_Lite-VIP,ACE_Lite_top.sv:11,32 -> 33,parameter default; the testbench instantiates the IP with an explicit DW
-ACE_Lite-VIP,ACE_Lite_top.sv:89,1'b0 inverted,reset value of werr_q; it is reloaded on every AW handshake before bresp is valid
-GMII-VIP,GMII_top.sv:9,16 -> 17,parameter DEPTH: the receive queue is indexed by rx_wr[3:0] so a 17th entry is never addressed
-GMII-VIP,GMII_top.sv:61,1'b0 inverted,synchronizer reset value: a capture needs rxclk_s=1 and rxdv_d=1 in the same cycle and both are reloaded from the pins in the first clock after reset
-RGMII-VIP,RGMII_top.sv:10,16 -> 17,parameter DEPTH: the receive queue is indexed by the low 4 bits of rx_wr so a 17th entry is never addressed
-RGMII-VIP,RGMII_top.sv:74,1'b0 inverted,synchronizer reset value; reloaded from the pins in the first clock after reset before a capture can use it
-RGMII-VIP,RGMII_top.sv:86,1'b0 inverted,reset value of rx_half; every idle rx_clk edge (rx_ctl low) clears it before the first frame
-MDIO-VIP,MDIO_top.sv:28,1'b1 inverted,reset value of the mdio synchronizer; reloaded from the pin every clock and the frame-start detector needs prev_bit (reset 1) to see a 0 first
-MDIO-VIP,MDIO_top.sv:49,0 -> 1,register 0 is preset to the PHY ID on the next line, so skipping it in the clear loop changes nothing
-SDIO-VIP,SDIO_top.sv:32,32 -> 33,parameter DW is kept for the interface contract and not used by the logic
-SDIO-VIP,SDIO_top.sv:161,1 -> 2,the testbench uses BIT_CLKS = 1; (BIT_CLKS <= 2) is the same constant 1
-SDIO-VIP,SDIO_top.sv:187,1'b0 inverted,reset value of rd_phase; it is cleared when every read data phase starts
-SDIO-VIP,SDIO_top.sv:195,0 -> 1,reset value of crc16_rd; all four CRCs are cleared when every read data phase starts
-Wishbone-VIP,Wishbone_top.sv:12,32 -> 33,parameter default; the testbench instantiates the IP with an explicit DW
-Wishbone-VIP,Wishbone_top.sv:91,1'b0 inverted,reset value of the queue's we flags; an entry is only read while q_ok marks it valid and every push reloads it
-Wishbone-VIP,Wishbone_top.sv:96,1'b0 inverted,reset value of the queue's reserved flags; err_o needs a valid head entry and every push reloads it
 I2C-VIP,dut_i2c_slave_model.sv:21,0 -> 1,time-0 value of sda_o while sda_oe is 0 (SDA not driven)
 I2C-VIP,dut_i2c_slave_model.sv:86,0 -> 1,skipping the STOP / repeated-START wait after a write is equivalent: the START detector at the top of the loop catches the next START or repeated START the same way
 I2C-VIP,dut_i2c_slave_model.sv:87,! dropped in condition,skipping the STOP / repeated-START wait after a write is equivalent: the START detector at the top of the loop catches the next START or repeated START the same way
@@ -371,8 +353,6 @@ SPI-VIP,dut_spi_slave_model.sv:89,0 -> 1,ibit > 1 vs ibit > 0 only differs at ib
 UART-VIP,dut_uart_loopback_model.sv:27,2 -> 3,start-bit sample point at 1/3 instead of 1/2 of a bit; with clean edges both land inside the start bit and every later sample shifts by the same amount inside its bit
 USB2-VIP,dut_usb2_smoke_model.sv:70,1'b0 inverted,reset value of setup_pending; every OUT token clears it and every SETUP token sets it before a data stage can use it
 USB2-VIP,dut_usb2_smoke_model.sv:126,1'b0 inverted,setup_pending left set after the SETUP data stage; the next OUT clears it and the next SETUP sets it before any data stage reads it
-XGMII-VIP,XGMII_top.sv:10,16 -> 17,rxq is only ever indexed by rx_wr[3:0] / raddr[3:0]; a 17th entry is unreachable
-XGMII-VIP,XGMII_top.sv:61,1'b0 inverted,"synchronizer reset value; at most one spurious rxv_rise right after reset, when the TX side is idle (rxc=F) so no word is captured"
 APB-VIP,dut_amba_dut.sv:55,64 -> 65,reset loop index 64 is out of range (write ignored)
 APB-VIP,dut_amba_dut.sv:60,< -> <= in condition,wait_cnt saturates at 2 either way within the observed 2-clock wait
 APB-VIP,dut_amba_dut.sv:63,4 -> 5,PSTRB[4] is out of range (reads X; branch not taken)
@@ -382,3 +362,170 @@ APB-VIP,dut_amba_dut.sv:74,1'b0 inverted,tie-off of an unused sibling protocol (
 APB-VIP,dut_amba_dut.sv:75,1'b0 inverted,tie-off of an unused sibling protocol (AHB) in the shared AMBA model
 Avalon_MM-UVM-VIP,dut_avalon_mm_model.sv:40,64 -> 65,reset loop index past the 64-word memory (out-of-range write is ignored)
 Avalon_MM-UVM-VIP,dut_avalon_mm_model.sv:46,&& flipped,rd_word also latched on a completed write; only a completed read's rd_d uses it and that read latches its own word first
+OBI-UVM-VIP,dut_obi_model.sv:45,0 -> 1,response FIFO entries are written before they are read; reset contents are never observed
+OBI-UVM-VIP,dut_obi_model.sv:45,4 -> 5,initialises an index past the 4-entry response FIFO
+OBI-UVM-VIP,dut_obi_model.sv:44,256 -> 257,initialises an index past the 256-word memory
+OBI-UVM-VIP,dut_obi_model.sv:52,4 -> 5,byte-lane loop index 4 is past the 4-byte word
+xSPI-UVM-VIP,dut_xspi_model.sv:47,0 -> 1,page buffer bytes are only committed where pmask is set; pmask is cleared in reset
+xSPI-UVM-VIP,dut_xspi_model.sv:47,256 -> 257,initialises an index past the 256-byte page buffer
+xSPI-UVM-VIP,dut_xspi_model.sv:58,256 -> 257,index 256 is past the page mask
+xSPI-UVM-VIP,dut_xspi_model.sv:61,4096 -> 4097,the extra index wraps to the first byte of the same sector which is erased anyway
+xSPI-UVM-VIP,dut_xspi_model.sv:48,1'b0 inverted,ext_ok is rewritten by the second command byte before any use
+xSPI-UVM-VIP,dut_xspi_model.sv:67,1'b0 inverted,rd is an unused status register in the model
+SMBus-UVM-VIP,dut_smbus_model.sv:54,1'b1 inverted,scl_p/sda_p reset values are overwritten on the first clock while the bus idles high
+SGMII-UVM-VIP,dut_sgmii_model.sv:73,1'b1 inverted,default symk of the always_comb block is overwritten in every state branch
+CAN_XL-UVM-VIP,dut_can_xl_model.sv:67,1'b0 inverted,rx_ok/rx_err reset values are overwritten on the first clock
+CAN_XL-UVM-VIP,dut_can_xl_model.sv:103,1'b1 inverted,an ADS stuff position at bit 17 needs FDF/XLF already in error which flags code 3 first
+OBI-UVM-VIP,dut_obi_model.sv:33,== flipped,the LFSR grant-stall pattern is arbitrary back-pressure; any pattern is legal OBI
+xSPI-UVM-VIP,dut_xspi_model.sv:93,! dropped in condition,end-of-command actions then fire one clock later and repeat idempotently while the opcode register holds
+SMBus-UVM-VIP,dut_smbus_model.sv:55,1'b0 inverted,reset values of tx/mack/pec_ok/pre are rewritten at START or before use (active and rep are killed)
+SGMII-UVM-VIP,dut_sgmii_model.sv:110,&& flipped,i1 is rewritten at every idle comma before its only use in the next code group
+PCIe-VIP,dut_pcie_dl_model.sv:9,40 -> 41,default CRED_LAT; the test instantiates the model with CRED_LAT 200
+PCIe-VIP,dut_pcie_dl_model.sv:173,4096 -> 4097,initialises a byte past the 4 KB BAR memory
+PCIe-VIP,dut_pcie_dl_model.sv:238,1'b0 inverted,replay_req set at link down replays nothing (the replay buffer is emptied in the same clock) and is cleared in the first L0 clock
+CXL-VIP,dut_cxl_mem_model.sv:47,16 -> 17,pending-table size; at most REQ_CRD + RWD_CRD = 12 entries are ever in use
+CXL-VIP,dut_cxl_mem_model.sv:76,256 -> 257,initialises a line past the 256-line memory
+CXL-VIP,dut_cxl_mem_model.sv:81,1'b0 inverted,s2m_drs_poison reset value; only read with s2m_drs_valid
+CXL-VIP,dut_cxl_mem_model.sv:101,1 -> 2,free-slot search skips the last entry; at most 12 of 16 entries are ever in use
+CXL-VIP,dut_cxl_mem_model.sv:105,1'b0 inverted,p_pois of a write entry; NDR responses carry no poison
+CXL-VIP,dut_cxl_mem_model.sv:110,64 -> 65,byte-enable loop past byte 63 (no such byte)
+CXL-VIP,dut_cxl_mem_model.sv:133,1 -> 2,free-slot search skips the last entry; at most 12 of 16 entries are ever in use
+CXL-VIP,dut_cxl_mem_model.sv:134,1'b1 inverted,no free entry is unreachable (credits limit the table to 12 of 16)
+CXL-VIP,dut_cxl_mem_model.sv:153,1 -> 2,no-candidate marker -1 vs -2; only its sign is tested
+CXL-VIP,dut_cxl_mem_model.sv:156,< -> <= in condition,due times of pending entries never differ by exactly 2^15 clocks
+CXL-VIP,dut_cxl_mem_model.sv:157,< -> <= in condition,due times of pending entries never differ by exactly 2^15 clocks
+CXL-VIP,dut_mp_endpoint_mem_model.sv:20,0 -> 1,declaration value of in_tlp; reset rewrites it before any beat
+DDR5-VIP,dut_ddr5_dev_model.sv:9,16 -> 17,default timing parameter; the test sets every parameter
+DDR5-VIP,dut_ddr5_dev_model.sv:9,12 -> 13,default timing parameter; the test sets every parameter
+DDR5-VIP,dut_ddr5_dev_model.sv:10,8 -> 9,default timing parameter; the test sets every parameter
+DDR5-VIP,dut_ddr5_dev_model.sv:64,8 -> 9,reset loop past bank 7 (no such bank)
+DDR5-VIP,dut_ddr5_dev_model.sv:66,100000 -> 100001,"""long ago"" reset time; any value below -tFAW behaves the same"
+DDR5-VIP,dut_ddr5_dev_model.sv:68,100000 -> 100001,"""long ago"" reset time; any value below -tFAW behaves the same"
+DDR5-VIP,dut_ddr5_dev_model.sv:69,100000 -> 100001,"""long ago"" reset time; any value below -tFAW behaves the same"
+DDR5-VIP,dut_ddr5_dev_model.sv:70,100000 -> 100001,"""long ago"" reset time; any value below -tFAW behaves the same"
+DDR5-VIP,dut_ddr5_dev_model.sv:102,8 -> 9,auto-precharge loop past bank 7 (no such bank)
+DDR5-VIP,dut_ddr5_dev_model.sv:103,>= -> > in condition,an auto-precharge time is never 0 (it is set after at least one clock)
+DDR5-VIP,dut_ddr5_dev_model.sv:149,8 -> 9,"with the test's timing CWL + 8 + tWR always exceeds tRAS, so the WRA comparison is decided either way"
+DDR5-VIP,dut_ddr5_dev_model.sv:157,> -> >= in condition,both branches give the same time when they are equal
+DDR5-VIP,dut_ddr5_dev_model.sv:172,8 -> 9,PREab loop past bank 7 (no such bank)
+HBM3E-VIP,dut_hbm_dev_model.sv:9,12 -> 13,default timing parameter; the test sets every parameter
+HBM3E-VIP,dut_hbm_dev_model.sv:10,3 -> 4,default timing parameter; the test sets every parameter
+HBM3E-VIP,dut_hbm_dev_model.sv:11,8 -> 9,default timing parameter; the test sets every parameter
+HBM3E-VIP,dut_hbm_dev_model.sv:61,2 -> 3,reset loop past pseudo channel 1 (no such channel)
+HBM3E-VIP,dut_hbm_dev_model.sv:64,100000 -> 100001,"""long ago"" reset time; any value below -tFAW behaves the same"
+HBM3E-VIP,dut_hbm_dev_model.sv:109,32 -> 33,auto-precharge loop past bank 31 (no such bank)
+UCIe-VIP,dut_ucie_d2d_model.sv:9,120 -> 121,default REPLAY_TO; the test sets the parameter
+UCIe-VIP,dut_ucie_d2d_model.sv:112,> -> >= in condition,when equal the assignment leaves rp_left unchanged
+UCIe-VIP,dut_ucie_d2d_model.sv:200,0 -> 1,the MBTRAIN response is always followed in the same clock by a degrade or a state change that resets t_wait
+UCIe-VIP,dut_ucie_d2d_model.sv:204,1'b0 inverted,li_tx left set after the LINKINIT response is never read again before MBTRAIN clears it
+UCIe-VIP,dut_ucie_d2d_model.sv:278,0 -> 1,rp_num is cleared again on every LINKINIT -> ACTIVE transition
+UALink-VIP,dut_ualink_model.sv:27,1'b0 inverted,initial value of rsp_valid; reset rewrites it before the first clock edge
+UALink-VIP,dut_ualink_model.sv:52,1'b0 inverted,busy is written but never read
+UALink-VIP,dut_ualink_tl_model.sv:31,16 -> 17,pending-table size; at most REQ_CRD = 8 entries are ever in use
+UALink-VIP,dut_ualink_tl_model.sv:45,0 -> 1,time base offset; only differences of now are used
+UALink-VIP,dut_ualink_tl_model.sv:70,1 -> 2,no-slot marker -1 vs -2; only its sign is tested
+UALink-VIP,dut_ualink_tl_model.sv:72,0 -> 1,free-slot search skips entry 0; at most 8 of 16 entries are ever in use
+UALink-VIP,dut_ualink_tl_model.sv:74,1'b1 inverted,no free entry is unreachable (credits limit the table to 8 of 16)
+UALink-VIP,dut_ualink_tl_model.sv:85,64 -> 65,byte-enable loop past byte 63 (no such byte)
+UALink-VIP,dut_ualink_tl_model.sv:108,1 -> 2,arrival numbers spaced by 2 keep the same order
+UALink-VIP,dut_ualink_tl_model.sv:115,< -> <= in condition,re-selecting while a response waits finds the same entry: later arrivals are due later
+HBM3E-VIP,dut_hbm_dev_model.sv:227,16 -> 17,MRS loop upper bound past bank 31 on pseudo channel 1 (no such bank; reads as closed)
+AXI4_Lite-UVM-VIP,dut_axi4_lite_model.sv:55,256 -> 257,reset loop past the last word (no such entry)
+AXI4_Lite-UVM-VIP,dut_axi4_lite_model.sv:63,4 -> 5,strobe loop past lane 3 (no such lane)
+AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:46,4 -> 5,lane loop past lane 3 (TKEEP / TSTRB bit 4 do not exist)
+AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:58,1'b0 inverted,reset value of err: ignored while in_pkt is low (the first transfer starts from 0)
+AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:61,1'b0 inverted,reset value of pkt_err: only read with pkt_done
+ACE-UVM-VIP,dut_ace_model.sv:114,&& flipped,CRREADY high outside the response window: allowed (READY may be high without VALID); the master sends one CR per snoop
+ACE-UVM-VIP,dut_ace_model.sv:115,&& flipped,CDREADY high outside the data window: allowed (READY may be high without VALID); the master sends one CD line per snoop
+ACE-UVM-VIP,dut_ace_model.sv:119,16 -> 17,merge loop past byte 15 (no such byte)
+ACE-UVM-VIP,dut_ace_model.sv:122,4 -> 5,line loop past word 3 (no such word)
+ACE-UVM-VIP,dut_ace_model.sv:130,1'b0 inverted,reset value of cr_got: cleared at every AC handshake before it is read
+T1S_PLCA-UVM-VIP,dut_t1s_plca_model.sv:40,1'b0 inverted,reset value of busy/o_tx: the first BEACON clears busy and o_tx follows tx_en before any check
+T1S_PLCA-UVM-VIP,dut_t1s_plca_model.sv:41,1'b0 inverted,reset value of tx_d/lo/err: rewritten on the first clock after reset before they are read or reported
+T1S_PLCA-UVM-VIP,dut_t1s_plca_model.sv:43,1'b0 inverted,reset value of rep_ok/rep_err: only read while rep_valid is high and rewritten with it
+T1S_PLCA-UVM-VIP,dut_t1s_plca_model.sv:51,== flipped,cur/tmr/busy are already held at 0 on every earlier BEACON clock so the last-clock reset is redundant
+T1S_PLCA-UVM-VIP,dut_t1s_plca_model.sv:72,|| flipped,cur is never LOCAL while a BEACON is counting so the two terms never differ
+MCTP-UVM-VIP,dut_mctp_model.sv:61,1'b1 inverted,reset value of scl_d/sda_d: a spurious edge right after reset only arms the receiver that the next START re-initialises
+MCTP-UVM-VIP,dut_mctp_model.sv:61,1'b0 inverted,reset value of active/mine/nbit: every packet begins with a START that reloads them
+MCTP-UVM-VIP,dut_mctp_model.sv:64,1'b0 inverted,reset value of dropping/seq_exp/m_len: written at the SOM packet before they are read
+MCTP-UVM-VIP,dut_mctp_model.sv:112,< -> <= in condition,a ninth shift on the ACK clock is overwritten before the next byte uses sh
+TDM-UVM-VIP,dut_tdm_model.sv:24,1'b0 inverted,reset value of sh/err: both reloaded by the FSYNC that opens the first frame
+TDM-UVM-VIP,dut_tdm_model.sv:25,1'b0 inverted,reset value of rep_slots/rep_err: only read while rep_valid is high and rewritten with it
+TDM-UVM-VIP,dut_tdm_model.sv:33,127 -> 128,width of the zero fill: the 129-bit concat truncates to the same 128 bits
+TDM-UVM-VIP,dut_tdm_model.sv:33,1'b0 inverted,fill bits of the first shift: all shifted out (full frame) or dropped by the left alignment (cut frame)
+eSPI-UVM-VIP,dut_espi_model.sv:61,16 -> 17,reset loop one past the I/O array: the extra write is out of range and dropped
+eSPI-UVM-VIP,dut_espi_model.sv:63,0 -> 1,reset value of cb[0]: every command stores its opcode byte before it is read
+eSPI-UVM-VIP,dut_espi_model.sv:64,1'b1 inverted,reset value of cs_p: CS# is high in reset so the first clock copies it before a CS# fall can be seen
+eSPI-UVM-VIP,dut_espi_model.sv:64,1'b0 inverted,reset value of sclk_p/tar: SCLK is low in reset and tar is cleared again when a command completes
+eSPI-UVM-VIP,dut_espi_model.sv:72,1'b0 inverted,tar cleared at CS# fall: also cleared when the command completes before the turn-around starts
+eSPI-UVM-VIP,dut_espi_model.sv:116,4 -> 5,data loop bound: iterations past the cycle length are masked by k < n
+HyperBus-UVM-VIP,dut_hyperbus_model.sv:60,256 -> 257,reset loop one past the memory: the extra write is out of range and dropped
+HyperBus-UVM-VIP,dut_hyperbus_model.sv:61,1'b1 inverted,reset value of cs_p/hi: CS# is high in reset (cs_p copies it on the first clock) and hi is set at every CS# fall
+HyperBus-UVM-VIP,dut_hyperbus_model.sv:61,1'b0 inverted,reset value of ck_p/lat2x: CK edges only count while CS# is low and lat2x is loaded at every CS# fall
+HyperBus-UVM-VIP,dut_hyperbus_model.sv:63,1'b0 inverted,reset value of rwds_s: not driven (rwds_s_oe 0) and forced low on the first clock with CS# high
+HyperBus-UVM-VIP,dut_hyperbus_model.sv:68,1'b0 inverted,rwds_s level while CS# is high: not driven then and reloaded at the next CS# fall
+SpaceWire-UVM-VIP,dut_spacewire_model.sv:57,1'b0 inverted,reset value of d_p/s_p/rx_on/p/f/par/esc: the receiver is held off through the 40 silent clocks after reset and all are reloaded at the first bit after quiet
+SpaceWire-UVM-VIP,dut_spacewire_model.sv:59,1'b0 inverted,reset value of tx_par/tx_fct_next: forced to 0 on every silent clock after reset
+SpaceWire-UVM-VIP,dut_spacewire_model.sv:61,1'b0 inverted,reset value of rep_kind/rep_eop: only read while rep_valid is high and rewritten with it
+SpaceWire-UVM-VIP,dut_spacewire_model.sv:62,1'b0 inverted,reset value of rep_err/rep_tick: only read while rep_valid is high and rewritten with it
+SpaceWire-UVM-VIP,dut_spacewire_model.sv:159,1'b0 inverted,rx_on/esc cleared at an error: rx_on is forced off on every silent clock and esc is cleared at the next start
+USXGMII-UVM-VIP,dut_usxgmii_model.sv:37,1'b0 inverted,reset value of pre_bad: only read at a terminate and rewritten at every start block
+USXGMII-UVM-VIP,dut_usxgmii_model.sv:85,7 -> 8,terminate byte loop bound: the loop body is guarded by i < n and n is at most 7
+NC-SI-UVM-VIP,dut_ncsi_model.sv:95,1 -> 2,unsupported-command marker e = -1: only its sign is used (e < 0)
+NC-SI-UVM-VIP,dut_ncsi_model.sv:99,128 -> 129,clear loop of the response buffer: index 128 is outside f[0:127] and the write is ignored
+NC-SI-UVM-VIP,dut_ncsi_model.sv:112,40 -> 41,Get Version ID copy loop: byte 40 of the version data is 0 and f[82] is already cleared
+NC-SI-UVM-VIP,dut_ncsi_model.sv:125,20 -> 21,checksum loop bound: the extra word read is the not-yet-written checksum field (still 0)
+NC-SI-UVM-VIP,dut_ncsi_model.sv:131,100 -> 101,FCS loop bound: the body is guarded by i < fl and fl is at most 78
+NC-SI-UVM-VIP,dut_ncsi_model.sv:133,4 -> 5,FCS copy loop: the fifth byte lands after the frame and is never sent (tlen stops at the FCS)
+NC-SI-UVM-VIP,dut_ncsi_model.sv:146,2 -> 3,width of the RXD part-select: a 3-bit select truncated to the 2-bit RXD gives the same dibit
+MACsec-UVM-VIP,dut_macsec_model.sv:31,8 -> 9,GF(2^8) multiply loop: b[8] is out of range (X) so the extra step adds nothing to the product
+MACsec-UVM-VIP,dut_macsec_model.sv:52,4 -> 5,SubBytes/ShiftRows column loop: column 4 writes outside the 128-bit state and is dropped
+MACsec-UVM-VIP,dut_macsec_model.sv:53,4 -> 5,SubBytes/ShiftRows row loop: row 4 of column c rewrites byte 0 of column c+1 with the same value (or falls outside the state)
+MACsec-UVM-VIP,dut_macsec_model.sv:56,4 -> 5,MixColumns loop: column 4 is outside the state; its writes are dropped
+MACsec-UVM-VIP,dut_macsec_model.sv:77,128 -> 129,GHASH multiply loop: x[-1] is out of range (X) so z is unchanged
+MACsec-UVM-VIP,dut_macsec_model.sv:93,16 -> 17,block fetch loop: byte 16 lands outside the 128-bit block
+MACsec-UVM-VIP,dut_macsec_model.sv:132,< -> <= in condition,frame of exactly SecTAG + ICV (no data): the SL rules reject it as a bad tag either way
+MACsec-UVM-VIP,dut_macsec_model.sv:157,16 -> 17,decrypt byte loop: byte 16 is X from outside the block and is overwritten by the next block's byte 0 (later assignment)
+MACsec-UVM-VIP,dut_macsec_model.sv:158,< -> <= in condition,decrypt bound: the extra byte lands at ob[12 + dn] after the delivered length and is never sent
+RVFI-UVM-VIP,dut_rvfi_model.sv:60,32 -> 33,register-file reset loop: x[32] is outside the register file and the write is dropped
+RVFI-UVM-VIP,dut_rvfi_model.sv:85,20 -> 21,S-immediate sign replication: the 33-bit concatenation is truncated to the same 32-bit value
+RVFI-UVM-VIP,dut_rvfi_model.sv:87,11 -> 12,J-immediate sign replication: the 33-bit concatenation is truncated to the same 32-bit value
+RVFI-UVM-VIP,dut_rvfi_model.sv:90,1'b0 inverted,initial branch-taken flag: every legal branch funct3 assigns it and the others trap (PC goes to MTVEC)
+SUE-UVM-VIP,dut_sue_model.sv:39,4 -> 5,expected-PSN reset loop: expp[4] is outside the four VCs and the write is dropped
+SUE-UVM-VIP,dut_sue_model.sv:46,< -> <= in condition,receive buffer bound: byte 128 would wrap to rb[0] (DA, never read); frames stop at 90 bytes (64-byte payload limit)
+SUE-UVM-VIP,dut_sue_model.sv:63,128 -> 129,CRC loop bound: the body is guarded by i < n and frames stop at 90 bytes
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:30,8 -> 9,GF(2^8) multiply loop: b[8] is out of range (X) so the extra step adds nothing
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:111,6 -> 7,counter reset loop: ctr[6] is outside the six counters and the write is dropped
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:117,< -> <= in condition,receive buffer bound: DW 49 would land at rb[192..195] (outside the buffer) and that TLP is rejected as over 48 DW anyway
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:140,192 -> 193,TLP size limit: n is a multiple of 4 so n > 192 and n > 193 agree
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:144,6 -> 7,K_SET_GO counter loop: ctr[6] is outside the six counters and the write is dropped
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:148,< -> <= in condition,plain-TLP copy bound: the extra DW lands after the delivered length (nd = n / 4) and is never sent
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:164,16 -> 17,GHASH block guard 17*b < plen: plen is a multiple of 4 so 16 < plen and 17 < plen agree
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:174,2 -> 3,decrypt block loop: a third block needs a payload over 32 bytes, rejected as bad first
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:175,< -> <= in condition,decrypt block guard: the extra block (16*b == plen) writes nothing (every DW guard is false)
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:177,16 -> 17,decrypt fetch limit: the extra byte (first MAC byte) falls in a DW at or past plen, which is not written
+PCIe_IDE-UVM-VIP,dut_ide_model.sv:178,16 -> 17,decrypt DW guard 17*b + 4*j < plen: plen and 16*b + 4*j are multiples of 4 so the comparison does not change
+UALink-VIP,dut_ualink_tl_model.sv:43,256 -> 257,initialises a line past the 256-line memory
+UALink-VIP,dut_ualink_tl_model.sv:44,0 -> 1,entry 0 left X after reset is never chosen as free nor as a response; 15 of 16 entries cover the 8 credits
+UALink-VIP,dut_ualink_tl_model.sv:45,1 -> 2,no-response marker -1 vs -2; only its sign is tested
+UALink-VIP,dut_ualink_tl_model.sv:56,1 -> 2,no-response marker -1 vs -2; only its sign is tested
+UALink-VIP,dut_ualink_tl_model.sv:72,1 -> 2,free-slot search skips the last entry; at most 8 of 16 entries are ever in use
+UALink-VIP,dut_ualink_tl_model.sv:115,0 -> 1,re-selecting while entry 0 waits finds entry 0 again: later arrivals are due later
+UALink-VIP,dut_ualink_inc_model.sv:60,1'b0 inverted,g_sat reset value; the first contribution of every round rewrites it
+UALink-VIP,dut_ualink_inc_model.sv:75,1'b0 inverted,g_sat value after configuration; the first contribution of every round rewrites it
+UALink-VIP,dut_ualink_inc_model.sv:93,4 -> 5,reduction lane loop past lane 3 (no such lane; writes are discarded)
+UALink-VIP,dut_ualink_inc_model.sv:119,< -> <= in condition,re-selecting while group 0 is on the bus finds group 0 again (lowest group first)
+CXL-VIP,dut_cxl_bundle_model.sv:38,1 -> 2,port_for is only called for an active port: n is never 0
+CXL-VIP,dut_cxl_bundle_model.sv:40,4 -> 5,port loop past port 3 (no such port)
+CXL-VIP,dut_cxl_bundle_model.sv:50,1'b0 inverted,rw reset value; every flit is dropped until cfg_we, which clears rw
+CXL-VIP,dut_cxl_bundle_model.sv:51,0 -> 1,buffer slot 0 left X after reset; cfg_we clears every slot before any flit is accepted
+CXL-VIP,dut_cxl_bundle_model.sv:61,0 -> 1,gap timer value after configuration; the buffer is empty so the gap check clears it in the same clock
+CXL-VIP,dut_cxl_bundle_model.sv:64,4 -> 5,port loop past port 3 (no such port)
+CXL-VIP,dut_cxl_bundle_model.sv:71,4 -> 5,port loop past port 3 (no such port)
+UCIe-VIP,dut_ucie_sb3_model.sv:37,0 -> 1,m_n reset value; SOM rewrites it before any fragment is stored
+UCIe-VIP,dut_ucie_sb3_model.sv:67,4 -> 5,byte-enable loop past byte 3 writes outside the 32-bit register (discarded)
+CHI-UVM-VIP,dut_chi_hn_model.sv:51,1'b0 inverted,rn / bad reset values; both are rewritten when a request is accepted before they are read
+CHI-UVM-VIP,dut_chi_hn_model.sv:52,1'b0 inverted,req_ready / snp_rn reset values; no request is offered in reset and snp_rn is only read with snp_valid
+CHI-UVM-VIP,dut_chi_hn_model.sv:53,1'b0 inverted,rsp_rn reset value; only read with rsp_valid
+PCIe-VIP,dut_pcie_flit_model.sv:79,1 -> 2,no-position marker -1 vs -2; only its sign is tested
+PCIe-VIP,dut_pcie_flit_model.sv:82,< -> <= in condition,alpha^j is distinct for every codeword position: a found position never matches again

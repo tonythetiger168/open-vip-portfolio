@@ -8,13 +8,137 @@
 |---|---|
 | 類別 | Memory |
 | 類型 | UVM VIP |
-| 功能測試 | 2 個檔案，20 個 check，全部通過 |
-| Mutation | 18/18 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（20 個 check，mutation score 100%） |
+| 功能測試 | 3 個檔案，116 個 check，全部通過 |
+| Mutation | 9/9 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（116 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
 執行：`python3 tools/run_func_tests.py HBM3E-VIP`（Icarus Verilog 或 Verilator 5.052）。
+
+### `hbm_dev/tb/func_hbm_dev_tb.sv`
+
+結果：**PASS**（verilator，96 checks）
+
+模型合約與範圍（摘自測試檔頭）：
+
+```text
+FUNC_SIM: verilator
+
+func_hbm_dev_tb.sv -- memory controller for hbm_dev_model, written from
+the JESD238 pseudo-channel rules rather than from the model:
+   * timing boundaries, one clock early rejected with the matching cause
+     and no effect, on time accepted: tRCDRD, tRCDWR, tRAS, tRP, tRRD_S/L,
+     tFAW, tCCD_S/L, tRTP, tWR, tWTR_S/L, RD->WR turnaround, tRFCab,
+     tRFCpb, tRREFD, tMOD
+   * row and column commands in the same clock; pseudo channels with
+     their own banks, tFAW, refresh and latencies
+   * REFpb (bank must be idle, only that bank busy), REFab, PREab,
+     RDA / WRA auto precharge, MRS rules, missing write data
+   * refresh credit: REFab or 16 REFpb per tREFI, postponed limit
+   * 400 random commands on both buses from a timing-legal scheduler
+     against a reference memory
+Run: python3 tools/run_func_tests.py HBM3E-VIP
+```
+
+| # | Check | 類型 |
+|---|---|---|
+| 1 | ACT pc0 bank 0 | check |
+| 2 | RD inside tRCDRD rejected | check |
+| 3 | RD at tRCDRD accepted | check |
+| 4 | WR inside the RD->WR turnaround rejected | check |
+| 5 | WR at RL + 4 + 2 - WL accepted | check |
+| 6 | RD inside tWTR_L rejected | check |
+| 7 | RD at tWTR_L accepted | check |
+| 8 | ACT pc0 bank group 1 | check |
+| 9 | WR inside tRCDWR rejected | check |
+| 10 | WR at tRCDWR accepted | check |
+| 11 | WR other bank group inside tCCD_S rejected | check |
+| 12 | WR other bank group at tCCD_S accepted | check |
+| 13 | WR same bank group inside tCCD_L rejected | check |
+| 14 | WR same bank group at tCCD_L accepted | check |
+| 15 | PRE inside tWR rejected | check |
+| 16 | PRE at tWR closes the bank | check |
+| 17 | ACT inside tRP rejected | check |
+| 18 | ACT at tRP accepted | check |
+| 19 | PRE inside tRAS rejected | check |
+| 20 | PRE at tRAS accepted | check |
+| 21 | RD bank group 1 | check |
+| 22 | PRE inside tRTP rejected | check |
+| 23 | PRE at tRTP accepted | check |
+| 24 | PRE to an idle bank is a no-op | check |
+| 25 | RD to an idle bank rejected | check |
+| 26 | no write data missing so far | check |
+| 27 | read data and latency RL 20 (cnt %0d bad %0d extra %0d) | check |
+| 28 | ACT and WR in the same clock both accepted | check |
+| 29 | ACT to the bank opened on the row bus rejected | check |
+| 30 | pc1 ACT same bank group inside tRRD_L rejected | check |
+| 31 | pc1 ACT at tRRD_L | check |
+| 32 | pc1 ACT other bank group inside tRRD_S rejected | check |
+| 33 | four ACTs on pc1 | check |
+| 34 | pc0 ACT not limited by pc1's tFAW window | check |
+| 35 | fifth pc1 ACT inside tFAW rejected | check |
+| 36 | fifth pc1 ACT at tFAW accepted | check |
+| 37 | REFpb to an open bank rejected | check |
+| 38 | REFpb to an idle bank accepted | check |
+| 39 | REFpb inside tRREFD of the previous REFpb rejected | check |
+| 40 | ACT to another bank inside tRREFD rejected | check |
+| 41 | ACT to another bank at tRREFD accepted | check |
+| 42 | ACT to the refreshing bank inside tRFCpb rejected | check |
+| 43 | ACT to the refreshed bank at tRFCpb accepted | check |
+| 44 | REFab with pc1 banks open rejected | check |
+| 45 | MRS with pc1 banks open rejected | check |
+| 46 | PREab closes every pc1 bank | check |
+| 47 | PREab pc1 leaves pc0 banks open | check |
+| 48 | REFab inside tRP rejected | check |
+| 49 | REFab pc1 accepted | check |
+| 50 | pc0 column command during pc1 refresh accepted | check |
+| 51 | pc1 ACT inside tRFCab rejected | check |
+| 52 | pc1 ACT at tRFCab accepted | check |
+| 53 | column command to a bank with auto precharge pending rejected | check |
+| 54 | RDA: bank open until ACT + tRAS | check |
+| 55 | RDA: auto precharge at ACT + tRAS | check |
+| 56 | ACT inside tRP of the auto precharge rejected | check |
+| 57 | WRA: bank open until write recovery ends | check |
+| 58 | WRA: auto precharge at WRA + WL + 4 + tWR | check |
+| 59 | PREab pc0 | check |
+| 60 | MRS RL 4 (below the supported range) rejected | check |
+| 61 | MRS pc0 RL 30 | check |
+| 62 | command inside tMOD rejected | check |
+| 63 | MRS pc0 WL 12 | check |
+| 64 | pc1 column command one clock after pc0's (no shared tCCD) | check |
+| 65 | pc0 at RL 30 / WL 12 and pc1 at RL 20 / WL 8 (bad %0d extra %0d) | check |
+| 66 | pc1 WR at its own turnaround | check |
+| 67 | write data missing on pc1 flagged | check |
+| 68 | only pc1 reports missing write data | check |
+| 69 | reserved row command rejected | check |
+| 70 | reserved column command rejected | check |
+| 71 | 400 legal random commands raise no error (%0d) | check |
+| 72 | random traffic read data and latency (reads %0d bad %0d extra %0d) | check |
+| 73 | 16 REFpb on pc1 accepted | check |
+| 74 | postponed refresh limit flagged once per pseudo channel (%0d, %0d) | check |
+| 75 | 16 REFpb count as one refresh (pc1 flagged %0d clocks after pc0) | check |
+| 76 | PREab inside tRAS rejected | check |
+| 77 | PREab pc0 leaves the open pc1 bank 0 | check |
+| 78 | REFab pc1 with only its bank 0 open rejected | check |
+| 79 | MRS pc1 with only its bank 0 open rejected | check |
+| 80 | REFab pc0 with a pc1 bank open | check |
+| 81 | MRS WL 30 (above the range) rejected | check |
+| 82 | MRS WL 1 (below the range) rejected | check |
+| 83 | MRS pc0 with a pc1 bank open | check |
+| 84 | REFpb pc0 bank 5 | check |
+| 85 | REFpb to a bank still inside tRFCpb rejected | check |
+| 86 | PREab inside tRTP of bank 8 (bank 12 inside tRAS): only tRTP reported | check |
+| 87 | WR bank 12 after the turnaround | check |
+| 88 | PREab inside tWR of bank 12 rejected | check |
+| 89 | RDA bank 8 | check |
+| 90 | PREab with an auto precharge pending rejected | check |
+| 91 | PREab pc0 after the auto precharge | check |
+| 92 | reads around the PREab checks | check |
+| 93 | first ACT after reset accepted | check |
+| 94 | RD after reset accepted | check |
+| 95 | memory reads zero after reset, at the reset RL 20 | check |
+| 96 | no refresh after reset: flagged at exactly (REF_POSTPONE + 1) * tREFI (%0d) | check |
 
 ### `tb/func_hbm3e_tb.sv`
 
@@ -81,7 +205,7 @@ UVM agent test（`hbm3e_func_test`：directed + constrained-random 流量，scor
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（20 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（116 個 check，mutation score 100%）。
 
 模型未實作的功能（不在測試範圍）：
 
