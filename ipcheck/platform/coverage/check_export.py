@@ -24,6 +24,12 @@ def assess(report, baseline, approvals, root):
     compatible(report['identity'], baseline['identity'])
     require(report.get('build_kind') == 'rtl', 'stub/TLM build cannot close RTL')
     require(report.get('blocked_dependencies') == [], 'unresolved RTL dependencies')
+    require(report.get('run_status') == 'passed' and report.get('timed_out') is False,
+            'test failed, timed out or completion evidence missing')
+    require(report.get('pending_transactions') == 0, 'undrained end-of-test ledger')
+    require(report.get('uvm_errors') == 0 and report.get('uvm_fatals') == 0,
+            'UVM failure or missing report summary')
+    require(report.get('illegal_bin_hits') == 0, 'illegal functional bin or missing count')
     require(report.get('assertion_failures') == 0, 'assertion failure or missing count')
     require(report.get('scoreboard_errors') == 0, 'scoreboard failure or missing count')
     require(report.get('transactions', 0) > 0, 'vacuous test')
@@ -38,6 +44,8 @@ def assess(report, baseline, approvals, root):
         points = item['raw_points']
         require(len(points) == len(set(points)), metric + ' duplicate points')
         raw = set(points)
+        require(len(baseline['points'][metric]) == len(set(baseline['points'][metric])),
+                metric + ' duplicate baseline denominator')
         require(raw == set(baseline['points'][metric]) and raw, metric + ' denominator mismatch/empty')
         hits = set(item['hit_points'])
         require(hits <= raw, metric + ' unknown hit')
@@ -54,8 +62,13 @@ def assess(report, baseline, approvals, root):
         require(effective, metric + ' no effective denominator')
         if metric == 'fsm':
             require(any(p.startswith('state:') for p in raw) and any(p.startswith('arc:') for p in raw), 'FSM needs states and arcs')
+        if metric == 'toggle':
+            rising = {p[5:] for p in raw if p.startswith('rise:')}
+            falling = {p[5:] for p in raw if p.startswith('fall:')}
+            require(rising and rising == falling and len(raw) == 2*len(rising),
+                    'toggle needs both directions for each bit')
         if metric == 'functional':
-            for point in effective:
+            for point in raw:
                 req = baseline['functional_requirements'].get(point)
                 require(req and req.get('requirement') and req.get('legal') is True, 'untraced/illegal functional bin')
         if metric == 'sva':

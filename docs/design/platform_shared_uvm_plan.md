@@ -1,6 +1,6 @@
-# Shared UVM／CRV 與六類 coverage 驅動驗證計畫 v0.1
+# Shared UVM／CRV 與六類 coverage 驅動驗證計畫 v0.2
 
-2026-11-01。design proposal，提供中央三產品計畫匯入；本工作不寫中央 `verification/`。**先完成真實 SoC 整合與 elaboration，再執行逐產品 UVM closure**。本輪只有有界 APB fixture RTL campaign／export-policy self-tests 已執行，沒有 UVM PASS、SoC PASS 或六類 100% 結果。
+2026-11-01。design proposal，提供中央三產品計畫匯入；本工作不寫中央 `verification/`。**先完成真實 SoC 整合與 elaboration，再執行逐產品 UVM closure**。已執行有界 APB fixture RTL campaign／export-policy self-tests；後續新增APB UVM資產通過原生嚴格語法／語義前端，但沒有UVM simulation PASS、SoC PASS或六類100%。最新結果見[UVM執行資產與相容性](platform_uvm_execution.md)。
 
 ## 1. Gate 與責任分工
 
@@ -14,7 +14,7 @@
 
 stub/TLM 可用於早期驗證bench，但必須標 `build_kind=model`，不能通過產品RTL gate。功能缺失不是unreachable code，缺RTL／工具不支持不能排除成100%。
 
-## 2. 共用 UVM 組件合約（本輪為計畫，尚無已驗 UVM env）
+## 2. 共用 UVM 組件合約（APB資產已通過靜態前端；其餘仍為計畫）
 
 ```mermaid
 flowchart TD
@@ -91,12 +91,12 @@ run identity至少包含product、config SHA256、scope、所有repo source comm
 
 本輪新增 `ipcheck/platform/coverage/check_export.py` 是**匯出格式與判定政策的防呆檢查器，不是coverage DB parser**；它比對baseline identity/point inventory、核准排除、FSM states+arcs、SVA非vacuous及功能requirement。approval檔與baseline必須由中央review流程提供；此工具不驗證reviewer身份或DB工具來源真偽。實際report exporter與rawDB parser仍待選工具實作，不能手填measured即稱驗證完成。
 
-`test_check_export.py` 12個**synthetic policy** tests通過：不相容identity、無DB、unsupported、未核准排除、FSM缺arc、SVA vacuous/failure、非法功能bin、缺RTL、coverage hole均拒絕；合法核准排除保留raw分母。synthetic「all-hit」資料只驗政策程式，不是任何產品coverage證據。
+`test_check_export.py` 19個**synthetic policy** tests通過：不相容identity、無DB、unsupported、未核准排除、FSM缺arc、SVA vacuous/failure、非法功能bin、缺RTL、coverage hole均拒絕；另拒絕timeout／未drain／缺UVM summary／UVM error／單向toggle／重複baseline分母／illegal-bin hits。合法核准排除保留raw分母；以新案例回跑舊版失敗、修正版通過。synthetic「all-hit」只驗政策程式，不是任何產品coverage證據。
 
 ## 6. 本輪實際結果與下一步
 
 paired IP文件 `docs/design/platform_slice_baseline.md` 與 `integration/platform/baseline.json` 提供有界fixture source pins／clock/reset/address/IRQ；不是中央SoC top。`run_slice.py`：3 labels×3 seeds、每run209tx且739/741/739 checks，固定seed replay相同；partial-write mutant被獨立地址／memory golden抓到。此為procedural constrained random harness，不是UVM constrained class、covergroup或SVA regression。
 
-完整TV/STB/IPCAM SoC elaboration、UVM library/env compile、AXI memory/DMA/ownership/QoS/reset-drain驗證與六類raw coverage DB均BLOCKED/OPEN。本輪沒有已定位並完成設定的可用UVM library，因此未執行UVM；Icarus的有界compile不能代替UVM elaboration。現有工具Icarus12.0／Verilator5.032，不能宣稱已支持所需全部coverage。
+完整TV/STB/IPCAM SoC elaboration、UVM simulator build/runtime、AXI memory/DMA/ownership/QoS/reset-drain驗證與六類raw coverage DB均BLOCKED/OPEN。官方UVM來源已定位與固定；Verilator5.032對兩個版本均有type_id解析錯誤，隔離5.052建置又遇WSL服務無法啟動。APB UVM資產已以原生pyslang12.1.0嚴格前端檢查到error=0，但這不等於UVM模擬或runtime topology已驗證。診斷與失敗logs均保留，不能宣稱已支持所需全部coverage。
 
 下一步由integration提供逐產品real top/filelist/fingerprint及缺IP解決狀態，再由platform實作UVM bus/RAL predictor與virtual seq，先跑directed/mutation；選定有FSM arc/SVA非vacuous/branch支援的工具後導出rawDB，依holes加seed／sequence。工具與依賴未凍結，完成ETA未知。不得自動合併、付費或以教育slice宣稱production能力。
