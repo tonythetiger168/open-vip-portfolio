@@ -5,10 +5,10 @@
 ## 1. 結論
 
 - 130 個 VIP 中 130 個量到 code coverage（153 個功能測試中 148 個在 Verilator 上帶 coverage 執行）。
-- Line / branch coverage（全部 DUT model 合計）：94.3%（4657/4939）。
-- Toggle coverage（全部 DUT model 合計）：48.3%（56371/116732）。
+- Line / branch coverage（全部 DUT model 合計）：94.4%（4661/4939）。
+- Toggle coverage（全部 DUT model 合計）：49.3%（57602/116732）。
 - Expression coverage（全部 DUT model 合計）：90.5%（3112/3440）。
-- Line coverage 100% 的 VIP 57 個，≥ 90% 的 112 個，低於 90% 的 18 個（見第 4 節）。
+- Line coverage 100% 的 VIP 57 個，≥ 90% 的 113 個，低於 90% 的 17 個（見第 4 節）。
 - Functional coverage（covergroup bins，在 Verilator 上量得的 ACE-UVM-VIP / ACE_Lite-UVM-VIP / AHB-VIP / APB-VIP / ATB-UVM-VIP / AXI-VIP / AXI4_Lite-UVM-VIP / AXI_Stream-UVM-VIP / Avalon_MM-UVM-VIP / Avalon_ST-UVM-VIP / CAN_FD-UVM-VIP / CAN_XL-UVM-VIP / CHI-UVM-VIP / DDR5-VIP / ETH800G-VIP / EtherCAT-VIP / GMII-UVM-VIP / GPIO-UVM-VIP / HBM3E-VIP / HyperBus-UVM-VIP / IO_Link-VIP / LPDDR6-VIP / MACsec-UVM-VIP / MCTP-UVM-VIP / MDIO-UVM-VIP / MIL_STD_1553-VIP / NC-SI-UVM-VIP / OBI-UVM-VIP / OCP-VIP / OneWire-UVM-VIP / PCIe_IDE-UVM-VIP / PTP-VIP / PWM-UVM-VIP / RGMII-UVM-VIP / RVFI-UVM-VIP / RapidIO-VIP / SDIO-UVM-VIP / SENT-VIP / SGMII-UVM-VIP / SMBus-UVM-VIP / SUE-UVM-VIP / SpaceWire-UVM-VIP / T1S_PLCA-UVM-VIP / TDM-UVM-VIP / TileLink-VIP / UALink-VIP / UCIe-VIP / UEC-VIP / USXGMII-UVM-VIP / WTB-UVM-VIP / Wishbone-UVM-VIP / XGMII-UVM-VIP / eSPI-UVM-VIP / xSPI-UVM-VIP）：54.8%（1046/1909），其餘 UVM 環境的 covergroup 需商用模擬器（見第 2 節）。
 
 ## 2. 方法
@@ -108,7 +108,7 @@
 | [PWM-UVM-VIP](test_suites/PWM-UVM-VIP.md) | 1/1 | 100.0% (6/6) | 19.8% (21/106) | 100.0% (9/9) | 100.0% (2/2) | 100.0% (7/7) |
 | [RFFE-VIP](test_suites/RFFE-VIP.md) | 1/1 | 94.3% (33/35) | 4.6% (24/524) | 100.0% (18/18) | - | - |
 | [RGMII-UVM-VIP](test_suites/RGMII-UVM-VIP.md) | 1/1 | 100.0% (3/3) | 95.8% (23/24) | 100.0% (2/2) | 100.0% (2/2) | 100.0% (3/3) |
-| [RVFI-UVM-VIP](test_suites/RVFI-UVM-VIP.md) | 1/1 | 84.1% (90/107) | 33.0% (1134/3440) | 91.4% (74/81) | 100.0% (2/2) | 80.3% (49/61) |
+| [RVFI-UVM-VIP](test_suites/RVFI-UVM-VIP.md) | 1/1 | 85.0% (91/107) | 33.9% (1166/3440) | 91.4% (74/81) | 100.0% (2/2) | 80.3% (49/61) |
 | [RapidIO-VIP](test_suites/RapidIO-VIP.md) | 1/1 | 100.0% (5/5) | 73.0% (111/152) | 100.0% (2/2) | 100.0% (2/2) | 100.0% (7/7) |
 | [SAS-VIP](test_suites/SAS-VIP.md) | 1/1 | 91.3% (105/115) | 13.0% (222/1702) | 85.7% (36/42) | - | - |
 | [SATA-VIP](test_suites/SATA-VIP.md) | 1/1 | 91.3% (21/23) | 21.6% (66/306) | 72.2% (13/18) | - | - |
@@ -132,7 +132,7 @@
 | [TypeC-VIP](test_suites/TypeC-VIP.md) | 1/1 | 88.9% (8/9) | 100.0% (18/18) | 100.0% (2/2) | - | - |
 | [UALink-VIP](test_suites/UALink-VIP.md) | 2/3 | 98.4% (62/63) | 65.0% (2642/4064) | 97.5% (39/40) | 100.0% (2/2) | 100.0% (8/8) |
 | [UART-VIP](test_suites/UART-VIP.md) | 1/1 | 90.0% (18/20) | 90.0% (9/10) | 100.0% (4/4) | - | - |
-| [UCIe-VIP](test_suites/UCIe-VIP.md) | 2/3 | 89.7% (148/165) | 75.7% (4455/5888) | 79.3% (119/150) | 100.0% (2/2) | 100.0% (3/3) |
+| [UCIe-VIP](test_suites/UCIe-VIP.md) | 2/3 | 91.5% (151/165) | 96.0% (5654/5888) | 79.3% (119/150) | 100.0% (2/2) | 100.0% (3/3) |
 | [UEC-VIP](test_suites/UEC-VIP.md) | 1/1 | 100.0% (4/4) | 13.5% (566/4204) | 100.0% (12/12) | 100.0% (2/2) | 100.0% (7/7) |
 | [UFS-VIP](test_suites/UFS-VIP.md) | 1/1 | 86.5% (45/52) | 56.9% (247/434) | 96.3% (26/27) | - | - |
 | [USB-VIP](test_suites/USB-VIP.md) | 1/1 | 93.9% (31/33) | 54.3% (125/230) | 96.3% (26/27) | - | - |
@@ -170,8 +170,8 @@
 | VIP | Line | 未執行到的行 |
 |---|---|---|
 | SLIMbus-VIP | 80.9% | dut_slimbus_codec_slave.sv:37-43,65,88 |
-| RVFI-UVM-VIP | 84.1% | dut_rvfi_model.sv:108,123,133-134,136-137,150-154,198,203 |
 | I3C-VIP | 85.0% | dut_i3c_target_model.sv:37-38,76,125-126,136,150,153,155,163,186,193,208,239,255 |
+| RVFI-UVM-VIP | 85.0% | dut_rvfi_model.sv:108,133-134,136-137,150-154,198,203 |
 | gddr5-VIP | 85.7% | dut_gddr5_mem_model.sv:64 |
 | gddr6-VIP | 85.7% | dut_gddr6_mem_model.sv:64 |
 | gddr7-VIP | 85.7% | dut_gddr7_mem_model.sv:64 |
@@ -186,7 +186,6 @@
 | PCIe-VIP | 88.5% | dut_pcie_dl_model.sv:197,206,209,219-220,266-269,272,288,301,307,312,373,452-453,455-457,460,463-464,470,507,513,516,527 |
 | TypeC-VIP | 88.9% | dut_typec_partner_model.sv:46 |
 | CAN-VIP | 89.6% | dut_can_node_model.sv:83,87,91,93,121,133,165,174,259,334 |
-| UCIe-VIP | 89.7% | dut_ucie_d2d_model.sv:112,116,182,185,187,190,192,195,197,202,204,206,208,210,214,245 |
 
 ### Functional coverage 未命中的 bins
 
