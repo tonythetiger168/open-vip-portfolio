@@ -35,6 +35,7 @@ module i2s_xchk_tb;
   wire PREADY, PSLVERR, irq, sdout;
   logic bclk = 0, lrck = 0, sdin = 0;
   always #5 PCLK = ~PCLK;
+  int setup_bad_h [8];       // per clocks-per-phase setting: bits with no setup margin
 
   I2S_apb dut (.PCLK, .PRESETN, .PSEL, .PENABLE, .PWRITE, .PADDR, .PWDATA, .PSTRB,
                .PRDATA, .PREADY, .PSLVERR, .irq, .bclk, .lrck, .sdin, .sdout);
@@ -120,7 +121,6 @@ module i2s_xchk_tb;
   // word's LSB lands in the first bit of the next slot (carry). Returns the
   // SDOUT bits after each WS change: g[31] is the bit one BCLK after it.
   logic carry_in = 0;
-  int setup_bad_h [8];
   task automatic send_frame(input int slot, input logic [15:0] l, input logic [15:0] r,
                             output logic [31:0] gl, output logic [31:0] gr, output logic t0);
     gl = 0; gr = 0;
