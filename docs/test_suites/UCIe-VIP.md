@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
-| 功能測試 | 3 個檔案，119 個 check，全部通過 |
-| Mutation | 9/12 個 mutant 被偵測（75%） |
-| 判定 | **🟡 Partial**（mutation score 75%） |
+| 功能測試 | 3 個檔案，130 個 check，全部通過 |
+| Mutation | 10/10 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（130 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，19 checks）
+結果：**PASS**（iverilog，24 checks）
 
 | # | Check | 類型 |
 |---|---|---|
@@ -34,10 +34,15 @@
 | 10 | fully drained after backpressure test | check |
 | 11 | tready high when empty | check |
 | 12 | all 6 burst flits delivered | check |
+| 13 | reference queue matches tready/rvalid/rdata/rlast for 400 clocks (%0d mismatches) | check |
+| 14 | random phase reached full, pop at full, and push+pop (seen=%0d) | check |
+| 15 | flits queued before reset | check |
+| 16 | reset empties the FIFO | check |
+| 17 | first flit after reset at head | check |
 
 ### `ucie_d2d/tb/func_ucie_d2d_tb.sv`
 
-結果：**PASS**（verilator，64 checks）
+結果：**PASS**（verilator，70 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -72,62 +77,68 @@ Run: python3 tools/run_func_tests.py UCIe-VIP
 | 6 | done request before the patterns is unexpected | check |
 | 7 | done request after two partner patterns | check |
 | 8 | SBINIT holds until the partner's done request is answered | check |
-| 9 | partner's done answered: MBINIT | check |
-| 10 | parameter response carries the local max speed 5 | check |
-| 11 | lane fault in lanes 8..15: repair response offers x8 | check |
-| 12 | repair request x8 | check |
-| 13 | MBTRAIN at min(5, 3) = speed 3, width min(16, 8) = 8 | check |
-| 14 | speed 3 fails at the partner, 2 locally: trained at 1 (%0d tries) | check |
-| 15 | speed 1 after degrade | check |
-| 16 | LINKINIT: link not up yet | check |
-| 17 | LINKINIT holds until the partner's LINKINIT request | check |
-| 18 | ACTIVE: link up, protocol layer may send | check |
-| 19 | MBTRAIN response and unknown message in ACTIVE flagged, state kept | check |
-| 20 | MBTRAIN request outside training flagged | check |
-| 21 | no flit before the protocol layer offers data | check |
-| 22 | 20 flits, sequence 0..19, data intact (%0d sent, %0d bad) | check |
-| 23 | flit CRCs good, no error | check |
-| 24 | retry buffer full after %0d unacknowledged flits: ready low | check |
-| 25 | ACK of 3 flits frees 3 entries (%0d sent) | check |
-| 26 | NAK: flits 25..30 replayed, then the waiting flit 31 (%0d, %0d bad) | check |
-| 27 | flit 31 sent after the replay | check |
-| 28 | no ACK for %0d clocks: flit 31 replayed on timeout | check |
-| 29 | fourth replay: replay limit flagged | check |
-| 30 | replay limit requests a retrain | check |
-| 31 | back to ACTIVE at the trained speed | check |
-| 32 | unacknowledged flit kept across the retrain and replayed | check |
-| 33 | ACKed: no more replays | check |
-| 34 | idle with nothing outstanding: no replay timeout, no retrain | check |
-| 35 | three flits delivered in order | check |
-| 36 | ACK 2 sent in a NOP flit | check |
-| 37 | corrupted flit dropped | check |
-| 38 | one NAK with the last good sequence 2 | check |
-| 39 | sequence ahead dropped, no second NAK while one is scheduled | check |
-| 40 | replayed flit 3 delivered, duplicate 1 not delivered | check |
-| 41 | duplicate answered with ACK 3 | check |
-| 42 | a new sequence error after recovery NAKs again | check |
-| 43 | flits 4 and 5 delivered | check |
-| 44 | ACK 6 carried by data flit 32 | check |
-| 45 | L1 refused with flit 32 unacknowledged | check |
-| 46 | L1 accepted with the retry buffer empty | check |
-| 47 | no mainband reception in L1 | check |
-| 48 | L1 exit: MBTRAIN | check |
-| 49 | L1 exit retrains to ACTIVE | check |
-| 50 | sequence numbers continue after L1 | check |
-| 51 | partner retrain request answered: MBTRAIN | check |
-| 52 | partner retrain back to ACTIVE | check |
-| 53 | local retrain request waits in PHYRETRAIN for the response | check |
-| 54 | retrain response: MBTRAIN | check |
-| 55 | lt_start low: RESET | check |
-| 56 | retrained: speed min(5, 4), x8 on the upper half | check |
-| 57 | sequence numbers restart at 0 after RESET | check |
-| 58 | receiver expects sequence 0 after RESET | check |
-| 59 | faults in both halves: TRAINERROR (state %0d err %h) | check |
-| 60 | speeds 2, 1, 0 all fail: TRAINERROR (state %0d err %h n %0d) | check |
-| 61 | silent partner: TRAINERROR after %0d clocks (state %0d err %h) | check |
-| 62 | TRAINERROR to RESET when lt_start drops | check |
-| 63 | no LINKINIT response: TRAINERROR %0d clocks after the partner's request | check |
-| 64 | every flit from the model has a good CRC | check |
+| 9 | parameter response in SBINIT is unexpected | check |
+| 10 | partner's done answered: MBINIT | check |
+| 11 | parameter response carries the local max speed 5 | check |
+| 12 | lane fault in lanes 8..15: repair response offers x8 | check |
+| 13 | repair request x8 | check |
+| 14 | MBTRAIN at min(5, 3) = speed 3, width min(16, 8) = 8 | check |
+| 15 | speed 3 fails at the partner, 2 locally: trained at 1 (%0d tries) | check |
+| 16 | speed 1 after degrade | check |
+| 17 | LINKINIT: link not up yet | check |
+| 18 | LINKINIT holds until the partner's LINKINIT request | check |
+| 19 | LINKINIT request sent once without waiting for the partner | check |
+| 20 | ACTIVE: link up, protocol layer may send | check |
+| 21 | MBTRAIN response and unknown message in ACTIVE flagged, state kept | check |
+| 22 | MBTRAIN request outside training flagged, not answered | check |
+| 23 | no flit before the protocol layer offers data | check |
+| 24 | 20 flits, sequence 0..19, data intact (%0d sent, %0d bad) | check |
+| 25 | flit CRCs good, no error | check |
+| 26 | retry buffer full after %0d unacknowledged flits: ready low | check |
+| 27 | ACK of 3 flits frees 3 entries (%0d sent) | check |
+| 28 | NAK: flits 25..30 replayed, then the waiting flit 31 (%0d, %0d bad) | check |
+| 29 | flit 31 sent after the replay | check |
+| 30 | no ACK for %0d clocks: flit 31 replayed on timeout | check |
+| 31 | fourth replay: replay limit flagged | check |
+| 32 | replay limit requests a retrain | check |
+| 33 | back to ACTIVE at the trained speed | check |
+| 34 | unacknowledged flit kept across the retrain and replayed | check |
+| 35 | ACKed: no more replays | check |
+| 36 | idle with nothing outstanding: no replay timeout, no retrain | check |
+| 37 | three flits delivered in order | check |
+| 38 | ACK 2 sent in a NOP flit | check |
+| 39 | corrupted flit dropped | check |
+| 40 | one NAK with the last good sequence 2 | check |
+| 41 | sequence ahead dropped, no second NAK while one is scheduled | check |
+| 42 | replayed flit 3 delivered, duplicate 1 not delivered | check |
+| 43 | duplicate answered with ACK 3 | check |
+| 44 | a new sequence error after recovery NAKs again | check |
+| 45 | flits 4 and 5 delivered | check |
+| 46 | ACK 6 carried by data flit 32 | check |
+| 47 | L1 refused with flit 32 unacknowledged | check |
+| 48 | NAK with a single outstanding flit replays it | check |
+| 49 | fourth NAK replay: replay limit flagged, retrain requested | check |
+| 50 | back to ACTIVE after the NAK replay limit | check |
+| 51 | L1 accepted with the retry buffer empty | check |
+| 52 | no mainband reception in L1 | check |
+| 53 | L1 request while in L1 flagged, not answered | check |
+| 54 | L1 exit: MBTRAIN | check |
+| 55 | L1 exit retrains to ACTIVE | check |
+| 56 | sequence numbers continue after L1 | check |
+| 57 | partner retrain request answered: MBTRAIN | check |
+| 58 | partner retrain back to ACTIVE | check |
+| 59 | local retrain request waits in PHYRETRAIN for the response | check |
+| 60 | retrain response: MBTRAIN | check |
+| 61 | lt_start low: RESET | check |
+| 62 | retrained: speed min(5, 4), x8 on the upper half | check |
+| 63 | sequence numbers restart at 0 after RESET | check |
+| 64 | receiver expects sequence 0 after RESET | check |
+| 65 | faults in both halves: TRAINERROR (state %0d err %h) | check |
+| 66 | speeds 2, 1, 0 all fail: TRAINERROR (state %0d err %h n %0d) | check |
+| 67 | silent partner: TRAINERROR after %0d clocks (state %0d err %h) | check |
+| 68 | TRAINERROR to RESET when lt_start drops | check |
+| 69 | no LINKINIT response: TRAINERROR %0d clocks after the partner's request | check |
+| 70 | every flit from the model has a good CRC | check |
 
 ### `ucie_sb3/tb/func_ucie_sb3_tb.sv`
 
@@ -207,11 +218,7 @@ UVM agent test（`ucie_func_test`：directed + constrained-random 流量，score
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 75%）。
+判定：**✅ Sufficient**（130 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_ucie_d2d_model.sv:113 0 -> 1 [if (mb_rx_flit[8] && rb_cnt != 0) begin]`
-- `dut_ucie_d2d_model.sv:228 0 -> 1 [if (pat_seen != 2'd2 && sb_div % 4 == 0 && !sb_rx_valid) sb_]`
-- `dut_ucie_d2d_model.sv:275 == flipped [if (ns == S_RETRAIN || ns == S_MBTRAIN) begin tr_tx = 1'b0; ]`
+無已知缺口。
 
