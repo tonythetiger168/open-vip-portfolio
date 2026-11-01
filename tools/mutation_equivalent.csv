@@ -529,3 +529,12 @@ CHI-UVM-VIP,dut_chi_hn_model.sv:52,1'b0 inverted,req_ready / snp_rn reset values
 CHI-UVM-VIP,dut_chi_hn_model.sv:53,1'b0 inverted,rsp_rn reset value; only read with rsp_valid
 PCIe-VIP,dut_pcie_flit_model.sv:79,1 -> 2,no-position marker -1 vs -2; only its sign is tested
 PCIe-VIP,dut_pcie_flit_model.sv:82,< -> <= in condition,alpha^j is distinct for every codeword position: a found position never matches again
+RVFI-UVM-VIP,dut_rvfi_model.sv:62,1'b0 inverted,l_ld reset value: S_MEM reads it only after the load/store that entered S_MEM set it
+RVFI-UVM-VIP,dut_rvfi_model.sv:84,20 -> 21,I-immediate sign replication: the 33-bit concatenation is truncated to the same 32-bit value
+RVFI-UVM-VIP,dut_rvfi_model.sv:127,0 -> 1,store byte-lane clear from lane 1: lane 0 is unmasked only for an offset-0 store and is otherwise already zero from the shift
+RVFI-UVM-VIP,dut_rvfi_model.sv:195,24 -> 25,LB sign extension: the 33-bit concatenation is truncated to the same 32-bit value
+UCIe-VIP,dut_ucie_d2d_model.sv:228,0 -> 1,phase of the SBINIT pattern inside its 4-clock period: the pattern still goes out every 4 clocks one clock later and the partner does not depend on the phase
+UCIe-VIP,dut_ucie_d2d_model.sv:87,0 -> 1,rp_num reset value: LINKINIT -> ACTIVE clears it before any replay can count
+UCIe-VIP,dut_ucie_d2d_model.sv:204,0 -> 1,t_wait after the LINKINIT response: shifts the sideband timeout by one clock and the next state change clears it
+UCIe-VIP,dut_ucie_d2d_model.sv:245,< -> <= in condition,width minimum: when the widths are equal both arms give the same value
+UCIe-VIP,dut_ucie_d2d_model.sv:275,== flipped,tr_tx / tr_rx clear: they are read only in MBTRAIN and every transition into MBTRAIN still clears them

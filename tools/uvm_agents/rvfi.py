@@ -780,7 +780,10 @@ initial begin
   im[124] = I(12'h040, 0, 0, 5, 7'h13);   // 1F0 addi x5, x0, 0x40
   im[125] = I(12'h004, 5, 2, 6, 7'h03);   // 1F4 lw   x6, 4(x5)
   im[126] = I(12'h201, 0, 0, 7, 7'h67);   // 1F8 jalr x7, 0x201(x0): bit 0 cleared
-  im[128] = J(0, 0);                      // 200 jal  x0, 0 (stay)
+  im[128] = R(7'h00, 1, 1, 3, 8);         // 200 sltu x8, x1, x1: equal operands
+  im[129] = I(12'h20C, 0, 0, 26, 7'h13);  // 204 addi x26, x0, 0x20C
+  im[130] = S(12'h048, 1, 0, 3);          // 208 store funct3 3: illegal
+  im[131] = J(0, 0);                      // 20C jal  x0, 0 (stay)
   repeat (3) @(posedge clk);
   chk(i_req === 1'b0 && rvfi_valid === 1'b0 && d_req === 1'b0 && d_we === 1'b0, "no fetch, data request or retirement in reset");
   rst_n = 1;
@@ -830,7 +833,7 @@ initial begin
   chk(rec(55, 32'h184, 32'h188, 28, 32'h1234_5678, 0), "x1 unchanged by the trapped jal");
   chk(rec(57, 32'h18C, 32'h100, 0, 0, 1), "slli with shamt bit 5 traps");
   k = 0;
-  while (k < 6000 && nr < 89) begin @(posedge clk); k = k + 1; end
+  while (k < 8000 && nr < 94) begin @(posedge clk); k = k + 1; end
   chk(rec(60, 32'h194, 32'h198, 0, 0, 0) && nomem(60) && rs(60, 0, 0, 0, 0), "fence: no-op");
   chk(rec(61, 32'h198, 32'h1A0, 0, 0, 0), "bge 0 >= -1 taken");
   chk(rec(62, 32'h1A0, 32'h1A4, 30, 32'hFFFF_FFFF, 0) && rs(62, 2, 32'hFFFF_FFFF, 1, 32'h1234_5678), "sra by x1[4:0]");
@@ -843,12 +846,16 @@ initial begin
   chk(rec(85, 32'h1F4, 32'h1F8, 6, 32'h5678_FF00, 0) && rs(85, 5, 32'h40, 0, 0) && mem(85, 32'h44, 4'hF, 4'h0, 32'h5678_FF00, 0),
       "lw off a base register reports rs1");
   chk(rec(86, 32'h1F8, 32'h200, 7, 32'h1FC, 0), "jalr clears bit 0 of the target");
-  chk(rec(87, 32'h200, 32'h200, 0, 0, 0) && rec(88, 32'h200, 32'h200, 0, 0, 0), "jal x0, 0 loops");
+  chk(rec(87, 32'h200, 32'h204, 8, 32'h0, 0) && rs(87, 1, 32'h1234_5678, 1, 32'h1234_5678), "sltu of equal operands is 0");
+  chk(rec(89, 32'h208, 32'h100, 0, 0, 1) && nomem(89) && rs(89, 0, 0, 0, 0), "store with funct3 3 traps, no write");
+  chk(rec(90, 32'h100, 32'h104, 25, 32'hD, 0) && r_in[90], "handler counted thirteen traps");
+  chk(rec(91, 32'h104, 32'h20C, 0, 0, 0), "handler returns past the illegal store");
+  chk(rec(92, 32'h20C, 32'h20C, 0, 0, 0) && rec(93, 32'h20C, 32'h20C, 0, 0, 0), "jal x0, 0 loops");
   k = 1;
-  for (int j = 0; j < 89; j++) if (!r_ok[j]) k = 0;
+  for (int j = 0; j < 94; j++) if (!r_ok[j]) k = 0;
   chk(k == 1, "halt 0, mode M, ixl 32 on every record");
   chk(both == 0, "never a fetch and a data request together");
-  chk(dm[16] == 32'h1234_5678 && dm[17] == 32'h5678_FF00, "data memory after the stores");
+  chk(dm[16] == 32'h1234_5678 && dm[17] == 32'h5678_FF00 && dm[18] == 32'h0, "data memory after the stores");
 
   if (fails == 0) $display("FUNC_PASS checks=%0d", checks);
   else            $display("FUNC_FAIL checks=%0d fails=%0d", checks, fails);
