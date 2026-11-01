@@ -2,6 +2,8 @@
 
 > TV／STB／IPCAM：請先核對 [平台驗證矩陣](docs/design/platform_bus_host_matrix.md) 的 DUT／agent 角色。測試套件的 Sufficient 僅針對模型範圍，不等於 host、DMA 或產品合規完成。
 
+> 新增 [shared UVM／六類 coverage 計畫](docs/design/platform_shared_uvm_plan.md) 及有界 RTL seed/replay gate；procedural fixture campaign 通過不等於 UVM 或完整 SoC coverage 100%。
+
 > A comprehensive, open-source collection of **130 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
 
 [![License](https://img.shields.io/badge/License-Apache%%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
