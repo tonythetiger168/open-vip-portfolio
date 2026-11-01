@@ -18,3 +18,5 @@ python3 -m unittest discover -s ipcheck/platform/coverage -p test_check_export.p
 ```
 
 第一個命令連接真實 router＋adapter＋兩個APB_top，三產品label各自跑固定seeds，明確不是完整SoC／UVM。第二個命令只測synthetic coverage政策資料，不產出產品coverage。規格與blocked dependencies見 `docs/design/platform_shared_uvm_plan.md`。
+
+UVM source與strict原生前端／runtime runner在`ipcheck/platform/uvm/`；來源鎖在paired IP的`integration/platform/uvm_sources.json`。見`docs/design/platform_uvm_execution.md`。目前原生前端PASS，模擬執行BLOCKED；不能把兩者合稱UVM PASS。

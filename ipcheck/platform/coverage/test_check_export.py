@@ -17,9 +17,12 @@ class ExportTests(unittest.TestCase):
         ident = {k: 'synthetic-'+k for k in IDENTITY}
         points = {k: ['p'] for k in METRICS}
         points['fsm'] = ['state:IDLE','arc:IDLE->IDLE']
+        points['toggle'] = ['rise:bit0','fall:bit0']
         self.baseline = {'identity':ident,'points':points,
                          'functional_requirements': {'p':{'requirement':'TEST_ONLY','legal':True}}}
         self.report = {'identity':ident.copy(),'build_kind':'rtl','blocked_dependencies':[],
+                       'run_status':'passed','timed_out':False,'pending_transactions':0,
+                       'uvm_errors':0,'uvm_fatals':0,'illegal_bin_hits':0,
                        'assertion_failures':0,'scoreboard_errors':0,'transactions':1,
                        'exporter_id':'synthetic-only', 'raw_db': {'path':'synthetic.db','sha256':hashlib.sha256((self.root/'synthetic.db').read_bytes()).hexdigest()},
                        'metrics':{k:{'status':'measured','raw_points':v[:],'hit_points':v[:],'exclusions':[]} for k,v in points.items()}}
@@ -82,6 +85,36 @@ class ExportTests(unittest.TestCase):
 
     def test_hole(self):
         self.report['metrics']['branch']['hit_points']=[]
+        with self.assertRaises(ValueError): self.run_assess()
+
+    def test_timeout_despite_all_hits(self):
+        self.report['timed_out']=True
+        with self.assertRaises(ValueError): self.run_assess()
+
+    def test_undrained_ledger(self):
+        self.report['pending_transactions']=1
+        with self.assertRaises(ValueError): self.run_assess()
+
+    def test_uvm_error_despite_zero_scoreboard_errors(self):
+        self.report['uvm_errors']=1
+        with self.assertRaises(ValueError): self.run_assess()
+
+    def test_missing_uvm_summary(self):
+        del self.report['uvm_fatals']
+        with self.assertRaises(ValueError): self.run_assess()
+
+    def test_one_way_toggle(self):
+        self.baseline['points']['toggle']=['rise:bit0']
+        self.report['metrics']['toggle']['raw_points']=['rise:bit0']
+        self.report['metrics']['toggle']['hit_points']=['rise:bit0']
+        with self.assertRaises(ValueError): self.run_assess()
+
+    def test_duplicate_baseline(self):
+        self.baseline['points']['line'].append('p')
+        with self.assertRaises(ValueError): self.run_assess()
+
+    def test_illegal_bin_hit(self):
+        self.report['illegal_bin_hits']=1
         with self.assertRaises(ValueError): self.run_assess()
 
 

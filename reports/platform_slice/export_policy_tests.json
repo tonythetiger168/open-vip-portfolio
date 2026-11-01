@@ -1,7 +1,7 @@
 {
   "command": "python -m unittest discover -s ipcheck/platform/coverage -p test_check_export.py -v",
   "python": "3.14.8",
-  "tests": 12,
+  "tests": 19,
   "failures": 0,
   "errors": 0,
   "exit_code": 0,
