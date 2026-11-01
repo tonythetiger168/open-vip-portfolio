@@ -4,9 +4,9 @@
 
 ## 1. 結論
 
-- 130 個 VIP 中 130 個有可在開源工具上執行的 self-checking 功能測試，共 3948 個 check（另有 RTL IP testbench 的 0 次斷言評估）；130 個 VIP 的測試全部通過。
-- 判定：✅ Sufficient 128、🟡 Partial 2、❌ Insufficient 0。
-- Mutation testing：2026 個有效 mutant 中 1926 個被功能測試偵測（95%）。
+- 130 個 VIP 中 130 個有可在開源工具上執行的 self-checking 功能測試，共 3963 個 check（另有 RTL IP testbench 的 0 次斷言評估）；130 個 VIP 的測試全部通過。
+- 判定：✅ Sufficient 130、🟡 Partial 0、❌ Insufficient 0。
+- Mutation testing：2020 個有效 mutant 中 1929 個被功能測試偵測（95%）。
 - 沒有未修正的 DUT 模型缺陷：功能測試中沒有 XFAIL check（先前記錄的缺陷都已在模型中修正）。
 
 ## 2. 方法
@@ -111,7 +111,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [PWM-UVM-VIP](test_suites/PWM-UVM-VIP.md) | Peripherals | `smoke_func_tb.sv` | 35 | iverilog | 10/12 | 0 | ✅ Sufficient |
 | [RFFE-VIP](test_suites/RFFE-VIP.md) | MIPI | `func_rffe_tb.sv` | 14 | iverilog | 25/29 | 0 | ✅ Sufficient |
 | [RGMII-UVM-VIP](test_suites/RGMII-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 14 | iverilog | 2/2 | 0 | ✅ Sufficient |
-| [RVFI-UVM-VIP](test_suites/RVFI-UVM-VIP.md) | Debug | `smoke_func_tb.sv` | 59 | iverilog | 23/29 | 0 | 🟡 Partial |
+| [RVFI-UVM-VIP](test_suites/RVFI-UVM-VIP.md) | Debug | `smoke_func_tb.sv` | 63 | iverilog | 25/25 | 0 | ✅ Sufficient |
 | [RapidIO-VIP](test_suites/RapidIO-VIP.md) | Interconnect | `smoke_func_tb.sv` | 22 | iverilog | 3/3 | 0 | ✅ Sufficient |
 | [SAS-VIP](test_suites/SAS-VIP.md) | Storage | `func_sas_tb.sv` | 42 | verilator | 10/10 | 0 | ✅ Sufficient |
 | [SATA-VIP](test_suites/SATA-VIP.md) | Storage/Debug | `func_sata_tb.sv` | 28 | verilator | 10/11 | 0 | ✅ Sufficient |
@@ -135,7 +135,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [TypeC-VIP](test_suites/TypeC-VIP.md) | USB | `func_typec_tb.sv` | 11 | iverilog | 1/1 | 0 | ✅ Sufficient |
 | [UALink-VIP](test_suites/UALink-VIP.md) | Interconnect | `smoke_func_tb.sv`, `func_ualink_tl_tb.sv`, `func_ualink_inc_tb.sv` | 96 | iverilog/verilator | 8/8 | 0 | ✅ Sufficient |
 | [UART-VIP](test_suites/UART-VIP.md) | Serial | `smoke_func_tb.sv` | 61 | iverilog | 18/18 | 0 | ✅ Sufficient |
-| [UCIe-VIP](test_suites/UCIe-VIP.md) | Interconnect | `smoke_func_tb.sv`, `func_ucie_sb3_tb.sv`, `func_ucie_d2d_tb.sv` | 119 | iverilog/verilator | 9/12 | 0 | 🟡 Partial |
+| [UCIe-VIP](test_suites/UCIe-VIP.md) | Interconnect | `smoke_func_tb.sv`, `func_ucie_sb3_tb.sv`, `func_ucie_d2d_tb.sv` | 130 | iverilog/verilator | 10/10 | 0 | ✅ Sufficient |
 | [UEC-VIP](test_suites/UEC-VIP.md) | Networking | `smoke_func_tb.sv` | 16 | iverilog | 12/12 | 0 | ✅ Sufficient |
 | [UFS-VIP](test_suites/UFS-VIP.md) | Memory | `func_ufs_tb.sv` | 28 | verilator | 11/12 | 0 | ✅ Sufficient |
 | [USB-VIP](test_suites/USB-VIP.md) | USB | `func_usb_tb.sv` | 29 | iverilog | 26/30 | 0 | ✅ Sufficient |

@@ -145,12 +145,12 @@ forever begin
     if (!vif.mon_cb.dq_s_oe) `uvm_error("MON", "xSPI: DS edge without the device driving DQ")
     db.push_back(vif.mon_cb.dq_s);
   end
-  if (vif.mon_cb.cs_n && !cs_p) build(hb, db, rbeats);
+  if (vif.mon_cb.cs_n && !cs_p) assemble(hb, db, rbeats);
   ck_p = vif.mon_cb.ck; ds_p = vif.mon_cb.ds; cs_p = vif.mon_cb.cs_n;
 end
 """,
     mon_tasks="""
-function void build(bit [7:0] hb[$], bit [7:0] db[$], int unsigned rbeats);
+function void assemble(bit [7:0] hb[$], bit [7:0] db[$], int unsigned rbeats);
   xspi_transaction t = xspi_transaction::type_id::create("t");
   int n = 2;
   if (hb.size() < 2) begin

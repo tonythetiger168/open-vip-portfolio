@@ -11,14 +11,23 @@ Always exits 0; CI must grep for ``^ELAB_ERRORS=0$`` to judge pass/fail.
 
 The Accellera uvm-core ``src`` directory is located via the ``UVM_CORE``
 environment variable; if unset, ``<repo>/uvm-core/src`` is used.
+
+``xchk/`` directories hold cross-check benches for open-ip-portfolio RTL
+that this repo does not ship (see tools/sync_xchk_models.py). They are left
+out unless ``OIP_DIR`` names an open-ip-portfolio checkout; then they are
+elaborated too, with ``$OIP_DIR/rtl`` as a library directory (``-y``).
 """
 import sys, os, glob
 from pyslang import driver
 from pyslang.pyslang import DiagnosticEngine, DiagnosticSeverity
 _repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UVM = os.environ.get('UVM_CORE', os.path.join(_repo_root, 'uvm-core', 'src'))
+OIP = os.environ.get('OIP_DIR', '')
 def ordered(root):
     allsv = sorted(glob.glob(os.path.join(root,'**','*.sv'), recursive=True))
+    if not OIP:
+        allsv = [f for f in allsv
+                 if 'xchk' not in os.path.relpath(f, root).split(os.sep)[:-1]]
     def key(f):
         b = os.path.basename(f)
         if 'common_pkg' in b: return (0,f)
@@ -31,8 +40,9 @@ def ordered(root):
 def run(root):
     files, allsv = ordered(root)
     incdirs = sorted({os.path.dirname(f) for f in allsv} | {UVM, UVM+'/macros'})
+    lib = f" -y {os.path.join(OIP, 'rtl')} --libext .sv" if OIP else ''
     d = driver.Driver(); d.addStandardArgs()
-    if not d.parseCommandLine('--lint-only --single-unit --timescale=1ns/1ps ' + ' '.join(f'-I{x}' for x in incdirs) + ' ' + ' '.join(files)):
+    if not d.parseCommandLine('--lint-only --single-unit --timescale=1ns/1ps ' + ' '.join(f'-I{x}' for x in incdirs) + lib + ' ' + ' '.join(files)):
         return ['CMDLINE_FAIL'], ['CMDLINE_FAIL'], ['CMDLINE_FAIL']
     d.processOptions()
     if not d.parseAllSources():

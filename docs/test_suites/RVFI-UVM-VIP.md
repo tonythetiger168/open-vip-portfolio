@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Debug |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，59 個 check，全部通過 |
-| Mutation | 23/29 個 mutant 被偵測（79%） |
-| 判定 | **🟡 Partial**（mutation score 79%） |
+| 功能測試 | 1 個檔案，63 個 check，全部通過 |
+| Mutation | 25/25 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（63 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，59 checks）
+結果：**PASS**（iverilog，63 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -83,10 +83,14 @@ Functional smoke testbench (RVFI DUT model)
 | 53 | load with funct3 3 traps | check |
 | 54 | lw off a base register reports rs1 | check |
 | 55 | jalr clears bit 0 of the target | check |
-| 56 | jal x0, 0 loops | check |
-| 57 | halt 0, mode M, ixl 32 on every record | check |
-| 58 | never a fetch and a data request together | check |
-| 59 | data memory after the stores | check |
+| 56 | sltu of equal operands is 0 | check |
+| 57 | store with funct3 3 traps, no write | check |
+| 58 | handler counted thirteen traps | check |
+| 59 | handler returns past the illegal store | check |
+| 60 | jal x0, 0 loops | check |
+| 61 | halt 0, mode M, ixl 32 on every record | check |
+| 62 | never a fetch and a data request together | check |
+| 63 | data memory after the stores | check |
 
 ## 3. UVM 測試平台內容
 
@@ -101,14 +105,7 @@ UVM agent test（`rvfi_func_test`：directed + constrained-random 流量，score
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（mutation score 79%）。
+判定：**✅ Sufficient**（63 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_rvfi_model.sv:62 1'b0 inverted [l_rd <= '0; l_f3 <= '0; l_off <= '0; l_ld <= 1'b0;]`
-- `dut_rvfi_model.sv:84 20 -> 21 [ii = {{20{i[31]}}, i[31:20]};]`
-- `dut_rvfi_model.sv:123 1'b1 inverted [if (f3 > 3'd2) trap = 1'b1;]`
-- `dut_rvfi_model.sv:127 0 -> 1 [for (int k = 0; k < 4; k++) if (!m[k]) wd[8*k +: 8] = 8'h00;]`
-- `dut_rvfi_model.sv:152 < -> <= in condition [3'd3: r = (a < b) ? 32'd1 : 32'd0;]`
-- `dut_rvfi_model.sv:195 24 -> 25 [3'd0: r = {{24{sh[7]}}, sh[7:0]};]`
+無已知缺口。
 

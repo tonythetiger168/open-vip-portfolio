@@ -198,12 +198,12 @@ forever begin
       end else nrel++;
       if (ne == 2) l2x = vif.mon_cb.rwds_s;
     end
-  end else if (!cs_p) build(hb, mk, db, l2x, nrel, first, firstw);
+  end else if (!cs_p) assemble(hb, mk, db, l2x, nrel, first, firstw);
   ck_p = vif.mon_cb.ck; rw_p = vif.mon_cb.rwds_s; cs_p = vif.mon_cb.cs_n;
 end
 """,
     mon_tasks="""
-function void build(bit [7:0] hb[$], bit mk[$], bit [7:0] db[$], bit l2x, int nrel, int first, int firstw);
+function void assemble(bit [7:0] hb[$], bit mk[$], bit [7:0] db[$], bit l2x, int nrel, int first, int firstw);
   hyperbus_transaction t = hyperbus_transaction::type_id::create("t");
   bit [47:0] ca = 0;
   if (hb.size() < 6) begin
