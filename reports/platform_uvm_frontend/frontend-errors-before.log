@@ -1,0 +1,10 @@
+outputs\platform-update\open-vip-portfolio\ipcheck\platform\uvm\platform_apb_pkg.sv:76:19: error: virtual method 'check' has different number of arguments from its superclass method
+    function void check(bit okay, string message);
+                  ^
+in file included from work\uvm-core-2020.3.1\src\uvm_pkg.sv:57:
+in file included from work\uvm-core-2020.3.1\src\base\uvm_base.svh:125:
+work\uvm-core-2020.3.1\src\base\uvm_component.svh:3776:30: note: declared here
+function void uvm_component::check();               return; endfunction
+                             ^
+outputs\platform-update\open-vip-portfolio\ipcheck\platform\uvm\platform_apb_pkg.sv:89:20: warning: implicit conversion changes signedness from 'logic[31:0]' to 'int' [-Wsign-conversion]
+        word_index=(t.addr%1024)/4;

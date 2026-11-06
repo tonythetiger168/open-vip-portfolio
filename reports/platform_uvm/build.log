@@ -1,0 +1,8 @@
+%Error-PKGNODECL: /mnt/c/Users/chien/Documents/Codex/2026-10-26/soc-design-platform/work/uvm-core-2020.3.1/src/base/uvm_coreservice.svh:379:42: Package/class 'type_id' not found, and needs to be predeclared (IEEE 1800-2023 26.3)
+  379 |             m_hopper = uvm_phase_hopper::type_id::create("default_hopper");
+      |                                          ^~~~~~~
+                  /mnt/c/Users/chien/Documents/Codex/2026-10-26/soc-design-platform/work/uvm-core-2020.3.1/src/base/uvm_base.svh:54:1: ... note: In file included from 'uvm_base.svh'
+                  /mnt/c/Users/chien/Documents/Codex/2026-10-26/soc-design-platform/work/uvm-core-2020.3.1/src/uvm_pkg.sv:58:1: ... note: In file included from 'uvm_pkg.sv'
+                  ... For error description see https://verilator.org/warn/PKGNODECL?v=5.032
+%Error: Exiting due to 1 error(s)
+        ... See the manual at https://verilator.org/verilator_doc.html for more assistance.

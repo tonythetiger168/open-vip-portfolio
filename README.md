@@ -1,6 +1,10 @@
 # Open VIP Portfolio
 
-> A comprehensive, open-source collection of **118 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
+> TV／STB／IPCAM：請先核對 [平台驗證矩陣](docs/design/platform_bus_host_matrix.md) 的 DUT／agent 角色。測試套件的 Sufficient 僅針對模型範圍，不等於 host、DMA 或產品合規完成。
+
+> 新增 [shared UVM／六類 coverage 計畫](docs/design/platform_shared_uvm_plan.md) 及有界 RTL seed/replay gate；procedural fixture campaign 通過不等於 UVM 或完整 SoC coverage 100%。
+
+> A comprehensive, open-source collection of **130 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
 
 [![License](https://img.shields.io/badge/License-Apache%%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![VIP Count](https://img.shields.io/badge/VIPs-130-brightgreen.svg)]()
@@ -262,7 +266,7 @@ open-vip-portfolio/
 |-- README.md
 |-- vip_individual_portfolio.csv   # machine-readable index (130 entries)
 |-- smoke_report.csv               # full open-toolchain L1b smoke results
-|-- vips/                          # 118 individual VIP zip files
+|-- vips/                          # 130 individual VIP zip files
 |-- .github/workflows/             # CI validation
 |-- docs/                          # CONTRIBUTING and guides
 ```
@@ -308,3 +312,4 @@ Contributions are welcome! Please see [docs/CONTRIBUTING.md](docs/CONTRIBUTING.m
 ---
 
 *Release v1.10.0 -- generated from vip_individual_portfolio.csv*
+

@@ -1,0 +1,3 @@
+# SPDX-License-Identifier: Apache-2.0
+pyslang==12.1.0
+nanobind-backend==1.0.0
