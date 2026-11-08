@@ -576,3 +576,5 @@ SD_Card-UVM-VIP,dut_sdc_model.sv:83,32 -> 33,"the extra iteration writes bits be
 eMMC_Device-UVM-VIP,dut_emd_model.sv:35,119 -> 120,"the i < n guard skips index 120: n is at most 120"
 eMMC_Device-UVM-VIP,dut_emd_model.sv:81,1'b0 inverted,"n_cmd reset value only reaches cmd_s while cmd_s_oe is low, where nothing reads it"
 eMMC_Device-UVM-VIP,dut_emd_model.sv:132,120 -> 121,"crc7 walks d[119:0] only, so any n >= 120 covers the same bits"
+SDMMC_Card-UVM-VIP,dut_sdm_model.sv:39,< -> <= in condition,"the extra step at i = n feeds a pad zero into a zero CRC, which stays zero"
+SDMMC_Card-UVM-VIP,dut_sdm_model.sv:184,120 -> 121,"crc7 walks d[119:0] only, so any n >= 120 covers the same bits"
