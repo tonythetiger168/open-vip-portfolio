@@ -474,12 +474,14 @@ task automatic chk(input bit ok, input string msg);
   if (!ok) begin fails++; $display("  [FAIL] %s", msg); end
 endtask
 
-integer nrep = 0;
+integer nrep = 0, cyc = 0, rcyc = 0, bad_end = 0;
 logic [1:0] r_pr, r_er;
 logic [15:0] r_ad;
 logic [7:0] r_cm;
 logic r_tg;
+always @(posedge clk) cyc = cyc + 1;
 always @(posedge clk) if (rep_valid) begin
+  rcyc = cyc;
   nrep = nrep + 1; r_pr = rep_proto; r_ad = rep_addr; r_cm = rep_cmd; r_tg = rep_toggle; r_er = rep_err;
 end
 
@@ -514,6 +516,34 @@ task automatic rc5(input logic [13:0] r, input integer long_h = -1);
     if (i != 13) begin ir_in = r[i] ? 1'b1 : 1'b0; repeat ((hn == long_h) ? 3 * H : H) @(negedge clk); end
     hn = hn + 1;
     ir_in = r[i] ? 1'b0 : 1'b1; repeat ((hn == long_h) ? 3 * H : H) @(negedge clk);
+    hn = hn + 1;
+  end
+  idle();
+endtask
+// NEC with explicit leader space ls, one bit (bi) with mark bm / space bs, trailing space tr
+task automatic necx(input logic [31:0] w, input integer ls, input integer bi, input integer bm, input integer bs,
+                    input integer tr = 200);
+  r0 = nrep;
+  lvl(0, 16 * T); lvl(1, ls);
+  for (int i = 0; i < 32; i++) begin
+    lvl(0, (i == bi) ? bm : T);
+    lvl(1, (i == bi) ? bs : (w[i] ? 3 * T : T));
+  end
+  lvl(0, T); lvl(1, tr);
+endtask
+// RC5 with half bit number hidx lasting hlen clocks
+task automatic rc5x(input logic [13:0] r, input integer hidx, input integer hlen);
+  integer hn;
+  // half 0 is the invisible first half of S1; half 2i + 1 / 2i + 2 are the halves of bit 13 - i
+  r0 = nrep; hn = 1;
+  for (int i = 13; i >= 0; i--) begin
+    if (i != 13) begin
+      ir_in = r[i] ? 1'b1 : 1'b0; repeat ((hn == hidx) ? hlen : H) @(negedge clk);
+      if (hn == hidx) bad_end = cyc;
+      hn = hn + 1;
+    end
+    ir_in = r[i] ? 1'b0 : 1'b1; repeat ((hn == hidx) ? hlen : H) @(negedge clk);
+    if (hn == hidx) bad_end = cyc;
     hn = hn + 1;
   end
   idle();
@@ -559,6 +589,26 @@ initial begin
   r0 = nrep; lvl(0, 16 * T); lvl(1, 4 * T); lvl(0, T); lvl(1, 50); lvl(0, 3); lvl(1, 50); lvl(0, 40); idle();
   chk(got(1, 16'h00A5, 8'h5A, 0, 0), "marks while re-arming (under 20T of space) are ignored");
   r0 = nrep; lvl(0, 3); idle(); chk(got(0, 0, 0, 0, 2), "3-clock glitch once armed: error");
+  // window edges (T = 8: unit [4, 12], 1-space [16, 32], leader space [48, 80]; H = 14: half [7, 21])
+  necx(w8(8'h11, 8'h22), 80, -1, T, T); chk(got(0, 16'h0011, 8'h22, 0, 0), "leader space 10T accepted");
+  necx(w8(8'h11, 8'h22), 81, -1, T, T); chk(got(0, 0, 0, 0, 2), "leader space 10T + 1 rejected");
+  necx(w8(8'h11, 8'h22), 64, 0, T, 32); chk(got(0, 16'h0011, 8'h22, 0, 0), "bit space 4T is a 1");
+  necx(w8(8'h11, 8'h22), 64, 0, T, 33); chk(got(0, 0, 0, 0, 2), "bit space 4T + 1 rejected");
+  necx(w8(8'h11, 8'h22), 64, 3, 4, T); chk(got(0, 16'h0011, 8'h22, 0, 0), "bit mark T/2 accepted");
+  necx(w8(8'h11, 8'h22), 64, 3, 3, T); chk(got(0, 0, 0, 0, 2), "bit mark T/2 - 1 rejected");
+  necx(w8(8'h11, 8'h22), 64, 3, 12, T); chk(got(0, 16'h0011, 8'h22, 0, 0), "bit mark 3T/2 accepted");
+  necx(w8(8'h11, 8'h22), 64, 3, 13, T); chk(got(0, 0, 0, 0, 2), "bit mark 3T/2 + 1 rejected");
+  r0 = nrep; lvl(0, 6); idle(); chk(got(0, 0, 0, 0, 2), "first mark of 6 clocks: neither NEC nor RC5");
+  // the receiver re-arms after exactly 20T of space
+  necx(w8(8'h33, 8'h44), 64, -1, T, T, 160); r0 = nrep; nec(w8(8'h55, 8'h66));
+  chk(got(0, 16'h0055, 8'h66, 0, 0), "a frame 20T after the last one is decoded");
+  necx(w8(8'h33, 8'h44), 64, -1, T, T, 159); r0 = nrep; nec(w8(8'h55, 8'h66));
+  chk(nrep == r0, "a frame 20T - 1 after the last one is ignored");
+  rc5x({1'b1, 1'b1, 1'b0, 5'h00, 6'h00}, 6, 21); chk(got(2, 0, 0, 0, 0), "RC5 mark half of 3H/2 accepted");
+  rc5x({1'b1, 1'b1, 1'b0, 5'h00, 6'h00}, 7, 21); chk(got(2, 0, 0, 0, 0), "RC5 space half of 3H/2 accepted");
+  rc5x({1'b1, 1'b1, 1'b0, 5'h00, 6'h00}, 6, 6); chk(got(2, 0, 0, 0, 2), "RC5 mark half of 6 rejected");
+  rc5x({1'b1, 1'b1, 1'b0, 5'h00, 6'h00}, 7, 5); chk(got(2, 0, 0, 0, 2) && rcyc - bad_end <= 3, "RC5 space half of 5 rejected at its end");
+  rc5x({1'b1, 1'b1, 1'b0, 5'h00, 6'h00}, 6, 40); chk(got(2, 0, 0, 0, 2) && rcyc - bad_end <= 3, "RC5 mark of 40 rejected at its end");
   if (fails == 0) $display("FUNC_PASS checks=%0d", checks);
   else            $display("FUNC_FAIL checks=%0d fails=%0d", checks, fails);
   $finish;
