@@ -1,10 +1,10 @@
 # Open VIP Portfolio
 
-> A comprehensive, open-source collection of **143 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
+> A comprehensive, open-source collection of **145 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
 
 [![License](https://img.shields.io/badge/License-Apache%%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![VIP Count](https://img.shields.io/badge/VIPs-143-brightgreen.svg)]()
-[![Protocols](https://img.shields.io/badge/Protocols-143-orange.svg)]()
+[![VIP Count](https://img.shields.io/badge/VIPs-145-brightgreen.svg)]()
+[![Protocols](https://img.shields.io/badge/Protocols-145-orange.svg)]()
 
 ---
 
@@ -12,9 +12,9 @@
 
 This repository provides a **modular, per-protocol verification IP library** covering major interface standards used in modern semiconductor design. Each entry is packaged as a standalone zip file.
 
-- **143 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
+- **145 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
 - **RTL IPs** -- the synthesizable reference RTL lives in [open-ip-portfolio](https://github.com/tonythetiger168/open-ip-portfolio); the column `open-ip 對應` of the CSV maps each VIP to its IP there
-- **143 distinct protocols** across 20 families
+- **145 distinct protocols** across 20 families
 
 All source files are licensed under **Apache License 2.0**.
 
@@ -192,12 +192,13 @@ All source files are licensed under **Apache License 2.0**.
 | MCTP over SMBus (DMTF DSP0237) | UVM VIP | `MCTP-UVM-VIP.zip` | 25KB |
 | SMBus/PMBus | UVM VIP | `SMBus-UVM-VIP.zip` | 26KB |
 
-### Security (4)
+### Security (5)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | Crypto / Security Engine | UVM VIP | `Security-VIP.zip` | 36KB |
 | HDCP 2.3 Content Protection | UVM VIP | `HDCP-VIP.zip` | 32KB |
+| ISO 7816-3 smartcard (T = 0, PPS) | UVM VIP | `Smartcard_ISO7816-UVM-VIP.zip` | 27KB |
 | MACsec (IEEE 802.1AE, GCM-AES-128) | UVM VIP | `MACsec-UVM-VIP.zip` | 29KB |
 | PCIe IDE (AES-256-GCM) | UVM VIP | `PCIe_IDE-UVM-VIP.zip` | 28KB |
 
@@ -216,12 +217,13 @@ All source files are licensed under **Apache License 2.0**.
 | UART | UVM VIP | `UART-VIP.zip` | 36KB |
 | xSPI (JESD251) | UVM VIP | `xSPI-UVM-VIP.zip` | 23KB |
 
-### Storage (5)
+### Storage (6)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | eMMC device (1-bit, RST_n) | UVM VIP | `eMMC_Device-UVM-VIP.zip` | 27KB |
 | SAS-4 (Serial Attached SCSI) | UVM VIP | `SAS-VIP.zip` | 34KB |
+| SD / eMMC card (1/4/8-bit, 512-byte blocks) | UVM VIP | `SDMMC_Card-UVM-VIP.zip` | 31KB |
 | SD memory card (4-bit) | UVM VIP | `SD_Card-UVM-VIP.zip` | 27KB |
 | SDIO | UVM VIP | `SDIO-UVM-VIP.zip` | 23KB |
 | Toggle Mode NAND | UVM VIP | `ToggleNAND-VIP.zip` | 33KB |
@@ -275,6 +277,7 @@ Models a SoC testbench uses next to the protocol VIPs, kept as source under
 | Library | Content |
 |---|---|
 | [`soc/dram_timing`](soc/dram_timing/README.md) | DRAM channel timing for memory slaves, chosen by preset name (`ddr4-2400`, `ddr4-3200`, `lpddr4-3200`, `lpddr4x-4266`, `lpddr5-6400`, `lpddr5x-8533`), the name socgen's `memories[].timing` carries |
+| [`soc/device_models`](soc/device_models/README.md) | Device-side models a SoC bench hangs on IP pins without a UVM agent: `csi2_tx_model` (camera sensor into CSI_2_top), `gmii_phy_model` (link partner with echo for Ethernet_top), `i2s_codec_model` (I2S clock master for I2S_top), each self-tested against the open-ip-portfolio RTL |
 
 ## Repository Structure
 
@@ -282,9 +285,9 @@ Models a SoC testbench uses next to the protocol VIPs, kept as source under
 open-vip-portfolio/
 |-- LICENSE
 |-- README.md
-|-- vip_individual_portfolio.csv   # machine-readable index (143 entries)
+|-- vip_individual_portfolio.csv   # machine-readable index (145 entries)
 |-- smoke_report.csv               # full open-toolchain L1b smoke results
-|-- vips/                          # 143 individual VIP zip files
+|-- vips/                          # 145 individual VIP zip files
 |-- .github/workflows/             # CI validation
 |-- docs/                          # CONTRIBUTING and guides
 ```

@@ -4,9 +4,9 @@
 
 ## 1. 結論
 
-- 143 個 VIP 中 143 個有可在開源工具上執行的 self-checking 功能測試，共 4277 個 check（另有 RTL IP testbench 的 0 次斷言評估）；143 個 VIP 的測試全部通過。
-- 判定：✅ Sufficient 143、🟡 Partial 0、❌ Insufficient 0。
-- Mutation testing：2200 個有效 mutant 中 2109 個被功能測試偵測（96%）。
+- 145 個 VIP 中 145 個有可在開源工具上執行的 self-checking 功能測試，共 4371 個 check（另有 RTL IP testbench 的 0 次斷言評估）；145 個 VIP 的測試全部通過。
+- 判定：✅ Sufficient 145、🟡 Partial 0、❌ Insufficient 0。
+- Mutation testing：2259 個有效 mutant 中 2168 個被功能測試偵測（96%）。
 - 沒有未修正的 DUT 模型缺陷：功能測試中沒有 XFAIL check（先前記錄的缺陷都已在模型中修正）。
 
 ## 2. 方法
@@ -125,6 +125,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [SCCB_Sensor-UVM-VIP](test_suites/SCCB_Sensor-UVM-VIP.md) | MIPI | `smoke_func_tb.sv` | 18 | iverilog | 23/23 | 0 | ✅ Sufficient |
 | [SD-VIP](test_suites/SD-VIP.md) | Memory | `func_sd_tb.sv` | 35 | verilator | 10/10 | 0 | ✅ Sufficient |
 | [SDIO-UVM-VIP](test_suites/SDIO-UVM-VIP.md) | Storage | `smoke_func_tb.sv` | 27 | iverilog | 17/17 | 0 | ✅ Sufficient |
+| [SDMMC_Card-UVM-VIP](test_suites/SDMMC_Card-UVM-VIP.md) | Storage | `smoke_func_tb.sv` | 60 | iverilog | 29/29 | 0 | ✅ Sufficient |
 | [SD_Card-UVM-VIP](test_suites/SD_Card-UVM-VIP.md) | Storage | `smoke_func_tb.sv` | 32 | iverilog | 28/28 | 0 | ✅ Sufficient |
 | [SENT-VIP](test_suites/SENT-VIP.md) | Automotive | `smoke_func_tb.sv` | 16 | iverilog | 15/15 | 0 | ✅ Sufficient |
 | [SGMII-UVM-VIP](test_suites/SGMII-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 23 | verilator | 12/12 | 0 | ✅ Sufficient |
@@ -137,6 +138,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [SUE-UVM-VIP](test_suites/SUE-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 30 | iverilog | 28/28 | 0 | ✅ Sufficient |
 | [SWD-VIP](test_suites/SWD-VIP.md) | Debug | `func_swd_tb.sv` | 23 | verilator | 11/12 | 0 | ✅ Sufficient |
 | [Security-VIP](test_suites/Security-VIP.md) | Security | `func_security_tb.sv` | 17 | iverilog | 25/25 | 0 | ✅ Sufficient |
+| [Smartcard_ISO7816-UVM-VIP](test_suites/Smartcard_ISO7816-UVM-VIP.md) | Security | `smoke_func_tb.sv` | 34 | verilator | 30/30 | 0 | ✅ Sufficient |
 | [SoundWire-VIP](test_suites/SoundWire-VIP.md) | MIPI | `func_soundwire_tb.sv` | 18 | verilator | 6/7 | 0 | ✅ Sufficient |
 | [SpaceWire-UVM-VIP](test_suites/SpaceWire-UVM-VIP.md) | Aerospace | `smoke_func_tb.sv` | 38 | iverilog | 25/26 | 0 | ✅ Sufficient |
 | [T1S_PLCA-UVM-VIP](test_suites/T1S_PLCA-UVM-VIP.md) | Automotive | `smoke_func_tb.sv` | 19 | verilator | 9/9 | 0 | ✅ Sufficient |
