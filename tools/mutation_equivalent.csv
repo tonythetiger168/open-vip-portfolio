@@ -558,3 +558,6 @@ HDMI_Source-UVM-VIP,dut_hdmisrc_model.sv:70,1'b0 inverted,vs_q / gbs are reloade
 HDMI_Source-UVM-VIP,dut_hdmisrc_model.sv:73,1'b0 inverted,pkt_ok only matters with pkt_valid, which loads it
 HDMI_Source-UVM-VIP,dut_hdmisrc_model.sv:102,== flipped,h / s are cleared after every packet; clearing them at other guard band characters changes nothing
 HDMI_Source-UVM-VIP,dut_hdmisrc_model.sv:113,4 -> 5,sn[256 +: 56] is past the four subpackets (X): the X compare leaves ok unchanged
+CSI2_Sensor-UVM-VIP,dut_csis_model.sv:36,24 -> 25,"bit 24 of a 24-bit one-hot shift is 0 and ecc24(0) = 0, which only matches syn = 0, already a clean header"
+CSI2_Sensor-UVM-VIP,dut_csis_model.sv:69,1'b0 inverted,"corr is written at every accepted header before the only states that read it (payload, CRC), so its reset value is never observed"
+GMII_PHY-UVM-VIP,dut_gphy_model.sv:104,== flipped,"the loopback client holds at most one frame and the next one is received only after 12 quiet byte times, so a shorter inter-frame gap is never followed by a frame"
