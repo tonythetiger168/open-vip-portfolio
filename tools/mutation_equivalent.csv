@@ -573,3 +573,6 @@ SCCB_Sensor-UVM-VIP,dut_sccb_model.sv:44,512 -> 513,"regs[512] is out of range, 
 SCCB_Sensor-UVM-VIP,dut_sccb_model.sv:80,< -> <= in condition,"a write at 0x0200 lands in regs[0], which is never read (0x0000 returns the constant chip ID)"
 SD_Card-UVM-VIP,dut_sdc_model.sv:77,1'b0 inverted,"ccs reset value is dead: CMD0 clears it and only a ready ACMD41 can reach the data commands, and that sets it"
 SD_Card-UVM-VIP,dut_sdc_model.sv:83,32 -> 33,"the extra iteration writes bits below index 0 of the block, an out-of-range write that is dropped"
+eMMC_Device-UVM-VIP,dut_emd_model.sv:35,119 -> 120,"the i < n guard skips index 120: n is at most 120"
+eMMC_Device-UVM-VIP,dut_emd_model.sv:81,1'b0 inverted,"n_cmd reset value only reaches cmd_s while cmd_s_oe is low, where nothing reads it"
+eMMC_Device-UVM-VIP,dut_emd_model.sv:132,120 -> 121,"crc7 walks d[119:0] only, so any n >= 120 covers the same bits"
