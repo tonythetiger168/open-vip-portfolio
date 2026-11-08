@@ -566,3 +566,8 @@ I2S_Codec-UVM-VIP,dut_i2sc_model.sv:27,1'b0 inverted,"bclk idles high and sdin l
 I2S_Codec-UVM-VIP,dut_i2sc_model.sv:40,1'b0 inverted,"a pending load or channel select out of reset loads a transmit register that is still 0, the same zeros a shift gives; both are overwritten at the first lrck change"
 I2S_Codec-UVM-VIP,dut_i2sc_model.sv:56,1'b0 inverted,"rx_ch_n and rx_ch are written at the first lrck change before any word is stored (rx_cnt starts at DW, so nothing is stored before it); the rx_pend mutant is killed"
 SPI_NOR-UVM-VIP,dut_snor_model.sv:24,1'b1 inverted,"the host releases IO0 only in the quad data phase and after the last edge, where the flash takes no command, address or program bit, so the pull-up value is never sampled"
+SCCB_Sensor-UVM-VIP,dut_sccb_model.sv:42,1'b0 inverted,"ack and rw are written at the eighth bit of every address / data byte, before the ACK clock that reads them"
+SCCB_Sensor-UVM-VIP,dut_sccb_model.sv:43,1'b1 inverted,"the bus is idle high out of reset: a cleared synchroniser flop gives at most a spurious rise or STOP in the idle state, which leaves the target idle"
+SCCB_Sensor-UVM-VIP,dut_sccb_model.sv:44,0 -> 1,"regs[0] is never read: register 0x0000 returns the constant chip ID"
+SCCB_Sensor-UVM-VIP,dut_sccb_model.sv:44,512 -> 513,"regs[512] is out of range, the write is dropped"
+SCCB_Sensor-UVM-VIP,dut_sccb_model.sv:80,< -> <= in condition,"a write at 0x0200 lands in regs[0], which is never read (0x0000 returns the constant chip ID)"
