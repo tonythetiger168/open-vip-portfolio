@@ -33,6 +33,13 @@ class video_codec_job_base_test extends video_codec_base_test;
     super.new(name, parent);
   endfunction
 
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    job_fcov_bins();
+    fcov_bins("mode", '{"encode", "decode"});
+    fcov_bins("line_words", '{"0_whole_frame", "1", "2_479", "480_1919_1080p", "1920_up_8k"});
+  endfunction
+
   static function void dpcm(bit [31:0] in[$], bit decode, int unsigned line_words, ref bit [31:0] out[$],
                             output int unsigned zeros, output bit [31:0] sum);
     bit [7:0] pred;
@@ -62,6 +69,9 @@ class video_codec_job_base_test extends video_codec_base_test;
     job_input(src, len, in, rerr);
     dpcm(in, decode, line_words, out, z, sum);
     wr("CTRL", decode);
+    fcov("mode", decode ? "decode" : "encode");
+    fcov("line_words", (line_words == 0) ? "0_whole_frame" : (line_words == 1) ? "1" : (line_words < 480) ? "2_479" :
+                       (line_words < 1920) ? "480_1919_1080p" : "1920_up_8k");
     wr("LINE", line_words);
     run_job(tag, src, dst, len, out, rerr);
     rd("ZEROS", v);
@@ -99,13 +109,17 @@ class video_codec_roundtrip_test extends video_codec_job_base_test;
     wait_reset();
     for (int unsigned i = 0; i < 16; i++) begin
       int unsigned lw = lws[i % lws.size()];
-      int unsigned len = (lw >= 480) ? lw * 2 + $urandom_range(1, lw - 1) : $urandom_range(1, 700);
+      int unsigned len = (lw >= 480) ? lw * 2 + $urandom_range(1, lw - 1) :
+                         (i < 3) ? ((i == 0) ? 1 : (i == 1) ? 9 : 16) : $urandom_range(1, 700);
+      // word offsets inside the page so bursts split at 4 KB boundaries in every way
+      bit [31:0] a = 32'h1000_0000 + 4 * $urandom_range(0, 1023), b = 32'h2000_0000 + 4 * $urandom_range(0, 1023),
+                 c = 32'h3000_0000 + 4 * $urandom_range(0, 1023);
       backpressure(i);
-      frame(i, 32'h1000_0000, len, w);
-      job($sformatf("encode %0d lw=%0d len=%0d", i, lw, len), 0, 32'h1000_0000, 32'h2000_0000, len, lw, c1);
-      job($sformatf("decode %0d", i), 1, 32'h2000_0000, 32'h3000_0000, len, lw, c2);
-      mem().get_words(32'h3000_0000, len, back);
-      check_words(32'h3000_0000, w, $sformatf("frame %0d after encode + decode", i));
+      frame(i, a, len, w);
+      job($sformatf("encode %0d lw=%0d len=%0d", i, lw, len), 0, a, b, len, lw, c1);
+      job($sformatf("decode %0d", i), 1, b, c, len, lw, c2);
+      mem().get_words(c, len, back);
+      check_words(c, w, $sformatf("frame %0d after encode + decode", i));
       check_eq(c2, c1, $sformatf("frame %0d: CHECKSUM of encode and decode", i));
     end
     phase.drop_objection(this);

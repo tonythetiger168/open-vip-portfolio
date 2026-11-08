@@ -23,7 +23,7 @@
   ready, 70 % and 30 % ready; four AXI back-pressure settings. Every pixel in
   order, hsync / vsync on exactly the right pixels, FRAME_CRC, UNDERRUNS =
   the panel's own count, no AXI write at all, reads inside SRC only, AXI ID 4.
-- `display_controller_err_test`: a frame read across a SLVERR region (those
+- `display_controller_err_test`: a frame read across a SLVERR and a DECERR region (those
   pixels arrive as 0 and enter the CRC as 0): DONE + ERR, STATUS.err; a clean
   frame clears it.
 */
@@ -90,6 +90,11 @@ class display_controller_job_base_test extends display_controller_base_test;
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     panel = display_panel_sink::type_id::create("panel", this);
+    job_fcov_bins();
+    fcov_bins("line_words", '{"0_every_pixel", "1", "2_639", "640_1919_vga", "1920_7679_1080p", "7680_up_8k"});
+    fcov_bins("panel", '{"always_ready", "throttled"});
+    fcov_bins("underrun", '{"none", "some"});
+    fcov_bins("frame_end", '{"line_end", "mid_line"});
   endfunction
 
   function void connect_phase(uvm_phase phase);
@@ -130,6 +135,11 @@ class display_controller_job_base_test extends display_controller_base_test;
     check_eq(v, crc32_words(in), {tag, " FRAME_CRC"});
     rd("UNDERRUNS", v);
     check_eq(v, panel.underruns, {tag, " UNDERRUNS"});
+    fcov("line_words", (line_words == 0) ? "0_every_pixel" : (line_words == 1) ? "1" : (line_words < 640) ? "2_639" :
+                       (line_words < 1920) ? "640_1919_vga" : (line_words < 7680) ? "1920_7679_1080p" : "7680_up_8k");
+    fcov("panel", (panel.ready_pct >= 100) ? "always_ready" : "throttled");
+    fcov("underrun", panel.underruns ? "some" : "none");
+    if (line_words > 1) fcov("frame_end", (len % line_words == 0) ? "line_end" : "mid_line");
     sb_check(panel.hold_errors == 0, $sformatf("%s: a pixel changed or vanished before pix_ready", tag));
   endtask
 endclass
@@ -148,7 +158,8 @@ class display_controller_scan_test extends display_controller_job_base_test;
     wait_reset();
     for (int unsigned i = 0; i < 20; i++) begin
       int unsigned lw = lws[i % lws.size()];
-      int unsigned len = (lw >= 640) ? lw * $urandom_range(1, 2) + $urandom_range(1, lw - 1) : $urandom_range(1, 600);
+      int unsigned len = (lw >= 640) ? lw * $urandom_range(1, 2) + $urandom_range(1, lw - 1) :
+                         (i < 3) ? ((i == 0) ? 1 : (i == 1) ? 9 : 16) : $urandom_range(1, 600);
       bit [31:0] src = rand_addr(32'h1000_0000, 32'h0008_0000, len);
       backpressure(i);
       panel.ready_pct = rdy[i % 3];
@@ -171,6 +182,7 @@ class display_controller_err_test extends display_controller_job_base_test;
     phase.raise_objection(this);
     wait_reset();
     env.axi_cfg.add_err_region(32'h1000_0080, 32'h1000_00C0, AXI_SLVERR);
+    env.axi_cfg.add_err_region(32'h1000_0140, 32'h1000_0150, AXI_DECERR);
     fill_random(32'h1000_0000, 512, w);
     frame("read error", 32'h1000_0000, 120, 40);
     frame("clean", 32'h1000_0400, 64, 16);

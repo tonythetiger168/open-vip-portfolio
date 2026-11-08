@@ -28,6 +28,13 @@ class gpu_job_base_test extends gpu_base_test;
     super.new(name, parent);
   endfunction
 
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    job_fcov_bins();
+    fcov_bins("mode", '{"copy", "fill", "blend", "invert"});
+    fcov_bins("alpha", '{"0", "1_255", "256_up"});
+  endfunction
+
   static function bit [31:0] op(bit [1:0] mode, bit [31:0] s, bit [31:0] color, int unsigned alpha);
     bit [31:0] o;
     int unsigned a = (alpha > 256) ? 256 : alpha;
@@ -46,6 +53,11 @@ class gpu_job_base_test extends gpu_base_test;
     if (mode != 1) job_input(src, len, in, rerr);
     for (int unsigned i = 0; i < len; i++) exp.push_back(op(mode, (mode == 1) ? 32'h0 : in[i], color, alpha));
     wr_fields("CTRL", '{"mode", "alpha"}, '{mode, alpha});
+    begin
+      string mn[4] = '{"copy", "fill", "blend", "invert"};
+      fcov("mode", mn[mode]);
+      if (mode == 2) fcov("alpha", (alpha == 0) ? "0" : (alpha < 256) ? "1_255" : "256_up");
+    end
     wr("COLOR", color);
     run_job(tag, src, dst, len, exp, rerr, (mode == 1) ? 0 : len);
     rd("PIXELS", v);

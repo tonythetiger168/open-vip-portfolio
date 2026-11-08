@@ -29,7 +29,7 @@
   words that find the FIFO full are dropped; the words written are, in
   order, a subsequence of the words formed, formed = LEN + drops, and drops
   = SAMPLE.drops > 0.
-- `sensor_hub_err_test`: words written into a SLVERR region (untouched):
+- `sensor_hub_err_test`: words written into a SLVERR and a DECERR region (untouched):
   DONE + ERR, STATUS.err; a clean job clears it.
 */
 
@@ -89,6 +89,11 @@ class sensor_hub_job_base_test extends sensor_hub_base_test;
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     sns = sensor_hub_stream::type_id::create("sns", this);
+    job_fcov_bins();
+    fcov_range("avg_log2", 8);
+    fcov_bins("wake", '{"disabled", "armed_no_wake", "woke"});
+    fcov_bins("drops", '{"none", "some"});
+    fcov_bins("sensor_flow", '{"every_clock", "gaps"});
   endfunction
 
   function void connect_phase(uvm_phase phase);
@@ -150,6 +155,11 @@ class sensor_hub_job_base_test extends sensor_hub_base_test;
       check_eq(v, 0, {tag, " drops"});
       rd_field("STATUS", "err", v);
       check_eq(v, rerr, {tag, " STATUS.err"});
+      fcov_int("avg_log2", k);
+      fcov("wake", !wake_en ? "disabled" : (wk >= 0) ? "woke" : "armed_no_wake");
+      fcov("drops", "none");
+      fcov("sensor_flow", sns.gap_pct ? "gaps" : "every_clock");
+      job_fcov(len, rerr);
       sb_check(st[irq_bit("WAKE")] == (wk >= 0), $sformatf("%s: WAKE=%0d, model %0d", tag, st[irq_bit("WAKE")], wk >= 0));
       env.axi_cfg.check_windows = 0;
     end else begin
@@ -172,6 +182,10 @@ class sensor_hub_job_base_test extends sensor_hub_base_test;
         j++;
       end
       sb_check(drops > 0, {tag, ": no drop under heavy back-pressure"});
+      fcov_int("avg_log2", k);
+      fcov("drops", drops ? "some" : "none");
+      fcov("sensor_flow", sns.gap_pct ? "gaps" : "every_clock");
+      job_fcov(len, 0);
     end
   endtask
 endclass
@@ -188,7 +202,7 @@ class sensor_hub_avg_test extends sensor_hub_job_base_test;
     wait_reset();
     for (int unsigned i = 0; i < 20; i++) begin
       int unsigned k = i % 8;
-      int unsigned len = (i < lens.size()) ? lens[i] : $urandom_range(1, 300 >> (k / 2));
+      int unsigned len = (i < lens.size()) ? lens[i] : (i == 4) ? 300 : $urandom_range(1, 300 >> (k / 2));
       sns.kind = (i % 5 == 1) ? 1 : (i % 5 == 2) ? 2 : 0;
       sns.gap_pct = (i % 2) ? 50 : 0;
       job($sformatf("avg %0d k=%0d len=%0d kind=%0d", i, k, len, sns.kind),
@@ -248,6 +262,7 @@ class sensor_hub_err_test extends sensor_hub_job_base_test;
     phase.raise_objection(this);
     wait_reset();
     env.axi_cfg.add_err_region(32'h2000_0040, 32'h2000_0080, AXI_SLVERR);
+    env.axi_cfg.add_err_region(32'h2000_0100, 32'h2000_0110, AXI_DECERR);
     for (int i = 0; i < 128; i++) mem().wr32(32'h2000_0000 + 4 * i, 32'h0F0F_0000 + i);
     job("write error", 32'h2000_0000, 100, 1, 0, 0);
     job("clean", 32'h2800_0000, 30, 1, 0, 0);

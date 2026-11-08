@@ -28,6 +28,14 @@ class npu_job_base_test extends npu_base_test;
     super.new(name, parent);
   endfunction
 
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    job_fcov_bins();
+    fcov_bins("relu", '{"off", "on"});
+    fcov_range("shift", 16);
+    fcov_bins("saturation", '{"none", "saturated"});
+  endfunction
+
   static function void conv(bit [31:0] in[$], bit [7:0] w[4], bit [15:0] bias, int unsigned shift, bit relu,
                             ref bit [31:0] out[$], output int unsigned sats);
     int x[4];   // x[n], x[n-1], x[n-2], x[n-3]
@@ -57,6 +65,9 @@ class npu_job_base_test extends npu_base_test;
     bit [31:0] in[$], out[$], v; bit rerr; int unsigned sats;
     job_input(src, len, in, rerr);
     conv(in, w, bias, shift, relu, out, sats);
+    fcov("relu", relu ? "on" : "off");
+    fcov_int("shift", shift);
+    fcov("saturation", sats ? "saturated" : "none");
     wr_fields("WEIGHTS", '{"w0", "w1", "w2", "w3"}, '{w[0], w[1], w[2], w[3]});
     wr_fields("CTRL", '{"bias", "shift", "relu"}, '{bias, shift, relu});
     run_job(tag, src, dst, len, out, rerr);

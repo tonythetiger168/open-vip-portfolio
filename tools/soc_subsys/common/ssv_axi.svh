@@ -146,6 +146,15 @@ class axim_cfg extends uvm_object;
   string       master_name = "ip";      // LAT lines: "LAT <master> <slave> <R|W> <cycles>"
   string       slave_name  = "mem";
   bit          print_lat   = 1;
+  // coverage bins to declare (FCOV lines): only what the IP's contract can
+  // produce, so 100 % is reachable. Sizes, bursts and beats follow
+  // size_mask, burst_mask and max_beats (cov_max_beats if set lower);
+  // EXOKAY is never declared (the port has no exclusive access).
+  bit          cov_rd = 1, cov_wr = 1;  // directions the IP uses
+  int          cov_ids[$];              // AXI IDs the IP uses (empty: all 16)
+  int unsigned cov_max_beats = 0;       // 0: max_beats
+  bit          cov_page_end = 1;        // declare the burst-ends-on-a-4KB-page-end bin
+  bit          cov_enable = 1;          // 0: print no FCOV lines (a test with no AXI traffic by design)
 
   function new(string name = "axim_cfg");
     super.new(name);
@@ -165,6 +174,10 @@ class axim_cfg extends uvm_object;
 
   function void clear_windows();
     windows.delete();
+  endfunction
+
+  function void clear_err_regions();
+    err_regions.delete();
   endfunction
 
   function void add_err_region(bit [31:0] lo, bit [31:0] hi, bit [1:0] resp = AXI_SLVERR,
@@ -595,20 +608,26 @@ class axim_coverage extends uvm_subscriber #(axim_txn);
 
   // one "FCOV <group> <point> <bin> <hits>" line per bin, 0-hit bins included
   // (the SoC-tb-regress-builder coverage merge reads these)
+  axim_cfg cfg;     // the contract the bins follow (set by axim_agent)
+
   function void print_fcov(string group);
-    int unsigned big = 0;
+    int unsigned big = 0, mb;
     string bn[4] = '{"FIXED", "INCR", "WRAP", "RSVD"};
     string rn[4] = '{"OKAY", "EXOKAY", "SLVERR", "DECERR"};
-    $display("FCOV %s dir RD %0d", group, c_dir[0]);
-    $display("FCOV %s dir WR %0d", group, c_dir[1]);
-    for (int b = 1; b <= 16; b++) $display("FCOV %s beats %0d %0d", group, b, hits(c_len, b));
+    if (cfg == null) cfg = axim_cfg::type_id::create("cfg");
+    if (!cfg.cov_enable) return;
+    mb = (cfg.cov_max_beats != 0 && cfg.cov_max_beats < cfg.max_beats) ? cfg.cov_max_beats : cfg.max_beats;
+    if (cfg.cov_rd) $display("FCOV %s dir RD %0d", group, c_dir[0]);
+    if (cfg.cov_wr) $display("FCOV %s dir WR %0d", group, c_dir[1]);
+    for (int b = 1; b <= 16 && b <= mb; b++) $display("FCOV %s beats %0d %0d", group, b, hits(c_len, b));
     foreach (c_len[k]) if (k > 16) big += c_len[k];
-    $display("FCOV %s beats 17_256 %0d", group, big);
-    for (int z = 0; z <= 2; z++) $display("FCOV %s size %0dB %0d", group, 1 << z, hits(c_size, z));
-    for (int b = 0; b <= 2; b++) $display("FCOV %s burst %s %0d", group, bn[b], hits(c_burst, b));
-    for (int r = 0; r <= 3; r++) $display("FCOV %s resp %s %0d", group, rn[r], hits(c_resp, r));
-    for (int i = 0; i < 16; i++) $display("FCOV %s id %0d %0d", group, i, hits(c_id, i));
-    $display("FCOV %s page_end 4k_edge %0d", group, c_4k_edge);
+    if (mb > 16) $display("FCOV %s beats 17_%0d %0d", group, mb, big);
+    for (int z = 0; z <= 2; z++) if (cfg.size_mask[z]) $display("FCOV %s size %0dB %0d", group, 1 << z, hits(c_size, z));
+    for (int b = 0; b <= 2; b++) if (cfg.burst_mask[b]) $display("FCOV %s burst %s %0d", group, bn[b], hits(c_burst, b));
+    foreach (rn[r]) if (r != AXI_EXOKAY) $display("FCOV %s resp %s %0d", group, rn[r], hits(c_resp, r));
+    if (cfg.cov_ids.size() == 0) for (int i = 0; i < 16; i++) $display("FCOV %s id %0d %0d", group, i, hits(c_id, i));
+    else foreach (cfg.cov_ids[i]) $display("FCOV %s id %0d %0d", group, cfg.cov_ids[i], hits(c_id, cfg.cov_ids[i]));
+    if (cfg.cov_page_end) $display("FCOV %s page_end 4k_edge %0d", group, c_4k_edge);
   endfunction
 
   string fcov_group = "axim";
@@ -641,7 +660,7 @@ class axim_agent extends uvm_agent;
     mon = axim_monitor::type_id::create("mon", this);
     cov = axim_coverage::type_id::create("cov", this);
     sub.cfg = cfg; sub.mem = mem;
-    mon.cfg = cfg;
+    mon.cfg = cfg; cov.cfg = cfg;
   endfunction
 
   function void connect_phase(uvm_phase phase);

@@ -38,6 +38,14 @@ class dma_job_base_test extends dma_base_test;
     super.new(name, parent);
   endfunction
 
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    job_fcov_bins();
+    fcov_range("channel", 4);
+    fcov_bins("mode", '{"copy", "fill"});
+    fcov_bins("ch_x_mode", '{"0_copy", "0_fill", "1_copy", "1_fill", "2_copy", "2_fill", "3_copy", "3_fill"});
+  endfunction
+
   function string ch_reg(string base, int ch);
     return $sformatf("%s%0d", base, ch);
   endfunction
@@ -84,7 +92,15 @@ class dma_job_base_test extends dma_base_test;
     int unsigned rw0 = 0, ww0 = 0;
     string tag = $sformatf("ch%0d %s src=%08h dst=%08h len=%0d", ch, fill ? "FILL" : "COPY", src, dst, len);
     program_ch(ch, src, dst, len, fill, fillw);
+    fcov_int("channel", ch);
+    fcov("mode", fill ? "fill" : "copy");
+    fcov("ch_x_mode", $sformatf("%0d_%s", ch, fill ? "fill" : "copy"));
     predict(src, dst, len, fill, fillw, exp, sum, perr);
+    begin
+      bit werr = 0;
+      foreach (exp[i]) if (env.axi_cfg.resp_for(dst + 4 * i, 1) != AXI_OKAY) werr = 1;
+      job_fcov(len, perr || werr);
+    end
     after_write(dst, exp);
     env.axi_cfg.clear_windows();
     if (!fill && len != 0) env.axi_cfg.add_window(src, src + 4 * len, 1, 0, "src");

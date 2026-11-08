@@ -73,6 +73,13 @@ class isp_job_base_test extends isp_base_test;
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     sns = isp_sensor_drv::type_id::create("sns", this);
+    job_fcov_bins();
+    fcov_bins("source", '{"test_pattern", "sensor"});
+    fcov_bins("gain", '{"zero", "below_unity", "unity", "above_unity"});
+    fcov_bins("black", '{"zero", "nonzero"});
+    fcov_bins("clip", '{"none", "clipped"});
+    fcov_bins("line_words", '{"0_whole_frame", "1", "2_159", "160_479_vga", "480_1919_1080p", "1920_up_8k"});
+    fcov_bins("sensor_flow", '{"continuous", "gaps", "long_gaps"});
   endfunction
 
   function void connect_phase(uvm_phase phase);
@@ -116,6 +123,19 @@ class isp_job_base_test extends isp_base_test;
       for (int unsigned i = 0; i < len && i < sns.q.size(); i++) raw.push_back(sns.q[i]);
     end
     foreach (raw[i]) exp.push_back(isp_px(raw[i], black, gain, sum));
+    fcov("source", sensor ? "sensor" : "test_pattern");
+    fcov("gain", (gain == 0) ? "zero" : (gain < 16) ? "below_unity" : (gain == 16) ? "unity" : "above_unity");
+    fcov("black", black ? "nonzero" : "zero");
+    begin
+      bit clipped = 0;
+      foreach (raw[i]) for (int b = 0; b < 4; b++)
+        if (raw[i][8*b +: 8] > black && ((raw[i][8*b +: 8] - black) * gain) >> 4 > 255) clipped = 1;
+      fcov("clip", clipped ? "clipped" : "none");
+    end
+    if (!sensor)
+      fcov("line_words", (line_words == 0) ? "0_whole_frame" : (line_words == 1) ? "1" : (line_words < 160) ? "2_159" :
+                         (line_words < 480) ? "160_479_vga" : (line_words < 1920) ? "480_1919_1080p" : "1920_up_8k");
+    else fcov("sensor_flow", (sns.gap_pct == 0) ? "continuous" : (sns.gap_pct < 50) ? "gaps" : "long_gaps");
     run_job(tag, 0, dst, len, exp, 0, 0);
     if (sensor) begin
       sns.job_on = 0;
@@ -146,7 +166,8 @@ class isp_tpg_test extends isp_job_base_test;
     wait_reset();
     for (int unsigned i = 0; i < 24; i++) begin
       int unsigned lw = lws[i % lws.size()];
-      int unsigned len = (lw >= 160) ? lw * 2 + $urandom_range(1, lw - 1) : $urandom_range(1, 700);
+      int unsigned len = (lw >= 160) ? lw * 2 + $urandom_range(1, lw - 1) :
+                         (i < 3) ? ((i == 0) ? 9 : (i == 1) ? 16 : 1) : $urandom_range(1, 700);
       bit [7:0] seed = (i == 0) ? 8'h00 : (i == 1) ? 8'hFF : 8'($urandom());
       bit [7:0] black = (i < 2) ? blacks[i] : 8'($urandom_range(0, 64));
       bit [7:0] gain = (i < gains.size()) ? gains[i] : 8'($urandom());

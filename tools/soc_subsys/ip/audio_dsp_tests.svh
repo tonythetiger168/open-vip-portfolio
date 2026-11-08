@@ -32,6 +32,15 @@ class audio_dsp_job_base_test extends audio_dsp_base_test;
     super.new(name, parent);
   endfunction
 
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    job_fcov_bins();
+    fcov_bins("mix", '{"stereo", "mono_mix"});
+    fcov_bins("mute", '{"off", "on"});
+    fcov_bins("gain", '{"zero", "negative", "below_unity", "unity", "above_unity"});
+    fcov_bins("saturation", '{"none", "clipped"});
+  endfunction
+
   static function void dsp(bit [31:0] in[$], bit [15:0] gl, bit [15:0] gr, bit mix, bit mute,
                            ref bit [31:0] out[$], output bit [15:0] peak, output int unsigned clips);
     out.delete(); peak = 0; clips = 0;
@@ -66,6 +75,14 @@ class audio_dsp_job_base_test extends audio_dsp_base_test;
     bit [31:0] in[$], out[$], v; bit rerr; bit [15:0] pk; int unsigned cl;
     job_input(src, len, in, rerr);
     dsp(in, gl, gr, mix, mute, out, pk, cl);
+    fcov("mix", mix ? "mono_mix" : "stereo");
+    fcov("mute", mute ? "on" : "off");
+    for (int c = 0; c < 2; c++) begin
+      bit [15:0] g = c ? gr : gl;
+      fcov("gain", (g == 0) ? "zero" : g[15] ? "negative" : (g < 16'h0100) ? "below_unity" :
+                   (g == 16'h0100) ? "unity" : "above_unity");
+    end
+    fcov("saturation", (cl != 0) ? "clipped" : "none");
     wr("GAIN", {gr, gl});
     wr("CTRL", {30'h0, mute, mix});
     run_job(tag, src, dst, len, out, rerr);

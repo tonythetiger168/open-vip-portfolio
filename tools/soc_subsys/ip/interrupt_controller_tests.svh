@@ -35,7 +35,7 @@
   rising in the same clock are written lowest id first; LOG_WORDS lowered
   below the stored slot restarts the ring at slot 0; LOG_EN 0 writes
   nothing; no AXI read, AXI ID 10, single-beat writes.
-- `interrupt_controller_err_test`: ring in a SLVERR region: LOG_ERR
+- `interrupt_controller_err_test`: ring in a SLVERR + DECERR region: LOG_ERR
   interrupt, the word stays untouched, LOG_WP still counts; a clean ring
   after it works.
 */
@@ -161,6 +161,19 @@ class interrupt_controller_job_base_test extends interrupt_controller_base_test;
     super.build_phase(phase);
     model = intc_model::type_id::create("model", this);
     model.tb = this;
+    fcov_range("claim_id", 32);
+    fcov_bins("ack", '{"device", "sw_set"});
+    fcov_range("log_id", 32);
+    fcov_bins("log_edges", '{"single", "merged"});
+    fcov_bins("ring", '{"wrapped", "lowered_below_slot"});
+    fcov_bins("record_resp", '{"okay", "error"});
+  endfunction
+
+  // every record is one single-beat write: no multi-beat or page-end bins
+  function void configure_axi(axim_cfg c);
+    super.configure_axi(c);
+    c.cov_max_beats = 1;
+    c.cov_page_end  = 0;
   endfunction
 
   function void connect_phase(uvm_phase phase);
@@ -182,9 +195,13 @@ class interrupt_controller_job_base_test extends interrupt_controller_base_test;
   task check_records(bit [31:0] base, bit [15:0] words, string when, bit allow_err = 0);
     while (env.axi.mon.completed.size() > 0) begin
       axim_txn t = env.axi.mon.completed.pop_front();
+      bit lowered = ring_slot >= words;
       bit [31:0] exp_a = base + 4 * next_slot(words);
       bit [4:0] id = t.data[0][4:0];
       longint T = t.data[0][31:8];
+      if (lowered) fcov("ring", "lowered_below_slot");
+      if (ring_slot == 0 && words > 1) fcov("ring", "wrapped");
+      fcov("record_resp", (t.resp[0] == AXI_OKAY) ? "okay" : "error");
       sb_check(t.write && t.beats() == 1, $sformatf("%s: record burst %s", when, t.convert2string()));
       check_eq(t.addr, exp_a, $sformatf("%s: record %0d address", when, rec_seen));
       check_eq(t.data[0][7:5], 0, $sformatf("%s: record %0d bits 7:5", when, rec_seen));
@@ -196,7 +213,12 @@ class interrupt_controller_job_base_test extends interrupt_controller_base_test;
         sb_check(!model.waiting_before(j, T - 2),
                  $sformatf("%s: record %0d is id %0d while id %0d waited since clock %0d", when, rec_seen, id,
                            j, model.edges[j].size() ? model.edges[j][0] : -1));
-      while (model.edges[id].size() > 0 && model.edges[id][0] <= T - 2) void'(model.edges[id].pop_front());
+      begin
+        int unsigned n = 0;
+        while (model.edges[id].size() > 0 && model.edges[id][0] <= T - 2) begin void'(model.edges[id].pop_front()); n++; end
+        fcov_int("log_id", id);
+        if (n > 0) fcov("log_edges", (n > 1) ? "merged" : "single");
+      end
       rec_seen++;
     end
   endtask
@@ -258,8 +280,9 @@ class interrupt_controller_pend_test extends interrupt_controller_job_base_test;
         sb_check(int'(v[4:0]) > last, $sformatf("isr %0d: CLAIM %0d after %0d", r, v[4:0], last));
         sb_check(want[v[4:0]], $sformatf("isr %0d: CLAIM %0d was not raised", r, v[4:0]));
         last = v[4:0]; want[v[4:0]] = 0; served++;
-        if (dev[v[4:0]]) begin dev[v[4:0]] = 0; set_src(dev); end
-        else begin swv[v[4:0]] = 0; wr("SW_SET", swv); end
+        fcov_int("claim_id", v[4:0]);
+        if (dev[v[4:0]]) begin dev[v[4:0]] = 0; set_src(dev); fcov("ack", "device"); end
+        else begin swv[v[4:0]] = 0; wr("SW_SET", swv); fcov("ack", "sw_set"); end
         clocks(2);
         sb_check(served < 40, "service loop does not end");
         if (served >= 40) break;
@@ -390,7 +413,8 @@ class interrupt_controller_err_test extends interrupt_controller_job_base_test;
     phase.raise_objection(this);
     wait_reset();
     set_src(0);
-    env.axi_cfg.add_err_region(32'h3000_0000, 32'h3000_0010, AXI_SLVERR);
+    env.axi_cfg.add_err_region(32'h3000_0000, 32'h3000_0004, AXI_SLVERR);
+    env.axi_cfg.add_err_region(32'h3000_0004, 32'h3000_0010, AXI_DECERR);
     for (int i = 0; i < 4; i++) mem().wr32(32'h3000_0000 + 4 * i, 32'hDEAD_0000 + i);
     wr("ENABLE", 32'hFFFF_FFFF);
     wr("LOG_BASE", 32'h3000_0000);

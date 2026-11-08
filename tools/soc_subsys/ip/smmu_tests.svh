@@ -28,7 +28,7 @@
   upstream ID, HITS and MISSES equal the TLB model, no fault.
 - `smmu_fault_test`: read and write of an invalid page (FAULT_INFO 0001 /
   0101), write to a read-only page on a cold TLB and on a TLB hit (0110),
-  walk into a SLVERR page table (1000 / 1100): SLVERR upstream on every beat,
+  walk into a SLVERR or DECERR page-table entry (1000 / 1100): SLVERR upstream on every beat,
   nothing but the walk on m_*, memory untouched, FAULT_ADDR, FAULT interrupt;
   a good access afterwards still works.
 - `smmu_inv_test`: a cached translation survives a PTE change (TLB hit to the
@@ -59,6 +59,11 @@ class smmu_job_base_test extends smmu_base_test;
       `uvm_fatal("NOVIF", "axim_s_vif not set")
     up = ssv_axi_mgr_bfm::type_id::create("up");
     up.vif = s_vif;
+    fcov_bins("path", '{"bypass", "tlb_hit", "walk"});
+    fcov_bins("outcome", '{"forwarded", "fault_invalid", "fault_not_writable", "fault_walk_err"});
+    fcov_bins("dir_x_outcome", '{"rd_forwarded", "wr_forwarded", "rd_fault", "wr_fault"});
+    fcov_bins("tlb_fill", '{"empty_entry", "evict"});
+    fcov_bins("beats", '{"1", "2_15", "16"});
   endfunction
 
   function void configure_axi(axim_cfg c);
@@ -100,6 +105,7 @@ class smmu_job_base_test extends smmu_base_test;
       if (env.axi_cfg.resp_for(pt_base + 4 * vpn, 0) != AXI_OKAY) begin finfo = {1'b1, write, 2'b00}; return 0; end
       e = mem().rd32(pt_base + 4 * vpn);
       if (!e[0]) begin finfo = {1'b0, write, 2'b01}; return 0; end
+      fcov("tlb_fill", t_v[t_rr] ? "evict" : "empty_entry");
       t_vpn[t_rr] = vpn; t_ppn[t_rr] = e[31:12]; t_w[t_rr] = e[1]; t_v[t_rr] = 1;
       t_rr = (t_rr + 1) % 4;
     end
@@ -119,6 +125,10 @@ class smmu_job_base_test extends smmu_base_test;
     string tag = $sformatf("%s va=%08h beats=%0d id=%0d", write ? "WR" : "RD", va, beats, id);
     fwd = model(va, write, pa, finfo, walked);
     faulted = !fwd;
+    fcov("path", walked ? "walk" : "tlb_hit");
+    fcov("outcome", fwd ? "forwarded" : (finfo == 4'b0110) ? "fault_not_writable" : finfo[3] ? "fault_walk_err" : "fault_invalid");
+    fcov("dir_x_outcome", {write ? "wr_" : "rd_", fwd ? "forwarded" : "fault"});
+    fcov("beats", (beats == 1) ? "1" : (beats < 16) ? "2_15" : "16");
     if (write) begin
       for (int i = 0; i < beats; i++) begin d.push_back($urandom()); s.push_back(4'hF); end
       if (fwd) foreach (d[i]) exp.push_back(d[i]);
@@ -203,9 +213,11 @@ class smmu_bypass_test extends smmu_job_base_test;
     start_up();
     for (int i = 0; i < 60; i++) begin
       int unsigned beats = $urandom_range(1, 16);
-      bit [31:0] va = 32'h5000_0000 + ($urandom_range(255) << 12) + 4 * $urandom_range(0, 1024 - beats);
+      bit [31:0] va = 32'h5000_0000 + ($urandom_range(255) << 12) + 4 * ((i % 5 == 0) ? 1024 - beats : $urandom_range(0, 1024 - beats));
       bit [3:0] id = $urandom_range(14);
       int unsigned n0 = env.axi.mon.completed.size();
+      fcov("path", "bypass");
+      fcov("beats", (beats == 1) ? "1" : (beats < 16) ? "2_15" : "16");
       env.axi_cfg.set_backpressure(i % 2 ? 50 : 100, i % 3);
       if (i % 2) begin
         w.delete(); s.delete();
@@ -299,6 +311,9 @@ class smmu_fault_test extends smmu_job_base_test;
     env.axi_cfg.add_err_region(pt_base + 4 * 32'h40009, pt_base + 4 * 32'h40009 + 4, AXI_SLVERR);
     access(32'h4000_9100, 0, 3, 4'h7, f);  sb_check(f, "read with a walk error did not fault");
     access(32'h4000_9200, 1, 3, 4'h8, f);  sb_check(f, "write with a walk error did not fault");
+    // and a DECERR on the walk of VPN 0x4000A
+    env.axi_cfg.add_err_region(pt_base + 4 * 32'h4000A, pt_base + 4 * 32'h4000A + 4, AXI_DECERR);
+    access(32'h4000_A040, 0, 1, 4'h9, f);  sb_check(f, "read with a DECERR walk did not fault");
     access(32'h4000_1100, 0, 5, 4'h9, f);  sb_check(!f, "good read after faults faulted");
     check_stats("end");
     sb_check(mem().written_outside(32'h1000_1000, 32'h1000_2000) == 0, "a faulting write reached memory");

@@ -253,6 +253,7 @@ class ssv_base_test extends uvm_test;
     wr("CMD", 32'h1);
     wait_irq(st, tag);
     job_irq_status = st;
+    job_fcov(len, exp_err);
     sb_check(st[irq_bit("DONE")], {tag, ": DONE not set"});
     sb_check(st[irq_bit("ERR")] == exp_err, $sformatf("%s: ERR=%0d, expected %0d", tag, st[irq_bit("ERR")], exp_err));
     clear_irq(st);
@@ -296,6 +297,7 @@ class ssv_base_test extends uvm_test;
     uvm_reg_bit_bash_seq bb;
     bit [31:0] d; bit e;
     is_ral_test = 1;
+    env.axi_cfg.cov_enable = 0;   // the register test makes no AXI traffic: no FCOV bins
     hw = uvm_reg_hw_reset_seq::type_id::create("hw");
     hw.model = rm;
     hw.start(null);
@@ -333,9 +335,67 @@ class ssv_base_test extends uvm_test;
     end
   endtask
 
+  // ---- IP-feature coverage: "FCOV <ip> <point> <bin> <hits>" lines, every
+  // declared bin printed (0-hit bins included), in declaration order.
+  // fcov_bins() declares a point's bins; fcov() counts a hit (a bin not
+  // declared is an error, so a typo cannot hide a hole).
+  string       fcov_pts[$];
+  string       fcov_bin_names[string][$];
+  int unsigned fcov_hits[string];
+
+  function void fcov_bins(string point, string bin_list[$]);
+    if (!fcov_bin_names.exists(point)) fcov_pts.push_back(point);
+    foreach (bin_list[i]) begin
+      fcov_bin_names[point].push_back(bin_list[i]);
+      fcov_hits[{point, "/", bin_list[i]}] = 0;
+    end
+  endfunction
+
+  function void fcov(string point, string bin);
+    string k = {point, "/", bin};
+    if (!fcov_hits.exists(k)) `uvm_error("FCOV_BIN", {"coverage bin not declared: ", k})
+    else fcov_hits[k]++;
+  endfunction
+
+  function void fcov_add(string point, string bin, int unsigned n);
+    repeat (n) fcov(point, bin);
+  endfunction
+
+  function void fcov_int(string point, int v);
+    fcov(point, $sformatf("%0d", v));
+  endfunction
+
+  // bins "0".."n-1"
+  function void fcov_range(string point, int n);
+    string b[$];
+    for (int i = 0; i < n; i++) b.push_back($sformatf("%0d", i));
+    fcov_bins(point, b);
+  endfunction
+
+  // job bins shared by the job-based IPs (sampled by run_job once declared)
+  function void job_fcov_bins();
+    fcov_bins("job_len", '{"1", "2_15", "16", "17_255", "256_up"});
+    fcov_bins("job_end", '{"ok", "axi_err"});
+  endfunction
+
+  function void job_fcov(int unsigned len, bit err);
+    if (!fcov_bin_names.exists("job_len") || len == 0) return;
+    fcov("job_len", (len == 1) ? "1" : (len < 16) ? "2_15" : (len == 16) ? "16" : (len < 256) ? "17_255" : "256_up");
+    fcov("job_end", err ? "axi_err" : "ok");
+  endfunction
+
+  function void print_ip_fcov();
+    string g = ip_name.tolower();
+    foreach (fcov_pts[i])
+      foreach (fcov_bin_names[fcov_pts[i]][j])
+        $display("FCOV %s %s %s %0d", g, fcov_pts[i], fcov_bin_names[fcov_pts[i]][j],
+                 fcov_hits[{fcov_pts[i], "/", fcov_bin_names[fcov_pts[i]][j]}]);
+  endfunction
+
   function void report_phase(uvm_phase phase);
     uvm_report_server rs = uvm_report_server::get_server();
     string tag = is_ral_test ? "RAL" : "SB";
+    if (!is_ral_test) print_ip_fcov();
     if (fails == 0 && checks > 0 && rs.get_severity_count(UVM_ERROR) == 0 && rs.get_severity_count(UVM_FATAL) == 0)
       $display("%s_PASS checks=%0d", tag, checks);
     else

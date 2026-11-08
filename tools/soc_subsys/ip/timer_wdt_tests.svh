@@ -54,7 +54,7 @@ class timer_wdt_model extends uvm_component;
   bit [2:0]  irq_status;
   // events
   bit [31:0] ev_count[$];        // COUNT of every timer event that asked for a record
-  int unsigned n_tmr, n_bark, n_bite, n_rec_events;
+  int unsigned n_tmr, n_bark, n_bite, n_rec_events, n_kick;
   int unsigned pin_errors;
 
   function new(string name, uvm_component parent);
@@ -147,7 +147,9 @@ class timer_wdt_model extends uvm_component;
         if (a == a_tsbase)   ts_base  = merge(ts_base, d, s);
         if (a == a_tswords)  ts_words = merge({16'h0, ts_words}, d, s);
         if (a == a_wdtload)  wdt_load = merge(wdt_load, d, s);
-        if (a == a_cmd)      kick     = d[0] & s[0];
+        if (a == a_cmd)      begin kick = d[0] & s[0]; if (kick) n_kick++; end
+        if (a == a_ctrl)     tb.fcov("prescale", (prescale == 0) ? "0" : "1_plus");
+        if (a == a_period)   tb.fcov("period", (period == 0) ? "0" : "1_plus");
       end
     end
   endtask
@@ -176,6 +178,18 @@ class timer_wdt_job_base_test extends timer_wdt_base_test;
     super.build_phase(phase);
     model = timer_wdt_model::type_id::create("model", this);
     model.tb = this;
+    fcov_bins("prescale", '{"0", "1_plus"});
+    fcov_bins("period", '{"0", "1_plus"});
+    fcov_bins("event", '{"timer", "ts_record", "ts_missed", "kick", "bark", "bite"});
+    fcov_bins("ts_ring", '{"wrapped"});
+    fcov_bins("record_resp", '{"okay", "error"});
+  endfunction
+
+  // every record is one single-beat write: no multi-beat or page-end bins
+  function void configure_axi(axim_cfg c);
+    super.configure_axi(c);
+    c.cov_max_beats = 1;
+    c.cov_page_end  = 0;
   endfunction
 
   function void connect_phase(uvm_phase phase);
@@ -194,6 +208,8 @@ class timer_wdt_job_base_test extends timer_wdt_base_test;
       axim_txn t = env.axi.mon.completed.pop_front();
       bit [31:0] exp_a = base + 4 * next_slot(words);
       bit found = 0;
+      if (ring_slot == 0 && rec_seen > 0) fcov("ts_ring", "wrapped");
+      fcov("record_resp", (t.resp[0] == AXI_OKAY) ? "okay" : "error");
       sb_check(t.write && t.beats() == 1, $sformatf("%s: record burst %s", when, t.convert2string()));
       check_eq(t.addr, exp_a, $sformatf("%s: record %0d address", when, rec_seen));
       // the record holds the COUNT of the oldest event not yet recorded,
@@ -206,9 +222,11 @@ class timer_wdt_job_base_test extends timer_wdt_base_test;
     end
   endtask
 
+  int unsigned last_missed;
   task ts_state(output bit [31:0] wp, output bit [31:0] missed);
     rd_field("TS_STATE", "ts_wp", wp);
     rd_field("TS_STATE", "ts_missed", missed);
+    last_missed = missed;
   endtask
 
   task sample_regs();
@@ -217,6 +235,12 @@ class timer_wdt_job_base_test extends timer_wdt_base_test;
   endtask
 
   function void report_phase(uvm_phase phase);
+    fcov_add("event", "timer", model.n_tmr);
+    fcov_add("event", "ts_record", rec_seen);
+    fcov_add("event", "ts_missed", last_missed);
+    fcov_add("event", "kick", model.n_kick);
+    fcov_add("event", "bark", model.n_bark);
+    fcov_add("event", "bite", model.n_bite);
     `uvm_info("TMR_MODEL", $sformatf("timer events %0d (record requests %0d), barks %0d, bites %0d, records checked %0d",
                                      model.n_tmr, model.n_rec_events, model.n_bark, model.n_bite, rec_seen), UVM_LOW)
     super.report_phase(phase);
@@ -351,6 +375,16 @@ class timer_wdt_ts_test extends timer_wdt_job_base_test;
     ctrl(0, 1, 1, 0);
     wait_irq(st, "TS_ERR");
     sb_check(st[irq_bit("TS_ERR")], "TS_ERR not set by a record write that got SLVERR");
+    fcov("record_resp", "error");
+    ctrl(0, 0, 0, 0);
+    clocks(20);
+    clear_irq(st);
+    env.axi_cfg.clear_err_regions();
+    env.axi_cfg.add_err_region(32'h3000_0100, 32'h3000_0200, AXI_DECERR);
+    ctrl(0, 1, 1, 0);
+    wait_irq(st, "TS_ERR (DECERR)");
+    sb_check(st[irq_bit("TS_ERR")], "TS_ERR not set by a record write that got DECERR");
+    fcov("record_resp", "error");
     ctrl(0, 0, 0, 0);
     clocks(100);
     env.axi.mon.completed.delete();

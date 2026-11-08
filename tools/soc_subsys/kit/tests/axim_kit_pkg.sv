@@ -198,7 +198,7 @@ package axim_kit_pkg;
         env.bfm.rready_pct = (i % 7 == 0) ? 50 : 100;
         pick(32'h0000, 32'h2000, wa, wl, ws, wb);
         pick(32'h2000, 32'h1000, ra, rl, rs, rb);
-        if (i % 40 == 7)  begin wa = 32'h0000_2FF0 + 32'h1000; wl = 3; ws = 2; wb = AXI_INCR; end  // SLVERR region
+        if (i % 40 == 7)  begin wa = 32'h0000_3040; wl = 3; ws = 2; wb = AXI_INCR; end  // SLVERR region
         if (i % 40 == 23) begin ra = 32'h0000_3100; rl = 15; rs = 2; rb = AXI_INCR; end            // DECERR region
         if (i == 11) begin wa = 32'h0000_0FC0; wl = 15; ws = 2; wb = AXI_INCR; end                 // ends on a 4 KB edge
         fork

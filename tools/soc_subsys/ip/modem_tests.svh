@@ -33,6 +33,13 @@ class modem_job_base_test extends modem_base_test;
     super.new(name, parent);
   endfunction
 
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    job_fcov_bins();
+    fcov_bins("crc_sel", '{"input", "output"});
+    fcov_bins("bypass", '{"scramble", "bypass"});
+  endfunction
+
   static function bit [31:0] crc32_words(bit [31:0] w[$]);
     bit [31:0] c = 32'hFFFF_FFFF;
     foreach (w[i])
@@ -63,6 +70,8 @@ class modem_job_base_test extends modem_base_test;
     scramble(seed, bypass, in, out);
     wr("SEED", seed);
     wr("CTRL", {30'h0, bypass, crc_sel});
+    fcov("crc_sel", crc_sel ? "output" : "input");
+    fcov("bypass", bypass ? "bypass" : "scramble");
     run_job(tag, src, dst, len, out, rerr);
     rd("CRC", crc_got);
     if (crc_sel) check_eq(crc_got, crc32_words(out), {tag, " CRC of the output"});

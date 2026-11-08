@@ -262,20 +262,20 @@ manager-port kit), reference-model scoreboards, an RTL snapshot, `tb/top_tb.sv`,
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| AXI4 manager port kit (shared by every subsystem VIP) | UVM VIP | `AXI4_Manager_Port-UVM-VIP.zip` | 29KB |
-| CPU cluster memory traffic (AXI4 manager) | UVM VIP | `CPU_Cluster-UVM-VIP.zip` | 38KB |
-| GPU 2D / blit engine (AXI4 manager) | UVM VIP | `GPU-UVM-VIP.zip` | 37KB |
-| NPU convolution engine (AXI4 manager) | UVM VIP | `NPU-UVM-VIP.zip` | 38KB |
-| Camera ISP: sensor input, black level, gain (AXI4 manager) | UVM VIP | `ISP-UVM-VIP.zip` | 39KB |
-| Video codec DPCM encode / decode (AXI4 manager) | UVM VIP | `Video_Codec-UVM-VIP.zip` | 38KB |
-| Display controller scan-out, CRC, underruns (AXI4 manager) | UVM VIP | `Display_Controller-UVM-VIP.zip` | 39KB |
-| Audio DSP gain / mix / clip (AXI4 manager) | UVM VIP | `Audio_DSP-UVM-VIP.zip` | 39KB |
-| Modem baseband scrambler + CRC-32 (AXI4 manager) | UVM VIP | `Modem-UVM-VIP.zip` | 38KB |
-| Always-on sensor hub decimator (AXI4 manager) | UVM VIP | `Sensor_Hub-UVM-VIP.zip` | 40KB |
-| SMMU / IOMMU translation, TLB, faults (AXI4 subordinate + manager) | UVM VIP | `SMMU-UVM-VIP.zip` | 39KB |
-| System DMA, 4 channels (AXI4 manager) | UVM VIP | `DMA-UVM-VIP.zip` | 41KB |
-| Interrupt controller, priority claim, event log (AXI4 manager) | UVM VIP | `Interrupt_Controller-UVM-VIP.zip` | 43KB |
-| Timer / watchdog with timestamp ring (AXI4 manager) | UVM VIP | `Timer_WDT-UVM-VIP.zip` | 42KB |
+| AXI4 manager port kit (shared by every subsystem VIP) | UVM VIP | `AXI4_Manager_Port-UVM-VIP.zip` | 30KB |
+| CPU cluster memory traffic (AXI4 manager) | UVM VIP | `CPU_Cluster-UVM-VIP.zip` | 39KB |
+| GPU 2D / blit engine (AXI4 manager) | UVM VIP | `GPU-UVM-VIP.zip` | 39KB |
+| NPU convolution engine (AXI4 manager) | UVM VIP | `NPU-UVM-VIP.zip` | 39KB |
+| Camera ISP: sensor input, black level, gain (AXI4 manager) | UVM VIP | `ISP-UVM-VIP.zip` | 40KB |
+| Video codec DPCM encode / decode (AXI4 manager) | UVM VIP | `Video_Codec-UVM-VIP.zip` | 40KB |
+| Display controller scan-out, CRC, underruns (AXI4 manager) | UVM VIP | `Display_Controller-UVM-VIP.zip` | 41KB |
+| Audio DSP gain / mix / clip (AXI4 manager) | UVM VIP | `Audio_DSP-UVM-VIP.zip` | 40KB |
+| Modem baseband scrambler + CRC-32 (AXI4 manager) | UVM VIP | `Modem-UVM-VIP.zip` | 39KB |
+| Always-on sensor hub decimator (AXI4 manager) | UVM VIP | `Sensor_Hub-UVM-VIP.zip` | 41KB |
+| SMMU / IOMMU translation, TLB, faults (AXI4 subordinate + manager) | UVM VIP | `SMMU-UVM-VIP.zip` | 41KB |
+| System DMA, 4 channels (AXI4 manager) | UVM VIP | `DMA-UVM-VIP.zip` | 42KB |
+| Interrupt controller, priority claim, event log (AXI4 manager) | UVM VIP | `Interrupt_Controller-UVM-VIP.zip` | 44KB |
+| Timer / watchdog with timestamp ring (AXI4 manager) | UVM VIP | `Timer_WDT-UVM-VIP.zip` | 43KB |
 
 ---
 

@@ -52,9 +52,23 @@ verilator --binary --timing --top-module top_tb \
 or, for every VIP and seed in the testlists: `python3 tools/run_uvm_tests.py`.
 Tested with Verilator 5.052 and Accellera uvm-core 2020.3.1.
 
-A passing run prints `SB_PASS checks=<n>` (`RAL_PASS` for the register test),
-`FCOV <group> <point> <bin> <hits>` for every coverage bin (0-hit bins
-included) and `LAT <master> <slave> <R|W> <cycles>` for every AXI burst.
+A passing run prints `SB_PASS checks=<n>` (`RAL_PASS` for the register test)
+and `LAT <master> <slave> <R|W> <cycles>` for every AXI burst. It also prints
+`FCOV <group> <point> <bin> <hits>` for every declared bin, including bins
+with 0 hits, in two groups:
+
+- `axim`: the AXI port, with bins for direction, beats, size, burst,
+  response, ID and 4 KB page end. Only bins that the IP's contract can
+  produce are declared: its own AXI ID, INCR, 4-byte beats, the directions
+  the spec allows, 1 to max_burst beats (1 for the single-record Timer_WDT
+  and Interrupt_Controller), and OKAY / SLVERR / DECERR. The register test
+  makes no AXI traffic, so it prints none of these bins.
+- `<ip>` (for example `dma`, `smmu`, `isp`): the IP's own features, declared
+  in `tools/soc_subsys/ip/<ip>_tests.svh` with `fcov_bins()` and counted with
+  `fcov()`. Job-based IPs also get `job_len` and `job_end` bins.
+
+Merged over the seeds in `sim/testlist.txt`, every declared bin of every
+bench is hit (100 %).
 
 ## The AXI4 manager-port contract
 

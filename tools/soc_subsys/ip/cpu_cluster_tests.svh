@@ -29,6 +29,13 @@ class cpu_cluster_job_base_test extends cpu_cluster_base_test;
     super.new(name, parent);
   endfunction
 
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    job_fcov_bins();
+    fcov_bins("mode", '{"write", "check", "copy2", "copy3"});
+    fcov_bins("check_result", '{"match", "mismatch"});
+  endfunction
+
   static function bit [31:0] pattern(bit [31:0] seed, int unsigned i);
     bit [15:0] l = i[15:0];
     return seed ^ {~l, l};
@@ -38,6 +45,7 @@ class cpu_cluster_job_base_test extends cpu_cluster_base_test;
     bit [31:0] exp[$];
     for (int unsigned i = 0; i < len; i++) exp.push_back(pattern(seed, i));
     wr("CTRL", 0); wr("SEED", seed);
+    fcov("mode", "write");
     run_job(tag, 0, dst, len, exp, 0, 0);
   endtask
 
@@ -46,6 +54,8 @@ class cpu_cluster_job_base_test extends cpu_cluster_base_test;
     job_input(src, len, in, rerr);
     foreach (in[i]) if (in[i] != pattern(seed, i)) begin mm++; if (ff < 0) ff = i; end
     wr("CTRL", 1); wr("SEED", seed);
+    fcov("mode", "check");
+    fcov("check_result", mm ? "mismatch" : "match");
     wr("IRQ_ENABLE", 0);
     rd("IRQ_STATUS", st); clear_irq(st);
     run_job(tag, src, 0, len, exp, rerr, len);
@@ -64,6 +74,7 @@ class cpu_cluster_job_base_test extends cpu_cluster_base_test;
     bit [31:0] in[$]; bit rerr;
     job_input(src, len, in, rerr);
     wr("CTRL", mode);
+    fcov("mode", (mode == 3) ? "copy3" : "copy2");
     run_job(tag, src, dst, len, in, rerr);
   endtask
 endclass
@@ -75,7 +86,7 @@ class cpu_cluster_write_check_test extends cpu_cluster_job_base_test;
     super.new(name, parent);
   endfunction
   task run_phase(uvm_phase phase);
-    int unsigned lens[$] = '{1, 16, 17};
+    int unsigned lens[$] = '{1, 16, 17, 5};
     phase.raise_objection(this);
     wait_reset();
     for (int unsigned i = 0; i < 24; i++) begin
