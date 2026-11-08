@@ -4,9 +4,9 @@
 
 ## 1. 結論
 
-- 130 個 VIP 中 130 個有可在開源工具上執行的 self-checking 功能測試，共 3963 個 check（另有 RTL IP testbench 的 0 次斷言評估）；130 個 VIP 的測試全部通過。
-- 判定：✅ Sufficient 130、🟡 Partial 0、❌ Insufficient 0。
-- Mutation testing：2020 個有效 mutant 中 1929 個被功能測試偵測（95%）。
+- 146 個 VIP 中 146 個有可在開源工具上執行的 self-checking 功能測試，共 4454 個 check（另有 RTL IP testbench 的 0 次斷言評估）；146 個 VIP 的測試全部通過。
+- 判定：✅ Sufficient 146、🟡 Partial 0、❌ Insufficient 0。
+- Mutation testing：2289 個有效 mutant 中 2198 個被功能測試偵測（96%）。
 - 沒有未修正的 DUT 模型缺陷：功能測試中沒有 XFAIL check（先前記錄的缺陷都已在模型中修正）。
 
 ## 2. 方法
@@ -52,8 +52,10 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [CAN_XL-UVM-VIP](test_suites/CAN_XL-UVM-VIP.md) | Automotive | `smoke_func_tb.sv` | 38 | verilator | 10/12 | 0 | ✅ Sufficient |
 | [CCIX-VIP](test_suites/CCIX-VIP.md) | Interconnect | `func_ccix_tb.sv` | 13 | iverilog | 15/15 | 0 | ✅ Sufficient |
 | [CHI-UVM-VIP](test_suites/CHI-UVM-VIP.md) | AMBA | `smoke_func_tb.sv`, `func_chi_hn_tb.sv` | 53 | iverilog | 27/28 | 0 | ✅ Sufficient |
+| [CI_CAM-UVM-VIP](test_suites/CI_CAM-UVM-VIP.md) | Security | `smoke_func_tb.sv` | 83 | verilator | 30/30 | 0 | ✅ Sufficient |
 | [CPRI-VIP](test_suites/CPRI-VIP.md) | Telecom | `func_cpri_tb.sv` | 17 | iverilog | 19/19 | 0 | ✅ Sufficient |
 | [CSE-VIP](test_suites/CSE-VIP.md) | MIPI | `func_cse_tb.sv` | 34 | iverilog | 25/25 | 0 | ✅ Sufficient |
+| [CSI2_Sensor-UVM-VIP](test_suites/CSI2_Sensor-UVM-VIP.md) | MIPI | `smoke_func_tb.sv` | 25 | iverilog | 28/28 | 0 | ✅ Sufficient |
 | [CSI_2-VIP](test_suites/CSI_2-VIP.md) | MIPI | `func_mipi_tb.sv` | 29 | verilator | 11/11 | 0 | ✅ Sufficient |
 | [CXL-VIP](test_suites/CXL-VIP.md) | Interconnect | `smoke_func_tb.sv`, `func_cxl_bundle_tb.sv`, `func_cxl_mem_tb.sv` | 76 | iverilog/verilator | 9/10 | 0 | ✅ Sufficient |
 | [CXS-VIP](test_suites/CXS-VIP.md) | Interconnect | `func_cxs_tb.sv` | 11 | iverilog | 10/10 | 0 | ✅ Sufficient |
@@ -74,18 +76,23 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [FC-VIP](test_suites/FC-VIP.md) | Networking | `func_fc_tb.sv` | 30 | verilator | 12/12 | 0 | ✅ Sufficient |
 | [FlexRay-VIP](test_suites/FlexRay-VIP.md) | Automotive | `func_flexray_tb.sv` | 38 | iverilog | 20/20 | 0 | ✅ Sufficient |
 | [GMII-UVM-VIP](test_suites/GMII-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 23 | iverilog | 3/3 | 0 | ✅ Sufficient |
+| [GMII_PHY-UVM-VIP](test_suites/GMII_PHY-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 26 | iverilog | 29/29 | 0 | ✅ Sufficient |
 | [GPIO-UVM-VIP](test_suites/GPIO-UVM-VIP.md) | Peripherals | `smoke_func_tb.sv` | 42 | iverilog | 1/1 | 0 | ✅ Sufficient |
 | [HBM-VIP](test_suites/HBM-VIP.md) | Memory | `func_mem_tb.sv` | 20 | verilator | 6/6 | 0 | ✅ Sufficient |
 | [HBM3E-VIP](test_suites/HBM3E-VIP.md) | Memory | `smoke_func_tb.sv`, `func_hbm3e_tb.sv`, `func_hbm_dev_tb.sv` | 116 | iverilog/verilator | 9/9 | 0 | ✅ Sufficient |
 | [HBM5-VIP](test_suites/HBM5-VIP.md) | Memory | `func_mem_tb.sv` | 16 | verilator | 5/5 | 0 | ✅ Sufficient |
 | [HDCP-VIP](test_suites/HDCP-VIP.md) | Security | `func_hdcp_tb.sv` | 20 | verilator | 10/12 | 0 | ✅ Sufficient |
 | [HDMI-VIP](test_suites/HDMI-VIP.md) | Video | `func_hdmi_tb.sv` | 20 | iverilog | 25/25 | 0 | ✅ Sufficient |
+| [HDMI_CEC-UVM-VIP](test_suites/HDMI_CEC-UVM-VIP.md) | Video | `smoke_func_tb.sv` | 20 | iverilog | 26/26 | 0 | ✅ Sufficient |
+| [HDMI_Source-UVM-VIP](test_suites/HDMI_Source-UVM-VIP.md) | Video | `smoke_func_tb.sv` | 12 | iverilog | 25/25 | 0 | ✅ Sufficient |
 | [HSI-VIP](test_suites/HSI-VIP.md) | MIPI | `func_mipi_tb.sv` | 19 | verilator | 11/12 | 0 | ✅ Sufficient |
 | [HyperBus-UVM-VIP](test_suites/HyperBus-UVM-VIP.md) | Memory | `smoke_func_tb.sv` | 40 | iverilog | 24/24 | 0 | ✅ Sufficient |
 | [I2C-VIP](test_suites/I2C-VIP.md) | Serial | `smoke_func_tb.sv` | 15 | iverilog | 24/24 | 0 | ✅ Sufficient |
 | [I2S-VIP](test_suites/I2S-VIP.md) | Audio | `func_i2s_tb.sv` | 14 | verilator | 5/5 | 0 | ✅ Sufficient |
+| [I2S_Codec-UVM-VIP](test_suites/I2S_Codec-UVM-VIP.md) | Audio | `smoke_func_tb.sv` | 12 | iverilog | 16/16 | 0 | ✅ Sufficient |
 | [I3C-VIP](test_suites/I3C-VIP.md) | MIPI | `func_i3c_tb.sv` | 30 | verilator | 9/11 | 0 | ✅ Sufficient |
 | [IO_Link-VIP](test_suites/IO_Link-VIP.md) | Industrial | `smoke_func_tb.sv` | 12 | iverilog | 28/28 | 0 | ✅ Sufficient |
+| [IR_Remote-UVM-VIP](test_suites/IR_Remote-UVM-VIP.md) | Peripherals | `smoke_func_tb.sv` | 40 | iverilog | 26/26 | 0 | ✅ Sufficient |
 | [Interlaken-VIP](test_suites/Interlaken-VIP.md) | Networking | `func_intlkn_tb.sv` | 23 | iverilog | 24/30 | 0 | ✅ Sufficient |
 | [JESD204-VIP](test_suites/JESD204-VIP.md) | SerDes | `func_jesd204_tb.sv` | 15 | iverilog | 27/30 | 0 | ✅ Sufficient |
 | [JTAG-VIP](test_suites/JTAG-VIP.md) | Storage/Debug | `func_jtag_tb.sv` | 25 | verilator | 10/12 | 0 | ✅ Sufficient |
@@ -98,6 +105,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [MCTP-UVM-VIP](test_suites/MCTP-UVM-VIP.md) | Power | `smoke_func_tb.sv` | 23 | iverilog | 26/28 | 0 | ✅ Sufficient |
 | [MDIO-UVM-VIP](test_suites/MDIO-UVM-VIP.md) | Networking | `smoke_func_tb.sv`, `func_mdio_tb.sv` | 23 | iverilog | 20/20 | 0 | ✅ Sufficient |
 | [MIL_STD_1553-VIP](test_suites/MIL_STD_1553-VIP.md) | Aerospace | `smoke_func_tb.sv` | 19 | iverilog | 12/15 | 0 | ✅ Sufficient |
+| [MPEG_TS-UVM-VIP](test_suites/MPEG_TS-UVM-VIP.md) | Video | `smoke_func_tb.sv` | 29 | iverilog | 27/27 | 0 | ✅ Sufficient |
 | [M_PHY-VIP](test_suites/M_PHY-VIP.md) | MIPI | `func_mipi_tb.sv` | 29 | verilator | 11/11 | 0 | ✅ Sufficient |
 | [NC-SI-UVM-VIP](test_suites/NC-SI-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 41 | iverilog | 25/30 | 0 | ✅ Sufficient |
 | [NVMe-VIP](test_suites/NVMe-VIP.md) | Storage/Debug | `smoke_func_tb.sv`, `func_nvme_tb.sv` | 57 | verilator | 8/8 | 0 | ✅ Sufficient |
@@ -115,17 +123,23 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [RapidIO-VIP](test_suites/RapidIO-VIP.md) | Interconnect | `smoke_func_tb.sv` | 22 | iverilog | 3/3 | 0 | ✅ Sufficient |
 | [SAS-VIP](test_suites/SAS-VIP.md) | Storage | `func_sas_tb.sv` | 42 | verilator | 10/10 | 0 | ✅ Sufficient |
 | [SATA-VIP](test_suites/SATA-VIP.md) | Storage/Debug | `func_sata_tb.sv` | 28 | verilator | 10/11 | 0 | ✅ Sufficient |
+| [SCCB_Sensor-UVM-VIP](test_suites/SCCB_Sensor-UVM-VIP.md) | MIPI | `smoke_func_tb.sv` | 18 | iverilog | 23/23 | 0 | ✅ Sufficient |
 | [SD-VIP](test_suites/SD-VIP.md) | Memory | `func_sd_tb.sv` | 35 | verilator | 10/10 | 0 | ✅ Sufficient |
 | [SDIO-UVM-VIP](test_suites/SDIO-UVM-VIP.md) | Storage | `smoke_func_tb.sv` | 27 | iverilog | 17/17 | 0 | ✅ Sufficient |
+| [SDMMC_Card-UVM-VIP](test_suites/SDMMC_Card-UVM-VIP.md) | Storage | `smoke_func_tb.sv` | 60 | iverilog | 29/29 | 0 | ✅ Sufficient |
+| [SD_Card-UVM-VIP](test_suites/SD_Card-UVM-VIP.md) | Storage | `smoke_func_tb.sv` | 32 | iverilog | 28/28 | 0 | ✅ Sufficient |
 | [SENT-VIP](test_suites/SENT-VIP.md) | Automotive | `smoke_func_tb.sv` | 16 | iverilog | 15/15 | 0 | ✅ Sufficient |
 | [SGMII-UVM-VIP](test_suites/SGMII-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 23 | verilator | 12/12 | 0 | ✅ Sufficient |
 | [SLIMbus-VIP](test_suites/SLIMbus-VIP.md) | MIPI | `func_slimbus_tb.sv` | 14 | iverilog | 23/23 | 0 | ✅ Sufficient |
 | [SMBus-UVM-VIP](test_suites/SMBus-UVM-VIP.md) | Power | `smoke_func_tb.sv` | 40 | iverilog | 28/28 | 0 | ✅ Sufficient |
+| [SPDIF-UVM-VIP](test_suites/SPDIF-UVM-VIP.md) | Audio | `smoke_func_tb.sv` | 26 | iverilog | 27/27 | 0 | ✅ Sufficient |
 | [SPI-VIP](test_suites/SPI-VIP.md) | Serial | `smoke_func_tb.sv` | 10 | iverilog | 25/25 | 0 | ✅ Sufficient |
+| [SPI_NOR-UVM-VIP](test_suites/SPI_NOR-UVM-VIP.md) | Memory | `smoke_func_tb.sv` | 26 | iverilog | 29/29 | 0 | ✅ Sufficient |
 | [SPMI-VIP](test_suites/SPMI-VIP.md) | MIPI | `func_spmi_tb.sv` | 15 | iverilog | 24/29 | 0 | ✅ Sufficient |
 | [SUE-UVM-VIP](test_suites/SUE-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 30 | iverilog | 28/28 | 0 | ✅ Sufficient |
 | [SWD-VIP](test_suites/SWD-VIP.md) | Debug | `func_swd_tb.sv` | 23 | verilator | 11/12 | 0 | ✅ Sufficient |
 | [Security-VIP](test_suites/Security-VIP.md) | Security | `func_security_tb.sv` | 17 | iverilog | 25/25 | 0 | ✅ Sufficient |
+| [Smartcard_ISO7816-UVM-VIP](test_suites/Smartcard_ISO7816-UVM-VIP.md) | Security | `smoke_func_tb.sv` | 34 | verilator | 30/30 | 0 | ✅ Sufficient |
 | [SoundWire-VIP](test_suites/SoundWire-VIP.md) | MIPI | `func_soundwire_tb.sv` | 18 | verilator | 6/7 | 0 | ✅ Sufficient |
 | [SpaceWire-UVM-VIP](test_suites/SpaceWire-UVM-VIP.md) | Aerospace | `smoke_func_tb.sv` | 38 | iverilog | 25/26 | 0 | ✅ Sufficient |
 | [T1S_PLCA-UVM-VIP](test_suites/T1S_PLCA-UVM-VIP.md) | Automotive | `smoke_func_tb.sv` | 19 | verilator | 9/9 | 0 | ✅ Sufficient |
@@ -146,6 +160,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [USXGMII-UVM-VIP](test_suites/USXGMII-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 29 | iverilog | 29/29 | 0 | ✅ Sufficient |
 | [UniPro-VIP](test_suites/UniPro-VIP.md) | MIPI | `func_mipi_tb.sv` | 29 | verilator | 11/11 | 0 | ✅ Sufficient |
 | [UniPro_Mem-VIP](test_suites/UniPro_Mem-VIP.md) | Memory | `func_unipro_mem_tb.sv` | 22 | iverilog | 22/22 | 0 | ✅ Sufficient |
+| [VbyOne_HS-UVM-VIP](test_suites/VbyOne_HS-UVM-VIP.md) | Video | `smoke_func_tb.sv` | 12 | iverilog | 27/27 | 0 | ✅ Sufficient |
 | [WTB-UVM-VIP](test_suites/WTB-UVM-VIP.md) | Debug | `smoke_func_tb.sv` | 15 | iverilog | 6/6 | 0 | ✅ Sufficient |
 | [Wishbone-UVM-VIP](test_suites/Wishbone-UVM-VIP.md) | Interconnect | `smoke_func_tb.sv`, `func_wishbone_tb.sv` | 34 | iverilog | 11/11 | 0 | ✅ Sufficient |
 | [XGMII-UVM-VIP](test_suites/XGMII-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 14 | iverilog | 1/1 | 0 | ✅ Sufficient |
@@ -153,6 +168,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [ddr7-VIP](test_suites/ddr7-VIP.md) | Memory | `func_mem_tb.sv` | 16 | verilator | 5/5 | 0 | ✅ Sufficient |
 | [eCPRI-VIP](test_suites/eCPRI-VIP.md) | Telecom | `func_ecpri_tb.sv` | 20 | iverilog | 28/30 | 0 | ✅ Sufficient |
 | [eMMC-VIP](test_suites/eMMC-VIP.md) | Memory | `func_emmc_tb.sv` | 43 | verilator | 10/10 | 0 | ✅ Sufficient |
+| [eMMC_Device-UVM-VIP](test_suites/eMMC_Device-UVM-VIP.md) | Storage | `smoke_func_tb.sv` | 36 | iverilog | 27/27 | 0 | ✅ Sufficient |
 | [eSPI-UVM-VIP](test_suites/eSPI-UVM-VIP.md) | Peripherals | `smoke_func_tb.sv` | 54 | iverilog | 26/28 | 0 | ✅ Sufficient |
 | [eUSB2-VIP](test_suites/eUSB2-VIP.md) | USB | `func_eusb2_tb.sv` | 25 | iverilog | 26/30 | 0 | ✅ Sufficient |
 | [gddr5-VIP](test_suites/gddr5-VIP.md) | Memory | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
