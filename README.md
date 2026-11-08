@@ -1,10 +1,10 @@
 # Open VIP Portfolio
 
-> A comprehensive, open-source collection of **145 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
+> A comprehensive, open-source collection of **146 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
 
 [![License](https://img.shields.io/badge/License-Apache%%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![VIP Count](https://img.shields.io/badge/VIPs-145-brightgreen.svg)]()
-[![Protocols](https://img.shields.io/badge/Protocols-145-orange.svg)]()
+[![VIP Count](https://img.shields.io/badge/VIPs-146-brightgreen.svg)]()
+[![Protocols](https://img.shields.io/badge/Protocols-146-orange.svg)]()
 
 ---
 
@@ -12,9 +12,9 @@
 
 This repository provides a **modular, per-protocol verification IP library** covering major interface standards used in modern semiconductor design. Each entry is packaged as a standalone zip file.
 
-- **145 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
+- **146 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
 - **RTL IPs** -- the synthesizable reference RTL lives in [open-ip-portfolio](https://github.com/tonythetiger168/open-ip-portfolio); the column `open-ip 對應` of the CSV maps each VIP to its IP there
-- **145 distinct protocols** across 20 families
+- **146 distinct protocols** across 20 families
 
 All source files are licensed under **Apache License 2.0**.
 
@@ -192,11 +192,12 @@ All source files are licensed under **Apache License 2.0**.
 | MCTP over SMBus (DMTF DSP0237) | UVM VIP | `MCTP-UVM-VIP.zip` | 25KB |
 | SMBus/PMBus | UVM VIP | `SMBus-UVM-VIP.zip` | 26KB |
 
-### Security (5)
+### Security (6)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | Crypto / Security Engine | UVM VIP | `Security-VIP.zip` | 36KB |
+| DVB CI / CI+ CAM (EN 50221, PC Card) | UVM VIP | `CI_CAM-UVM-VIP.zip` | 28KB |
 | HDCP 2.3 Content Protection | UVM VIP | `HDCP-VIP.zip` | 32KB |
 | ISO 7816-3 smartcard (T = 0, PPS) | UVM VIP | `Smartcard_ISO7816-UVM-VIP.zip` | 27KB |
 | MACsec (IEEE 802.1AE, GCM-AES-128) | UVM VIP | `MACsec-UVM-VIP.zip` | 29KB |
@@ -285,9 +286,9 @@ Models a SoC testbench uses next to the protocol VIPs, kept as source under
 open-vip-portfolio/
 |-- LICENSE
 |-- README.md
-|-- vip_individual_portfolio.csv   # machine-readable index (145 entries)
+|-- vip_individual_portfolio.csv   # machine-readable index (146 entries)
 |-- smoke_report.csv               # full open-toolchain L1b smoke results
-|-- vips/                          # 145 individual VIP zip files
+|-- vips/                          # 146 individual VIP zip files
 |-- .github/workflows/             # CI validation
 |-- docs/                          # CONTRIBUTING and guides
 ```

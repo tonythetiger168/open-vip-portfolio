@@ -4,9 +4,9 @@
 
 ## 1. 結論
 
-- 145 個 VIP 中 145 個有可在開源工具上執行的 self-checking 功能測試，共 4371 個 check（另有 RTL IP testbench 的 0 次斷言評估）；145 個 VIP 的測試全部通過。
-- 判定：✅ Sufficient 145、🟡 Partial 0、❌ Insufficient 0。
-- Mutation testing：2259 個有效 mutant 中 2168 個被功能測試偵測（96%）。
+- 146 個 VIP 中 146 個有可在開源工具上執行的 self-checking 功能測試，共 4454 個 check（另有 RTL IP testbench 的 0 次斷言評估）；146 個 VIP 的測試全部通過。
+- 判定：✅ Sufficient 146、🟡 Partial 0、❌ Insufficient 0。
+- Mutation testing：2289 個有效 mutant 中 2198 個被功能測試偵測（96%）。
 - 沒有未修正的 DUT 模型缺陷：功能測試中沒有 XFAIL check（先前記錄的缺陷都已在模型中修正）。
 
 ## 2. 方法
@@ -52,6 +52,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [CAN_XL-UVM-VIP](test_suites/CAN_XL-UVM-VIP.md) | Automotive | `smoke_func_tb.sv` | 38 | verilator | 10/12 | 0 | ✅ Sufficient |
 | [CCIX-VIP](test_suites/CCIX-VIP.md) | Interconnect | `func_ccix_tb.sv` | 13 | iverilog | 15/15 | 0 | ✅ Sufficient |
 | [CHI-UVM-VIP](test_suites/CHI-UVM-VIP.md) | AMBA | `smoke_func_tb.sv`, `func_chi_hn_tb.sv` | 53 | iverilog | 27/28 | 0 | ✅ Sufficient |
+| [CI_CAM-UVM-VIP](test_suites/CI_CAM-UVM-VIP.md) | Security | `smoke_func_tb.sv` | 83 | verilator | 30/30 | 0 | ✅ Sufficient |
 | [CPRI-VIP](test_suites/CPRI-VIP.md) | Telecom | `func_cpri_tb.sv` | 17 | iverilog | 19/19 | 0 | ✅ Sufficient |
 | [CSE-VIP](test_suites/CSE-VIP.md) | MIPI | `func_cse_tb.sv` | 34 | iverilog | 25/25 | 0 | ✅ Sufficient |
 | [CSI2_Sensor-UVM-VIP](test_suites/CSI2_Sensor-UVM-VIP.md) | MIPI | `smoke_func_tb.sv` | 25 | iverilog | 28/28 | 0 | ✅ Sufficient |
