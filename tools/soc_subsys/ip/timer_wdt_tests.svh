@@ -157,6 +157,15 @@ class timer_wdt_job_base_test extends timer_wdt_base_test;
   `uvm_component_utils(timer_wdt_job_base_test)
   timer_wdt_model model;
   int unsigned    rec_seen;   // records checked so far (slot of the next one)
+  int unsigned ring_slot;     // the IP's stored ring slot (reset: 0)
+
+  // slot of the next record: 0 when the ring was lowered below the stored
+  // slot; the stored slot then moves on from the slot used
+  function int unsigned next_slot(int unsigned words);
+    int unsigned ws = (ring_slot >= words) ? 0 : ring_slot;
+    ring_slot = (ws + 1 >= words) ? 0 : ws + 1;
+    return ws;
+  endfunction
   int unsigned    ev_ptr;     // next model event a record may match
 
   function new(string name, uvm_component parent);
@@ -183,7 +192,7 @@ class timer_wdt_job_base_test extends timer_wdt_base_test;
   task check_records(bit [31:0] base, bit [15:0] words, string when);
     while (env.axi.mon.completed.size() > 0) begin
       axim_txn t = env.axi.mon.completed.pop_front();
-      bit [31:0] exp_a = base + 4 * (rec_seen % words);
+      bit [31:0] exp_a = base + 4 * next_slot(words);
       bit found = 0;
       sb_check(t.write && t.beats() == 1, $sformatf("%s: record burst %s", when, t.convert2string()));
       check_eq(t.addr, exp_a, $sformatf("%s: record %0d address", when, rec_seen));

@@ -32,7 +32,8 @@
   sources toggling with random hold times under four AXI back-pressure
   settings: every record (address, id, timestamp window, priority, merge),
   LOG_WP = records written, every edge recorded once quiet; several sources
-  rising in the same clock are written lowest id first; LOG_EN 0 writes
+  rising in the same clock are written lowest id first; LOG_WORDS lowered
+  below the stored slot restarts the ring at slot 0; LOG_EN 0 writes
   nothing; no AXI read, AXI ID 10, single-beat writes.
 - `interrupt_controller_err_test`: ring in a SLVERR region: LOG_ERR
   interrupt, the word stays untouched, LOG_WP still counts; a clean ring
@@ -142,6 +143,15 @@ class interrupt_controller_job_base_test extends interrupt_controller_base_test;
   intc_model   model;
   bit [31:0]   src;               // level of every source as this test drives it
   int unsigned rec_seen;
+  int unsigned ring_slot;     // the IP's stored ring slot (reset: 0)
+
+  // slot of the next record: 0 when the ring was lowered below the stored
+  // slot; the stored slot then moves on from the slot used
+  function int unsigned next_slot(int unsigned words);
+    int unsigned ws = (ring_slot >= words) ? 0 : ring_slot;
+    ring_slot = (ws + 1 >= words) ? 0 : ws + 1;
+    return ws;
+  endfunction
 
   function new(string name, uvm_component parent);
     super.new(name, parent);
@@ -172,7 +182,7 @@ class interrupt_controller_job_base_test extends interrupt_controller_base_test;
   task check_records(bit [31:0] base, bit [15:0] words, string when, bit allow_err = 0);
     while (env.axi.mon.completed.size() > 0) begin
       axim_txn t = env.axi.mon.completed.pop_front();
-      bit [31:0] exp_a = base + 4 * (rec_seen % words);
+      bit [31:0] exp_a = base + 4 * next_slot(words);
       bit [4:0] id = t.data[0][4:0];
       longint T = t.data[0][31:8];
       sb_check(t.write && t.beats() == 1, $sformatf("%s: record burst %s", when, t.convert2string()));
@@ -338,6 +348,22 @@ class interrupt_controller_log_test extends interrupt_controller_job_base_test;
       drain(32'h3800_0000, words, "simultaneous");
     end
     set_src(0);
+    // ---- ring lowered below the stored slot: the next record goes to slot 0
+    // and nothing is written past the new ring
+    clocks(5);
+    while (ring_slot < 3) begin
+      set_src(32'h1); clocks(3); set_src(0);
+      drain(32'h3800_0000, words, "fill to slot 3");
+    end
+    env.axi_cfg.clear_windows();
+    env.axi_cfg.add_window(32'h3C00_0000, 32'h3C00_0008, 0, 1, "ring of 2");
+    wr("LOG_BASE", 32'h3C00_0000);
+    log_ctrl(1, 2);
+    for (int k = 0; k < 5; k++) begin
+      int unsigned slot_was = ring_slot;
+      set_src(32'h1 << k); clocks(3); set_src(0);
+      drain(32'h3C00_0000, 2, $sformatf("ring lowered to 2, record %0d (stored slot %0d)", k, slot_was));
+    end
     // ---- LOG_EN 0: nothing written
     log_ctrl(0, words);
     clocks(5);
@@ -378,7 +404,7 @@ class interrupt_controller_err_test extends interrupt_controller_job_base_test;
     set_src(0);
     drain(32'h3000_0000, 4, "error ring", 1);
     for (int i = 0; i < 4; i++) check_eq(mem().rd32(32'h3000_0000 + 4 * i), 32'hDEAD_0000 + i, "record written into SLVERR");
-    // clean ring: slot continues at rec_seen mod 4
+    // clean ring: the slot carries on
     log_ctrl(0, 4);
     wr("LOG_BASE", 32'h3400_0000);
     log_ctrl(1, 4);
