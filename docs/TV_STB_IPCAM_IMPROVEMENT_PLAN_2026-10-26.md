@@ -4,7 +4,7 @@
 本計畫涵蓋 TV／STB／IPCAM 共用平台。實作前重讀最新 main、AGENTS.md／CLAUDE.md、相關 PR 與驗證報告；來源衝突以具體 RTL、較新報告及可重現結果判定。不得把 VIP、行為 PHY、命名或 coverage 百分比等同完整協定或產品成熟度。
 
 ## 目標
-本repo負責verification IP，不代表相應controller/PHY已完成。先盤點132項與實際檔案/工具結果的對照、重複RTL及版本；所有結果區分elaboration/smoke/conformance/system。
+本repo負責verification IP，不代表相應controller/PHY已完成。先盤點130項與實際檔案/工具結果的對照、重複RTL及版本；所有結果區分elaboration/smoke/conformance/system。
 ## 需新增或擴充
 AXI4：burst、4KB boundary、IDs/outstanding、backpressure、error/timeout、abort drain。
 Video stream：SOF/EOL、valid lane/pixel packing、frame size、stall stability、frame-boundary config。

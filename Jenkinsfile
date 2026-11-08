@@ -3,13 +3,13 @@
 //
 // 流程與 GitHub Actions 範例（ci/.github/workflows/vip_regression.yml）相同：
 //   Stage 1 環境準備：iverilog + Verilator v5.052 + pyslang 12 + Accellera uvm-core
-//   Stage 2 L1a elaboration gate：對全部 132 個 VIP 跑 tools/elab_scan.py
+//   Stage 2 L1a elaboration gate：對全部 130 個 VIP 跑 tools/elab_scan.py
 //   Stage 3 L1b iverilog DUT 冒煙測試：smoke/run_smoke.sh 存在時才執行
 //   Stage 4 歸檔報告 artifact（失敗也保留日誌）
 //   檔案尾端以註解示範 Stage 5：在具商用模擬器 license 的節點跑 L2/L3。
 //
 // 假設 repo 版面：
-//   <repo>/vips/<協定>-VIP.zip        ← 132 個 VIP zip（tools/extract_vips.sh 解壓到 build/vips）
+//   <repo>/vips/<協定>-VIP.zip        ← 130 個 VIP zip（tools/extract_vips.sh 解壓到 build/vips）
 //   <repo>/tools/elab_scan.py          ← elaboration gate 腳本
 //   <repo>/smoke/run_smoke.sh          ← iverilog DUT 冒煙測試 harness（選配）
 // =============================================================================
