@@ -274,7 +274,7 @@ manager-port kit), reference-model scoreboards, an RTL snapshot, `tb/top_tb.sv`,
 | Always-on sensor hub decimator (AXI4 manager) | UVM VIP | `Sensor_Hub-UVM-VIP.zip` | 40KB |
 | SMMU / IOMMU translation, TLB, faults (AXI4 subordinate + manager) | UVM VIP | `SMMU-UVM-VIP.zip` | 39KB |
 | System DMA, 4 channels (AXI4 manager) | UVM VIP | `DMA-UVM-VIP.zip` | 41KB |
-| Interrupt controller, priority claim, event log (AXI4 manager) | UVM VIP | `Interrupt_Controller-UVM-VIP.zip` | 42KB |
+| Interrupt controller, priority claim, event log (AXI4 manager) | UVM VIP | `Interrupt_Controller-UVM-VIP.zip` | 43KB |
 | Timer / watchdog with timestamp ring (AXI4 manager) | UVM VIP | `Timer_WDT-UVM-VIP.zip` | 42KB |
 
 ---
