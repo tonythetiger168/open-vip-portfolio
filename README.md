@@ -1,10 +1,10 @@
 # Open VIP Portfolio
 
-> A comprehensive, open-source collection of **136 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
+> A comprehensive, open-source collection of **143 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
 
 [![License](https://img.shields.io/badge/License-Apache%%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![VIP Count](https://img.shields.io/badge/VIPs-136-brightgreen.svg)]()
-[![Protocols](https://img.shields.io/badge/Protocols-136-orange.svg)]()
+[![VIP Count](https://img.shields.io/badge/VIPs-143-brightgreen.svg)]()
+[![Protocols](https://img.shields.io/badge/Protocols-143-orange.svg)]()
 
 ---
 
@@ -12,9 +12,9 @@
 
 This repository provides a **modular, per-protocol verification IP library** covering major interface standards used in modern semiconductor design. Each entry is packaged as a standalone zip file.
 
-- **136 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
+- **143 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
 - **RTL IPs** -- the synthesizable reference RTL lives in [open-ip-portfolio](https://github.com/tonythetiger168/open-ip-portfolio); the column `open-ip 對應` of the CSV maps each VIP to its IP there
-- **136 distinct protocols** across 20 families
+- **143 distinct protocols** across 20 families
 
 All source files are licensed under **Apache License 2.0**.
 
@@ -42,11 +42,12 @@ All source files are licensed under **Apache License 2.0**.
 | MIL-STD-1553 | UVM VIP | `MIL_STD_1553-VIP.zip` | 24KB |
 | SpaceWire (ECSS-E-ST-50-12C) | UVM VIP | `SpaceWire-UVM-VIP.zip` | 27KB |
 
-### Audio (3)
+### Audio (4)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | I2S Audio | UVM VIP | `I2S-VIP.zip` | 35KB |
+| I2S audio codec (clock master) | UVM VIP | `I2S_Codec-UVM-VIP.zip` | 21KB |
 | S/PDIF (IEC 60958) | UVM VIP | `SPDIF-UVM-VIP.zip` | 23KB |
 | TDM audio (DSP mode) | UVM VIP | `TDM-UVM-VIP.zip` | 20KB |
 
@@ -98,16 +99,17 @@ All source files are licensed under **Apache License 2.0**.
 | UCIe | UVM VIP | `UCIe-VIP.zip` | 43KB |
 | Wishbone | UVM VIP | `Wishbone-UVM-VIP.zip` | 24KB |
 
-### MIPI (16)
+### MIPI (18)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | C-PHY | UVM VIP | `C_PHY-VIP.zip` | 36KB |
 | CSE | UVM VIP | `CSE-VIP.zip` | 36KB |
 | CSI-2 | UVM VIP | `CSI_2-VIP.zip` | 44KB |
+| CSI-2 camera sensor transmitter | UVM VIP | `CSI2_Sensor-UVM-VIP.zip` | 25KB |
 | D-PHY | UVM VIP | `D_PHY-VIP.zip` | 36KB |
-| DSI | UVM VIP | `DSI-VIP.zip` | 36KB |
 | DigRF | UVM VIP | `DigRF-VIP.zip` | 33KB |
+| DSI | UVM VIP | `DSI-VIP.zip` | 36KB |
 | HSI | UVM VIP | `HSI-VIP.zip` | 34KB |
 | M-PHY | UVM VIP | `M_PHY-VIP.zip` | 36KB |
 | MIPI DBI (Display Bus Interface) | UVM VIP | `DBI-VIP.zip` | 28KB |
@@ -115,11 +117,12 @@ All source files are licensed under **Apache License 2.0**.
 | MIPI I3C | UVM VIP | `I3C-VIP.zip` | 35KB |
 | MIPI RFFE | UVM VIP | `RFFE-VIP.zip` | 30KB |
 | MIPI SLIMbus | UVM VIP | `SLIMbus-VIP.zip` | 31KB |
-| MIPI SPMI | UVM VIP | `SPMI-VIP.zip` | 30KB |
 | MIPI SoundWire | UVM VIP | `SoundWire-VIP.zip` | 32KB |
+| MIPI SPMI | UVM VIP | `SPMI-VIP.zip` | 30KB |
+| SCCB / I2C camera sensor control | UVM VIP | `SCCB_Sensor-UVM-VIP.zip` | 22KB |
 | UniPro | UVM VIP | `UniPro-VIP.zip` | 36KB |
 
-### Memory (25)
+### Memory (26)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
@@ -128,6 +131,7 @@ All source files are licensed under **Apache License 2.0**.
 | DDR6 | UVM VIP | `ddr6-VIP.zip` | 27KB |
 | DDR7 | UVM VIP | `ddr7-VIP.zip` | 27KB |
 | DFI 5.0 (MC-PHY Interface) | UVM VIP | `DFI-VIP.zip` | 32KB |
+| eMMC | UVM VIP | `eMMC-VIP.zip` | 53KB |
 | GDDR5 | UVM VIP | `gddr5-VIP.zip` | 29KB |
 | GDDR6 | UVM VIP | `gddr6-VIP.zip` | 30KB |
 | GDDR7 | UVM VIP | `gddr7-VIP.zip` | 30KB |
@@ -144,12 +148,12 @@ All source files are licensed under **Apache License 2.0**.
 | LPDDR6 | UVM VIP | `LPDDR6-VIP.zip` | 22KB |
 | LPDDR7 | UVM VIP | `lpddr7-VIP.zip` | 32KB |
 | ONFI | UVM VIP | `ONFI-VIP.zip` | 53KB |
+| Quad-SPI NOR flash (XIP) | UVM VIP | `SPI_NOR-UVM-VIP.zip` | 23KB |
 | SD | UVM VIP | `SD-VIP.zip` | 55KB |
 | UFS | UVM VIP | `UFS-VIP.zip` | 35KB |
 | UniPro-Mem | UVM VIP | `UniPro_Mem-VIP.zip` | 39KB |
-| eMMC | UVM VIP | `eMMC-VIP.zip` | 53KB |
 
-### Networking (14)
+### Networking (15)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
@@ -157,6 +161,7 @@ All source files are licensed under **Apache License 2.0**.
 | Ethernet | UVM VIP | `Ethernet-VIP.zip` | 57KB |
 | FC | UVM VIP | `FC-VIP.zip` | 48KB |
 | GMII | UVM VIP | `GMII-UVM-VIP.zip` | 23KB |
+| GMII / RGMII Ethernet PHY link partner | UVM VIP | `GMII_PHY-UVM-VIP.zip` | 25KB |
 | IEEE 1588 PTP | UVM VIP | `PTP-VIP.zip` | 23KB |
 | Interlaken v1.2 | UVM VIP | `Interlaken-VIP.zip` | 30KB |
 | MDIO | UVM VIP | `MDIO-UVM-VIP.zip` | 23KB |
@@ -211,11 +216,13 @@ All source files are licensed under **Apache License 2.0**.
 | UART | UVM VIP | `UART-VIP.zip` | 36KB |
 | xSPI (JESD251) | UVM VIP | `xSPI-UVM-VIP.zip` | 23KB |
 
-### Storage (3)
+### Storage (5)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
+| eMMC device (1-bit, RST_n) | UVM VIP | `eMMC_Device-UVM-VIP.zip` | 27KB |
 | SAS-4 (Serial Attached SCSI) | UVM VIP | `SAS-VIP.zip` | 34KB |
+| SD memory card (4-bit) | UVM VIP | `SD_Card-UVM-VIP.zip` | 27KB |
 | SDIO | UVM VIP | `SDIO-UVM-VIP.zip` | 23KB |
 | Toggle Mode NAND | UVM VIP | `ToggleNAND-VIP.zip` | 33KB |
 
@@ -260,15 +267,24 @@ All source files are licensed under **Apache License 2.0**.
 
 ---
 
+## SoC Bench Libraries
+
+Models a SoC testbench uses next to the protocol VIPs, kept as source under
+`soc/` (not zipped, not part of the per-VIP gates):
+
+| Library | Content |
+|---|---|
+| [`soc/dram_timing`](soc/dram_timing/README.md) | DRAM channel timing for memory slaves, chosen by preset name (`ddr4-2400`, `ddr4-3200`, `lpddr4-3200`, `lpddr4x-4266`, `lpddr5-6400`, `lpddr5x-8533`), the name socgen's `memories[].timing` carries |
+
 ## Repository Structure
 
 ```
 open-vip-portfolio/
 |-- LICENSE
 |-- README.md
-|-- vip_individual_portfolio.csv   # machine-readable index (136 entries)
+|-- vip_individual_portfolio.csv   # machine-readable index (143 entries)
 |-- smoke_report.csv               # full open-toolchain L1b smoke results
-|-- vips/                          # 136 individual VIP zip files
+|-- vips/                          # 143 individual VIP zip files
 |-- .github/workflows/             # CI validation
 |-- docs/                          # CONTRIBUTING and guides
 ```
