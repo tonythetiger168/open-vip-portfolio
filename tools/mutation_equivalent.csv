@@ -561,3 +561,7 @@ HDMI_Source-UVM-VIP,dut_hdmisrc_model.sv:113,4 -> 5,sn[256 +: 56] is past the fo
 CSI2_Sensor-UVM-VIP,dut_csis_model.sv:36,24 -> 25,"bit 24 of a 24-bit one-hot shift is 0 and ecc24(0) = 0, which only matches syn = 0, already a clean header"
 CSI2_Sensor-UVM-VIP,dut_csis_model.sv:69,1'b0 inverted,"corr is written at every accepted header before the only states that read it (payload, CRC), so its reset value is never observed"
 GMII_PHY-UVM-VIP,dut_gphy_model.sv:104,== flipped,"the loopback client holds at most one frame and the next one is received only after 12 quiet byte times, so a shorter inter-frame gap is never followed by a frame"
+I2S_Codec-UVM-VIP,dut_i2sc_model.sv:17,1 -> 2,"$clog2(18) = $clog2(17) = 5 for DW = 16, so the counter width is unchanged"
+I2S_Codec-UVM-VIP,dut_i2sc_model.sv:27,1'b0 inverted,"bclk idles high and sdin low from reset: a set bclk_s / bclk_d / sdin_s synchroniser flop gives at most one edge before any lrck change, which only shifts the all-zero transmit register or is ignored by the receive counter (still at DW); the lrck_s / lrck_d mutants are killed"
+I2S_Codec-UVM-VIP,dut_i2sc_model.sv:40,1'b0 inverted,"a pending load or channel select out of reset loads a transmit register that is still 0, the same zeros a shift gives; both are overwritten at the first lrck change"
+I2S_Codec-UVM-VIP,dut_i2sc_model.sv:56,1'b0 inverted,"rx_ch_n and rx_ch are written at the first lrck change before any word is stored (rx_cnt starts at DW, so nothing is stored before it); the rx_pend mutant is killed"
