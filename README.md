@@ -1,10 +1,10 @@
 # Open VIP Portfolio
 
-> A comprehensive, open-source collection of **118 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
+> A comprehensive, open-source collection of **136 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
 
 [![License](https://img.shields.io/badge/License-Apache%%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![VIP Count](https://img.shields.io/badge/VIPs-130-brightgreen.svg)]()
-[![Protocols](https://img.shields.io/badge/Protocols-130-orange.svg)]()
+[![VIP Count](https://img.shields.io/badge/VIPs-136-brightgreen.svg)]()
+[![Protocols](https://img.shields.io/badge/Protocols-136-orange.svg)]()
 
 ---
 
@@ -12,9 +12,9 @@
 
 This repository provides a **modular, per-protocol verification IP library** covering major interface standards used in modern semiconductor design. Each entry is packaged as a standalone zip file.
 
-- **130 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
+- **136 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
 - **RTL IPs** -- the synthesizable reference RTL lives in [open-ip-portfolio](https://github.com/tonythetiger168/open-ip-portfolio); the column `open-ip 對應` of the CSV maps each VIP to its IP there
-- **130 distinct protocols** across 20 families
+- **136 distinct protocols** across 20 families
 
 All source files are licensed under **Apache License 2.0**.
 
@@ -42,11 +42,12 @@ All source files are licensed under **Apache License 2.0**.
 | MIL-STD-1553 | UVM VIP | `MIL_STD_1553-VIP.zip` | 24KB |
 | SpaceWire (ECSS-E-ST-50-12C) | UVM VIP | `SpaceWire-UVM-VIP.zip` | 27KB |
 
-### Audio (2)
+### Audio (3)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | I2S Audio | UVM VIP | `I2S-VIP.zip` | 35KB |
+| S/PDIF (IEC 60958) | UVM VIP | `SPDIF-UVM-VIP.zip` | 23KB |
 | TDM audio (DSP mode) | UVM VIP | `TDM-UVM-VIP.zip` | 20KB |
 
 ### Automotive (8)
@@ -167,12 +168,13 @@ All source files are licensed under **Apache License 2.0**.
 | USXGMII (multi-rate 64b/66b) | UVM VIP | `USXGMII-UVM-VIP.zip` | 25KB |
 | XGMII | UVM VIP | `XGMII-UVM-VIP.zip` | 23KB |
 
-### Peripherals (4)
+### Peripherals (5)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | 1-Wire | UVM VIP | `OneWire-UVM-VIP.zip` | 23KB |
 | GPIO | UVM VIP | `GPIO-UVM-VIP.zip` | 29KB |
+| IR remote control (NEC / RC5) | UVM VIP | `IR_Remote-UVM-VIP.zip` | 24KB |
 | PWM | UVM VIP | `PWM-UVM-VIP.zip` | 29KB |
 | eSPI (Enhanced SPI) | UVM VIP | `eSPI-UVM-VIP.zip` | 26KB |
 
@@ -246,11 +248,15 @@ All source files are licensed under **Apache License 2.0**.
 | USB4 | UVM VIP | `USB4-VIP.zip` | 61KB |
 | eUSB2 | UVM VIP | `eUSB2-VIP.zip` | 61KB |
 
-### Video (1)
+### Video (5)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | HDMI 2.1 | UVM VIP | `HDMI-VIP.zip` | 38KB |
+| HDMI CEC | UVM VIP | `HDMI_CEC-UVM-VIP.zip` | 24KB |
+| HDMI source (TMDS, InfoFrames) | UVM VIP | `HDMI_Source-UVM-VIP.zip` | 28KB |
+| MPEG-2 TS / TSI (ISO/IEC 13818-1) | UVM VIP | `MPEG_TS-UVM-VIP.zip` | 23KB |
+| V-by-One HS panel sink | UVM VIP | `VbyOne_HS-UVM-VIP.zip` | 22KB |
 
 ---
 
@@ -260,9 +266,9 @@ All source files are licensed under **Apache License 2.0**.
 open-vip-portfolio/
 |-- LICENSE
 |-- README.md
-|-- vip_individual_portfolio.csv   # machine-readable index (130 entries)
+|-- vip_individual_portfolio.csv   # machine-readable index (136 entries)
 |-- smoke_report.csv               # full open-toolchain L1b smoke results
-|-- vips/                          # 118 individual VIP zip files
+|-- vips/                          # 136 individual VIP zip files
 |-- .github/workflows/             # CI validation
 |-- docs/                          # CONTRIBUTING and guides
 ```

@@ -455,7 +455,7 @@ task automatic chk(input bit ok, input string msg);
   if (!ok) begin fails++; $display("  [FAIL] %s", msg); end
 endtask
 
-integer nrep = 0, nout = 0, nacks = 0, nerrp = 0, oen = 0;
+integer nrep = 0, nout = 0, nacks = 0, nerrp = 0, oen = 0, last_oe = 0;
 logic [2:0] r_st;
 logic [3:0] r_in, r_de;
 logic [4:0] r_ln;
@@ -464,7 +464,7 @@ always @(posedge clk) begin
   if (rep_valid) begin nrep = nrep + 1; r_st = rep_status; r_in = rep_init; r_de = rep_dest; r_ln = rep_len; end
   if (out_valid) begin ob[nout] = out_data; nout = nout + 1; end
   if (cec_oe_low) oen = oen + 1;
-  else if (oen != 0) begin if (oen <= 40 * U) nacks = nacks + 1; else nerrp = nerrp + 1; oen = 0; end
+  else if (oen != 0) begin if (oen <= 40 * U) nacks = nacks + 1; else nerrp = nerrp + 1; last_oe = oen; oen = 0; end
 end
 
 integer r0, sampled, eperr;
@@ -490,10 +490,10 @@ logic [7:0] fb [0:15];
 integer fn;
 // frame of fn blocks fb[]; bad = bit index (from 0, after the start bit) with low time badlo
 task automatic frame(input integer bad = -1, input integer badlo = 20, input integer badper = 48,
-                     input logic noeom = 0);
+                     input logic noeom = 0, input integer slo = 74, input integer sper = 90);
   integer bi;
   r0 = nrep; nout = 0; nacks = 0; nerrp = 0; eperr = 0; bi = 0;
-  start();
+  start(slo, sper);
   for (int k = 0; k < 16; k++) if (k < fn && eperr == 0) begin
     for (int i = 0; i < 10; i++) if (eperr == 0) begin
       logic v;
@@ -543,6 +543,11 @@ initial begin
   cbit(8, 41); cbit(12, 48); idle();
   chk(got(0, 4, 0, 1) && nout == 1 && ob[0] == 8'h9F && nacks == 2, "every window edge accepted");
   fn = 2; fb[0] = 8'h40; fb[1] = 8'h8F; frame(); chk(got(0, 4, 0, 1) && outs(1), "frame after the faults");
+  chk(last_oe == 30 * U, $sformatf("ACK pulse is 1.5 ms (%0d clocks)", last_oe));
+  frame(-1, 20, 48, 0, 78, 90); chk(got(0, 4, 0, 1), "start low 3.9 ms accepted");
+  frame(-1, 20, 48, 0, 79, 90); chk(got(4, 0, 0, 0), "start low 3.95 ms rejected");
+  frame(-1, 20, 48, 0, 70, 94); chk(got(0, 4, 0, 1), "start period 4.7 ms accepted");
+  frame(-1, 20, 48, 0, 74, 95); chk(got(4, 0, 0, 0), "start period 4.75 ms rejected");
   if (fails == 0) $display("FUNC_PASS checks=%0d", checks);
   else            $display("FUNC_FAIL checks=%0d fails=%0d", checks, fails);
   $finish;

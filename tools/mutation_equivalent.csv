@@ -538,3 +538,23 @@ UCIe-VIP,dut_ucie_d2d_model.sv:87,0 -> 1,rp_num reset value: LINKINIT -> ACTIVE 
 UCIe-VIP,dut_ucie_d2d_model.sv:204,0 -> 1,t_wait after the LINKINIT response: shifts the sideband timeout by one clock and the next state change clears it
 UCIe-VIP,dut_ucie_d2d_model.sv:245,< -> <= in condition,width minimum: when the widths are equal both arms give the same value
 UCIe-VIP,dut_ucie_d2d_model.sv:275,== flipped,tr_tx / tr_rx clear: they are read only in MBTRAIN and every transition into MBTRAIN still clears them
+IR_Remote-UVM-VIP,dut_ir_model.sv:38,1'b1 inverted,"lv reset 0: the first high sample ends a ""mark"" in S_IDLE, which ignores mark ends"
+IR_Remote-UVM-VIP,dut_ir_model.sv:64,0 -> 1,RC5 half-bit pair 0 is (space mark) by construction: hv[0] = 1 and the first mark writes hv[1] = 0
+IR_Remote-UVM-VIP,dut_ir_model.sv:108,2 -> 3,3H/3 + 1 = 15 as the low end of a 2-half mark: marks of 7..21 already match the 1-half window first
+IR_Remote-UVM-VIP,dut_ir_model.sv:120,10 -> 11,leader space window top: a space over 10T has already raised the overflow error before its edge
+SPDIF-UVM-VIP,dut_spdif_model.sv:40,1'b0 inverted,lv reset 1: the first edge is classified from the saturated counter (out of range) and hunting ignores it
+SPDIF-UVM-VIP,dut_spdif_model.sv:48,7 -> 8,the stall timeout only fires later: such a run is out of range at its end anyway and gives the same violation report
+SPDIF-UVM-VIP,dut_spdif_model.sv:48,>= -> > in condition,the stall timeout fires a clock later: same violation report (the run is out of range at its end)
+MPEG_TS-UVM-VIP,dut_tsi_model.sv:30,1 -> 2,slot -2 is still negative (PID not filtered)
+MPEG_TS-UVM-VIP,dut_tsi_model.sv:43,1'b0 inverted,perr is reloaded at every ts_sync before it is used
+MPEG_TS-UVM-VIP,dut_tsi_model.sv:44,4 -> 5,last[4] is outside the four filter entries (write dropped)
+VbyOne_HS-UVM-VIP,dut_vbo_model.sv:33,1'b0 inverted,eol / sof are reloaded at every pix_sol before they are used
+VbyOne_HS-UVM-VIP,dut_vbo_model.sv:49,== flipped,symbols start on sdiv = 1 instead of 0: same symbol period and content (phase only)
+HDMI_CEC-UVM-VIP,dut_cec_model.sv:33,1'b0 inverted,ack is cleared at every start bit and eom reloaded at bit 8 before use
+HDMI_CEC-UVM-VIP,dut_cec_model.sv:53,&& flipped,S_IDLE also leaves on a high sample: S_STL still measures the start low from the next falling edge
+HDMI_CEC-UVM-VIP,dut_cec_model.sv:68,1'b0 inverted,v is not used for the ACK bit (b = 9)
+HDMI_CEC-UVM-VIP,dut_cec_model.sv:71,1'b0 inverted,v is not used once err is set
+HDMI_Source-UVM-VIP,dut_hdmisrc_model.sv:70,1'b0 inverted,vs_q / gbs are reloaded at every control character before they are used
+HDMI_Source-UVM-VIP,dut_hdmisrc_model.sv:73,1'b0 inverted,pkt_ok only matters with pkt_valid, which loads it
+HDMI_Source-UVM-VIP,dut_hdmisrc_model.sv:102,== flipped,h / s are cleared after every packet; clearing them at other guard band characters changes nothing
+HDMI_Source-UVM-VIP,dut_hdmisrc_model.sv:113,4 -> 5,sn[256 +: 56] is past the four subpackets (X): the X compare leaves ok unchanged

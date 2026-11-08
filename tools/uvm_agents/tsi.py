@@ -389,12 +389,14 @@ task automatic build(input logic [12:0] pid, input logic [3:0] cc, input logic [
 endtask
 
 logic [7:0] ob [0:187];
-integer on = 0, nrep = 0;
+integer on = 0, nrep = 0, nlast = 0, badlast = 0;
 logic [12:0] r_pid;
 logic [3:0] r_cc;
 logic [2:0] r_st;
 always @(posedge clk) begin
   if (out_valid) begin ob[on] = out_data; on = on + 1; end
+  if (out_last) begin nlast = nlast + 1; if (!out_valid || !rep_valid) badlast = badlast + 1; end
+  if (rep_valid && out_valid && !out_last) badlast = badlast + 1;
   if (rep_valid) begin nrep = nrep + 1; r_pid = rep_pid; r_cc = rep_cc; r_st = rep_status; end
 end
 task automatic send(input integer len = 188, input integer errb = -1, input integer gap = 0);
@@ -424,7 +426,8 @@ initial begin
   repeat (3) @(posedge clk);
   chk(rep_valid === 1'b0 && out_valid === 1'b0, "nothing out in reset");
   rst_n = 1;
-  repeat (4) @(negedge clk);
+  repeat (30) @(negedge clk);
+  chk(nrep == 0 && on == 0 && nlast == 0, "nothing out after reset without input");
   build(13'h0000, 4'd5); send(); chk(got(0, 0, 5) && delivered() && on == 184, "PAT, first packet: any CC, 184 bytes");
   build(13'h0000, 4'd6); send(188, -1, 3); chk(got(0, 0, 6) && delivered(), "CC + 1 with ts_valid gaps");
   build(13'h0100, 4'd0, 2'b11, 0); send(); chk(got(0, 13'h100, 0) && on == 183, "adaptation length 0");
@@ -434,6 +437,7 @@ initial begin
   build(13'h0100, 4'd9); send(); chk(got(2, 13'h100, 9) && delivered(), "CC 9 after 2: discontinuity, delivered");
   build(13'h0100, 4'd10); send(); chk(got(0, 13'h100, 10), "tracking restarted at 9");
   build(13'h0100, 4'd3, 2'b11, 7, 1); send(); chk(got(0, 13'h100, 3) && delivered(), "discontinuity_indicator: any CC");
+  build(13'h0100, 4'd3, 2'b11, 7, 0); send(); chk(got(3, 13'h100, 3) && on == 0, "duplicate with an adaptation field (no discontinuity flag)");
   build(13'h0100, 4'd3, 2'b10, 183); send(); chk(got(0, 13'h100, 3) && on == 0, "adaptation only: no payload");
   build(13'h0100, 4'd4, 2'b10, 100); send(); chk(got(6, 13'h100, 4), "control 10 with length 100");
   build(13'h0100, 4'd4, 2'b11, 183); send(); chk(got(6, 13'h100, 4), "control 11 with length 183");
@@ -450,6 +454,8 @@ initial begin
   // sync in the middle of a packet: the partial one is reported, the new one received
   build(13'h0000, 4'd7); send(50); chk(got(5, 0, 0), "50-byte packet");
   build(13'h0000, 4'd7); send(); chk(got(0, 0, 7) && delivered(), "PAT CC 7");
+  chk(badlast == 0, "out_last only on the last payload byte, with the report");
+  chk(nlast == 12, $sformatf("one out_last per delivered packet (%0d)", nlast));
   if (fails == 0) $display("FUNC_PASS checks=%0d", checks);
   else            $display("FUNC_FAIL checks=%0d fails=%0d", checks, fails);
   $finish;
