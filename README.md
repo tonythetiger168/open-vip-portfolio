@@ -1,6 +1,6 @@
 # Open VIP Portfolio
 
-> A comprehensive, open-source collection of **118 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
+> A comprehensive, open-source collection of **130 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
 
 [![License](https://img.shields.io/badge/License-Apache%%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![VIP Count](https://img.shields.io/badge/VIPs-130-brightgreen.svg)]()
@@ -261,8 +261,8 @@ open-vip-portfolio/
 |-- LICENSE
 |-- README.md
 |-- vip_individual_portfolio.csv   # machine-readable index (130 entries)
-|-- smoke_report.csv               # full open-toolchain L1b smoke results
-|-- vips/                          # 118 individual VIP zip files
+|-- smoke/smoke_report.csv         # L1b harness report (130 rows: 93 PASS, 37 SKIP)
+|-- vips/                          # 130 individual VIP zip files
 |-- .github/workflows/             # CI validation
 |-- docs/                          # CONTRIBUTING and guides
 ```
@@ -290,7 +290,7 @@ bash smoke/run_smoke.sh UART-VIP   # or: python3 smoke/smoke_run.py --smoke-all
 ## Quality Gates
 
 - **L1a elaboration**: `python3 tools/elab_scan.py vips/<VIP>` (pyslang + UVM 1.2)
-- **L1b smoke**: `bash smoke/run_smoke.sh <VIP>` (iverilog/verilator; full report in `smoke_report.csv`)
+- **L1b smoke**: `bash smoke/run_smoke.sh <VIP>` (iverilog/verilator; harness report in `smoke/smoke_report.csv`, 130 rows: 93 PASS, 37 SKIP)
 - **IP cross-check**: `python3 tools/run_ip_crosscheck.py --ip-dir ../open-ip-portfolio` checks the open-ip-portfolio CSI-2, Ethernet, HDMI, Crypto, UART, SPI, I2C, GPIO, PWM, I2S, SD, eMMC, USB, DDR4_Lite and LPDDR5X_Lite RTL against public vectors, spec-derived references and independent protocol models (see `ipcheck/README.md`)
 
 ---

@@ -1,6 +1,6 @@
 # CI 接入說明 — VIP Portfolio v1.8.0
 
-本目錄提供 VIP portfolio（132 個 UVM VIP）的 CI pipeline 範例與使用者驗收文件。
+本目錄提供 VIP portfolio（130 個 UVM VIP）的 CI pipeline 範例與使用者驗收文件。
 四個檔案的角色：
 
 | 檔案 | 用途 | 接入位置 |
@@ -16,7 +16,7 @@ CI 範例假設 portfolio repo 根目錄長這樣：
 
 ```
 <repo>/
-├── vips/                     # 132 個 <VIP>.zip（tools/extract_vips.sh 解壓到 build/vips/）
+├── vips/                     # 130 個 <VIP>.zip（tools/extract_vips.sh 解壓到 build/vips/）
 ├── tools/
 │   ├── install_tools.sh      # 安裝 Verilator 5.052、pyslang 12.0.0、uvm-core、iverilog、z3
 │   ├── extract_vips.sh       # vips/*.zip -> build/vips/

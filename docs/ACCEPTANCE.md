@@ -1,6 +1,6 @@
 # VIP Portfolio v1.8.0 — 使用者驗收指南
 
-本指南說明如何驗收 **132 個獨立 SystemVerilog UVM VIP**（v1.8.0）。每個 VIP 內含完整
+本指南說明如何驗收 **130 個獨立 SystemVerilog UVM VIP**（v1.8.0）。每個 VIP 內含完整
 UVM testbench：driver / monitor / sequencer / scoreboard / functional coverage /
 L1–L4 分層 SVA checker / functional DUT model / README，以及 `scripts/` 下的固定四件組
 （`Makefile`、`coverage.mk`、`cov_check.py`、`coverage_regression.sh`，預設 COV_GOAL=100，
@@ -10,16 +10,16 @@ L1–L4 分層 SVA checker / functional DUT model / README，以及 `scripts/` �
 
 | 層級 | 名稱 | 工具需求 | 通過標準 |
 |------|------|----------|----------|
-| L1 | 開源靜態閘（elaboration gate + DUT 冒煙測試 + 功能測試） | iverilog、Verilator 5.052、pyslang 12.0.0、uvm-core | 132/132 `ELAB_ERRORS=0` 且全部 `SMOKE_PASS` |
+| L1 | 開源靜態閘（elaboration gate + DUT 冒煙測試 + 功能測試） | iverilog、Verilator 5.052、pyslang 12.0.0、uvm-core | 130/130 `ELAB_ERRORS=0` 且全部 `SMOKE_PASS` |
 | L2 | 單一 VIP 動態回歸（coverage-driven） | VCS 或 Xcelium 或 Questa（擇一） | line/fsm/toggle/assert 四項 coverage 皆達 100% |
-| L3 | 全 132 VIP 批次回歸 | 同 L2 | 132/132 `REGRESSION PASSED` |
+| L3 | 全 130 VIP 批次回歸 | 同 L2 | 130/130 `REGRESSION PASSED` |
 
 ---
 
 ## 0. 路徑約定
 
 `PORTFOLIO_ROOT` 為 repo 根目錄（含 `vips/`、`tools/`、`smoke/`、`ci/`）。`vips/` 只存放
-132 個 `<VIP>.zip`，驗收前先用 `tools/extract_vips.sh` 解壓到 `build/vips/`；以下指令中的
+130 個 `<VIP>.zip`，驗收前先用 `tools/extract_vips.sh` 解壓到 `build/vips/`；以下指令中的
 `build/vips/<VIP>` 都是解壓後的目錄。
 
 ```bash
@@ -28,7 +28,7 @@ export TOOLS_DIR=$PORTFOLIO_ROOT/tools                   # elab_scan.py、instal
 cd "$PORTFOLIO_ROOT"
 bash tools/install_tools.sh                              # Verilator 5.052、pyslang 12.0.0、uvm-core、iverilog、z3
 bash tools/extract_vips.sh                               # vips/*.zip -> build/vips/
-ls build/vips | wc -l                                    # 應為 132
+ls build/vips | wc -l                                    # 應為 130
 ```
 
 ---
@@ -140,7 +140,7 @@ ELAB_ERRORS=2
   vip/ahb/ahb_driver.svh:42:17: error: ...
 ```
 
-對全部 132 個 VIP 跑批次並產生報表：
+對全部 130 個 VIP 跑批次並產生報表：
 
 ```bash
 cd "$PORTFOLIO_ROOT"
@@ -158,7 +158,7 @@ for vip in build/vips/*/; do
   fi
 done
 echo "elab gate：PASS=$pass FAIL=$fail（總計 $((pass+fail))）"
-[ "$fail" -eq 0 ]   # 132/132 全過才算 L1a 通過
+[ "$fail" -eq 0 ]   # 130/130 全過才算 L1a 通過
 ```
 
 ### L1b — 開源靜態閘：iverilog DUT 冒煙測試
@@ -174,14 +174,14 @@ cd "$PORTFOLIO_ROOT"
 bash smoke/run_smoke.sh build/vips/AHB-VIP
 # 預期結尾輸出：SMOKE_PASS AHB-VIP
 
-# 不帶參數：全部 132 個 VIP 依序執行，並產生 smoke_report.csv：
+# 不帶參數：全部 130 個 VIP 依序執行，並產生 smoke_report.csv：
 bash smoke/run_smoke.sh
 # 每個 VIP 一行結果：SMOKE_PASS / SMOKE_FAIL / SMOKE_SKIP <vip>
 # 彙總表：smoke/smoke_report.csv
 ```
 
 `SMOKE_SKIP` 表示該 VIP 無適合 iverilog 的 DUT 冒煙標的（不計入失敗）；`SMOKE_FAIL`
-需比照 L1a 的日誌逐條排查。L1 通過條件：L1a 132/132 `ELAB_ERRORS=0`，且 L1b 無任何
+需比照 L1a 的日誌逐條排查。L1 通過條件：L1a 130/130 `ELAB_ERRORS=0`，且 L1b 無任何
 `SMOKE_FAIL`。
 
 ### L2 — 單一 VIP 動態驗收（coverage-driven regression，需商用模擬器）
@@ -240,7 +240,7 @@ SIMULATOR=vcs bash coverage_regression.sh        # 或 SIMULATOR=xcelium / quest
 SIMULATOR=vcs TESTS="amba_ahb_test" SEEDS="12345" JOBS=1 bash coverage_regression.sh
 ```
 
-### L3 — 全 132 VIP 批次回歸
+### L3 — 全 130 VIP 批次回歸
 
 ```bash
 cd "$PORTFOLIO_ROOT"
@@ -260,7 +260,7 @@ done
 echo "----------------------------------------"
 echo "L3 回歸結果：PASS=$pass FAIL=$fail（總計 $((pass+fail))）"
 [ "$fail" -gt 0 ] && printf '失敗 VIP：%s\n' "${failed_vips[@]}"
-[ "$fail" -eq 0 ] && echo "驗收通過：132/132 REGRESSION PASSED"
+[ "$fail" -eq 0 ] && echo "驗收通過：130/130 REGRESSION PASSED"
 ```
 
 說明：
@@ -273,11 +273,11 @@ echo "L3 回歸結果：PASS=$pass FAIL=$fail（總計 $((pass+fail))）"
 
 ## 3. 驗收通過標準（總表）
 
-1. L1a：132/132 VIP `ELAB_ERRORS=0`。
+1. L1a：130/130 VIP `ELAB_ERRORS=0`。
 2. L1b：`smoke/smoke_report.csv` 中無 `SMOKE_FAIL`。
 3. L2：抽驗的 VIP（建議至少每類別一個，或直接全跑 L3）四項 coverage 指標
    （line / fsm / toggle / assert）皆達 100%，且 `cov_check.py` exit code 為 0。
-4. L3：132/132 VIP 印出 `REGRESSION PASSED`，迴圈結尾 `FAIL=0`。
+4. L3：130/130 VIP 印出 `REGRESSION PASSED`，迴圈結尾 `FAIL=0`。
 
 ---
 
