@@ -341,12 +341,13 @@ echo "L3 回歸結果：PASS=$pass FAIL=$fail（總計 $((pass+fail))）"
 
 ### Q4. `elab_scan.py` 報 `uvm_pkg` 找不到 / 一堆 UVM macro 未定義？
 
-`UVM_CORE` 沒設對。它必須指向 uvm-core 的 **src 目錄**（該目錄內要有 `uvm_pkg.sv`
-與 `macros/`）：
+`UVM_CORE` 沒設對。它必須指向 uvm-core 的 **src 目錄**。uvm-core 2020.3.1 把
+`uvm_macros.svh` 放在 `uvm_pkg.sv` 旁邊；`macros/` 裡是該檔再 `` `include "macros/*.svh" ``
+的 defines，沒有 `macros/uvm_macros.svh`：
 
 ```bash
 export UVM_CORE=/path/to/uvm-core/src
-ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/macros/uvm_macros.svh"   # 兩者都要存在
+ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
 ```
 
 ### Q5. 可以用 iverilog 跑整個 UVM testbench 嗎？

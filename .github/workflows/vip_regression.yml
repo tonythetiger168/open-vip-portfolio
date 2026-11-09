@@ -50,7 +50,9 @@ jobs:
           # Verilator 由原始碼編譯（約 10 分鐘）；功能測試中 Icarus 無法解析的 DUT model 改用 Verilator
           UVM_CORE_DIR="${{ github.workspace }}/tools/uvm-core" bash tools/install_tools.sh
           echo "/opt/verilator-5.052/bin" >> "$GITHUB_PATH"
-          ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/macros/uvm_macros.svh"
+          # uvm-core 2020.3.1 puts uvm_macros.svh beside uvm_pkg.sv. macros/ holds
+          # the defines that file includes as "macros/*.svh", not uvm_macros.svh itself.
+          ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
 
       - name: 解壓全部 VIP zip
         run: bash tools/extract_vips.sh "$VIPS_DIR"
