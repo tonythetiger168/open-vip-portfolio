@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Copyright 2026 VIP Portfolio Contributors
 # SPDX-License-Identifier: Apache-2.0
-"""coverage.py [-j J] [VIP ...] -- measure the code coverage the functional
+"""coverage.py [-j J] [VIP ...] [--shard K/N] -- measure the code coverage the functional
 tests reach on each VIP's DUT model, with Verilator.
 
 Every functional test of tools/run_func_tests.py is rebuilt with
@@ -293,7 +293,18 @@ def main(argv):
     jobs = 2
     if argv[:1] == ["-j"]:
         jobs, argv = int(argv[1]), argv[2:]
+    shard = None
+    if "--shard" in argv:
+        # --shard K/N: every N-th VIP from the K-th (0-based), so CI can split
+        # the run over N jobs; the report then holds only this shard's rows
+        i = argv.index("--shard")
+        shard = tuple(int(x) for x in argv[i + 1].split("/"))
+        argv = argv[:i] + argv[i + 2:]
+        if not 0 <= shard[0] < shard[1]:
+            raise SystemExit("--shard K/N needs 0 <= K < N")
     vips = argv or sorted(d for d in os.listdir(rf().VIPS) if os.path.isdir(os.path.join(rf().VIPS, d)))
+    if shard:
+        vips = vips[shard[0]::shard[1]]
     rows = []
     with Pool(jobs) as p:
         for r in p.imap(cover_vip, vips):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Copyright 2026 VIP Portfolio Contributors
 # SPDX-License-Identifier: Apache-2.0
-"""run_uvm_tests.py [VIP ...] [--test NAME[,NAME...]] [--smoke] -- build a VIP's UVM
+"""run_uvm_tests.py [VIP ...] [--test NAME[,NAME...]] [--smoke] [--shard K/N] -- build a VIP's UVM
 testbench with Verilator and run its UVM tests (default: the RAL test).
 
 The UVM environment (agent, env, register model, tests, tb/top_tb.sv) is
@@ -33,6 +33,9 @@ completion (past time 0) and reports no error: one line per VIP
 (WARN: finished without errors, but the VIP's own checkers warned) and
 ``uvm_smoke_report.csv`` (a run on some VIPs updates their rows; tools/
 gen_uvm_smoke_doc.py renders it as docs/UVM_SMOKE.md).
+--shard K/N keeps every N-th VIP starting at the K-th (0-based) of the list,
+so CI can split a full run over N jobs; a shard of a full run still writes
+its report, holding only that shard's rows.
 Env: VIPS_DIR (default build/vips), VERILATOR (default verilator on PATH),
      UVM_JOBS (verilator -j, default nproc).
 """
@@ -252,9 +255,9 @@ def classify_smoke(rc, out):
         return "WARN", 0, detail
     return st, n, detail
 
-def main_smoke(argv, tests_override):
-    names = argv or sorted(d for d in os.listdir(VIPS) if d not in SUITES
-                           and os.path.isdir(os.path.join(VIPS, d)))
+def main_smoke(argv, tests_override, shard=lambda names: names):
+    names = shard(argv or sorted(d for d in os.listdir(VIPS) if d not in SUITES
+                                 and os.path.isdir(os.path.join(VIPS, d))))
     rows, bad = [], 0
     for vip in names:
         suite = smoke_suite(vip)
@@ -289,7 +292,19 @@ def main_smoke(argv, tests_override):
             w.writerows(sorted(merged.values(), key=lambda r: r[0].lower()))
     return 1 if bad else 0
 
+def take_shard(argv):
+    """Strip ``--shard K/N`` from argv; return (argv, select) where select(names)
+    keeps names[K::N] (the identity when no shard is given)."""
+    if "--shard" not in argv:
+        return argv, lambda names: names
+    i = argv.index("--shard")
+    k, n = (int(x) for x in argv[i + 1].split("/"))
+    if not 0 <= k < n:
+        raise SystemExit("--shard K/N needs 0 <= K < N, got %s" % argv[i + 1])
+    return argv[:i] + argv[i + 2:], lambda names: list(names)[k::n]
+
 def main(argv):
+    argv, shard = take_shard(argv)
     tests_override = None
     if "--test" in argv:
         i = argv.index("--test")
@@ -299,8 +314,8 @@ def main(argv):
         print("ERROR: uvm-core not found at %s (set UVM_CORE)" % UVM, file=sys.stderr)
         return 2
     if "--smoke" in argv:
-        return main_smoke([a for a in argv if a != "--smoke"], tests_override)
-    names = argv or sorted(SUITES)
+        return main_smoke([a for a in argv if a != "--smoke"], tests_override, shard)
+    names = shard(argv or sorted(SUITES))
     rows, bad = [], 0
     for vip in names:
         if vip not in SUITES:
