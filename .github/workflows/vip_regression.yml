@@ -5,11 +5,16 @@
 #   本檔因 OAuth workflow scope 限制暫置於 ci/ 目錄。
 #   使用時請複製到 .github/workflows/vip_regression.yml 即可啟用。
 #
-# 內容：
-#   - Job 1「elab-gate」：在 ubuntu runner 上以開源工具鏈（pyslang 12 +
-#     Accellera uvm-core）對全部 132 個 VIP 執行 L1a elaboration gate，
-#     並在 smoke harness 存在時加跑 L1b iverilog DUT 冒煙測試，
-#     最後上傳報告 artifact。
+# 內容（GitHub 代管 runner 每個 job 上限 6 小時；全部串在一個 job 時
+#   UVM 約 3 小時、coverage 約 3 小時，2026-11-09 的 run 因此在 coverage
+#   尾段被取消，所以拆成平行 job）：
+#   - 「elab-gate」：elaboration gate、iverilog DUT 冒煙、SVA 恆真式檢查、
+#     self-checking 功能測試（約 20 分鐘）。
+#   - 「uvm」：UVM RAL / agent 測試，以 --shard K/4 分成 4 個平行 job。
+#   - 「coverage」：Verilator --coverage，同樣分 4 片；只在 push main、
+#     夜間排程與手動觸發時跑（PR 不跑，省 Actions 分鐘數）。
+#   - 「coverage-report」：合併各片 coverage_report.csv，產生 docs/COVERAGE.md。
+#   Verilator 以 actions/cache 快取，cache 命中時每個 job 省下約 7 分鐘編譯。
 #   - 檔案尾端以註解示範 Job 2：在 self-hosted runner（具 VCS/Xcelium/Questa
 #     license）上執行 L2/L3 coverage-driven 回歸。
 #
@@ -29,6 +34,11 @@ on:
   schedule:
     - cron: '0 18 * * *'  # 每日夜間回歸（UTC 18:00）
 
+# 同一分支 / PR 有新 commit 時取消舊的 run
+concurrency:
+  group: vip-regression-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 env:
   # uvm-core 的 src 目錄（elab_scan.py 透過 UVM_CORE 環境變數取得）
   UVM_CORE: ${{ github.workspace }}/tools/uvm-core/src
@@ -36,20 +46,29 @@ env:
   ELAB_STRICT: "1"
   # vips/ 只存放 zip；解壓後的 VIP 原始碼樹（tools/extract_vips.sh 產生）
   VIPS_DIR: ${{ github.workspace }}/build/vips
+  # Verilator 裝在家目錄，actions/cache 才能還原（/opt 需要 root）
+  VERILATOR_PREFIX: /home/runner/verilator-5.052
 
 jobs:
   elab-gate:
-    name: L1 elaboration gate（132 VIP）
+    name: L1 gates（elab / smoke / SVA / 功能測試）
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
       - name: 取出 portfolio 原始碼
         uses: actions/checkout@v4
 
+      - name: 還原 Verilator 快取
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/verilator-5.052
+          key: verilator-5.052-${{ runner.os }}-${{ hashFiles('tools/install_tools.sh') }}
+
       - name: 安裝開源工具鏈（Icarus Verilog、Verilator v5.052、pyslang 12.0.0、uvm-core）
         run: |
-          # Verilator 由原始碼編譯（約 10 分鐘）；功能測試中 Icarus 無法解析的 DUT model 改用 Verilator
+          # Verilator 由原始碼編譯（約 7 分鐘，cache 命中時略過）；功能測試中 Icarus 無法解析的 DUT model 改用 Verilator
           UVM_CORE_DIR="${{ github.workspace }}/tools/uvm-core" bash tools/install_tools.sh
-          echo "/opt/verilator-5.052/bin" >> "$GITHUB_PATH"
+          echo "$VERILATOR_PREFIX/bin" >> "$GITHUB_PATH"
           # uvm-core 2020.3.1 puts uvm_macros.svh beside uvm_pkg.sv. macros/ holds
           # the defines that file includes as "macros/*.svh", not uvm_macros.svh itself.
           ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
@@ -120,15 +139,84 @@ jobs:
           python3 tools/run_func_tests.py | tee reports/func/func.log
           cp -f func_report.csv reports/func/
 
+      - name: 上傳 L1 報告 artifact
+        if: always()          # 即使 gate 失敗也要保留日誌供排查
+        uses: actions/upload-artifact@v4
+        with:
+          name: l1-gate-report
+          path: reports/
+          retention-days: 30
+
+  uvm:
+    name: UVM RAL / agent 測試（第 ${{ matrix.shard }}/4 片）
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: /home/runner/verilator-5.052
+          key: verilator-5.052-${{ runner.os }}-${{ hashFiles('tools/install_tools.sh') }}
+      - name: 安裝開源工具鏈（Icarus Verilog、Verilator v5.052、pyslang 12.0.0、uvm-core）
+        run: |
+          # Verilator 由原始碼編譯（約 7 分鐘，cache 命中時略過）；功能測試中 Icarus 無法解析的 DUT model 改用 Verilator
+          UVM_CORE_DIR="${{ github.workspace }}/tools/uvm-core" bash tools/install_tools.sh
+          echo "$VERILATOR_PREFIX/bin" >> "$GITHUB_PATH"
+          # uvm-core 2020.3.1 puts uvm_macros.svh beside uvm_pkg.sv. macros/ holds
+          # the defines that file includes as "macros/*.svh", not uvm_macros.svh itself.
+          ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
+
+      - name: 解壓全部 VIP zip
+        run: bash tools/extract_vips.sh "$VIPS_DIR"
+
       - name: UVM RAL 測試（Verilator + uvm-core）
         run: |
           set -o pipefail
           mkdir -p reports/uvm
           # 有 UVM register model 的 VIP：uvm_reg_hw_reset / bit_bash / mem_walk
           # 加 frontdoor mirror 與錯誤回應檢查（每個 VIP 編譯數分鐘）
-          # 另有 29 個 agent VIP 的 <p>_func_test（driver/monitor + reference-model scoreboard，SB_PASS）
-          python3 tools/run_uvm_tests.py | tee reports/uvm/uvm.log
+          # 另有產生式 agent VIP 的 <p>_func_test（driver/monitor + reference-model scoreboard，SB_PASS）
+          python3 tools/run_uvm_tests.py --shard ${{ matrix.shard }}/4 | tee reports/uvm/uvm.log
           cp -f uvm_report.csv reports/uvm/
+      - name: 上傳 UVM 報告 artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uvm-report-${{ matrix.shard }}
+          path: reports/
+          retention-days: 30
+
+  coverage:
+    name: Coverage（第 ${{ matrix.shard }}/4 片）
+    # 只量測、不擋 PR：push main、夜間排程與手動觸發才跑
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: /home/runner/verilator-5.052
+          key: verilator-5.052-${{ runner.os }}-${{ hashFiles('tools/install_tools.sh') }}
+      - name: 安裝開源工具鏈（Icarus Verilog、Verilator v5.052、pyslang 12.0.0、uvm-core）
+        run: |
+          # Verilator 由原始碼編譯（約 7 分鐘，cache 命中時略過）；功能測試中 Icarus 無法解析的 DUT model 改用 Verilator
+          UVM_CORE_DIR="${{ github.workspace }}/tools/uvm-core" bash tools/install_tools.sh
+          echo "$VERILATOR_PREFIX/bin" >> "$GITHUB_PATH"
+          # uvm-core 2020.3.1 puts uvm_macros.svh beside uvm_pkg.sv. macros/ holds
+          # the defines that file includes as "macros/*.svh", not uvm_macros.svh itself.
+          ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
+
+      - name: 解壓全部 VIP zip
+        run: bash tools/extract_vips.sh "$VIPS_DIR"
 
       - name: Coverage（Verilator --coverage）
         run: |
@@ -136,15 +224,50 @@ jobs:
           mkdir -p reports/cov
           # 功能測試對 DUT model 的 line/branch、toggle、expression、cover 覆蓋率，
           # APB/AHB/AXI/OCP/TileLink 另含 UVM RAL test 的 covergroup bins；明細見 docs/COVERAGE.md
-          python3 tools/coverage.py -j 2 | tee reports/cov/coverage.log
+          python3 tools/coverage.py -j 2 --shard ${{ matrix.shard }}/4 | tee reports/cov/coverage.log
           cp -f coverage_report.csv reports/cov/
-          python3 tools/gen_coverage_doc.py
-
-      - name: 上傳 L1 報告 artifact
-        if: always()          # 即使 gate 失敗也要保留日誌供排查
+      - name: 上傳 coverage 報告 artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: l1-elab-gate-report
+          name: coverage-shard-${{ matrix.shard }}
+          path: reports/
+          retention-days: 30
+
+  coverage-report:
+    name: 合併 coverage 報告
+    needs: coverage
+    if: always() && needs.coverage.result != 'skipped'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-shard-*
+          path: shards
+      - name: 合併各片 coverage_report.csv 並產生 docs/COVERAGE.md
+        run: |
+          python3 - <<'PY'
+          import csv, glob
+          head, rows = None, []
+          for p in sorted(glob.glob("shards/*/cov/coverage_report.csv")):
+              r = list(csv.reader(open(p)))
+              head = head or r[0]
+              rows += [x for x in r[1:] if x]
+          if not head:
+              raise SystemExit("no coverage shard reports found")
+          with open("coverage_report.csv", "w", newline="") as f:
+              w = csv.writer(f)
+              w.writerow(head)
+              w.writerows(sorted(rows, key=lambda x: x[0]))
+          print("merged %d VIP rows" % len(rows))
+          PY
+          python3 tools/gen_coverage_doc.py
+          mkdir -p reports/cov && cp coverage_report.csv docs/COVERAGE.md reports/cov/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
           path: reports/
           retention-days: 30
 
