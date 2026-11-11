@@ -52,7 +52,7 @@ AMBA_INCS = ["vip/base", "vip/apb", "vip/ahb", "vip/axi", "rtl", "rtl/sva", "env
 
 # VIPs with a UVM register model and the tests to run on Verilator
 SUITES = {
-    "APB-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test"]),
+    "APB-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test", "amba_apb_strb_test"]),
     "AHB-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test"]),
     "AXI-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test"]),
     "OCP-VIP": dict(files=["common/common_pkg.sv", "ocp/ocp_defs.sv", "ocp/ocp_if.sv",
