@@ -13,7 +13,7 @@
 This repository provides a **modular, per-protocol verification IP library** covering major interface standards used in modern semiconductor design. Each entry is packaged as a standalone zip file.
 
 - **147 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
-- **RTL IPs** -- the synthesizable reference RTL lives in [open-ip-portfolio](https://github.com/tonythetiger168/open-ip-portfolio); the column `open-ip 對應` of the CSV maps each VIP to its IP there
+- **RTL IPs** -- the synthesizable reference RTL lives in [open-ip-portfolio](https://github.com/tonythetiger168/open-ip-portfolio); the column `open-ip 對應` of the CSV maps each VIP to its IP there: each `/`-separated name is the stem of one `rtl/<name>_top.sv`, and `無對應` means open-ip-portfolio has no RTL for it yet
 - **147 distinct protocols** across 20 families
 
 All source files are licensed under **Apache License 2.0**.
