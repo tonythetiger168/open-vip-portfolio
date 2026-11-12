@@ -42,7 +42,9 @@ pipeline {
                     # (a)-(c) Icarus Verilog、Verilator v5.052（原始碼編譯）、pyslang 12.0.0、
                     #         Accellera uvm-core（UVM-1.2 標準庫原始碼）
                     UVM_CORE_DIR="${WORKSPACE}/tools/uvm-core" bash tools/install_tools.sh
-                    ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/macros/uvm_macros.svh"
+                    # uvm-core 2020.3.1 puts uvm_macros.svh beside uvm_pkg.sv.
+                    # macros/ holds the defines that file includes, not uvm_macros.svh itself.
+                    ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
 
                     # (d) 解壓全部 VIP zip 到 $VIPS_DIR
                     bash tools/extract_vips.sh "$VIPS_DIR"
