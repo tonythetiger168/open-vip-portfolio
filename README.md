@@ -1,10 +1,10 @@
 # Open VIP Portfolio
 
-> A comprehensive, open-source collection of **148 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
+> A comprehensive, open-source collection of **149 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
 
 [![License](https://img.shields.io/badge/License-Apache%%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![VIP Count](https://img.shields.io/badge/VIPs-148-brightgreen.svg)]()
-[![Protocols](https://img.shields.io/badge/Protocols-148-orange.svg)]()
+[![VIP Count](https://img.shields.io/badge/VIPs-149-brightgreen.svg)]()
+[![Protocols](https://img.shields.io/badge/Protocols-149-orange.svg)]()
 
 ---
 
@@ -12,9 +12,9 @@
 
 This repository provides a **modular, per-protocol verification IP library** covering major interface standards used in modern semiconductor design. Each entry is packaged as a standalone zip file.
 
-- **148 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
+- **149 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
 - **RTL IPs** -- the synthesizable reference RTL lives in [open-ip-portfolio](https://github.com/tonythetiger168/open-ip-portfolio); the column `open-ip 對應` of the CSV maps each VIP to its IP there
-- **148 distinct protocols** across 20 families
+- **149 distinct protocols** across 20 families
 
 All source files are licensed under **Apache License 2.0**.
 
@@ -22,7 +22,7 @@ All source files are licensed under **Apache License 2.0**.
 
 ## Protocol Coverage
 
-### AMBA (8)
+### AMBA (9)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
@@ -34,6 +34,7 @@ All source files are licensed under **Apache License 2.0**.
 | AXI-Stream | UVM VIP | `AXI_Stream-UVM-VIP.zip` | 23KB |
 | AXI4-Lite | UVM VIP | `AXI4_Lite-UVM-VIP.zip` | 24KB |
 | CHI | UVM VIP | `CHI-UVM-VIP.zip` | 34KB |
+| CHI Issue H link level (SN-F, flits, L-credits) | UVM VIP | `CHI_H-UVM-VIP.zip` | 31KB |
 
 ### Aerospace (2)
 
@@ -288,9 +289,9 @@ Models a SoC testbench uses next to the protocol VIPs, kept as source under
 open-vip-portfolio/
 |-- LICENSE
 |-- README.md
-|-- vip_individual_portfolio.csv   # machine-readable index (148 entries)
+|-- vip_individual_portfolio.csv   # machine-readable index (149 entries)
 |-- smoke_report.csv               # full open-toolchain L1b smoke results
-|-- vips/                          # 148 individual VIP zip files
+|-- vips/                          # 149 individual VIP zip files
 |-- .github/workflows/             # CI validation
 |-- docs/                          # CONTRIBUTING and guides
 ```
