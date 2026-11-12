@@ -56,7 +56,7 @@ jobs:
         run: |
           bash tools/install_tools.sh
           # sudo make install leaves root-owned files; the cache action reads them as the runner user
-          chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
+          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
           echo "$VERILATOR_PREFIX/bin" >> "$GITHUB_PATH"
           # uvm-core 2020.3.1 puts uvm_macros.svh beside uvm_pkg.sv. macros/ holds
           # the defines that file includes as "macros/*.svh", not uvm_macros.svh itself.
@@ -82,7 +82,7 @@ jobs:
         run: |
           bash tools/install_tools.sh
           # sudo make install leaves root-owned files; the cache action reads them as the runner user
-          chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
+          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
           echo "$VERILATOR_PREFIX/bin" >> "$GITHUB_PATH"
           ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
 
@@ -181,7 +181,7 @@ jobs:
         run: |
           bash tools/install_tools.sh
           # sudo make install leaves root-owned files; the cache action reads them as the runner user
-          chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
+          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
           echo "$VERILATOR_PREFIX/bin" >> "$GITHUB_PATH"
           ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
 
@@ -231,7 +231,7 @@ jobs:
         run: |
           bash tools/install_tools.sh
           # sudo make install leaves root-owned files; the cache action reads them as the runner user
-          chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
+          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
           echo "$VERILATOR_PREFIX/bin" >> "$GITHUB_PATH"
           ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
 
