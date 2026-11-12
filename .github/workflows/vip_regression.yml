@@ -1,0 +1,347 @@
+# =============================================================================
+# VIP Portfolio — CI 回歸（GitHub Actions）
+#
+# 同一個 job 依序跑完全部 VIP 的 UVM 與 coverage 會超過 GitHub-hosted
+# runner 的 6 小時上限（run 42544428204 在 coverage 被取消）。工具鏈建置
+# 進 cache；elab / smoke / SVA / 功能測試仍是一個 job、涵蓋每一個 zip。
+# UVM suite 與 coverage 各自切成不重疊的 shard，平行跑，最後由彙總 job
+# 確認沒有 VIP 被漏掉，而且原本的失敗條件都還在：
+#   ELAB_ERRORS=0、SMOKE_FAIL、sva_lint 非 0、run_func_tests 非 0、
+#   run_uvm_tests 非 0、coverage covered_tests>0。
+#
+# 假設 repo 版面：
+#   <repo>/vips/<協定>-VIP.zip
+#   <repo>/tools/elab_scan.py
+#   <repo>/smoke/run_smoke.sh
+# =============================================================================
+
+name: VIP 回歸（L1 開源閘）
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 18 * * *'
+
+concurrency:
+  group: vip-regression-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  UVM_CORE: ${{ github.workspace }}/tools/uvm-core/src
+  UVM_CORE_DIR: ${{ github.workspace }}/tools/uvm-core
+  VERILATOR_PREFIX: ${{ github.workspace }}/opt/verilator-5.052
+  ELAB_STRICT: "1"
+  VIPS_DIR: ${{ github.workspace }}/build/vips
+
+jobs:
+  toolchain:
+    name: 安裝開源工具鏈
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取出 portfolio 原始碼
+        uses: actions/checkout@v4
+
+      - name: 還原工具鏈 cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/opt/verilator-5.052
+            ${{ github.workspace }}/tools/uvm-core
+          key: l1-toolchain-v5.052-uvm2020.3.1-${{ hashFiles('tools/install_tools.sh') }}
+
+      - name: 安裝開源工具鏈（Icarus Verilog、Verilator v5.052、pyslang 12.0.0、uvm-core）
+        run: |
+          bash tools/install_tools.sh
+          # sudo make install leaves root-owned files; the cache action reads them as the runner user
+          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
+          echo "$VERILATOR_PREFIX/bin" >> "$GITHUB_PATH"
+          # uvm-core 2020.3.1 puts uvm_macros.svh beside uvm_pkg.sv. macros/ holds
+          # the defines that file includes as "macros/*.svh", not uvm_macros.svh itself.
+          ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
+
+  fast-gates:
+    name: L1a–L1c 全部 VIP（elab / smoke / SVA / 功能測試）
+    needs: toolchain
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取出 portfolio 原始碼
+        uses: actions/checkout@v4
+
+      - name: 還原工具鏈 cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/opt/verilator-5.052
+            ${{ github.workspace }}/tools/uvm-core
+          key: l1-toolchain-v5.052-uvm2020.3.1-${{ hashFiles('tools/install_tools.sh') }}
+
+      - name: 安裝開源工具鏈（Icarus Verilog、Verilator v5.052、pyslang 12.0.0、uvm-core）
+        run: |
+          bash tools/install_tools.sh
+          # sudo make install leaves root-owned files; the cache action reads them as the runner user
+          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
+          echo "$VERILATOR_PREFIX/bin" >> "$GITHUB_PATH"
+          ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
+
+      - name: 解壓全部 VIP zip
+        run: bash tools/extract_vips.sh "$VIPS_DIR"
+
+      - name: 對全部 VIP 執行 elaboration gate
+        run: |
+          set -u
+          shopt -s nullglob
+          mkdir -p reports/elab
+          pass=0; fail=0
+          : > reports/elab/elab_summary.txt
+          vips=("$VIPS_DIR"/*/)
+          zips=(vips/*.zip)
+          if [ ${#vips[@]} -eq 0 ] || [ ${#zips[@]} -eq 0 ]; then
+            echo "::error::找不到任何 VIP"
+            exit 1
+          fi
+          for vip in "${vips[@]}"; do
+            name=$(basename "$vip")
+            log="reports/elab/${name}.log"
+            # elab_scan.py 一律 exit 0，必須以輸出的 ELAB_ERRORS 判定
+            if python3 tools/elab_scan.py "$vip" > "$log" 2>&1 \
+               && grep -q '^ELAB_ERRORS=0$' "$log"; then
+              echo "PASS  $name" | tee -a reports/elab/elab_summary.txt
+              pass=$((pass+1))
+            else
+              echo "FAIL  $name" | tee -a reports/elab/elab_summary.txt
+              fail=$((fail+1))
+            fi
+          done
+          echo "elab gate 結果：PASS=$pass FAIL=$fail（總計 $((pass+fail))，zip ${#zips[@]}）" \
+            | tee -a reports/elab/elab_summary.txt
+          # 每一個 zip 都要 ELAB_ERRORS=0。少跑或多出目錄都失敗。
+          [ "$fail" -eq 0 ] && [ "$pass" -eq ${#zips[@]} ]
+
+      - name: iverilog DUT 冒煙測試（smoke harness 存在時才執行）
+        run: |
+          set -u
+          mkdir -p reports/smoke
+          set -o pipefail
+          if [ -f smoke/run_smoke.sh ]; then
+            bash smoke/run_smoke.sh | tee reports/smoke/smoke.log
+            cp -f smoke/smoke_report.csv reports/smoke/
+            if grep -q 'SMOKE_FAIL' reports/smoke/smoke.log; then
+              echo "::error::DUT 冒煙測試有 SMOKE_FAIL，詳見 reports/smoke/smoke.log"
+              exit 1
+            fi
+          else
+            echo "smoke/run_smoke.sh 尚未納入 repo，略過 L1b（參見 docs/ACCEPTANCE.md）"
+          fi
+
+      - name: SVA 恆真式檢查（pyslang）
+        run: |
+          set -o pipefail
+          mkdir -p reports/sva
+          python3 tools/sva_lint.py | tee reports/sva/sva_lint.log
+
+      - name: 功能測試（self-checking functional tests，iverilog / Verilator）
+        run: |
+          set -o pipefail
+          mkdir -p reports/func
+          python3 tools/run_func_tests.py | tee reports/func/func.log
+          cp -f func_report.csv reports/func/
+
+      - name: 上傳 L1a–L1c 報告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: l1-fast
+          path: reports/
+          retention-days: 30
+
+  uvm:
+    name: L1d UVM（shard ${{ matrix.shard }}）
+    needs: toolchain
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2]
+    steps:
+      - name: 取出 portfolio 原始碼
+        uses: actions/checkout@v4
+
+      - name: 還原工具鏈 cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/opt/verilator-5.052
+            ${{ github.workspace }}/tools/uvm-core
+          key: l1-toolchain-v5.052-uvm2020.3.1-${{ hashFiles('tools/install_tools.sh') }}
+
+      - name: 安裝開源工具鏈（Icarus Verilog、Verilator v5.052、pyslang 12.0.0、uvm-core）
+        run: |
+          bash tools/install_tools.sh
+          # sudo make install leaves root-owned files; the cache action reads them as the runner user
+          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
+          echo "$VERILATOR_PREFIX/bin" >> "$GITHUB_PATH"
+          ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
+
+      - name: 解壓全部 VIP zip
+        run: bash tools/extract_vips.sh "$VIPS_DIR"
+
+      - name: UVM RAL 測試（Verilator + uvm-core）
+        env:
+          SHARD: ${{ matrix.shard }}
+          SHARD_COUNT: "3"
+        run: |
+          set -uo pipefail
+          mkdir -p reports/uvm
+          mapfile -t names < <(python3 tools/ci_shard.py uvm "$SHARD" "$SHARD_COUNT")
+          echo "uvm shard $SHARD/$SHARD_COUNT: ${#names[@]} suites"
+          python3 tools/run_uvm_tests.py "${names[@]}" | tee reports/uvm/uvm.log
+
+      - name: 上傳 UVM 報告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: l1-uvm-${{ matrix.shard }}
+          path: reports/
+          retention-days: 30
+
+  coverage:
+    name: L1e coverage（shard ${{ matrix.shard }}）
+    needs: toolchain
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
+    steps:
+      - name: 取出 portfolio 原始碼
+        uses: actions/checkout@v4
+
+      - name: 還原工具鏈 cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/opt/verilator-5.052
+            ${{ github.workspace }}/tools/uvm-core
+          key: l1-toolchain-v5.052-uvm2020.3.1-${{ hashFiles('tools/install_tools.sh') }}
+
+      - name: 安裝開源工具鏈（Icarus Verilog、Verilator v5.052、pyslang 12.0.0、uvm-core）
+        run: |
+          bash tools/install_tools.sh
+          # sudo make install leaves root-owned files; the cache action reads them as the runner user
+          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
+          echo "$VERILATOR_PREFIX/bin" >> "$GITHUB_PATH"
+          ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
+
+      - name: 解壓全部 VIP zip
+        run: bash tools/extract_vips.sh "$VIPS_DIR"
+
+      - name: Coverage（Verilator --coverage）
+        env:
+          SHARD: ${{ matrix.shard }}
+          SHARD_COUNT: "6"
+        run: |
+          set -uo pipefail
+          mkdir -p reports/cov
+          mapfile -t names < <(python3 tools/ci_shard.py vips "$SHARD" "$SHARD_COUNT")
+          echo "coverage shard $SHARD/$SHARD_COUNT: ${#names[@]} VIPs"
+          python3 tools/coverage.py -j 2 "${names[@]}" | tee reports/cov/coverage.log
+          cp -f coverage_report.csv reports/cov/
+
+      - name: 上傳 coverage 報告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: l1-cov-${{ matrix.shard }}
+          path: reports/
+          retention-days: 30
+
+  aggregate:
+    name: L1 彙總閘
+    needs: [fast-gates, uvm, coverage]
+    if: ${{ always() && !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取出 portfolio 原始碼
+        uses: actions/checkout@v4
+
+      - name: 下載各 shard 報告
+        uses: actions/download-artifact@v4
+        with:
+          pattern: l1-*
+          path: reports-in
+
+      - name: 彙總並套用原本的失敗條件
+        env:
+          FAST_RESULT: ${{ needs.fast-gates.result }}
+          UVM_RESULT: ${{ needs.uvm.result }}
+          COV_RESULT: ${{ needs.coverage.result }}
+        run: |
+          set -uo pipefail
+          python3 tools/ci_aggregate.py reports-in
+          python3 tools/gen_coverage_doc.py
+          test "$FAST_RESULT" = success
+          test "$UVM_RESULT" = success
+          test "$COV_RESULT" = success
+          echo "AGGREGATE jobs fast=$FAST_RESULT uvm=$UVM_RESULT coverage=$COV_RESULT"
+
+      - name: 上傳彙總報告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: l1-aggregate
+          path: |
+            coverage_report.csv
+            docs/COVERAGE.md
+          retention-days: 30
+
+# =============================================================================
+# Job 2 範例（註解）：L2/L3 商用模擬器 coverage-driven 回歸
+#
+# 商用模擬器與 license server 無法在 GitHub 公用 runner 上使用，
+# 請在內部備有 VCS/Xcelium/Questa 的 self-hosted runner 執行。
+# 建議排程（夜間）或以 workflow_dispatch 手動觸發，避免消耗 PR 檢查時間。
+#
+# commercial-regression:
+#   name: L2/L3 coverage 回歸（商用模擬器）
+#   runs-on: [self-hosted, eda]        # 該 runner 須預裝模擬器並可達 license server
+#   env:
+#     SIMULATOR: vcs                   # 或 xcelium / questa
+#     COV_GOAL: "100"                  # 正式驗收門檻固定 100
+#     JOBS: "4"
+#   steps:
+#     - uses: actions/checkout@v4
+#
+#     - name: 確認模擬器與 license
+#       run: |
+#         vcs -ID || true               # VCS 無 -version，-ID 可檢查安裝與 license
+#         lmstat -a -c "$LM_LICENSE_FILE" | head
+#
+#     - name: 全 132 VIP coverage 回歸（L3）
+#       run: |
+#         set -u
+#         mkdir -p reports/l3
+#         pass=0; fail=0
+#         for vip in vips/*/; do
+#           name=$(basename "$vip")
+#           echo "=== [$name] 開始 $(date +%T) ==="
+#           if (cd "$vip/scripts" && bash coverage_regression.sh) \
+#                > "reports/l3/${name}.log" 2>&1; then
+#             pass=$((pass+1)); echo "=== [$name] PASS ==="
+#           else
+#             fail=$((fail+1)); echo "=== [$name] FAIL ==="
+#           fi
+#         done
+#         echo "L3 結果：PASS=$pass FAIL=$fail"
+#         [ "$fail" -eq 0 ]
+#
+#     - name: 上傳 coverage 報告 artifact
+#       if: always()
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: l3-coverage-report
+#         path: reports/l3/
+#         retention-days: 30
+# =============================================================================
