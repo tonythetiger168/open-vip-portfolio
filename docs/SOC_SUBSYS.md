@@ -6,7 +6,7 @@ per AXI4-manager IP plus the shared AXI4 manager-port kit.
 
 | VIP | IP | AXI ID | What the scoreboard models |
 |-----|----|--------|-----------------------------|
-| `AXI4_Manager_Port-UVM-VIP` | every AXI4-manager IP | - | the port contract itself (self-test: legal traffic + 13 injected violations) |
+| `AXI4_Manager_Port-UVM-VIP` | every AXI4-manager IP | - | the port contract itself (self-test: legal traffic, 13 injected transaction violations, and every cycle-level AXI / APB checker rule tripped pin by pin) |
 | `CPU_Cluster-UVM-VIP` | CPU_Cluster | 0 | WRITE pattern, CHECK (mismatches, first fail, MISMATCH irq), COPY |
 | `GPU-UVM-VIP` | GPU | 1 | 2D ops on pixel lines up to 8K |
 | `NPU-UVM-VIP` | NPU | 2 | convolution |

@@ -18,6 +18,13 @@
 //                      strobes, aligned, windows): every rule must catch its
 //                      injection, and legal bursts in between must not trip
 //                      anything. Prints SB_PASS checks=<n>.
+//   kit_if_rules_test  the cycle-level rules of axim_if and ssv_apb_if, on a
+//                      second instance of each driven pin by pin: VALID in
+//                      reset (both sides), every VALID dropped before READY,
+//                      and the three APB4 rules. Each violation must raise
+//                      exactly its own rule once. CHK_UNKNOWN (X/Z) is
+//                      driven only on 4-state simulators (Verilator is
+//                      2-state). Prints SB_PASS checks=<n>.
 
 package axim_kit_pkg;
   import uvm_pkg::*;
@@ -328,6 +335,103 @@ package axim_kit_pkg;
       inject(INJ_W_CHANGE,      "CHK_STABLE_W",  1);  legal(32'h0000_0D00);
       inject(INJ_AR_DROP,       "CHK_STABLE_AR", 1);  legal(32'h0000_0E00);
       repeat (10) @(posedge vif.aclk);
+      phase.drop_objection(this);
+    endtask
+  endclass
+
+  // ------------------------------------------------------------------------
+  class kit_if_rules_test extends axim_kit_base_test;
+    `uvm_component_utils(kit_if_rules_test)
+    virtual axim_if    cx;
+    virtual ssv_apb_if ca;
+    virtual kit_ctl_if ctl;
+
+    function new(string name, uvm_component parent);
+      super.new(name, parent);
+    endfunction
+
+    function void build_phase(uvm_phase phase);
+      super.build_phase(phase);
+      if (!uvm_config_db #(virtual axim_if)::get(this, "", "chk_axim_vif", cx)) `uvm_fatal("NOVIF", "chk_axim_vif not set")
+      if (!uvm_config_db #(virtual ssv_apb_if)::get(this, "", "chk_apb_vif", ca)) `uvm_fatal("NOVIF", "chk_apb_vif not set")
+      if (!uvm_config_db #(virtual kit_ctl_if)::get(this, "", "kit_ctl_vif", ctl)) `uvm_fatal("NOVIF", "kit_ctl_vif not set")
+    endfunction
+
+    task clk(int n = 1);
+      repeat (n) @(negedge vif.aclk);   // drive between rising edges
+    endtask
+
+    task idle();
+      cx.awvalid = 0; cx.wvalid = 0; cx.bvalid = 0; cx.arvalid = 0; cx.rvalid = 0;
+      cx.awready = 1; cx.wready = 1; cx.bready = 1; cx.arready = 1; cx.rready = 1;
+      cx.awid = 0; cx.awaddr = 0; cx.awlen = 0; cx.awsize = 2; cx.awburst = 1; cx.awprot = 0;
+      cx.wdata = 0; cx.wstrb = 4'hF; cx.wlast = 1; cx.bid = 0; cx.bresp = 0;
+      cx.arid = 0; cx.araddr = 0; cx.arlen = 0; cx.arsize = 2; cx.arburst = 1; cx.arprot = 0;
+      cx.rid = 0; cx.rdata = 0; cx.rresp = 0; cx.rlast = 1;
+      ca.psel = 0; ca.penable = 0; ca.pwrite = 0; ca.paddr = 0; ca.pwdata = 0; ca.pstrb = 0;
+      ca.prdata = 0; ca.pready = 1; ca.pslverr = 0; ca.irq = 0;
+    endtask
+
+    // the axim_if rule `rule` fired exactly once since `n0` / `e0`
+    function void axi_once(string rule, int unsigned n0, int unsigned e0, string what);
+      sb_check(cx.rule_count(rule) == n0 + 1 && cx.chk_errors == e0 + 1,
+               $sformatf("%s: %s count %0d -> %0d, all rules %0d -> %0d", what, rule, n0, cx.rule_count(rule), e0, cx.chk_errors));
+    endfunction
+
+    task axi_case(string rule, string what, int which);
+      int unsigned n0 = cx.rule_count(rule), e0 = cx.chk_errors;
+      case (which)
+        0: begin cx.awvalid = 1; clk(); cx.awvalid = 0; end                            // manager VALID in reset
+        1: begin cx.bvalid = 1; clk(); cx.bvalid = 0; end                              // subordinate VALID in reset
+        2: begin cx.wready = 0; cx.wvalid = 1; clk(); cx.wvalid = 0; clk(); cx.wready = 1; end
+        3: begin cx.bready = 0; cx.bvalid = 1; clk(); cx.bvalid = 0; clk(); cx.bready = 1; end
+        4: begin cx.rready = 0; cx.rvalid = 1; clk(); cx.rvalid = 0; clk(); cx.rready = 1; end
+        default: ;
+      endcase
+      clk(2);
+      axi_once(rule, n0, e0, what);
+    endtask
+
+    task apb_case(string what, int which);
+      int unsigned e0 = ca.chk_errors;
+      case (which)
+        0: begin ca.penable = 1; clk(); ca.penable = 0; end                            // PENABLE without PSEL
+        1: begin ca.psel = 1; clk(2); ca.psel = 0; end                                 // two setup clocks
+        2: begin ca.psel = 1; ca.paddr = 12'h010; clk();                               // setup, then access with
+                 ca.penable = 1; ca.pready = 0; ca.paddr = 12'h014; clk();             // PADDR changed
+                 ca.psel = 0; ca.penable = 0; ca.pready = 1; end
+        default: ;
+      endcase
+      clk(2);
+      sb_check(ca.chk_errors == e0 + 1, $sformatf("APB %s: %0d errors, expected 1", what, ca.chk_errors - e0));
+    endtask
+
+    task run_phase(uvm_phase phase);
+      phase.raise_objection(this);
+      ctl.rstn = 0;
+      idle();
+      clk(2);
+      axi_case("CHK_RESET", "AWVALID in reset", 0);
+      axi_case("CHK_RESET", "BVALID in reset", 1);
+      cx.awprot = 3'h7; cx.arprot = 3'h7; clk(); cx.awprot = 0; cx.arprot = 0;   // PROT both ways (no VALID)
+      ctl.rstn = 1;
+      clk(3);
+      axi_case("CHK_STABLE_W", "WVALID dropped before WREADY", 2);
+      axi_case("CHK_STABLE_B", "BVALID dropped before BREADY", 3);
+      axi_case("CHK_STABLE_R", "RVALID dropped before RREADY", 4);
+`ifndef VERILATOR
+      begin   // X on a VALID: 4-state simulators only
+        int unsigned n0 = cx.rule_count("CHK_UNKNOWN"), e0 = cx.chk_errors;
+        cx.arvalid = 1'bx; clk(); cx.arvalid = 0; clk(2);
+        axi_once("CHK_UNKNOWN", n0, e0, "X on ARVALID");
+      end
+`endif
+      apb_case("PENABLE without PSEL", 0);
+      apb_case("setup phase of two clocks", 1);
+      apb_case("PADDR changed in the access phase", 2);
+      sb_check(vif.chk_errors == 0, "the kit's own port checker fired");
+      ctl.rstn = 0;
+      clk(2);
       phase.drop_objection(this);
     endtask
   endclass

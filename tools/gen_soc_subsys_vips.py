@@ -433,7 +433,7 @@ def build_kit():
         "+define+UVM_NO_DPI", "+incdir+common", "common/axim_if.sv", "common/ssv_apb_if.sv",
         "common/ssv_pkg.sv", "tests/axim_kit_pkg.sv", "tb/top_tb.sv", ""]))
     write(os.path.join(dst, "sim", "testlist.txt"),
-          f"# {KIT}: <test> <seeds> [plusargs]\naxim_func_test 3\naxim_checker_test 1\n")
+          f"# {KIT}: <test> <seeds> [plusargs]\naxim_func_test 3\naxim_checker_test 1\nkit_if_rules_test 1\n")
     print(f"{KIT}: kit + self-test")
     return KIT
 

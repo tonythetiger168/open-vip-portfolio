@@ -41,6 +41,7 @@ back from it or from `agent.mon.completed`.
 |---|---|
 | `axim_func_test` | about 1,000 legal bursts of every shape, a write and a read in flight together, four back-pressure settings, SLVERR / DECERR regions: every read beat against a byte shadow, every response, no checker fires, every burst type / size / ID covered |
 | `axim_checker_test` | 13 injected violations (4 KB, length, size, burst, alignment, early / missing WLAST, strobes, window, AWVALID dropped, AWADDR changed, WDATA changed, ARVALID dropped): each caught by its rule and no other, legal bursts in between trip nothing |
+| `kit_if_rules_test` | the cycle-level rules of `axim_if` and `ssv_apb_if`, on a second instance of each driven pin by pin: AWVALID and BVALID in reset, WVALID / BVALID / RVALID dropped before READY, PENABLE without PSEL, a two-clock setup phase, PADDR changed in the access phase; each raises its own rule exactly once. X/Z on a VALID (CHK_UNKNOWN) is driven only on 4-state simulators: Verilator is 2-state |
 
 Pass marker: `SB_PASS checks=<n>`. Run:
 
