@@ -1,10 +1,10 @@
 # Open VIP Portfolio
 
-> A comprehensive, open-source collection of **146 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
+> A comprehensive, open-source collection of **147 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
 
 [![License](https://img.shields.io/badge/License-Apache%%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![VIP Count](https://img.shields.io/badge/VIPs-146-brightgreen.svg)]()
-[![Protocols](https://img.shields.io/badge/Protocols-146-orange.svg)]()
+[![VIP Count](https://img.shields.io/badge/VIPs-147-brightgreen.svg)]()
+[![Protocols](https://img.shields.io/badge/Protocols-147-orange.svg)]()
 
 ---
 
@@ -12,9 +12,9 @@
 
 This repository provides a **modular, per-protocol verification IP library** covering major interface standards used in modern semiconductor design. Each entry is packaged as a standalone zip file.
 
-- **146 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
+- **147 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
 - **RTL IPs** -- the synthesizable reference RTL lives in [open-ip-portfolio](https://github.com/tonythetiger168/open-ip-portfolio); the column `open-ip 對應` of the CSV maps each VIP to its IP there
-- **146 distinct protocols** across 20 families
+- **147 distinct protocols** across 20 families
 
 All source files are licensed under **Apache License 2.0**.
 
@@ -218,7 +218,7 @@ All source files are licensed under **Apache License 2.0**.
 | UART | UVM VIP | `UART-VIP.zip` | 36KB |
 | xSPI (JESD251) | UVM VIP | `xSPI-UVM-VIP.zip` | 23KB |
 
-### Storage (6)
+### Storage (7)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
@@ -227,6 +227,7 @@ All source files are licensed under **Apache License 2.0**.
 | SD / eMMC card (1/4/8-bit, 512-byte blocks) | UVM VIP | `SDMMC_Card-UVM-VIP.zip` | 31KB |
 | SD memory card (4-bit) | UVM VIP | `SD_Card-UVM-VIP.zip` | 27KB |
 | SDIO | UVM VIP | `SDIO-UVM-VIP.zip` | 23KB |
+| SCM dual-mode SSD (NVMe 2.1 multi-queue + FDP, CXL.mem byte port) | UVM VIP | `SCM_SSD-VIP.zip` | 18KB |
 | Toggle Mode NAND | UVM VIP | `ToggleNAND-VIP.zip` | 33KB |
 
 ### Storage/Debug (5)
@@ -286,9 +287,9 @@ Models a SoC testbench uses next to the protocol VIPs, kept as source under
 open-vip-portfolio/
 |-- LICENSE
 |-- README.md
-|-- vip_individual_portfolio.csv   # machine-readable index (146 entries)
+|-- vip_individual_portfolio.csv   # machine-readable index (147 entries)
 |-- smoke_report.csv               # full open-toolchain L1b smoke results
-|-- vips/                          # 146 individual VIP zip files
+|-- vips/                          # 147 individual VIP zip files
 |-- .github/workflows/             # CI validation
 |-- docs/                          # CONTRIBUTING and guides
 ```
