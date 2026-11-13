@@ -4,9 +4,9 @@
 
 ## 1. 結論
 
-- 146 個 VIP 中 146 個有可在開源工具上執行的 self-checking 功能測試，共 4454 個 check（另有 RTL IP testbench 的 0 次斷言評估）；146 個 VIP 的測試全部通過。
-- 判定：✅ Sufficient 146、🟡 Partial 0、❌ Insufficient 0。
-- Mutation testing：2289 個有效 mutant 中 2198 個被功能測試偵測（96%）。
+- 149 個 VIP 中 149 個有可在開源工具上執行的 self-checking 功能測試，共 4607 個 check（另有 RTL IP testbench 的 0 次斷言評估）；149 個 VIP 的測試全部通過。
+- 判定：✅ Sufficient 149、🟡 Partial 0、❌ Insufficient 0。
+- Mutation testing：2364 個有效 mutant 中 2273 個被功能測試偵測（96%）。
 - 沒有未修正的 DUT 模型缺陷：功能測試中沒有 XFAIL check（先前記錄的缺陷都已在模型中修正）。
 
 ## 2. 方法
@@ -47,11 +47,13 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [Avalon_MM-UVM-VIP](test_suites/Avalon_MM-UVM-VIP.md) | Interconnect | `smoke_func_tb.sv` | 73 | iverilog | 11/11 | 0 | ✅ Sufficient |
 | [Avalon_ST-UVM-VIP](test_suites/Avalon_ST-UVM-VIP.md) | Interconnect | `smoke_func_tb.sv`, `func_avalon_st_tb.sv` | 31 | iverilog | 17/17 | 0 | ✅ Sufficient |
 | [Bluetooth5-VIP](test_suites/Bluetooth5-VIP.md) | Storage/Debug | `func_bluetooth5_tb.sv` | 28 | verilator | 11/11 | 0 | ✅ Sufficient |
+| [BoW-UVM-VIP](test_suites/BoW-UVM-VIP.md) | Interconnect | `smoke_func_tb.sv` | 34 | iverilog | 21/21 | 0 | ✅ Sufficient |
 | [CAN-VIP](test_suites/CAN-VIP.md) | Automotive | `func_can_tb.sv` | 19 | verilator | 10/10 | 0 | ✅ Sufficient |
 | [CAN_FD-UVM-VIP](test_suites/CAN_FD-UVM-VIP.md) | Automotive | `smoke_func_tb.sv` | 14 | iverilog | 13/16 | 0 | ✅ Sufficient |
 | [CAN_XL-UVM-VIP](test_suites/CAN_XL-UVM-VIP.md) | Automotive | `smoke_func_tb.sv` | 38 | verilator | 10/12 | 0 | ✅ Sufficient |
 | [CCIX-VIP](test_suites/CCIX-VIP.md) | Interconnect | `func_ccix_tb.sv` | 13 | iverilog | 15/15 | 0 | ✅ Sufficient |
 | [CHI-UVM-VIP](test_suites/CHI-UVM-VIP.md) | AMBA | `smoke_func_tb.sv`, `func_chi_hn_tb.sv` | 53 | iverilog | 27/28 | 0 | ✅ Sufficient |
+| [CHI_H-UVM-VIP](test_suites/CHI_H-UVM-VIP.md) | AMBA | `smoke_func_tb.sv` | 63 | iverilog | 28/28 | 0 | ✅ Sufficient |
 | [CI_CAM-UVM-VIP](test_suites/CI_CAM-UVM-VIP.md) | Security | `smoke_func_tb.sv` | 83 | verilator | 30/30 | 0 | ✅ Sufficient |
 | [CPRI-VIP](test_suites/CPRI-VIP.md) | Telecom | `func_cpri_tb.sv` | 17 | iverilog | 19/19 | 0 | ✅ Sufficient |
 | [CSE-VIP](test_suites/CSE-VIP.md) | MIPI | `func_cse_tb.sv` | 34 | iverilog | 25/25 | 0 | ✅ Sufficient |
@@ -133,6 +135,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [SLIMbus-VIP](test_suites/SLIMbus-VIP.md) | MIPI | `func_slimbus_tb.sv` | 14 | iverilog | 23/23 | 0 | ✅ Sufficient |
 | [SMBus-UVM-VIP](test_suites/SMBus-UVM-VIP.md) | Power | `smoke_func_tb.sv` | 40 | iverilog | 28/28 | 0 | ✅ Sufficient |
 | [SPDIF-UVM-VIP](test_suites/SPDIF-UVM-VIP.md) | Audio | `smoke_func_tb.sv` | 26 | iverilog | 27/27 | 0 | ✅ Sufficient |
+| [SPDM-UVM-VIP](test_suites/SPDM-UVM-VIP.md) | Security | `smoke_func_tb.sv` | 56 | iverilog | 26/26 | 0 | ✅ Sufficient |
 | [SPI-VIP](test_suites/SPI-VIP.md) | Serial | `smoke_func_tb.sv` | 10 | iverilog | 25/25 | 0 | ✅ Sufficient |
 | [SPI_NOR-UVM-VIP](test_suites/SPI_NOR-UVM-VIP.md) | Memory | `smoke_func_tb.sv` | 26 | iverilog | 29/29 | 0 | ✅ Sufficient |
 | [SPMI-VIP](test_suites/SPMI-VIP.md) | MIPI | `func_spmi_tb.sv` | 15 | iverilog | 24/29 | 0 | ✅ Sufficient |
