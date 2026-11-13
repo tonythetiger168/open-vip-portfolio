@@ -1,0 +1,12 @@
+test_hidden_error_event (test_run_uvm_slice.RunClassificationTests.test_hidden_error_event) ... ok
+test_missing_summary (test_run_uvm_slice.RunClassificationTests.test_missing_summary) ... ok
+test_no_traffic (test_run_uvm_slice.RunClassificationTests.test_no_traffic) ... ok
+test_nonzero_exit (test_run_uvm_slice.RunClassificationTests.test_nonzero_exit) ... ok
+test_pass (test_run_uvm_slice.RunClassificationTests.test_pass) ... ok
+test_runtime_error (test_run_uvm_slice.RunClassificationTests.test_runtime_error) ... ok
+test_wrong_seed (test_run_uvm_slice.RunClassificationTests.test_wrong_seed) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.001s
+
+OK
