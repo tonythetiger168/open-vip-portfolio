@@ -55,9 +55,10 @@ AMBA_INCS = ["vip/base", "vip/apb", "vip/ahb", "vip/axi", "rtl", "rtl/sva", "env
 
 # VIPs with a UVM register model and the tests to run on Verilator
 SUITES = {
-    "APB-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test"]),
-    "AHB-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test"]),
-    "AXI-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test"]),
+    "APB-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS,
+                    tests=["amba_ral_test", "amba_apb_strb_test", "amba_apb_cov_test"]),
+    "AHB-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test", "amba_ahb_cov_test"]),
+    "AXI-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test", "amba_axi_cov_test"]),
     "OCP-VIP": dict(files=["common/common_pkg.sv", "ocp/ocp_defs.sv", "ocp/ocp_if.sv",
                            "ocp/ocp_pkg.sv", "env/ocp_env.sv", "tests/ocp_tests.sv",
                            "tb/top_tb.sv"],
@@ -66,7 +67,7 @@ SUITES = {
                                 "tilelink/tilelink_if.sv", "tilelink/tilelink_pkg.sv",
                                 "env/tilelink_env.sv", "tests/tilelink_tests.sv", "tb/top_tb.sv"],
                          incs=["common", "tilelink", "env", "tests", "tb"],
-                         tests=["tilelink_ral_test"]),
+                         tests=["tilelink_ral_test", "tilelink_cov_test"]),
     # serial register-access VIPs (docs/RAL.md section 8)
     "RFFE-VIP": dict(files=["common/common_pkg.sv", "rffe/rffe_defs.sv", "rffe/rffe_if.sv",
                        "rffe/rffe_pkg.sv", "env/rffe_env.sv", "tests/rffe_tests.sv", "tb/top_tb.sv"],
