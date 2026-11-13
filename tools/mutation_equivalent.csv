@@ -587,3 +587,5 @@ BoW-UVM-VIP,dut_bow_model.sv:91,1'b0 inverted,"gated is cleared when PHYReady ri
 BoW-UVM-VIP,dut_bow_model.sv:92,1'b1 inverted,"widle is only read on UI 1..3 of a word, after UI 0 has written it"
 BoW-UVM-VIP,dut_bow_model.sv:134,1 -> 2,"the gate counter only has to stop past GMAX; err[0] fires at g == GMAX either way"
 BoW-UVM-VIP,dut_bow_model.sv:42,&& flipped,"the only extra case it admits is bad_b = 0 (AUX), and lo = 0 maps every lane like no defect"
+CHI_H-UVM-VIP,dut_chih_model.sv:57,0 -> 1,"k is set to 0 whenever a request is accepted, before it is read"
+CHI_H-UVM-VIP,dut_chih_model.sv:85,16 -> 17,"the extra iteration reads be[16] (X, outside the 16-bit vector), which sets no error and writes nothing"
