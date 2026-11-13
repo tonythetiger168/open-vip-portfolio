@@ -4,10 +4,10 @@
 
 > 新增 [shared UVM／六類 coverage 計畫](docs/design/platform_shared_uvm_plan.md) 及有界 RTL seed/replay gate；procedural fixture campaign 通過不等於 UVM 或完整 SoC coverage 100%。
 
-> A comprehensive, open-source collection of **150 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
+> A comprehensive, open-source collection of **164 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
 
 [![License](https://img.shields.io/badge/License-Apache%%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![VIP Count](https://img.shields.io/badge/VIPs-150-brightgreen.svg)]()
+[![VIP Count](https://img.shields.io/badge/VIPs-164-brightgreen.svg)]()
 [![Protocols](https://img.shields.io/badge/Protocols-150-orange.svg)]()
 
 ---
@@ -16,7 +16,7 @@
 
 This repository provides a **modular, per-protocol verification IP library** covering major interface standards used in modern semiconductor design. Each entry is packaged as a standalone zip file.
 
-- **150 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
+- **164 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
 - **RTL IPs** -- the synthesizable reference RTL lives in [open-ip-portfolio](https://github.com/tonythetiger168/open-ip-portfolio); the column `open-ip 對應` of the CSV maps each VIP to its IP there: each `/`-separated name is the stem of one `rtl/<name>_top.sv`, and `無對應` means open-ip-portfolio has no RTL for it yet
 - **150 distinct protocols** across 20 families
 
@@ -276,6 +276,31 @@ All source files are licensed under **Apache License 2.0**.
 | MPEG-2 TS / TSI (ISO/IEC 13818-1) | UVM VIP | `MPEG_TS-UVM-VIP.zip` | 23KB |
 | V-by-One HS panel sink | UVM VIP | `VbyOne_HS-UVM-VIP.zip` | 22KB |
 
+### SoC Subsystem (14)
+
+Phone SoC subsystem VIPs for the AXI4-manager IPs of open-ip-portfolio. Each zip is
+standalone: APB4 agent + generated RAL, AXI4 subordinate / monitor / coverage (the
+manager-port kit), reference-model scoreboards, an RTL snapshot, `tb/top_tb.sv`,
+`sim/<ip>.f` and `sim/testlist.txt` for Verilator + uvm-core. See
+[docs/SOC_SUBSYS.md](docs/SOC_SUBSYS.md).
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| AXI4 manager port kit (shared by every subsystem VIP) | UVM VIP | `AXI4_Manager_Port-UVM-VIP.zip` | 32KB |
+| CPU cluster memory traffic (AXI4 manager) | UVM VIP | `CPU_Cluster-UVM-VIP.zip` | 39KB |
+| GPU 2D / blit engine (AXI4 manager) | UVM VIP | `GPU-UVM-VIP.zip` | 39KB |
+| NPU convolution engine (AXI4 manager) | UVM VIP | `NPU-UVM-VIP.zip` | 39KB |
+| Camera ISP: sensor input, black level, gain (AXI4 manager) | UVM VIP | `ISP-UVM-VIP.zip` | 40KB |
+| Video codec DPCM encode / decode (AXI4 manager) | UVM VIP | `Video_Codec-UVM-VIP.zip` | 40KB |
+| Display controller scan-out, CRC, underruns (AXI4 manager) | UVM VIP | `Display_Controller-UVM-VIP.zip` | 41KB |
+| Audio DSP gain / mix / clip (AXI4 manager) | UVM VIP | `Audio_DSP-UVM-VIP.zip` | 40KB |
+| Modem baseband scrambler + CRC-32 (AXI4 manager) | UVM VIP | `Modem-UVM-VIP.zip` | 39KB |
+| Always-on sensor hub decimator (AXI4 manager) | UVM VIP | `Sensor_Hub-UVM-VIP.zip` | 41KB |
+| SMMU / IOMMU translation, TLB, faults (AXI4 subordinate + manager) | UVM VIP | `SMMU-UVM-VIP.zip` | 41KB |
+| System DMA, 4 channels (AXI4 manager) | UVM VIP | `DMA-UVM-VIP.zip` | 42KB |
+| Interrupt controller, priority claim, event log (AXI4 manager) | UVM VIP | `Interrupt_Controller-UVM-VIP.zip` | 44KB |
+| Timer / watchdog with timestamp ring (AXI4 manager) | UVM VIP | `Timer_WDT-UVM-VIP.zip` | 43KB |
+
 ---
 
 ## SoC Bench Libraries
@@ -294,9 +319,9 @@ Models a SoC testbench uses next to the protocol VIPs, kept as source under
 open-vip-portfolio/
 |-- LICENSE
 |-- README.md
-|-- vip_individual_portfolio.csv   # machine-readable index (150 entries)
+|-- vip_individual_portfolio.csv   # machine-readable index (164 entries)
 |-- smoke_report.csv               # full open-toolchain L1b smoke results
-|-- vips/                          # 150 individual VIP zip files
+|-- vips/                          # 164 individual VIP zip files
 |-- .github/workflows/             # CI validation
 |-- docs/                          # CONTRIBUTING and guides
 ```

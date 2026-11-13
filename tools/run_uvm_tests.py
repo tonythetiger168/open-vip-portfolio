@@ -55,9 +55,10 @@ AMBA_INCS = ["vip/base", "vip/apb", "vip/ahb", "vip/axi", "rtl", "rtl/sva", "env
 
 # VIPs with a UVM register model and the tests to run on Verilator
 SUITES = {
-    "APB-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test"]),
-    "AHB-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test"]),
-    "AXI-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test"]),
+    "APB-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS,
+                    tests=["amba_ral_test", "amba_apb_strb_test", "amba_apb_cov_test"]),
+    "AHB-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test", "amba_ahb_cov_test"]),
+    "AXI-VIP": dict(files=AMBA_FILES, incs=AMBA_INCS, tests=["amba_ral_test", "amba_axi_cov_test"]),
     "OCP-VIP": dict(files=["common/common_pkg.sv", "ocp/ocp_defs.sv", "ocp/ocp_if.sv",
                            "ocp/ocp_pkg.sv", "env/ocp_env.sv", "tests/ocp_tests.sv",
                            "tb/top_tb.sv"],
@@ -66,7 +67,7 @@ SUITES = {
                                 "tilelink/tilelink_if.sv", "tilelink/tilelink_pkg.sv",
                                 "env/tilelink_env.sv", "tests/tilelink_tests.sv", "tb/top_tb.sv"],
                          incs=["common", "tilelink", "env", "tests", "tb"],
-                         tests=["tilelink_ral_test"]),
+                         tests=["tilelink_ral_test", "tilelink_cov_test"]),
     # serial register-access VIPs (docs/RAL.md section 8)
     "RFFE-VIP": dict(files=["common/common_pkg.sv", "rffe/rffe_defs.sv", "rffe/rffe_if.sv",
                        "rffe/rffe_pkg.sv", "env/rffe_env.sv", "tests/rffe_tests.sv", "tb/top_tb.sv"],
@@ -104,6 +105,31 @@ def agent_suites():
     return out
 
 SUITES.update(agent_suites())
+
+# The SoC subsystem VIPs and the AXI4 manager-port kit (tools/gen_soc_subsys_vips.py)
+# ship common/ssv_pkg.sv, a Verilator filelist sim/<p>.f and sim/testlist.txt;
+# every test in the list runs (SB_PASS / RAL_PASS markers).
+def soc_subsys_suites():
+    out = {}
+    for vdir in sorted(glob.glob(os.path.join(VIPS, "*"))):
+        tl = os.path.join(vdir, "sim", "testlist.txt")
+        fl = sorted(glob.glob(os.path.join(vdir, "sim", "*.f")))
+        if not (os.path.exists(os.path.join(vdir, "common", "ssv_pkg.sv")) and os.path.exists(tl) and fl):
+            continue
+        files, incs = [], []
+        for ln in open(fl[0]):
+            ln = ln.strip()
+            if not ln or ln.startswith("//"):
+                continue
+            if ln.startswith("+incdir+"):
+                incs.append(ln[len("+incdir+"):])
+            elif not ln.startswith("+"):
+                files.append(ln)
+        tests = [l.split()[0] for l in open(tl) if l.strip() and not l.lstrip().startswith("#")]
+        out[os.path.basename(vdir)] = dict(files=files, incs=incs, tests=tests)
+    return out
+
+SUITES.update(soc_subsys_suites())
 
 def pkg_order(files):
     """Stable reorder so that a file declaring ``package P`` (or a $unit class)
