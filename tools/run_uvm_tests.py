@@ -106,6 +106,31 @@ def agent_suites():
 
 SUITES.update(agent_suites())
 
+# The SoC subsystem VIPs and the AXI4 manager-port kit (tools/gen_soc_subsys_vips.py)
+# ship common/ssv_pkg.sv, a Verilator filelist sim/<p>.f and sim/testlist.txt;
+# every test in the list runs (SB_PASS / RAL_PASS markers).
+def soc_subsys_suites():
+    out = {}
+    for vdir in sorted(glob.glob(os.path.join(VIPS, "*"))):
+        tl = os.path.join(vdir, "sim", "testlist.txt")
+        fl = sorted(glob.glob(os.path.join(vdir, "sim", "*.f")))
+        if not (os.path.exists(os.path.join(vdir, "common", "ssv_pkg.sv")) and os.path.exists(tl) and fl):
+            continue
+        files, incs = [], []
+        for ln in open(fl[0]):
+            ln = ln.strip()
+            if not ln or ln.startswith("//"):
+                continue
+            if ln.startswith("+incdir+"):
+                incs.append(ln[len("+incdir+"):])
+            elif not ln.startswith("+"):
+                files.append(ln)
+        tests = [l.split()[0] for l in open(tl) if l.strip() and not l.lstrip().startswith("#")]
+        out[os.path.basename(vdir)] = dict(files=files, incs=incs, tests=tests)
+    return out
+
+SUITES.update(soc_subsys_suites())
+
 def pkg_order(files):
     """Stable reorder so that a file declaring ``package P`` (or a $unit class)
     comes before every file that imports P (or names the class); elab_scan's
