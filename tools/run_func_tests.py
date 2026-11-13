@@ -215,6 +215,10 @@ def run_test(vip, tb, rtl_files=None):
             return st, sname, n, detail
     return "ERROR", "-", 0, ("; ".join(str(x) for x in log))[:300]
 
+def is_uvm_tb(tb):
+    with open(tb, encoding="utf-8", errors="replace") as f:
+        return re.search(r"\bimport\s+uvm_pkg\b|\brun_test\s*\(", f.read()) is not None
+
 def rtl_ip(vdir):
     return os.path.isdir(os.path.join(vdir, "rtl")) and glob.glob(os.path.join(vdir, "rtl", "*_top.sv"))
 
@@ -222,7 +226,10 @@ def tests_of(vip):
     vdir = os.path.join(VIPS, vip)
     if rtl_ip(vdir):
         rtl = sorted(glob.glob(os.path.join(vdir, "rtl", "*.sv")))
-        return [(tb, rtl) for tb in sorted(glob.glob(os.path.join(vdir, "tb", "*_tb.sv")))]
+        # a UVM VIP that ships an RTL snapshot (SoC subsystem VIPs) has a UVM
+        # tb/top_tb.sv: run_uvm_tests.py runs it, iverilog cannot compile it
+        return [(tb, rtl) for tb in sorted(glob.glob(os.path.join(vdir, "tb", "*_tb.sv")))
+                if not is_uvm_tb(tb)]
     # tb/ sits at the VIP root, or one level down (<vip>/<proto>_vip/tb/)
     tbdirs = glob.glob(os.path.join(vdir, "tb")) + glob.glob(os.path.join(vdir, "*", "tb"))
     tbs = []
