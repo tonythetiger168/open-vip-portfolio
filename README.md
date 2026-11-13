@@ -1,10 +1,10 @@
 # Open VIP Portfolio
 
-> A comprehensive, open-source collection of **147 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
+> A comprehensive, open-source collection of **148 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
 
 [![License](https://img.shields.io/badge/License-Apache%%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![VIP Count](https://img.shields.io/badge/VIPs-147-brightgreen.svg)]()
-[![Protocols](https://img.shields.io/badge/Protocols-147-orange.svg)]()
+[![VIP Count](https://img.shields.io/badge/VIPs-148-brightgreen.svg)]()
+[![Protocols](https://img.shields.io/badge/Protocols-148-orange.svg)]()
 
 ---
 
@@ -12,9 +12,9 @@
 
 This repository provides a **modular, per-protocol verification IP library** covering major interface standards used in modern semiconductor design. Each entry is packaged as a standalone zip file.
 
-- **147 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
+- **148 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
 - **RTL IPs** -- the synthesizable reference RTL lives in [open-ip-portfolio](https://github.com/tonythetiger168/open-ip-portfolio); the column `open-ip 對應` of the CSV maps each VIP to its IP there: each `/`-separated name is the stem of one `rtl/<name>_top.sv`, and `無對應` means open-ip-portfolio has no RTL for it yet
-- **147 distinct protocols** across 20 families
+- **148 distinct protocols** across 20 families
 
 All source files are licensed under **Apache License 2.0**.
 
@@ -80,13 +80,14 @@ All source files are licensed under **Apache License 2.0**.
 | EtherCAT | UVM VIP | `EtherCAT-VIP.zip` | 24KB |
 | IO-Link | UVM VIP | `IO_Link-VIP.zip` | 24KB |
 
-### Interconnect (14)
+### Interconnect (15)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | ARM Local Translation Interface | UVM VIP | `LTI-VIP.zip` | 28KB |
 | Avalon-MM | UVM VIP | `Avalon_MM-UVM-VIP.zip` | 24KB |
 | Avalon-ST | UVM VIP | `Avalon_ST-UVM-VIP.zip` | 24KB |
+| BoW die-to-die PHY v2.0 (OCP ODSA Bunch of Wires) | UVM VIP | `BoW-UVM-VIP.zip` | 28KB |
 | CCIX Cache Coherent Interconnect | UVM VIP | `CCIX-VIP.zip` | 28KB |
 | CXL | UVM VIP | `CXL-VIP.zip` | 54KB |
 | CXS CCIX Stream Interface | UVM VIP | `CXS-VIP.zip` | 28KB |
@@ -287,9 +288,9 @@ Models a SoC testbench uses next to the protocol VIPs, kept as source under
 open-vip-portfolio/
 |-- LICENSE
 |-- README.md
-|-- vip_individual_portfolio.csv   # machine-readable index (147 entries)
+|-- vip_individual_portfolio.csv   # machine-readable index (148 entries)
 |-- smoke_report.csv               # full open-toolchain L1b smoke results
-|-- vips/                          # 147 individual VIP zip files
+|-- vips/                          # 148 individual VIP zip files
 |-- .github/workflows/             # CI validation
 |-- docs/                          # CONTRIBUTING and guides
 ```

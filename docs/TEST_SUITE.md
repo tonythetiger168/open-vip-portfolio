@@ -4,9 +4,9 @@
 
 ## 1. 結論
 
-- 146 個 VIP 中 146 個有可在開源工具上執行的 self-checking 功能測試，共 4454 個 check（另有 RTL IP testbench 的 0 次斷言評估）；146 個 VIP 的測試全部通過。
-- 判定：✅ Sufficient 146、🟡 Partial 0、❌ Insufficient 0。
-- Mutation testing：2289 個有效 mutant 中 2198 個被功能測試偵測（96%）。
+- 147 個 VIP 中 147 個有可在開源工具上執行的 self-checking 功能測試，共 4488 個 check（另有 RTL IP testbench 的 0 次斷言評估）；147 個 VIP 的測試全部通過。
+- 判定：✅ Sufficient 147、🟡 Partial 0、❌ Insufficient 0。
+- Mutation testing：2310 個有效 mutant 中 2219 個被功能測試偵測（96%）。
 - 沒有未修正的 DUT 模型缺陷：功能測試中沒有 XFAIL check（先前記錄的缺陷都已在模型中修正）。
 
 ## 2. 方法
@@ -47,6 +47,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [Avalon_MM-UVM-VIP](test_suites/Avalon_MM-UVM-VIP.md) | Interconnect | `smoke_func_tb.sv` | 73 | iverilog | 11/11 | 0 | ✅ Sufficient |
 | [Avalon_ST-UVM-VIP](test_suites/Avalon_ST-UVM-VIP.md) | Interconnect | `smoke_func_tb.sv`, `func_avalon_st_tb.sv` | 31 | iverilog | 17/17 | 0 | ✅ Sufficient |
 | [Bluetooth5-VIP](test_suites/Bluetooth5-VIP.md) | Storage/Debug | `func_bluetooth5_tb.sv` | 28 | verilator | 11/11 | 0 | ✅ Sufficient |
+| [BoW-UVM-VIP](test_suites/BoW-UVM-VIP.md) | Interconnect | `smoke_func_tb.sv` | 34 | iverilog | 21/21 | 0 | ✅ Sufficient |
 | [CAN-VIP](test_suites/CAN-VIP.md) | Automotive | `func_can_tb.sv` | 19 | verilator | 10/10 | 0 | ✅ Sufficient |
 | [CAN_FD-UVM-VIP](test_suites/CAN_FD-UVM-VIP.md) | Automotive | `smoke_func_tb.sv` | 14 | iverilog | 13/16 | 0 | ✅ Sufficient |
 | [CAN_XL-UVM-VIP](test_suites/CAN_XL-UVM-VIP.md) | Automotive | `smoke_func_tb.sv` | 38 | verilator | 10/12 | 0 | ✅ Sufficient |
