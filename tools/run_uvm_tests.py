@@ -67,6 +67,22 @@ SUITES = {
                                 "env/tilelink_env.sv", "tests/tilelink_tests.sv", "tb/top_tb.sv"],
                          incs=["common", "tilelink", "env", "tests", "tb"],
                          tests=["tilelink_ral_test"]),
+    # serial register-access VIPs (docs/RAL.md section 8)
+    "RFFE-VIP": dict(files=["common/common_pkg.sv", "rffe/rffe_defs.sv", "rffe/rffe_if.sv",
+                       "rffe/rffe_pkg.sv", "env/rffe_env.sv", "tests/rffe_tests.sv", "tb/top_tb.sv"],
+                incs=["common", "rffe", "env", "tests", "tb"], tests=["rffe_ral_test"]),
+    "AVSBus-VIP": dict(files=["common/common_pkg.sv", "avsbus/avsbus_defs.sv", "avsbus/avsbus_if.sv",
+                       "avsbus/avsbus_pkg.sv", "env/avsbus_env.sv", "tests/avsbus_tests.sv", "tb/top_tb.sv"],
+                incs=["common", "avsbus", "env", "tests", "tb"], tests=["avsbus_ral_test"]),
+    "I2C-VIP": dict(files=["common/common_pkg.sv", "i2c/i2c_defs.sv", "i2c/i2c_if.sv",
+                       "i2c/i2c_pkg.sv", "env/i2c_env.sv", "tests/i2c_tests.sv", "tb/top_tb.sv"],
+                incs=["common", "i2c", "env", "tests", "tb"], tests=["i2c_ral_test"]),
+    "SPMI-VIP": dict(files=["common/common_pkg.sv", "spmi/spmi_defs.sv", "spmi/spmi_if.sv",
+                       "spmi/spmi_pkg.sv", "env/spmi_env.sv", "tests/spmi_tests.sv", "tb/top_tb.sv"],
+                incs=["common", "spmi", "env", "tests", "tb"], tests=["spmi_ral_test"]),
+    "SoundWire-VIP": dict(files=["common/common_pkg.sv", "soundwire/soundwire_defs.sv", "soundwire/soundwire_if.sv",
+                       "soundwire/soundwire_pkg.sv", "env/soundwire_env.sv", "tests/soundwire_tests.sv", "tb/top_tb.sv"],
+                incs=["common", "soundwire", "env", "tests", "tb"], tests=["soundwire_ral_test"]),
 }
 
 # The template-built agents (tools/uvm_agents/<prefix>.py, rendered by
