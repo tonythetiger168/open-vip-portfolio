@@ -589,3 +589,7 @@ BoW-UVM-VIP,dut_bow_model.sv:134,1 -> 2,"the gate counter only has to stop past 
 BoW-UVM-VIP,dut_bow_model.sv:42,&& flipped,"the only extra case it admits is bad_b = 0 (AUX), and lo = 0 maps every lane like no defect"
 CHI_H-UVM-VIP,dut_chih_model.sv:57,0 -> 1,"k is set to 0 whenever a request is accepted, before it is read"
 CHI_H-UVM-VIP,dut_chih_model.sv:85,16 -> 17,"the extra iteration reads be[16] (X, outside the 16-bit vector), which sets no error and writes nothing"
+SPDM-UVM-VIP,dut_spdm_model.sv:61,20 -> 21,"cq has 20 entries; the extra compare reads X and cannot clear same"
+SPDM-UVM-VIP,dut_spdm_model.sv:61,< -> <= in condition,"same is already 0 unless qn = 20, and then i never reaches qn"
+SPDM-UVM-VIP,dut_spdm_model.sv:79,64 -> 65,"aq has 64 entries; the extra write is dropped"
+SPDM-UVM-VIP,dut_spdm_model.sv:114,0 -> 1,"ri is set to 0 at the last byte of every request, before it is read"

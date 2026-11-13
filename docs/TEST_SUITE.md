@@ -4,9 +4,9 @@
 
 ## 1. 結論
 
-- 148 個 VIP 中 148 個有可在開源工具上執行的 self-checking 功能測試，共 4551 個 check（另有 RTL IP testbench 的 0 次斷言評估）；148 個 VIP 的測試全部通過。
-- 判定：✅ Sufficient 148、🟡 Partial 0、❌ Insufficient 0。
-- Mutation testing：2338 個有效 mutant 中 2247 個被功能測試偵測（96%）。
+- 149 個 VIP 中 149 個有可在開源工具上執行的 self-checking 功能測試，共 4607 個 check（另有 RTL IP testbench 的 0 次斷言評估）；149 個 VIP 的測試全部通過。
+- 判定：✅ Sufficient 149、🟡 Partial 0、❌ Insufficient 0。
+- Mutation testing：2364 個有效 mutant 中 2273 個被功能測試偵測（96%）。
 - 沒有未修正的 DUT 模型缺陷：功能測試中沒有 XFAIL check（先前記錄的缺陷都已在模型中修正）。
 
 ## 2. 方法
@@ -135,6 +135,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [SLIMbus-VIP](test_suites/SLIMbus-VIP.md) | MIPI | `func_slimbus_tb.sv` | 14 | iverilog | 23/23 | 0 | ✅ Sufficient |
 | [SMBus-UVM-VIP](test_suites/SMBus-UVM-VIP.md) | Power | `smoke_func_tb.sv` | 40 | iverilog | 28/28 | 0 | ✅ Sufficient |
 | [SPDIF-UVM-VIP](test_suites/SPDIF-UVM-VIP.md) | Audio | `smoke_func_tb.sv` | 26 | iverilog | 27/27 | 0 | ✅ Sufficient |
+| [SPDM-UVM-VIP](test_suites/SPDM-UVM-VIP.md) | Security | `smoke_func_tb.sv` | 56 | iverilog | 26/26 | 0 | ✅ Sufficient |
 | [SPI-VIP](test_suites/SPI-VIP.md) | Serial | `smoke_func_tb.sv` | 10 | iverilog | 25/25 | 0 | ✅ Sufficient |
 | [SPI_NOR-UVM-VIP](test_suites/SPI_NOR-UVM-VIP.md) | Memory | `smoke_func_tb.sv` | 26 | iverilog | 29/29 | 0 | ✅ Sufficient |
 | [SPMI-VIP](test_suites/SPMI-VIP.md) | MIPI | `func_spmi_tb.sv` | 15 | iverilog | 24/29 | 0 | ✅ Sufficient |
