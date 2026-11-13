@@ -1,0 +1,15 @@
+{
+  "publication": "full raw diagnostics retained in local delivery bundle; PR includes structured results and error excerpt",
+  "logs": [
+    {
+      "file": "reports/platform_uvm_frontend/frontend.log",
+      "bytes": 327814,
+      "sha256": "3cdad2b45c7d6435f8292ff962c9838dc3da29fd113cc426742f7a5bf16b61f0"
+    },
+    {
+      "file": "reports/platform_uvm_frontend/frontend-before.log",
+      "bytes": 328252,
+      "sha256": "a2252a86a1f6c3e7ec883321f68725c5b9b31bd4b375530138b20f7e0aec43e7"
+    }
+  ]
+}

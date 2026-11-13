@@ -1,0 +1,31 @@
+ERROR txn=2 response matches independent address policy
+ERROR txn=3 independent memory scoreboard
+ERROR txn=36 response matches independent address policy
+ERROR txn=37 response matches independent address policy
+ERROR txn=44 response matches independent address policy
+ERROR txn=45 response matches independent address policy
+ERROR txn=53 response matches independent address policy
+ERROR txn=56 response matches independent address policy
+ERROR txn=59 response matches independent address policy
+ERROR txn=60 response matches independent address policy
+ERROR txn=69 response matches independent address policy
+ERROR txn=84 response matches independent address policy
+ERROR txn=87 response matches independent address policy
+ERROR txn=95 response matches independent address policy
+ERROR txn=104 response matches independent address policy
+ERROR txn=130 response matches independent address policy
+ERROR txn=132 response matches independent address policy
+ERROR txn=133 response matches independent address policy
+ERROR txn=134 response matches independent address policy
+ERROR txn=141 response matches independent address policy
+ERROR txn=148 response matches independent address policy
+ERROR txn=160 response matches independent address policy
+ERROR txn=172 response matches independent address policy
+ERROR txn=187 response matches independent address policy
+ERROR txn=196 response matches independent address policy
+ERROR txn=199 response matches independent address policy
+ERROR txn=203 response matches independent address policy
+COUNTS fast=44 slow=28 hole=32 unaligned=45 partial=26 reserved=34
+TEST FAILED: 27 errors
+FATAL: /mnt/c/Users/chien/Documents/Codex/2026-10-26/soc-design-platform/outputs/platform-update/open-vip-portfolio/ipcheck/platform/platform_apb_crv_tb.sv:99: 
+       Time: 6630000  Scope: platform_apb_crv_tb.$unm_blk_18

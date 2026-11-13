@@ -1,0 +1,87 @@
+test_all_identity_dimensions_reject_merge (test_check_export.ExportTests.test_all_identity_dimensions_reject_merge) ... ok
+test_approved_exclusion_preserves_raw_denominator (test_check_export.ExportTests.test_approved_exclusion_preserves_raw_denominator) ... ok
+test_assertion_failure (test_check_export.ExportTests.test_assertion_failure) ... ok
+test_duplicate_baseline (test_check_export.ExportTests.test_duplicate_baseline) ... FAIL
+test_hole (test_check_export.ExportTests.test_hole) ... ok
+test_illegal_bin_hit (test_check_export.ExportTests.test_illegal_bin_hit) ... FAIL
+test_illegal_functional_bin (test_check_export.ExportTests.test_illegal_functional_bin) ... ok
+test_missing_db (test_check_export.ExportTests.test_missing_db) ... ok
+test_missing_fsm_arc (test_check_export.ExportTests.test_missing_fsm_arc) ... ok
+test_missing_rtl_dependency (test_check_export.ExportTests.test_missing_rtl_dependency) ... ok
+test_missing_uvm_summary (test_check_export.ExportTests.test_missing_uvm_summary) ... FAIL
+test_one_way_toggle (test_check_export.ExportTests.test_one_way_toggle) ... FAIL
+test_synthetic_valid_policy (test_check_export.ExportTests.test_synthetic_valid_policy) ... ok
+test_timeout_despite_all_hits (test_check_export.ExportTests.test_timeout_despite_all_hits) ... FAIL
+test_unapproved_exclusion (test_check_export.ExportTests.test_unapproved_exclusion) ... ok
+test_undrained_ledger (test_check_export.ExportTests.test_undrained_ledger) ... FAIL
+test_unsupported_cannot_be_excluded (test_check_export.ExportTests.test_unsupported_cannot_be_excluded) ... ok
+test_uvm_error_despite_zero_scoreboard_errors (test_check_export.ExportTests.test_uvm_error_despite_zero_scoreboard_errors) ... FAIL
+test_vacuous_sva (test_check_export.ExportTests.test_vacuous_sva) ... ok
+
+======================================================================
+FAIL: test_duplicate_baseline (test_check_export.ExportTests.test_duplicate_baseline)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\chien\Documents\Codex\2026-10-26\soc-design-platform\work\coverage-gate-before\test_check_export.py", line 114, in test_duplicate_baseline
+    with self.assertRaises(ValueError): self.run_assess()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_illegal_bin_hit (test_check_export.ExportTests.test_illegal_bin_hit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\chien\Documents\Codex\2026-10-26\soc-design-platform\work\coverage-gate-before\test_check_export.py", line 118, in test_illegal_bin_hit
+    with self.assertRaises(ValueError): self.run_assess()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_uvm_summary (test_check_export.ExportTests.test_missing_uvm_summary)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\chien\Documents\Codex\2026-10-26\soc-design-platform\work\coverage-gate-before\test_check_export.py", line 104, in test_missing_uvm_summary
+    with self.assertRaises(ValueError): self.run_assess()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_one_way_toggle (test_check_export.ExportTests.test_one_way_toggle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\chien\Documents\Codex\2026-10-26\soc-design-platform\work\coverage-gate-before\test_check_export.py", line 110, in test_one_way_toggle
+    with self.assertRaises(ValueError): self.run_assess()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_timeout_despite_all_hits (test_check_export.ExportTests.test_timeout_despite_all_hits)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\chien\Documents\Codex\2026-10-26\soc-design-platform\work\coverage-gate-before\test_check_export.py", line 92, in test_timeout_despite_all_hits
+    with self.assertRaises(ValueError): self.run_assess()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_undrained_ledger (test_check_export.ExportTests.test_undrained_ledger)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\chien\Documents\Codex\2026-10-26\soc-design-platform\work\coverage-gate-before\test_check_export.py", line 96, in test_undrained_ledger
+    with self.assertRaises(ValueError): self.run_assess()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_uvm_error_despite_zero_scoreboard_errors (test_check_export.ExportTests.test_uvm_error_despite_zero_scoreboard_errors)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\chien\Documents\Codex\2026-10-26\soc-design-platform\work\coverage-gate-before\test_check_export.py", line 100, in test_uvm_error_despite_zero_scoreboard_errors
+    with self.assertRaises(ValueError): self.run_assess()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.350s
+
+FAILED (failures=7)
