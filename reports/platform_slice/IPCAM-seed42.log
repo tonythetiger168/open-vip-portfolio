@@ -1,0 +1,3 @@
+COUNTS fast=40 slow=34 hole=33 unaligned=38 partial=28 reserved=36
+TEST PASSED: PLATFORM_SLICE product=2 seed=42 transactions=209 checks=739
+/mnt/c/Users/chien/Documents/Codex/2026-10-26/soc-design-platform/outputs/platform-update/open-vip-portfolio/ipcheck/platform/platform_apb_crv_tb.sv:100: $finish called at 6690000 (1ps)
