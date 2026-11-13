@@ -1,0 +1,24 @@
+test_all_identity_dimensions_reject_merge (test_check_export.ExportTests.test_all_identity_dimensions_reject_merge) ... ok
+test_approved_exclusion_preserves_raw_denominator (test_check_export.ExportTests.test_approved_exclusion_preserves_raw_denominator) ... ok
+test_assertion_failure (test_check_export.ExportTests.test_assertion_failure) ... ok
+test_duplicate_baseline (test_check_export.ExportTests.test_duplicate_baseline) ... ok
+test_hole (test_check_export.ExportTests.test_hole) ... ok
+test_illegal_bin_hit (test_check_export.ExportTests.test_illegal_bin_hit) ... ok
+test_illegal_functional_bin (test_check_export.ExportTests.test_illegal_functional_bin) ... ok
+test_missing_db (test_check_export.ExportTests.test_missing_db) ... ok
+test_missing_fsm_arc (test_check_export.ExportTests.test_missing_fsm_arc) ... ok
+test_missing_rtl_dependency (test_check_export.ExportTests.test_missing_rtl_dependency) ... ok
+test_missing_uvm_summary (test_check_export.ExportTests.test_missing_uvm_summary) ... ok
+test_one_way_toggle (test_check_export.ExportTests.test_one_way_toggle) ... ok
+test_synthetic_valid_policy (test_check_export.ExportTests.test_synthetic_valid_policy) ... ok
+test_timeout_despite_all_hits (test_check_export.ExportTests.test_timeout_despite_all_hits) ... ok
+test_unapproved_exclusion (test_check_export.ExportTests.test_unapproved_exclusion) ... ok
+test_undrained_ledger (test_check_export.ExportTests.test_undrained_ledger) ... ok
+test_unsupported_cannot_be_excluded (test_check_export.ExportTests.test_unsupported_cannot_be_excluded) ... ok
+test_uvm_error_despite_zero_scoreboard_errors (test_check_export.ExportTests.test_uvm_error_despite_zero_scoreboard_errors) ... ok
+test_vacuous_sva (test_check_export.ExportTests.test_vacuous_sva) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.320s
+
+OK
