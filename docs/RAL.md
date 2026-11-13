@@ -2,7 +2,8 @@
 
 本文件記錄 132 個 VIP 的 UVM RAL（`uvm_reg`）掃描結果、目前已加入 register model 的 VIP、
 測試方法與結果，以及下一批候選。目前有 RAL 的 VIP：APB-VIP、AHB-VIP、AXI-VIP（2026-10-24）、
-OCP-VIP、TileLink-VIP（2026-10-25，見第 6 節）、Avalon_MM-UVM-VIP、Wishbone-UVM-VIP（2026-10-27，見第 7 節）。
+OCP-VIP、TileLink-VIP（2026-10-25，見第 6 節）、Avalon_MM-UVM-VIP、Wishbone-UVM-VIP（2026-10-27，見第 7 節）、
+RFFE-VIP、AVSBus-VIP、I2C-VIP、SPMI-VIP、SoundWire-VIP（2026-11-12，見第 8 節）。
 
 ## 1. 掃描結果（2026-10-24）
 
@@ -102,7 +103,8 @@ UVM_PASS AXI-VIP/amba_ral_test [checks=1074]
 |---|---|---|
 | 已完成（第 6 節） | OCP-VIP、TileLink-VIP | driver 會把 read data 寫回 item，DUT 模型有 memory/register |
 | 已完成（第 7 節） | Avalon_MM-UVM、Wishbone-UVM | 產生器（`tools/gen_uvm_agents.py`）的 spec 加 `ral=` 即產生 register model、adapter、predictor 與 `<p>_ral_test` |
-| 需先讓 UVM 環境在 Verilator 上跑起來 | I2C、I3C、SPMI、RFFE、SoundWire、AVSBus、MDIO-VIP、SWD、JTAG、CSE、DBI | DUT 模型有 register map，但這些手寫 UVM 環境 2026-10-27 才第一次在 Verilator 上建置（`tools/run_uvm_tests.py --smoke`，見 `docs/UVM_SMOKE.md`），多數還有建置或 runtime 問題；driver 為 bit-level，也需確認 read data 回填 item 與 monitor 完成時機 |
+| 已完成（第 8 節） | RFFE、AVSBus、I2C、SPMI、SoundWire | driver 把讀回資料寫回 item，monitor 在 driver 結束前送出 item |
+| 需先讓 UVM 環境在 Verilator 上跑起來 | I3C、SWD、JTAG、DBI（smoke 修正在 #22）、CSE（共用 MIPI package，只有一個 `cfg_reg`）；`vips/` 沒有 MDIO-VIP，只有產生式的 MDIO-UVM-VIP | DUT 模型有 register map，但這些手寫 UVM 環境 2026-10-27 才第一次在 Verilator 上建置（`tools/run_uvm_tests.py --smoke`，見 `docs/UVM_SMOKE.md`），多數還有建置或 runtime 問題；driver 為 bit-level，也需確認 read data 回填 item 與 monitor 完成時機 |
 | 不適用 | MDIO-UVM、SDIO-UVM 等其他產生式 agent | DUT 模型沒有可寫的 register file（MDIO-UVM 只回傳 `phy_status`、寫入被忽略；SDIO-UVM 回固定 R1） |
 
 ## 6. OCP-VIP 與 TileLink-VIP（2026-10-25）
@@ -205,3 +207,57 @@ Avalon-MM 的 DUT 模型同時改成符合規格的 waitrequest：命令第一�
 在 `waitrequest` 為低的那個 clock 完成傳輸（之前模型在自己的 registered `waitrequest` 為高時收命令，
 照規格寫的 host 會被忽略）；read 的位址在傳輸完成時鎖存，`readdatavalid` 在兩個 clock 後回來。
 
+## 8. RFFE、AVSBus、I2C、SPMI、SoundWire（2026-11-12）
+
+做法與第 6 節相同：register model 依 `tb/top_tb.sv` 的 DUT 模型建立（`env/<p>_reg_model.svh`，
+include 在 `env_pkg`），adapter 把一次暫存器存取轉成一筆 agent transaction
+（`<p>/<p>_reg_adapter.svh`，include 在 `<p>_pkg`），env 以 explicit predictor 接 monitor 的 `ap`。
+五個 monitor 都在 driver `item_done()` 之前送出 item，所以 mirror 在下一筆存取前已更新。
+adapter 把不是暫存器存取的 item（別的 slave、NACK、ping 等）對到沒有映射的位址，predictor 直接略過，
+不會產生 `PREDICT_NOK` warning。
+
+| VIP | Register map | Adapter |
+|---|---|---|
+| RFFE-VIP | `REG0..REG31` @ 0x000–0x01F（Register Write / Read）、`XREG` 256×8 @ 0x100–0x1FF（Extended Write / Read），USID 0x3 | read data 取 `rdata`；parity / bus park 錯誤 → `UVM_NOT_OK` |
+| AVSBus-VIP | `VOUT` @ 0x0，8-bit，reset 0x60，只接受 0x20–0xC0（`NO_REG_BIT_BASH_TEST`） | write → SetVoltage、read → GetVoltage，都要求回應；ACK → `UVM_IS_OK`，ST_ERR / 沒回應 → `UVM_NOT_OK` |
+| I2C-VIP | `DATA` @ 0x0，8-bit（slave 0x50 每個位址只有一個 byte，沒有 register pointer） | 1 byte write / read（read 最後一個 byte master NACK）；address NACK → `UVM_NOT_OK` |
+| SPMI-VIP | `REG0..REG31` @ 0x00–0x1F、`MEM` 224×8 @ 0x20–0xFF，slave 0x2 | Register Write / Read；NACK / parity 錯誤 → `UVM_NOT_OK` |
+| SoundWire-VIP | peripheral 1 的 `REG0..REG31` @ 0x0000–0x001F、`MEM` 256×8 @ 0x0100–0x01FF（避開 `SW_BRA_REG` 0x00F0） | SW_WRITE / SW_READ；write 要回 write status 才是 `UVM_IS_OK`；read 值取 response window |
+
+RAL test：`uvm_reg_hw_reset_seq`、`uvm_reg_bit_bash_seq`（AVSBus 除外）、`uvm_mem_walk_seq`
+（RFFE / SPMI / SoundWire）、每個暫存器 pseudo-random write + `mirror(UVM_CHECK)` + read、
+32 次 random memory round trip；AVSBus 另檢查 7 個合法值、64 個隨機合法值，以及 4 個超出範圍的值
+必須回 `UVM_NOT_OK` 且 `VOUT` 不變。都不用 `randomize()`。
+
+### 8.1 RAL test 第一次執行就抓到的問題（已修正）
+
+| VIP | 問題 | 修正 |
+|---|---|---|
+| I2C-VIP | monitor 的 STOP 偵測在 SDA 任何上升緣都結束 fork，資料 byte 只要有 0→1 就被丟掉（write 的 `data` 永遠是空的） | 只有 SCL 為高時的 SDA 上升才算 STOP |
+| I2C-VIP | driver 在同一個 clock 改 SDA 並放開 SCL（沒有 setup time），STOP 也一樣 | SDA 先在 SCL 低時改變，再放開 SCL |
+| I2C-VIP | slave 模型只 ACK 第一個資料 byte，多 byte write 被 NACK；`i2c_regression_test` 因此 scoreboard 不符 | 每個 byte 都 ACK，直到 STOP 或 repeated START |
+| I2C-VIP | `nack_last` 有 70% 是 0：master 讀完最後一個 byte 還 ACK，slave 繼續驅動 SDA，STOP 失敗，之後的位址全部 NACK | 預設 `nack_last == 1`（I2C 規格：master-receiver 最後一個 byte 要 NACK）；要測錯誤時關掉 `c_nack` |
+| I2C-VIP | `i2c_error_inject_seq` 要求 `addr == 0x00`，但 `c_addr` 排除 0x00，任何模擬器都 randomize 失敗 | 這個 sequence 關掉 `c_addr` |
+| I2C-VIP | driver 讀到的 byte 沒寫回 item | 寫進 `rdata`，address NACK 寫進 `addr_nack` |
+| AVSBus-VIP | driver 不收 slave 回應 | response window 中收下 15-bit frame，寫回 `resp_seen` / `status` / `resp_voltage` |
+| AVSBus-VIP | scoreboard 認為超出範圍的 SetVoltage 也會 ACK 並更新 vout，但 DUT 回 ST_ERR 且不更新 | scoreboard 依 VMIN..VMAX 預期 ST_ERR |
+
+### 8.2 結果（minisim）
+
+```
+RFFE-VIP/rffe_ral_test             RAL_PASS checks=640
+AVSBus-VIP/avsbus_ral_test         RAL_PASS checks=151
+I2C-VIP/i2c_ral_test               RAL_PASS checks=137
+SPMI-VIP/spmi_ral_test             RAL_PASS checks=608
+SoundWire-VIP/soundwire_ral_test   RAL_PASS checks=640
+```
+
+每個都是 0 UVM_ERROR、0 UVM_WARNING。原本的 random / regression test 仍是 0 UVM_ERROR；
+`i2c_regression_test` 從 5 個 UVM_ERROR 變成 0。
+
+DUT mutation：RFFE register write 卡 bit 3（bit-bash 134 個錯誤）、AVSBus 接受超出範圍的電壓（13 個錯誤）、
+I2C 寫入清掉 bit 4（68 個錯誤）、SPMI 0x80 以上位址寫入卡 bit 6（77 個錯誤）、SoundWire 0x100 以上位址寫入翻 bit 1
+（577 個錯誤），RAL test 都會 FAIL。
+
+Verilator 尚未執行（這次的環境沒有 Verilator）：請用
+`python3 tools/run_uvm_tests.py RFFE-VIP AVSBus-VIP I2C-VIP SPMI-VIP SoundWire-VIP` 確認。
