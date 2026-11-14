@@ -20,12 +20,14 @@ LPDDR6-VIP,dut_lpddr6_model.sv:53,6 -> 7,clears a pipeline stage past the array
 Wishbone-UVM-VIP,dut_wishbone_model.sv:25,16 -> 17,reset loop index 16 is out of range (write ignored)
 Wishbone-UVM-VIP,dut_wishbone_model.sv:32,&& flipped,DAT_O is only defined while ACK is high; the change is visible only outside a cycle
 NVMe-VIP,dut_nvme_controller_model.sv:35,0 -> 1,initial value overwritten by the synchronous reset before any doorbell
-NVMe-VIP,dut_nvme_controller_model.sv:40,0 -> 1,initial value overwritten by the synchronous reset before it is observed
-NVMe-VIP,dut_nvme_controller_model.sv:50,0 -> 1,initial value overwritten by the synchronous reset before it is observed
-NVMe-VIP,dut_nvme_controller_model.sv:51,0 -> 1,word 0 left uninitialised: 0 under the 2-state simulator (Verilator) either way
-NVMe-VIP,dut_nvme_controller_model.sv:51,16 -> 17,loop index 16 is out of range (write ignored)
-NVMe-VIP,dut_nvme_controller_model.sv:52,0 -> 1,word 0 left uninitialised: 0 under the 2-state simulator (Verilator) either way
-NVMe-VIP,dut_nvme_controller_model.sv:52,16 -> 17,loop index 16 is out of range (write ignored)
+NVMe-VIP,dut_nvme_controller_model.sv:36,0 -> 1,statistics counter (err_count) is not an output
+NVMe-VIP,dut_nvme_controller_model.sv:44,0 -> 1,initial value overwritten by the synchronous reset before it is observed
+NVMe-VIP,dut_nvme_controller_model.sv:54,0 -> 1,word 0 left uninitialised: 0 under the 2-state simulator (Verilator) either way
+NVMe-VIP,dut_nvme_controller_model.sv:54,16 -> 17,loop index 16 is out of range (write ignored)
+NVMe-VIP,dut_nvme_controller_model.sv:55,0 -> 1,word 0 left uninitialised: 0 under the 2-state simulator (Verilator) either way
+NVMe-VIP,dut_nvme_controller_model.sv:55,16 -> 17,loop index 16 is out of range (write ignored)
+NVMe-VIP,dut_nvme_controller_model.sv:73,0 -> 1,statistics counter (err_count) is not an output
+NVMe-VIP,dut_nvme_controller_model.sv:73,!= flipped,statistics counter (err_count) is not an output
 ETH800G-VIP,dut_eth800g_model.sv:27,1'b0 inverted,initial value overwritten by the asynchronous reset
 ETH800G-VIP,dut_eth800g_model.sv:30,1'b0 inverted,in_pkt set by reset only changes a SOP beat into a continuation of a zero-byte packet (same counts)
 ETH800G-VIP,dut_eth800g_model.sv:49,9600 -> 9601,single-beat term unreachable: a beat carries at most 32 bytes
@@ -202,6 +204,10 @@ CCIX-VIP,dut_ccix_agent_model.sv:58,< -> <= in condition,the 15-credit ceiling i
 CPRI-VIP,dut_cpri_slave_dut.sv:41,15 -> 16,comma_cnt is only compared with 0 and 3: saturating at 15 or 16 is not observable
 CPRI-VIP,dut_cpri_slave_dut.sv:41,< -> <= in condition,comma_cnt is only compared with 0 and 3: saturating at 15 or 16 is not observable
 SATA-VIP,dut_sata_host_model.sv:31,0 -> 1,statistics counter (fis_count) is not an output
+SATA-VIP,dut_sata_host_model.sv:39,0 -> 1,initial value overwritten by the OOB process at time 0
+SATA-VIP,dut_sata_host_model.sv:42,0 -> 1,initial value overwritten by the synchronous reset before the link is up
+SATA-VIP,dut_sata_host_model.sv:44,0 -> 1,initial value overwritten by the OOB process at time 0
+SATA-VIP,dut_sata_host_model.sv:93,0 -> 1,fis_end is already 0 whenever a FIS starts (cleared with fis_valid)
 SLIMbus-VIP,dut_slimbus_codec_slave.sv:19,0 -> 1,initial value overwritten by the reset branch
 SLIMbus-VIP,dut_slimbus_codec_slave.sv:21,0 -> 1,initial value overwritten by the reset branch
 SLIMbus-VIP,dut_slimbus_codec_slave.sv:25,0 -> 1,initial value overwritten by the reset branch
