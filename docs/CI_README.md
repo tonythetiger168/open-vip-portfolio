@@ -18,7 +18,7 @@ CI 範例假設 portfolio repo 根目錄長這樣：
 <repo>/
 ├── vips/                     # 132 個 <VIP>.zip（tools/extract_vips.sh 解壓到 build/vips/）
 ├── tools/
-│   ├── install_tools.sh      # 安裝 Verilator 5.052、pyslang 12.0.0、uvm-core、iverilog、z3
+│   ├── install_tools.sh      # 安裝 Verilator 5.054、pyslang 12.0.0、uvm-core、iverilog、z3
 │   ├── extract_vips.sh       # vips/*.zip -> build/vips/
 │   ├── elab_scan.py          # pyslang elaboration gate（L1a）
 │   ├── sva_lint.py           # SVA 恆真式檢查（永遠成立的 assert 式子）
@@ -39,7 +39,7 @@ mkdir -p .github/workflows
 cp ci/vip_regression.yml .github/workflows/
 ```
 
-- ubuntu runner 上自動安裝 iverilog、`pyslang==12.0.0`、Verilator 5.052、clone
+- ubuntu runner 上自動安裝 iverilog、`pyslang==12.0.0`、Verilator 5.054、clone
   Accellera uvm-core，接著對 `build/vips/*/` 逐個跑 `tools/elab_scan.py`，
   標準為 `ELAB_ERRORS=0`；smoke harness 存在時加跑 L1b。
 - 報告（每 VIP 日誌 + 彙總）以 artifact 上傳，保留 30 天。

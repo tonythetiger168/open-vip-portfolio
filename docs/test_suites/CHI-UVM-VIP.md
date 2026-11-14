@@ -14,7 +14,7 @@
 
 ## 2. 可執行的功能測試
 
-執行：`python3 tools/run_func_tests.py CHI-UVM-VIP`（Icarus Verilog 或 Verilator 5.052）。
+執行：`python3 tools/run_func_tests.py CHI-UVM-VIP`（Icarus Verilog 或 Verilator 5.054）。
 
 ### `chi_hn/tb/func_chi_hn_tb.sv`
 
