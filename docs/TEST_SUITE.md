@@ -64,7 +64,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [C_PHY-VIP](test_suites/C_PHY-VIP.md) | MIPI | `func_mipi_tb.sv` | 29 | verilator | 11/11 | 0 | ✅ Sufficient |
 | [DBI-VIP](test_suites/DBI-VIP.md) | MIPI | `func_dbi_tb.sv` | 15 | verilator | 9/10 | 0 | ✅ Sufficient |
 | [DDR-VIP](test_suites/DDR-VIP.md) | Memory | `func_mem_tb.sv` | 20 | verilator | 7/7 | 0 | ✅ Sufficient |
-| [DDR5-VIP](test_suites/DDR5-VIP.md) | Memory | `smoke_func_tb.sv`, `func_ddr5_tb.sv`, `func_ddr5_dev_tb.sv` | 103 | iverilog/verilator | 8/8 | 0 | ✅ Sufficient |
+| [DDR5-VIP](test_suites/DDR5-VIP.md) | Memory | `func_ddr5_ca_tb.sv`, `func_ddr5_dev_tb.sv` | 157 | verilator | 8/8 | 0 | ✅ Sufficient |
 | [DFI-VIP](test_suites/DFI-VIP.md) | Memory | `func_dfi_tb.sv` | 29 | verilator | 12/12 | 0 | ✅ Sufficient |
 | [DPI-VIP](test_suites/DPI-VIP.md) | MIPI | `func_dpi_tb.sv` | 10 | iverilog | 20/20 | 0 | ✅ Sufficient |
 | [DSI-VIP](test_suites/DSI-VIP.md) | MIPI | `func_mipi_tb.sv` | 29 | verilator | 11/11 | 0 | ✅ Sufficient |
