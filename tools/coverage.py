@@ -203,6 +203,23 @@ def in_scope(scope, fn, page):
     name = (fn + " " + page).lower()
     return scope in name or not any(p in name for p in AMBA_PROTOCOLS)
 
+def unparam(name):
+    """name without parameter value lists: a#(1,2)::b -> a::b (nested lists too)."""
+    if not name or "#(" not in name:
+        return name
+    out, depth, i = [], 0, 0
+    while i < len(name):
+        if depth == 0 and name.startswith("#(", i):
+            depth, i = 1, i + 2
+            continue
+        c = name[i]
+        if depth:
+            depth += (c == "(") - (c == ")")
+        else:
+            out.append(c)
+        i += 1
+    return "".join(out)
+
 def summarize(dats, dut_files, suffix_ok=False, scope=None):
     """{metric: [hit, total]} over the points whose source is a DUT file.
 
@@ -226,8 +243,11 @@ def summarize(dats, dut_files, suffix_ok=False, scope=None):
                 continue
             # covergroup points are told apart by bin and coverpoint path
             # ("h" is cg.<coverpoint>.<bin> there, not the instance)
-            k = (metric, fn, re.sub(r"__P\w*$", "", f.get("page", "")), f.get("l"), f.get("n"), f.get("o"), f.get("bin"),
-                 f.get("h") if metric == "func" else None)
+            # Verilator 5.054 also writes a parameterized class's values into
+            # covergroup names (cls#(32,1)::cg.cp.bin); dropped likewise so
+            # the bins of all specializations are merged
+            k = (metric, fn, unparam(re.sub(r"__P\w*$", "", f.get("page", ""))), f.get("l"), f.get("n"), f.get("o"),
+                 f.get("bin"), unparam(f.get("h")) if metric == "func" else None)
             hits[k] = hits.get(k, 0) + cnt
     res = {m: [0, 0] for m in METRICS}
     missed_lines, missed_bins = {}, {}
