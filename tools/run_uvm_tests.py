@@ -106,6 +106,17 @@ def agent_suites():
 
 SUITES.update(agent_suites())
 
+# HBM3: the UVM controller agent on the row / column buses (both CK edges)
+# and data paths of the JESD238 device model (hbm3_vip/tb/hbm3_dev_model.sv).
+SUITES["hbm3-VIP"] = dict(
+    files=["hbm3_vip/vip/hbm3/hbm3_defs.sv", "hbm3_vip/rtl/hbm3_if.sv", "hbm3_vip/vip/hbm3/hbm3_pkg.sv",
+           "hbm3_vip/env/hbm3_env.sv", "hbm3_vip/tests/hbm3_test.sv",
+           "hbm3_vip/vip/hbm3/sva/hbm3_compliance_checker.sv", "hbm3_vip/tb/hbm3_dev_model.sv",
+           "hbm3_vip/tb/tb_top.sv"],
+    incs=["hbm3_vip/vip/hbm3", "hbm3_vip/vip/hbm3/sva", "hbm3_vip/rtl", "hbm3_vip/env",
+          "hbm3_vip/tests", "hbm3_vip/tb"],
+    tests=["hbm3_func_test"])
+
 # The SoC subsystem VIPs and the AXI4 manager-port kit (tools/gen_soc_subsys_vips.py)
 # ship common/ssv_pkg.sv, a Verilator filelist sim/<p>.f and sim/testlist.txt;
 # every test in the list runs (SB_PASS / RAL_PASS markers).
