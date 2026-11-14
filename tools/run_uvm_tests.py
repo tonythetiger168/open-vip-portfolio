@@ -106,6 +106,15 @@ def agent_suites():
 
 SUITES.update(agent_suites())
 
+# DDR5: the UVM controller agent drives CS_n / CA[13:0] into the pin-level
+# command decoder and the JESD79-5 device model (ddr5_dev/tb), DDR5-4800B.
+SUITES["DDR5-VIP"] = dict(
+    files=["common/common_pkg.sv", "ddr5/ddr5_defs.sv", "ddr5/ddr5_if.sv", "ddr5/ddr5_pkg.sv",
+           "env/ddr5_env.sv", "tests/ddr5_tests.sv", "ddr5/sva/ddr5_compliance_checker.sv",
+           "ddr5_dev/tb/ddr5_ca_decoder_model.sv", "ddr5_dev/tb/ddr5_dev_model.sv", "tb/top_tb.sv"],
+    incs=["ddr5", "ddr5/sva", "ddr5_dev/tb", "common", "env", "tests", "tb"],
+    tests=["ddr5_func_test"])
+
 # The SoC subsystem VIPs and the AXI4 manager-port kit (tools/gen_soc_subsys_vips.py)
 # ship common/ssv_pkg.sv, a Verilator filelist sim/<p>.f and sim/testlist.txt;
 # every test in the list runs (SB_PASS / RAL_PASS markers).

@@ -13,9 +13,6 @@ HBM3E-VIP,dut_hbm3e_model.sv:26,4 -> 5,initialises a stack index past the array
 HBM3E-VIP,dut_hbm3e_model.sv:27,2 -> 3,initialises a pseudo-channel index past the array
 HBM3E-VIP,dut_hbm3e_model.sv:28,16384 -> 16385,initialises a word index past the array
 HBM3E-VIP,dut_hbm3e_model.sv:34,3 -> 4,clears a pipeline stage past the array
-DDR5-VIP,dut_ddr5_model.sv:25,4 -> 5,initialises a bank index past the array
-DDR5-VIP,dut_ddr5_model.sv:26,16384 -> 16385,initialises a word index past the array
-DDR5-VIP,dut_ddr5_model.sv:32,4 -> 5,clears a pipeline stage past the array
 LPDDR6-VIP,dut_lpddr6_model.sv:26,4 -> 5,initialises a bank index past the array
 LPDDR6-VIP,dut_lpddr6_model.sv:27,16384 -> 16385,initialises a word index past the array
 LPDDR6-VIP,dut_lpddr6_model.sv:33,6 -> 7,clears a pipeline stage past the array
