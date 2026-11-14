@@ -178,7 +178,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [gddr6-VIP](test_suites/gddr6-VIP.md) | Memory | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [gddr7-VIP](test_suites/gddr7-VIP.md) | Memory | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [hbm2-VIP](test_suites/hbm2-VIP.md) | Memory | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
-| [hbm3-VIP](test_suites/hbm3-VIP.md) | Memory | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
+| [hbm3-VIP](test_suites/hbm3-VIP.md) | Memory | `func_hbm3_dev_tb.sv` | 118 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [hbm4-VIP](test_suites/hbm4-VIP.md) | Memory | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [lpddr5-VIP](test_suites/lpddr5-VIP.md) | Memory | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [lpddr5x-VIP](test_suites/lpddr5x-VIP.md) | Memory | `func_mem_tb.sv` | 26 | iverilog | 24/24 | 0 | ✅ Sufficient |
