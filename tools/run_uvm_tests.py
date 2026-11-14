@@ -126,6 +126,29 @@ SUITES["DDR5-VIP"] = dict(
     incs=["ddr5", "ddr5/sva", "ddr5_dev/tb", "common", "env", "tests", "tb"],
     tests=["ddr5_func_test"])
 
+# NVMe: the UVM host agent rings SQ tail doorbells into the controller model
+# in tb/top_tb.sv and checks each completion status (Invalid Queue Identifier
+# above queue 7).
+SUITES["NVMe-VIP"] = dict(
+    files=["common/common_pkg.sv", "nvme/nvme_if.sv", "nvme/nvme_pkg.sv", "env/multi_protocol_stubs.sv",
+           "env/env_pkg.sv", "tests/nvme_tests.sv", "regression/sva/nvme_compliance_checker.sv",
+           "regression/vip/nvme/nvme_data_integrity_checker.sv", "regression/vip/nvme/nvme_error_checker.sv",
+           "regression/vip/nvme/nvme_protocol_checker.sv", "regression/vip/nvme/nvme_timing_checker.sv",
+           "tb/top_tb.sv"],
+    incs=["nvme", "common", "env", "tests", "regression/sva", "regression/vip/nvme"],
+    tests=["nvme_func_test"])
+
+# SATA: the UVM device agent accepts Register H2D FISes from the host model in
+# tb/top_tb.sv, with and without SYNC hold-off, against a host reference model.
+SUITES["SATA-VIP"] = dict(
+    files=["common/common_pkg.sv", "sata/sata_if.sv", "sata/sata_pkg.sv", "env/multi_protocol_stubs.sv",
+           "env/env_pkg.sv", "tests/sata_tests.sv", "regression/sva/sata_compliance_checker.sv",
+           "regression/vip/sata/sata_data_integrity_checker.sv", "regression/vip/sata/sata_error_checker.sv",
+           "regression/vip/sata/sata_protocol_checker.sv", "regression/vip/sata/sata_timing_checker.sv",
+           "tb/top_tb.sv"],
+    incs=["sata", "common", "env", "tests", "regression/sva", "regression/vip/sata"],
+    tests=["sata_func_test"])
+
 # The SoC subsystem VIPs and the AXI4 manager-port kit (tools/gen_soc_subsys_vips.py)
 # ship common/ssv_pkg.sv, a Verilator filelist sim/<p>.f and sim/testlist.txt;
 # every test in the list runs (SB_PASS / RAL_PASS markers).

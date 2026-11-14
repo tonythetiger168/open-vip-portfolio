@@ -117,4 +117,4 @@
 | SWD-VIP | `swd_random_test` | FAIL | scoreboard 比對不符 | rc=0 UVM_ERROR=29 UVM_FATAL=0 VIP_WARNINGS=26: UVM_ERROR env/swd_env.sv(107) @ 1125000: uvm_test_top.env.sb [SB] mismatch exp{SWD AP WR a=1 data=0x750d0242 ack=FAULT rdata=0x00000000} obs{SWD AP WR a=1 data=0x7e643f46 ac |
 | TypeC-VIP | `typec_random_test` | FAIL | scoreboard 比對不符 | rc=0 UVM_ERROR=5 UVM_FATAL=0 VIP_WARNINGS=4: UVM_ERROR env/typec_env.sv(68) @ 905000: uvm_test_top.env.sb [SB] error-class mismatch exp{TYPEC role=2 rd_rp=0 pd=0 vconn=0 acc=ACC_NONE err=TC_ERR_CC_GLITCH} obs{TYPEC role= |
 
-沒有 UVM test：NVMe-VIP、SATA-VIP。
+NVMe-VIP、SATA-VIP 已有 UVM test（`nvme_func_test`、`sata_func_test`，由 `tools/run_uvm_tests.py` 執行；這份快照之後加入）。
