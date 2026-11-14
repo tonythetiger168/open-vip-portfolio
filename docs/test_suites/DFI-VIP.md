@@ -14,7 +14,7 @@
 
 ## 2. 可執行的功能測試
 
-執行：`python3 tools/run_func_tests.py DFI-VIP`（Icarus Verilog 或 Verilator 5.052）。
+執行：`python3 tools/run_func_tests.py DFI-VIP`（Icarus Verilog 或 Verilator 5.054）。
 
 ### `tb/func_dfi_tb.sv`
 

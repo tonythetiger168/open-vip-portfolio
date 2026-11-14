@@ -14,7 +14,7 @@
 
 ## 2. 可執行的功能測試
 
-執行：`python3 tools/run_func_tests.py PCIe-VIP`（Icarus Verilog 或 Verilator 5.052）。
+執行：`python3 tools/run_func_tests.py PCIe-VIP`（Icarus Verilog 或 Verilator 5.054）。
 
 ### `pcie_dl/tb/func_pcie_dl_tb.sv`
 

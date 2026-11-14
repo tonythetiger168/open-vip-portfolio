@@ -14,7 +14,7 @@
 
 ## 2. 可執行的功能測試
 
-執行：`python3 tools/run_func_tests.py CXL-VIP`（Icarus Verilog 或 Verilator 5.052）。
+執行：`python3 tools/run_func_tests.py CXL-VIP`（Icarus Verilog 或 Verilator 5.054）。
 
 ### `cxl_bundle/tb/func_cxl_bundle_tb.sv`
 

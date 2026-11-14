@@ -323,7 +323,7 @@ A run passes when it ends with `SB_PASS checks=<n>` (functional tests) or
 also prints `FCOV <group> <point> <bin> <hits>` coverage lines and one
 `LAT {P} mem <R|W> <cycles>` line per completed AXI burst.
 
-## Running (Verilator 5.052 + Accellera uvm-core 2020.3.1)
+## Running (Verilator 5.054 + Accellera uvm-core 2020.3.1)
 
 ```
 verilator --binary --timing -Wno-fatal -Wno-lint -Wno-style --top-module top_tb \\
