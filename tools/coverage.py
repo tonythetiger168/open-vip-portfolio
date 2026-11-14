@@ -5,8 +5,9 @@
 tests reach on each VIP's DUT model, with Verilator.
 
 Every functional test of tools/run_func_tests.py is rebuilt with
-``verilator --binary --timing --coverage-line --coverage-toggle
---coverage-expr --coverage-user`` (same compile candidates and flags as the
+``verilator --binary --timing --coverage-line --coverage-branch
+--coverage-toggle --coverage-expr --coverage-user`` (same compile candidates
+and flags as the
 runner's Verilator flow) and run; the per-test ``coverage.dat`` files are
 merged per VIP with ``verilator_coverage``. Only points in the code under
 test are counted: the flattened DUT model (``smoke/<VIP>/dut_*.sv``) for
@@ -47,7 +48,7 @@ and per VIP the merged
 (``build/cov/<VIP>/annotated/``, lines prefixed ``%000000`` were never
 executed). Env: VIPS_DIR, VERILATOR_COVERAGE (default verilator_coverage).
 """
-import os, re, sys, csv, shutil, importlib.util
+import os, re, sys, csv, shutil, subprocess, importlib.util
 from multiprocessing import Pool, Lock
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -121,6 +122,21 @@ def compile_sets(vip, tb, rtl):
         return (m.group(1) if m else top), [], [("rtl", rtl + [tb])]
     return top, ["VIP_SMOKE_FLATTENED"], list(rf().build_sets(vip, tb))
 
+
+_branch = None
+def branch_flag():
+    """Verilator 5.054 split branch points (v_branch) out of --coverage-line
+    into --coverage-branch; older releases count them under --coverage-line
+    and reject the new option."""
+    global _branch
+    if _branch is None:
+        try:
+            out = subprocess.run(["verilator", "--help"], capture_output=True, text=True, timeout=60).stdout
+        except (OSError, subprocess.SubprocessError):
+            out = ""
+        _branch = ["--coverage-branch"] if "--coverage-branch" in out else []
+    return _branch
+
 def cover_test(vip, tb, rtl, wd):
     """Build and run one test with coverage. Returns (status, dat, detail)."""
     top, defines, sets = compile_sets(vip, tb, rtl)
@@ -134,7 +150,8 @@ def cover_test(vip, tb, rtl, wd):
         shutil.rmtree(obj, ignore_errors=True)
         rc, out = rf().run(["verilator", "--binary", "--timing", "-Wno-fatal", "-Wno-lint", "-Wno-style",
                             "-Wno-ENUMVALUE", "--x-initial", "unique", "--x-assign", "unique",
-                            "--coverage-line", "--coverage-toggle", "--coverage-expr", "--coverage-user",
+                            "--coverage-line"] + branch_flag() + ["--coverage-toggle", "--coverage-expr",
+                            "--coverage-user",
                             "--coverage-max-width", "1024",
                             "-j", "2", "--Mdir", obj, "--top-module", top]
                            + ["+define+" + d for d in defines] + files, wd, 1800)

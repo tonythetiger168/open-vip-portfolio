@@ -32,7 +32,8 @@ concurrency:
 env:
   UVM_CORE: ${{ github.workspace }}/tools/uvm-core/src
   UVM_CORE_DIR: ${{ github.workspace }}/tools/uvm-core
-  VERILATOR_PREFIX: ${{ github.workspace }}/opt/verilator-5.052
+  VERILATOR_PREFIX: ${{ github.workspace }}/opt/verilator-5.054
+  IVERILOG_PREFIX: ${{ github.workspace }}/opt/iverilog-13_0
   ELAB_STRICT: "1"
   VIPS_DIR: ${{ github.workspace }}/build/vips
 
@@ -48,16 +49,18 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ${{ github.workspace }}/opt/verilator-5.052
+            ${{ github.workspace }}/opt/verilator-5.054
+            ${{ github.workspace }}/opt/iverilog-13_0
             ${{ github.workspace }}/tools/uvm-core
-          key: l1-toolchain-v5.052-uvm2020.3.1-${{ hashFiles('tools/install_tools.sh') }}
+          key: l1-toolchain-v5.054-iv13_0-uvm2020.3.1-${{ hashFiles('tools/install_tools.sh') }}
 
-      - name: 安裝開源工具鏈（Icarus Verilog、Verilator v5.052、pyslang 12.0.0、uvm-core）
+      - name: 安裝開源工具鏈（Icarus Verilog 13.0、Verilator v5.054、pyslang 12.0.0、uvm-core）
         run: |
           bash tools/install_tools.sh
           # sudo make install leaves root-owned files; the cache action reads them as the runner user
-          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
+          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$IVERILOG_PREFIX" "$UVM_CORE_DIR"
           echo "$VERILATOR_PREFIX/bin" >> "$GITHUB_PATH"
+          echo "$IVERILOG_PREFIX/bin" >> "$GITHUB_PATH"
           # uvm-core 2020.3.1 puts uvm_macros.svh beside uvm_pkg.sv. macros/ holds
           # the defines that file includes as "macros/*.svh", not uvm_macros.svh itself.
           ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
@@ -74,16 +77,18 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ${{ github.workspace }}/opt/verilator-5.052
+            ${{ github.workspace }}/opt/verilator-5.054
+            ${{ github.workspace }}/opt/iverilog-13_0
             ${{ github.workspace }}/tools/uvm-core
-          key: l1-toolchain-v5.052-uvm2020.3.1-${{ hashFiles('tools/install_tools.sh') }}
+          key: l1-toolchain-v5.054-iv13_0-uvm2020.3.1-${{ hashFiles('tools/install_tools.sh') }}
 
-      - name: 安裝開源工具鏈（Icarus Verilog、Verilator v5.052、pyslang 12.0.0、uvm-core）
+      - name: 安裝開源工具鏈（Icarus Verilog 13.0、Verilator v5.054、pyslang 12.0.0、uvm-core）
         run: |
           bash tools/install_tools.sh
           # sudo make install leaves root-owned files; the cache action reads them as the runner user
-          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
+          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$IVERILOG_PREFIX" "$UVM_CORE_DIR"
           echo "$VERILATOR_PREFIX/bin" >> "$GITHUB_PATH"
+          echo "$IVERILOG_PREFIX/bin" >> "$GITHUB_PATH"
           ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
 
       - name: 解壓全部 VIP zip
@@ -173,16 +178,18 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ${{ github.workspace }}/opt/verilator-5.052
+            ${{ github.workspace }}/opt/verilator-5.054
+            ${{ github.workspace }}/opt/iverilog-13_0
             ${{ github.workspace }}/tools/uvm-core
-          key: l1-toolchain-v5.052-uvm2020.3.1-${{ hashFiles('tools/install_tools.sh') }}
+          key: l1-toolchain-v5.054-iv13_0-uvm2020.3.1-${{ hashFiles('tools/install_tools.sh') }}
 
-      - name: 安裝開源工具鏈（Icarus Verilog、Verilator v5.052、pyslang 12.0.0、uvm-core）
+      - name: 安裝開源工具鏈（Icarus Verilog 13.0、Verilator v5.054、pyslang 12.0.0、uvm-core）
         run: |
           bash tools/install_tools.sh
           # sudo make install leaves root-owned files; the cache action reads them as the runner user
-          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
+          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$IVERILOG_PREFIX" "$UVM_CORE_DIR"
           echo "$VERILATOR_PREFIX/bin" >> "$GITHUB_PATH"
+          echo "$IVERILOG_PREFIX/bin" >> "$GITHUB_PATH"
           ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
 
       - name: 解壓全部 VIP zip
@@ -223,16 +230,18 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ${{ github.workspace }}/opt/verilator-5.052
+            ${{ github.workspace }}/opt/verilator-5.054
+            ${{ github.workspace }}/opt/iverilog-13_0
             ${{ github.workspace }}/tools/uvm-core
-          key: l1-toolchain-v5.052-uvm2020.3.1-${{ hashFiles('tools/install_tools.sh') }}
+          key: l1-toolchain-v5.054-iv13_0-uvm2020.3.1-${{ hashFiles('tools/install_tools.sh') }}
 
-      - name: 安裝開源工具鏈（Icarus Verilog、Verilator v5.052、pyslang 12.0.0、uvm-core）
+      - name: 安裝開源工具鏈（Icarus Verilog 13.0、Verilator v5.054、pyslang 12.0.0、uvm-core）
         run: |
           bash tools/install_tools.sh
           # sudo make install leaves root-owned files; the cache action reads them as the runner user
-          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$UVM_CORE_DIR"
+          sudo chmod -R a+rX "$VERILATOR_PREFIX" "$IVERILOG_PREFIX" "$UVM_CORE_DIR"
           echo "$VERILATOR_PREFIX/bin" >> "$GITHUB_PATH"
+          echo "$IVERILOG_PREFIX/bin" >> "$GITHUB_PATH"
           ls "$UVM_CORE/uvm_pkg.sv" "$UVM_CORE/uvm_macros.svh" "$UVM_CORE/macros/uvm_object_defines.svh"
 
       - name: 解壓全部 VIP zip

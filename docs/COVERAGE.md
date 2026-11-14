@@ -1,6 +1,6 @@
 # VIP Portfolio Coverage 報告
 
-> 由 `tools/gen_coverage_doc.py` 依 `coverage_report.csv`（`tools/coverage.py`，Verilator 5.052 `--coverage`）自動產生，請勿手動修改。
+> 由 `tools/gen_coverage_doc.py` 依 `coverage_report.csv`（`tools/coverage.py`，Verilator 5.054 `--coverage`）自動產生，請勿手動修改。
 
 ## 1. 結論
 
@@ -258,7 +258,7 @@
 ## 6. 重跑
 
 ```bash
-bash tools/install_tools.sh && export PATH=/opt/verilator-5.052/bin:$PATH
+bash tools/install_tools.sh && export PATH=/opt/verilator-5.054/bin:$PATH
 bash tools/extract_vips.sh
 python3 tools/coverage.py -j 2        # coverage_report.csv, build/cov/<VIP>/
 python3 tools/coverage.py APB-VIP     # 單一 VIP

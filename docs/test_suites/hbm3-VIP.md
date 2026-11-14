@@ -14,7 +14,7 @@
 
 ## 2. 可執行的功能測試
 
-執行：`python3 tools/run_func_tests.py hbm3-VIP`（Icarus Verilog 或 Verilator 5.052）。
+執行：`python3 tools/run_func_tests.py hbm3-VIP`（Icarus Verilog 或 Verilator 5.054）。
 
 ### `hbm3_vip/tb/func_hbm3_dev_tb.sv`
 

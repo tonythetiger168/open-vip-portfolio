@@ -25,7 +25,7 @@
 | scoreboard 比對不符 | 12 |
 | checker / SVA | 0 |
 
-## Verilator 5.052 的已知限制
+## Verilator 5.054 的已知限制
 
 - `x dist {...}` 被當成硬性約束：先依權重選值，再和 inline `with { x == ... }` 衝突時整個 randomize 失敗（商用模擬器把 dist 當分布，不會失敗）。帶錯誤注入 dist 的 sequence 因此會偶發 `randomize() failed`。directed 的 `with {...}` 會先 `constraint_mode(0)` 關掉該變數的 dist 約束（DDR / LPDDR、SD、eMMC、UFS、UniPro_Mem、MIPI 家族）；JESD204、eCPRI 把 dist 拆成獨立的 `c_*_dist` 約束，彼此相依的錯誤注入用 `(a == 0) -> b dist {...}` 表示。
 - 巢狀 rand 物件裡的 dynamic array `size()` 約束解不出來：MIPI、USB、CXL/PCIe、Ethernet/FC 的 sequence 改為直接 randomize `item.txn`。

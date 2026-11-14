@@ -69,7 +69,7 @@ def main():
     for name, _ in CAUSES:
         if by.get(name):
             out.append("| %s | %d |" % (name, by[name]))
-    out += ["", "## Verilator 5.052 的已知限制", "",
+    out += ["", "## Verilator 5.054 的已知限制", "",
             "- `x dist {...}` 被當成硬性約束：先依權重選值，再和 inline `with { x == ... }` 衝突時整個 "
             "randomize 失敗（商用模擬器把 dist 當分布，不會失敗）。帶錯誤注入 dist 的 sequence 因此會偶發 "
             "`randomize() failed`。directed 的 `with {...}` 會先 `constraint_mode(0)` 關掉該變數的 dist 約束"
