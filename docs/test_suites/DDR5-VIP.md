@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Memory |
 | 類型 | UVM VIP |
-| 功能測試 | 3 個檔案，103 個 check，全部通過 |
+| 功能測試 | 2 個檔案，157 個 check，全部通過 |
 | Mutation | 8/8 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（103 個 check，mutation score 100%） |
+| 判定 | **✅ Sufficient**（157 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -102,76 +102,28 @@ Run: python3 tools/run_func_tests.py DDR5-VIP
 | 57 | postponed refresh limit flagged once (%0d) | check |
 | 58 | reset drops every read in flight (%0d bursts issued, %0d beats after reset) | check |
 
-### `tb/func_ddr5_tb.sv`
+### `ddr5_dev/tb/func_ddr5_ca_tb.sv`
 
-結果：**PASS**（iverilog，14 checks）
+結果：**PASS**（verilator，77 checks）
 
-模型合約與範圍（摘自測試檔頭）：
-
-```text
-func_ddr5_tb.sv -- pipelined-read memory functional test for the DDR5
-model (ddr5_model, flattened by smoke/flatten.py); complements smoke_func_tb.sv
-(single write / read per bank).
-Run: python3 tools/run_func_tests.py DDR5-VIP
-
-Model contract (from tb/top_tb.sv): a command is issued when cs_n = 0 and
-act_n = 1; addr[0] = 0 writes wr_data to word addr[13:1] of bank[1:0],
-addr[0] = 1 reads it. Read data return with a one-clock rd_valid pulse
-5 clocks after the command (fully pipelined, one read per clock);
-rd_data holds the last read value. Unwritten words read 0.
-Checked against a reference memory with 600 random commands.
-
-Not modelled (limitations, not tested): ACT/PRE/REF timing, bank
-state, burst length and the real DDR5 command encoding.
-```
-
-| # | Check | 類型 |
-|---|---|---|
-| 1 | reset: rd_valid low, rd_data 0 | check |
-| 2 | no rd_valid after reset release without a read | check |
-| 3 | unwritten words read 0 (first, last, odd words of each bank) | check |
-| 4 | read data valid exactly 5 clocks after the read command | check |
-| 5 | read right after a write returns the new data | check |
-| 6 | same word in each bank is independent | check |
-| 7 | 24 back-to-back reads: data in order, fixed latency | check |
-| 8 | rd_data holds the last read value while idle | check |
-| 9 | read with cs_n high or act_n low returns nothing | check |
-| 10 | write with cs_n high or act_n low is ignored | check |
-| 11 | 600 random writes / reads match the reference memory | check |
-| 12 | reset clears rd_valid and rd_data | check |
-| 13 | reads in flight at reset return nothing | check |
-| 14 | memory contents survive reset | check |
-
-### `tb/smoke_func_tb.sv`
-
-結果：**PASS**（iverilog，9 checks）
-
-| # | Check | 類型 |
-|---|---|---|
-| 1 | rd_valid quiet in reset | check |
-| 2 | read latency respected | check |
-| 3 | rd_valid after RL | check |
-| 4 | read data matches write | check |
-| 5 | rd_valid is a pulse | check |
-| 6 | second address data | check |
-| 7 | bank isolation | check |
+CS_n / CA[13:0] 腳位層指令解碼（JESD79-5 指令真值表）：276 個隨機指令逐欄位比對、保留碼、cycle 2 的 CS_n、DES；在腳位上寫入並讀回 MR0 = CL 40 / BL16，CW 為高的 MRW 被忽略；CWL 38 / CL 40 的寫入與讀取資料；DDR5-4800B 時序邊界（tRCD、tRP、tRAS、tRRD_S/L、tCCD_L、tRTP、tWR、tRFC1）。
 
 ## 3. UVM 測試平台內容
 
-UVM agent test（`ddr5_func_test`：directed + constrained-random 流量，scoreboard 以 DUT 模型的參考模型逐筆比對，並比對 driver 與 monitor 的 transaction）在 Verilator 上以 `python3 tools/run_uvm_tests.py DDR5-VIP` 執行；agent 由 `tools/gen_uvm_agents.py` 依 `tools/uvm_agents/` 的協定 spec 產生。
+UVM agent test（`ddr5_func_test`：directed + constrained-random 流量）以 `python3 tools/run_uvm_tests.py DDR5-VIP` 執行。agent 以 CS_n / CA[13:0] 腳位驅動 `ddr5_ca_decoder_model.sv` 與 `ddr5_dev_model.sv`（DDR5-4800B 時序），driver 依全部時序規則排程；monitor 自行解碼腳位，規則檢查器檢查每個指令，scoreboard 以參考記憶體比對每筆讀取，並比對 driver 與 monitor 的 transaction；解碼器或裝置拒絕任何指令即為 UVM error。msim 結果：542 個指令、0 違規、468 筆讀取比對、coverage 100%。
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
 | UVM tests | 2 | `ddr5_base_test`, `ddr5_func_test` |
-| Sequences | 3 | `ddr5_base_sequence`, `ddr5_directed_sequence`, `ddr5_transaction` |
-| SVA（assert / cover property） | 4 / 2 | - |
-| Covergroups / coverpoints | 1 / 3 | |
+| Sequences | 3 | `ddr5_seq_base`, `ddr5_base_sequence`, `ddr5_directed_sequence` |
+| SVA（assert / cover property） | 5 / 4 | - |
+| Covergroups / coverpoints | 3 / 6 | |
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（103 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（157 個 check，mutation score 100%）。
 
 模型未實作的功能（不在測試範圍）：
 
-- Not modelled (limitations, not tested): ACT/PRE/REF timing, bank state, burst length and the real DDR5 command encoding.
+- Not modelled: data mask, write CRC / ALERT_n, DQS preamble / postamble timing, ECS, same-bank refresh timing, self refresh and power-down timing.
 
