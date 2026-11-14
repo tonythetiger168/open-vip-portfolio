@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Storage/Debug |
 | 類型 | UVM VIP |
-| 功能測試 | 2 個檔案，57 個 check，全部通過 |
-| Mutation | 8/8 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（57 個 check，mutation score 100%） |
+| 功能測試 | 2 個檔案，61 個 check，全部通過 |
+| Mutation | 21/22 個 mutant 被偵測（95%） |
+| 判定 | **✅ Sufficient**（61 個 check，mutation score 95%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_nvme_tb.sv`
 
-結果：**PASS**（verilator，24 checks）
+結果：**PASS**（verilator，28 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -28,11 +28,12 @@ model (nvme_controller_model, flattened by smoke/flatten.py).
 Run: python3 tools/run_func_tests.py NVMe-VIP
 
 Model contract (from tb/top_tb.sv):
-   Every change of the SQ tail doorbell is one command: the controller
-   tags SQ entry word 0 ({16'd1, 0x80 admin / 0x01 I/O}), raises a 2-DW
-   TLP at address 0x1000 * command count and holds TLP valid until ready.
-   The accepted TLP completes the command: payload {addr, count, 16'h5A5A},
-   status 0x00 (0x01 for QID > 7), IRQ asserted until CQ head == SQ tail.
+   Every change of the SQ tail doorbell (while no command is in flight) is
+   one command: the controller tags SQ entry word 0 ({16'd1 NSID, 8'h00,
+   0x80 admin / 0x01 I/O}), sets status 0x00 (0x01 for QID > 7) and raises
+   a 2-DW TLP at address 0x1000 * command count with payload {addr, count,
+   16'h5A5A}, held valid until ready. The accepted TLP completes the
+   command: IRQ is asserted until CQ head == SQ tail.
    NVM command set (0) commands store the TLP data word in the namespace.
 ```
 
@@ -55,13 +56,17 @@ Model contract (from tb/top_tb.sv):
 | 15 | TLP valid and address held while ready is low | check |
 | 16 | I/O SQ entry tagged 0x01 | check |
 | 17 | non-NVM command set does not touch the namespace | check |
-| 18 | QID 7 completes with success | check |
-| 19 | QID 8 completes with invalid-queue status | check |
-| 20 | CQ entry carries this command's status | check |
-| 21 | next CQ entry carries success, not the previous error | check |
-| 22 | 40 random commands: address, payload, status and IRQ correct | check |
-| 23 | exactly one TLP per doorbell | check |
-| 24 | reset clears TLP, IRQ and status | check |
+| 18 | IRQ stays low until the TLP is taken | check |
+| 19 | second doorbell does not disturb the command in flight | check |
+| 20 | first command completes | check |
+| 21 | queued doorbell starts the next command | check |
+| 22 | QID 7 completes with success | check |
+| 23 | QID 8 completes with invalid-queue status | check |
+| 24 | CQ entry carries this command's status | check |
+| 25 | next CQ entry carries success, not the previous error | check |
+| 26 | 40 random commands: address, payload, status and IRQ correct | check |
+| 27 | exactly one TLP per doorbell | check |
+| 28 | reset clears TLP, IRQ and status | check |
 
 ### `tb/smoke_func_tb.sv`
 
@@ -95,18 +100,20 @@ Model contract (from tb/top_tb.sv):
 
 ## 3. UVM 測試平台內容
 
-UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只做 elaboration（L1a）。
+UVM agent test（`nvme_func_test`：directed + constrained-random 流量，scoreboard 以 DUT 模型的參考模型逐筆比對，並比對 driver 與 monitor 的 transaction）在 Verilator 上以 `python3 tools/run_uvm_tests.py NVMe-VIP` 執行；agent 由 `tools/gen_uvm_agents.py` 依 `tools/uvm_agents/` 的協定 spec 產生。
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 0 | - |
-| Sequences | 16 | `base_tx`, `sata_transaction`, `jtag_transaction`, `bluetooth5_transaction`, `displayport2_transaction`, `nvme_base_sequence`, `nvme_random_sequence`, `nvme_admin_sequence`, `nvme_io_rw_sequence`, `nvme_error_inject_sequence`, `nvme_back_to_back_seq`, `nvme_stress_seq`, `nvme_corner_seq`, `nvme_reset_seq`, `nvme_regression_seq`, `nvme_transaction` |
+| UVM tests | 2 | `nvme_base_test`, `nvme_func_test` |
+| Sequences | 17 | `base_tx`, `sata_transaction`, `jtag_transaction`, `bluetooth5_transaction`, `displayport2_transaction`, `nvme_base_sequence`, `nvme_random_sequence`, `nvme_admin_sequence`, `nvme_io_rw_sequence`, `nvme_error_inject_sequence`, `nvme_back_to_back_seq`, `nvme_stress_seq`, `nvme_corner_seq`, `nvme_reset_seq`, `nvme_regression_seq`, `nvme_transaction`, `nvme_cmd_sequence` |
 | SVA（assert / cover property） | 32 / 32 | `assert_p_nvme_tlp_type`, `cover_p_nvme_tlp_type`, `assert_p_nvme_tag`, `cover_p_nvme_tag`, `assert_p_nvme_tc`, `cover_p_nvme_tc`, `assert_p_nvme_length`, `cover_p_nvme_length`, `assert_p_nvme_sq_tail`, `cover_p_nvme_sq_tail`, `assert_p_nvme_cq_head`, `cover_p_nvme_cq_head` … |
 | Covergroups / coverpoints | 4 / 12 | |
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（57 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（61 個 check，mutation score 95%）。
 
-無已知缺口。
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_nvme_controller_model.sv:35 0 -> 1 [bit [15:0] last_sq_tail = 0;]`
 
