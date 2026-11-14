@@ -8,66 +8,34 @@
 |---|---|
 | 類別 | Memory |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，15 個 check，全部通過 |
+| 功能測試 | 1 個檔案，118 個 check，全部通過 |
 | Mutation | 7/7 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（15 個 check，mutation score 100%） |
+| 判定 | **✅ Sufficient**（118 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
 執行：`python3 tools/run_func_tests.py hbm3-VIP`（Icarus Verilog 或 Verilator 5.052）。
 
-### `hbm3_vip/tb/func_mem_tb.sv`
+### `hbm3_vip/tb/func_hbm3_dev_tb.sv`
 
-結果：**PASS**（verilator，15 checks）
+結果：**PASS**（verilator，118 checks）
 
-模型合約與範圍（摘自測試檔頭）：
-
-```text
-func_mem_tb.sv -- self-checking functional test for the HBM3 memory model
-(hbm3_mem_model, flattened by smoke/flatten.py). Run: python3 tools/run_func_tests.py hbm3-VIP
-
-Model contract (from tb_top.sv):
-   ACT (act_n=0) latches the row of {stack_id,bg,ba}; RD/WR (ras_n=1,cas_n=0)
-   address column addr[9:0] of the open row. A write samples dq 1 clock
-   after the command; a read drives dq on the negedge after 13 clocks
-   (TCL=14) for one clock, then releases dq to Z.
-dq is a variable shared by the model and the controller in the original
-interface, so the test writes it hierarchically (u_dut.vif_dq) exactly as
-the UVM driver writes vif.dq.
-```
-
-| # | Check | 類型 |
-|---|---|---|
-| 1 | write then read same bank/row/col returns written data | check |
-| 2 | read data not yet on dq one clock before CL (read latency = TCL) | check |
-| 3 | read data held for exactly one clock, then released | check |
-| 4 | unwritten column reads 0 | check |
-| 5 | second write to same address overwrites the first | check |
-| 6 | bank 0 unaffected by writes to other banks | check |
-| 7 | bank 1 holds its own data | check |
-| 8 | bank group 3 holds its own data | check |
-| 9 | stack_id 1 holds its own data | check |
-| 10 | stack_id 0 unaffected by stack_id 1 write | check |
-| 11 | new row in same bank does not alias the previous row | check |
-| 12 | row data retained across PRE/ACT | check |
-| 13 | second row data retained independently | check |
-| 14 | write with CS_n high is ignored | check |
-| 15 | command during reset had no effect | check |
+JESD238 row / column bus 雙沿裝置模型：依編碼表以隨機 "valid" 位元產生指令；兩個 PC 交錯，且同一 bank / row / column；MRS 改 RL / WL；每個時序參數的邊界；refresh 與 PC 獨立性；RDA / WRA；bus error；CA parity 與 AERR；缺寫入資料；30 輪隨機流量對參考記憶體。
 
 ## 3. UVM 測試平台內容
 
-UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只做 elaboration（L1a）。
+UVM agent test（`hbm3_func_test`：directed + constrained-random 流量）以 `python3 tools/run_uvm_tests.py hbm3-VIP` 執行。agent 以兩個時脈沿驅動 R[9:0] / C[7:0] / APAR 與兩個 PC 的資料，接 `hbm3_dev_model.sv`；driver 依全部時序規則排程，monitor 自行解碼兩條 bus，規則檢查器檢查每個指令，scoreboard 以參考記憶體比對每筆讀取，並比對 driver 與 monitor 的 transaction；裝置拒絕任何指令、bus error 或 AERR 即為 UVM error。msim 結果：868 個指令、0 違規、770 個 scoreboard check、coverage 100%。
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 4 | `hbm3_base_test`, `hbm3_write_test`, `hbm3_read_test`, `hbm3_stress_test` |
-| Sequences | 11 | `hbm3_transaction`, `hbm3_base_sequence`, `hbm3_write_seq`, `hbm3_read_seq`, `hbm3_refresh_seq`, `hbm3_bank_conflict_seq`, `hbm3_back_to_back_seq`, `hbm3_stress_seq`, `hbm3_corner_seq`, `hbm3_random_sequence`, `hbm3_regression_sequence` |
-| SVA（assert / cover property） | 30 / 22 | `assert_p_hbm3_cmd_valid`, `cover_p_hbm3_cmd_valid`, `assert_p_hbm3_addr_valid`, `cover_p_hbm3_addr_valid`, `assert_p_hbm3_pseudo_ch`, `cover_p_hbm3_pseudo_ch`, `assert_p_hbm3_stack_id`, `cover_p_hbm3_stack_id`, `assert_p_hbm3_tRCD`, `cover_p_hbm3_tRCD`, `assert_p_hbm3_tRP`, `cover_p_hbm3_tRP` … |
-| Covergroups / coverpoints | 3 / 7 | |
+| UVM tests | 2 | `hbm3_base_test`, `hbm3_func_test` |
+| Sequences | 3 | `hbm3_seq_base`, `hbm3_base_sequence`, `hbm3_directed_sequence` |
+| SVA（assert / cover property） | 13 / 4 | - |
+| Covergroups / coverpoints | 4 / 8 | |
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（15 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（118 個 check，mutation score 100%）。
 
-無已知缺口。
+模型未實作的功能（不在測試範圍）：data bus inversion、data parity / DERR、ECC / SEV、IEEE 1500 port、power-down / self-refresh exit timing。
 
