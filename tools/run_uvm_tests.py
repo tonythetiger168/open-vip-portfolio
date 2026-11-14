@@ -113,6 +113,7 @@ SUITES["hbm3-VIP"] = dict(
            "hbm3_vip/env/hbm3_env.sv", "hbm3_vip/tests/hbm3_test.sv",
            "hbm3_vip/vip/hbm3/sva/hbm3_compliance_checker.sv", "hbm3_vip/tb/hbm3_dev_model.sv",
            "hbm3_vip/tb/tb_top.sv"],
+    top="tb_top",
     incs=["hbm3_vip/vip/hbm3", "hbm3_vip/vip/hbm3/sva", "hbm3_vip/rtl", "hbm3_vip/env",
           "hbm3_vip/tests", "hbm3_vip/tb"],
     tests=["hbm3_func_test"])

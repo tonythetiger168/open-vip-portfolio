@@ -10,7 +10,7 @@ L1–L4 分層 SVA checker / functional DUT model / README，以及 `scripts/` �
 
 | 層級 | 名稱 | 工具需求 | 通過標準 |
 |------|------|----------|----------|
-| L1 | 開源靜態閘（elaboration gate + DUT 冒煙測試 + 功能測試） | iverilog、Verilator 5.052、pyslang 12.0.0、uvm-core | 132/132 `ELAB_ERRORS=0` 且全部 `SMOKE_PASS` |
+| L1 | 開源靜態閘（elaboration gate + DUT 冒煙測試 + 功能測試） | iverilog、Verilator 5.054、pyslang 12.0.0、uvm-core | 132/132 `ELAB_ERRORS=0` 且全部 `SMOKE_PASS` |
 | L2 | 單一 VIP 動態回歸（coverage-driven） | VCS 或 Xcelium 或 Questa（擇一） | line/fsm/toggle/assert 四項 coverage 皆達 100% |
 | L3 | 全 132 VIP 批次回歸 | 同 L2 | 132/132 `REGRESSION PASSED` |
 
@@ -26,7 +26,7 @@ L1–L4 分層 SVA checker / functional DUT model / README，以及 `scripts/` �
 export PORTFOLIO_ROOT=$(git rev-parse --show-toplevel)   # repo 根目錄
 export TOOLS_DIR=$PORTFOLIO_ROOT/tools                   # elab_scan.py、install_tools.sh 等
 cd "$PORTFOLIO_ROOT"
-bash tools/install_tools.sh                              # Verilator 5.052、pyslang 12.0.0、uvm-core、iverilog、z3
+bash tools/install_tools.sh                              # Verilator 5.054、pyslang 12.0.0、uvm-core、iverilog、z3
 bash tools/extract_vips.sh                               # vips/*.zip -> build/vips/
 ls build/vips | wc -l                                    # 應為 132
 ```
@@ -37,17 +37,17 @@ ls build/vips | wc -l                                    # 應為 132
 
 ### 1.1 L1 所需：開源工具鏈（無需商用授權）
 
-**(a) Icarus Verilog 11 + vvp（DUT 冒煙測試用）**
+**(a) Icarus Verilog 13.0 + vvp（DUT 冒煙測試用）**
 
 本環境已備妥離線還原腳本（內含 18 個快取 deb，斷網也可用）：
 
 ```bash
 bash "$TOOLS_DIR/setup_eda_tools.sh"          # 已安裝則直接回報版本
 bash "$TOOLS_DIR/setup_eda_tools.sh" --force  # 強制由本機 deb 重裝
-iverilog -V | head -1                          # 預期：Icarus Verilog version 11.0 (stable)
+iverilog -V | head -1                          # 預期：Icarus Verilog version 13.0 (stable)
 ```
 
-在一般 Debian/Ubuntu 機器上亦可直接 `sudo apt-get install -y iverilog`。
+`bash tools/install_tools.sh` 會從 tag `v13_0` 編譯 Icarus Verilog 13.0 到 `/opt/iverilog-13_0`（CI 用的版本）；發行版套件（Ubuntu 24.04 為 12.0）較舊。
 
 > 已知限制：Icarus Verilog 不支援 UVM-1.2 class library，**只用於編譯/模擬各 VIP 的
 > functional DUT model 冒煙測試**；UVM testbench 本身的編譯由 (b) 的 pyslang 靜態閘與
@@ -60,12 +60,12 @@ python3 -m pip install "pyslang==12.0.0"
 python3 -c "import pyslang; print(pyslang.__version__)"   # 預期輸出：12.0.0
 ```
 
-**(b2) Verilator v5.052（功能測試用，Icarus 無法解析的 DUT model 改由 Verilator 編譯）**
+**(b2) Verilator v5.054（功能測試用，Icarus 無法解析的 DUT model 改由 Verilator 編譯）**
 
 ```bash
-bash tools/install_tools.sh                 # 一次安裝 iverilog、Verilator v5.052、pyslang 12.0.0、uvm-core
-export PATH=/opt/verilator-5.052/bin:$PATH
-verilator --version                         # 預期：Verilator 5.052
+bash tools/install_tools.sh                 # 一次安裝 iverilog、Verilator v5.054、pyslang 12.0.0、uvm-core
+export PATH=/opt/verilator-5.054/bin:/opt/iverilog-13_0/bin:$PATH
+verilator --version                         # 預期：Verilator 5.054
 python3 tools/run_func_tests.py             # 全部功能測試，結果寫入 func_report.csv
 python3 tools/run_uvm_tests.py              # UVM RAL test（APB/AHB/AXI/OCP/TileLink，每個 VIP 建置數分鐘），結果寫入 uvm_report.csv
 python3 tools/coverage.py -j 2              # 每個 VIP 的 code coverage（Verilator --coverage），結果寫入 coverage_report.csv
@@ -73,7 +73,9 @@ python3 tools/gen_coverage_doc.py           # 產生 docs/COVERAGE.md
 ```
 
 > Ubuntu 套件庫的 Verilator 5.020 會在部分 DUT model（`fork ... join_none` 內的
-> `repeat`）觸發 V3Fork internal error，請使用 v5.052。
+> `repeat`）觸發 V3Fork internal error，請使用 v5.054。
+> Verilator 5.054 把分支覆蓋點（`v_branch`）從 `--coverage-line` 拆到 `--coverage-branch`；
+> `tools/coverage.py` 在工具支援時會自動加上 `--coverage-branch`，line 指標仍含分支。
 
 **(c) Accellera uvm-core（UVM 標準庫原始碼）**
 
@@ -109,7 +111,7 @@ lmstat -a -c "$LM_LICENSE_FILE" | head    # 應列出可用的 feature
 ```bash
 cd "$PORTFOLIO_ROOT"
 python3 "$TOOLS_DIR/elab_scan.py" build/vips/AHB-VIP     # 預期：ELAB_ERRORS=0
-iverilog -V | head -1                              # 預期：version 11.0
+iverilog -V | head -1                              # 預期：version 13.0
 ```
 
 ---

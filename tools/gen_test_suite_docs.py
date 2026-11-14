@@ -197,7 +197,7 @@ def vip_doc(vip, meta, frows, mut, cov=None):
 
     L.append("## 2. 可執行的功能測試")
     L.append("")
-    L.append("執行：`python3 tools/run_func_tests.py %s`（Icarus Verilog 或 Verilator 5.052）。" % vip)
+    L.append("執行：`python3 tools/run_func_tests.py %s`（Icarus Verilog 或 Verilator 5.054）。" % vip)
     L.append("")
     for tb in func_tbs:
         name = os.path.basename(tb)
@@ -345,7 +345,7 @@ def main():
     S.append("")
     S.append("1. **功能測試**（`tb/func_*_tb.sv`、`tb/smoke_func_tb.sv`、RTL IP 的 `tb/*_tb.sv`）：直接驅動 VIP 內的 DUT 模型，"
              "依協定規格與模型合約逐項比對，輸出 `FUNC_PASS checks=N`。由 `tools/run_func_tests.py` 以 Icarus Verilog 或 "
-             "Verilator 5.052 執行，結果寫入 `func_report.csv`。")
+             "Verilator 5.054 執行，結果寫入 `func_report.csv`。")
     S.append("2. **UVM 測試平台**（tests / sequences / scoreboard / SVA / coverage）：需商用模擬器執行，開源流程以 "
              "pyslang elaboration 檢查（`tools/elab_scan.py`）；有 register model 的 VIP（APB / AHB / AXI / OCP / TileLink）另以 "
              "`tools/run_uvm_tests.py` 在 Verilator 上執行 UVM RAL test（見 [RAL.md](RAL.md)）；由 `tools/gen_uvm_agents.py` 產生 agent 的 "
