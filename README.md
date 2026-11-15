@@ -69,12 +69,13 @@ All source files are licensed under **Apache License 2.0**.
 | LIN | UVM VIP | `LIN-VIP.zip` | 37KB |
 | SENT | UVM VIP | `SENT-VIP.zip` | 23KB |
 
-### Debug (4)
+### Debug (5)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | ARM Serial Wire Debug | UVM VIP | `SWD-VIP.zip` | 31KB |
 | ATB | UVM VIP | `ATB-UVM-VIP.zip` | 23KB |
+| JTAG | UVM VIP | `JTAG-VIP.zip` | 41KB |
 | RVFI (RISC-V Formal Interface, RV32I) | UVM VIP | `RVFI-UVM-VIP.zip` | 29KB |
 | WTB | UVM VIP | `WTB-UVM-VIP.zip` | 23KB |
 
@@ -225,27 +226,19 @@ All source files are licensed under **Apache License 2.0**.
 | UART | UVM VIP | `UART-VIP.zip` | 36KB |
 | xSPI (JESD251) | UVM VIP | `xSPI-UVM-VIP.zip` | 23KB |
 
-### Storage (7)
+### Storage (9)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | eMMC device (1-bit, RST_n) | UVM VIP | `eMMC_Device-UVM-VIP.zip` | 27KB |
+| NVMe | UVM VIP | `NVMe-VIP.zip` | 35KB |
 | SAS-4 (Serial Attached SCSI) | UVM VIP | `SAS-VIP.zip` | 34KB |
+| SATA | UVM VIP | `SATA-VIP.zip` | 33KB |
+| SCM dual-mode SSD (NVMe 2.1 multi-queue + FDP, CXL.mem byte port) | UVM VIP | `SCM_SSD-VIP.zip` | 18KB |
 | SD / eMMC card (1/4/8-bit, 512-byte blocks) | UVM VIP | `SDMMC_Card-UVM-VIP.zip` | 31KB |
 | SD memory card (4-bit) | UVM VIP | `SD_Card-UVM-VIP.zip` | 27KB |
 | SDIO | UVM VIP | `SDIO-UVM-VIP.zip` | 23KB |
-| SCM dual-mode SSD (NVMe 2.1 multi-queue + FDP, CXL.mem byte port) | UVM VIP | `SCM_SSD-VIP.zip` | 18KB |
 | Toggle Mode NAND | UVM VIP | `ToggleNAND-VIP.zip` | 33KB |
-
-### Storage/Debug (5)
-
-| Protocol | Type | File | Size |
-|----------|------|------|------|
-| Bluetooth5 | UVM VIP | `Bluetooth5-VIP.zip` | 36KB |
-| DisplayPort2 | UVM VIP | `DisplayPort2-VIP.zip` | 42KB |
-| JTAG | UVM VIP | `JTAG-VIP.zip` | 41KB |
-| NVMe | UVM VIP | `NVMe-VIP.zip` | 35KB |
-| SATA | UVM VIP | `SATA-VIP.zip` | 33KB |
 
 ### Telecom (2)
 
@@ -266,15 +259,22 @@ All source files are licensed under **Apache License 2.0**.
 | USB4 | UVM VIP | `USB4-VIP.zip` | 61KB |
 | eUSB2 | UVM VIP | `eUSB2-VIP.zip` | 61KB |
 
-### Video (5)
+### Video (6)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
+| DisplayPort2 | UVM VIP | `DisplayPort2-VIP.zip` | 42KB |
 | HDMI 2.1 | UVM VIP | `HDMI-VIP.zip` | 38KB |
 | HDMI CEC | UVM VIP | `HDMI_CEC-UVM-VIP.zip` | 24KB |
 | HDMI source (TMDS, InfoFrames) | UVM VIP | `HDMI_Source-UVM-VIP.zip` | 28KB |
 | MPEG-2 TS / TSI (ISO/IEC 13818-1) | UVM VIP | `MPEG_TS-UVM-VIP.zip` | 23KB |
 | V-by-One HS panel sink | UVM VIP | `VbyOne_HS-UVM-VIP.zip` | 22KB |
+
+### Wireless (1)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| Bluetooth5 | UVM VIP | `Bluetooth5-VIP.zip` | 36KB |
 
 ### SoC Subsystem (14)
 
