@@ -6,7 +6,7 @@
 
 | 項目 | 內容 |
 |---|---|
-| 類別 | Storage/Debug |
+| 類別 | Storage |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，51 個 check，全部通過 |
 | Mutation | 24/25 個 mutant 被偵測（96%） |
