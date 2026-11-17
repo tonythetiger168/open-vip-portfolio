@@ -3,7 +3,7 @@
 本文件記錄 132 個 VIP 的 UVM RAL（`uvm_reg`）掃描結果、目前已加入 register model 的 VIP、
 測試方法與結果，以及下一批候選。目前有 RAL 的 VIP：APB-VIP、AHB-VIP、AXI-VIP（2026-10-24）、
 OCP-VIP、TileLink-VIP（2026-10-25，見第 6 節）、Avalon_MM-UVM-VIP、Wishbone-UVM-VIP（2026-10-27，見第 7 節）、
-RFFE-VIP、AVSBus-VIP、I2C-VIP、SPMI-VIP、SoundWire-VIP（2026-11-12，見第 8 節）。
+AVSBus-VIP、I2C-VIP（2026-11-12，見第 8 節；RFFE、SPMI、SoundWire 的 RAL 隨商用版提供）。
 
 ## 1. 掃描結果（2026-10-24）
 
@@ -218,11 +218,8 @@ adapter 把不是暫存器存取的 item（別的 slave、NACK、ping 等）對�
 
 | VIP | Register map | Adapter |
 |---|---|---|
-| RFFE-VIP | `REG0..REG31` @ 0x000–0x01F（Register Write / Read）、`XREG` 256×8 @ 0x100–0x1FF（Extended Write / Read），USID 0x3 | read data 取 `rdata`；parity / bus park 錯誤 → `UVM_NOT_OK` |
 | AVSBus-VIP | `VOUT` @ 0x0，8-bit，reset 0x60，只接受 0x20–0xC0（`NO_REG_BIT_BASH_TEST`） | write → SetVoltage、read → GetVoltage，都要求回應；ACK → `UVM_IS_OK`，ST_ERR / 沒回應 → `UVM_NOT_OK` |
 | I2C-VIP | `DATA` @ 0x0，8-bit（slave 0x50 每個位址只有一個 byte，沒有 register pointer） | 1 byte write / read（read 最後一個 byte master NACK）；address NACK → `UVM_NOT_OK` |
-| SPMI-VIP | `REG0..REG31` @ 0x00–0x1F、`MEM` 224×8 @ 0x20–0xFF，slave 0x2 | Register Write / Read；NACK / parity 錯誤 → `UVM_NOT_OK` |
-| SoundWire-VIP | peripheral 1 的 `REG0..REG31` @ 0x0000–0x001F、`MEM` 256×8 @ 0x0100–0x01FF（避開 `SW_BRA_REG` 0x00F0） | SW_WRITE / SW_READ；write 要回 write status 才是 `UVM_IS_OK`；read 值取 response window |
 
 RAL test：`uvm_reg_hw_reset_seq`、`uvm_reg_bit_bash_seq`（AVSBus 除外）、`uvm_mem_walk_seq`
 （RFFE / SPMI / SoundWire）、每個暫存器 pseudo-random write + `mirror(UVM_CHECK)` + read、
@@ -245,11 +242,8 @@ RAL test：`uvm_reg_hw_reset_seq`、`uvm_reg_bit_bash_seq`（AVSBus 除外）、
 ### 8.2 結果（minisim）
 
 ```
-RFFE-VIP/rffe_ral_test             RAL_PASS checks=640
 AVSBus-VIP/avsbus_ral_test         RAL_PASS checks=151
 I2C-VIP/i2c_ral_test               RAL_PASS checks=137
-SPMI-VIP/spmi_ral_test             RAL_PASS checks=608
-SoundWire-VIP/soundwire_ral_test   RAL_PASS checks=640
 ```
 
 每個都是 0 UVM_ERROR、0 UVM_WARNING。原本的 random / regression test 仍是 0 UVM_ERROR；
@@ -260,4 +254,4 @@ I2C 寫入清掉 bit 4（68 個錯誤）、SPMI 0x80 以上位址寫入卡 bit 6
 （577 個錯誤），RAL test 都會 FAIL。
 
 Verilator 尚未執行（這次的環境沒有 Verilator）：請用
-`python3 tools/run_uvm_tests.py RFFE-VIP AVSBus-VIP I2C-VIP SPMI-VIP SoundWire-VIP` 確認。
+`python3 tools/run_uvm_tests.py AVSBus-VIP I2C-VIP` 確認。
