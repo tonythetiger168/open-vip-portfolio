@@ -76,43 +76,6 @@ lpddr5x-VIP,dut_lpddr5x_mem_model.sv:63,65536 -> 65537,loop index 65536 is out o
 lpddr5x-VIP,dut_lpddr5x_mem_model.sv:68,0 -> 1,rd_cnt/wr_beat of 1 in reset: one extra beat with dq_oe low / an X-indexed write (ignored)
 lpddr5x-VIP,dut_lpddr5x_mem_model.sv:113,&& flipped,only changes the decode of the reserved encodings (ras_n,cas_n,we_n) = 110 / 011
 lpddr5x-VIP,dut_lpddr5x_mem_model.sv:116,&& flipped,only changes the decode of the reserved encoding (ras_n,cas_n,we_n) = 011
-lpddr7-VIP,dut_lpddr7_mem_model.sv:26,16 -> 17,array size only: index 16 is never addressed (bank id is 4 bits)
-lpddr7-VIP,dut_lpddr7_mem_model.sv:61,0 -> 1,initial value overwritten by the reset branch (clocked while rst_n is low)
-lpddr7-VIP,dut_lpddr7_mem_model.sv:62,1 -> 2,initial row_open values overwritten by the reset branch
-lpddr7-VIP,dut_lpddr7_mem_model.sv:63,65536 -> 65537,loop index 65536 is out of range (write ignored)
-lpddr7-VIP,dut_lpddr7_mem_model.sv:68,0 -> 1,rd_cnt/wr_beat of 1 in reset: one extra beat with dq_oe low / an X-indexed write (ignored)
-lpddr7-VIP,dut_lpddr7_mem_model.sv:113,&& flipped,only changes the decode of the reserved encodings (ras_n,cas_n,we_n) = 110 / 011
-lpddr7-VIP,dut_lpddr7_mem_model.sv:116,&& flipped,only changes the decode of the reserved encoding (ras_n,cas_n,we_n) = 011
-ddr6-VIP,dut_ddr6_mem_model.sv:23,32 -> 33,array size only: bank index bg*4+ba never exceeds 31
-ddr6-VIP,dut_ddr6_mem_model.sv:28,0 -> 1,statistics counter only printed by the final block
-ddr6-VIP,dut_ddr6_mem_model.sv:29,0 -> 1,statistics counter only printed by the final block
-ddr6-VIP,dut_ddr6_mem_model.sv:66,1'b1 inverted,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr6-VIP,dut_ddr6_mem_model.sv:73,&& flipped,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr6-VIP,dut_ddr6_mem_model.sv:73,! dropped in condition,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr6-VIP,dut_ddr6_mem_model.sv:74,1'b0 inverted,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr6-VIP,dut_ddr6_mem_model.sv:75,&& flipped,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr6-VIP,dut_ddr6_mem_model.sv:75,! dropped in condition,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr6-VIP,dut_ddr6_mem_model.sv:77,0 -> 1,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr7-VIP,dut_ddr7_mem_model.sv:23,32 -> 33,array size only: bank index bg*4+ba never exceeds 31
-ddr7-VIP,dut_ddr7_mem_model.sv:28,0 -> 1,statistics counter only printed by the final block
-ddr7-VIP,dut_ddr7_mem_model.sv:29,0 -> 1,statistics counter only printed by the final block
-ddr7-VIP,dut_ddr7_mem_model.sv:66,1'b1 inverted,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr7-VIP,dut_ddr7_mem_model.sv:73,&& flipped,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr7-VIP,dut_ddr7_mem_model.sv:73,! dropped in condition,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr7-VIP,dut_ddr7_mem_model.sv:74,1'b0 inverted,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr7-VIP,dut_ddr7_mem_model.sv:75,&& flipped,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr7-VIP,dut_ddr7_mem_model.sv:75,! dropped in condition,bank_open is never read (no open-bank check); PRE/REF only update it
-ddr7-VIP,dut_ddr7_mem_model.sv:77,0 -> 1,bank_open is never read (no open-bank check); PRE/REF only update it
-HBM5-VIP,dut_hbm5_mem_model.sv:23,32 -> 33,array size only: bank index bg*4+ba never exceeds 31
-HBM5-VIP,dut_hbm5_mem_model.sv:28,0 -> 1,statistics counter only printed by the final block
-HBM5-VIP,dut_hbm5_mem_model.sv:29,0 -> 1,statistics counter only printed by the final block
-HBM5-VIP,dut_hbm5_mem_model.sv:66,1'b1 inverted,bank_open is never read (no open-bank check); PRE/REF only update it
-HBM5-VIP,dut_hbm5_mem_model.sv:73,&& flipped,bank_open is never read (no open-bank check); PRE/REF only update it
-HBM5-VIP,dut_hbm5_mem_model.sv:73,! dropped in condition,bank_open is never read (no open-bank check); PRE/REF only update it
-HBM5-VIP,dut_hbm5_mem_model.sv:74,1'b0 inverted,bank_open is never read (no open-bank check); PRE/REF only update it
-HBM5-VIP,dut_hbm5_mem_model.sv:75,&& flipped,bank_open is never read (no open-bank check); PRE/REF only update it
-HBM5-VIP,dut_hbm5_mem_model.sv:75,! dropped in condition,bank_open is never read (no open-bank check); PRE/REF only update it
-HBM5-VIP,dut_hbm5_mem_model.sv:77,0 -> 1,bank_open is never read (no open-bank check); PRE/REF only update it
 OCP-VIP,dut_ocp_slave_model.sv:29,0 -> 1,initial value overwritten by the reset branch (clocked while reset is low)
 OCP-VIP,dut_ocp_slave_model.sv:33,0 -> 1,rsp_timer is reloaded on every acceptance before it is used
 OCP-VIP,dut_ocp_slave_model.sv:42,0 -> 1,rsp_timer is reloaded on every acceptance before it is used
@@ -146,61 +109,21 @@ CXS-VIP,dut_cxs_receiver_model.sv:50,&& flipped,only selects a `uvm_warning mess
 CXS-VIP,dut_cxs_receiver_model.sv:50,! dropped in condition,only selects a `uvm_warning message (not an observable output)
 CXS-VIP,dut_cxs_receiver_model.sv:59,1 -> 2,inside a `uvm_info message text
 CXS-VIP,dut_cxs_receiver_model.sv:62,&& flipped,differs only for a flit sent while active_ack is low in the middle of a packet (outside the CXS link-activation contract)
-HDMI-VIP,dut_hdmi_sink_model.sv:20,0 -> 1,frame_count is only compared relative to its value before each test step
-HDMI-VIP,dut_hdmi_sink_model.sv:22,0 -> 1,initial value overwritten by the synchronous reset
-HDMI-VIP,dut_hdmi_sink_model.sv:23,0 -> 1,initial value overwritten by the synchronous reset
-HDMI-VIP,dut_hdmi_sink_model.sv:31,0 -> 1,a timer of 1 after reset expires with HPD high (the drop window is timer 2..4)
-HDMI-VIP,dut_hdmi_sink_model.sv:32,1'b0 inverted,req_d is reloaded from the request one clock after reset; differs only for a request rising on that first clock
-HDMI-VIP,dut_hdmi_sink_model.sv:57,!= flipped,only selects a `uvm_warning message (not an observable output)
 ONFI-VIP,dut_onfi_nand_model.sv:9,64 -> 65,changes the internal storage key layout consistently for program / read / erase (no observable effect)
 ONFI-VIP,dut_onfi_nand_model.sv:43,0 -> 1,initial value overwritten by the reset branch
 ONFI-VIP,dut_onfi_nand_model.sv:153,0 -> 1,wr_ptr is cleared again by every 80h / EFh command before it is used
 ONFI-VIP,dut_onfi_nand_model.sv:176,< -> <= in condition,the extra write targets page_buf[PAGE_SIZE] (out of range, ignored)
-SoundWire-VIP,dut_soundwire_audio_peripheral.sv:19,0 -> 1,initial value overwritten by the reset branch
-SoundWire-VIP,dut_soundwire_audio_peripheral.sv:24,0 -> 1,initial value overwritten by the reset branch
-SoundWire-VIP,dut_soundwire_audio_peripheral.sv:32,1'b1 inverted,data_o value while data_oe is low (line released) is not observable
-SoundWire-VIP,dut_soundwire_audio_peripheral.sv:38,&& flipped,respond and rcnt 1..7 always coincide (rcnt is set to 1 with respond and cleared after bit 7)
-SoundWire-VIP,dut_soundwire_audio_peripheral.sv:50,1 -> 2,only shortens the 8-edge dead time after a header; frames are spaced by at least the response slot
 FlexRay-VIP,dut_flexray_node_model.sv:75,1'b1 inverted,initial value overwritten by the reset branch
 FlexRay-VIP,dut_flexray_node_model.sv:84,0 -> 1,receiver counters are reloaded at the start of every frame before use
 FlexRay-VIP,dut_flexray_node_model.sv:85,0 -> 1,transmitter / error counters are reloaded before use or reset by the reset branch
 FlexRay-VIP,dut_flexray_node_model.sv:144,36 -> 37,the shortest frame needs 62 bits: rcnt > 36 and rcnt > 37 are both implied by rcnt + 1 >= need
 FlexRay-VIP,dut_flexray_node_model.sv:161,7 -> 8,loop index 7 writes payload_length[-1] (out of range, ignored)
-CSI_2-VIP,dut_mipi_dut.sv:48,0 -> 1,initial value overwritten by the reset branch
-UniPro-VIP,dut_mipi_dut.sv:48,0 -> 1,initial value overwritten by the reset branch
-C_PHY-VIP,dut_mipi_dut.sv:48,0 -> 1,initial value overwritten by the reset branch
-DSI-VIP,dut_mipi_dut.sv:48,0 -> 1,initial value overwritten by the reset branch
-D_PHY-VIP,dut_mipi_dut.sv:48,0 -> 1,initial value overwritten by the reset branch
-M_PHY-VIP,dut_mipi_dut.sv:48,0 -> 1,initial value overwritten by the reset branch
-CSE-VIP,dut_mipi_dut.sv:38,1'b0 inverted,initial value overwritten by the reset branch
-CSE-VIP,dut_mipi_dut.sv:42,0 -> 1,initial value overwritten by the reset branch
-CSE-VIP,dut_mipi_dut.sv:43,0 -> 1,initial value overwritten by the reset branch
-CSE-VIP,dut_mipi_dut.sv:76,0 -> 1,busy_cnt is reloaded when a command is accepted before it is used
-CSE-VIP,dut_mipi_dut.sv:77,0 -> 1,resp_cnt is reloaded on entering CSE_RESP before it is used
 Security-VIP,dut_security_engine_model.sv:29,0 -> 1,statistics counter (op_count / err_count) is not an output
 Security-VIP,dut_security_engine_model.sv:40,0 -> 1,latency is reloaded on every start before it is used
 Security-VIP,dut_security_engine_model.sv:81,1 -> 2,a latency of 2 reaches the done branch after one decrement either way (2 -> 1 or 2 -> 0)
 Security-VIP,dut_security_engine_model.sv:102,1 -> 2,a latency of 2 leaves ERROR after one decrement either way (2 -> 1 or 2 -> 0)
-SPMI-VIP,dut_spmi_slave_model.sv:61,> -> >= in condition,the extra assignment at i == 0 is overwritten by the parity bit before the next SCLK edge
-RFFE-VIP,dut_rffe_slave_model.sv:44,> -> >= in condition,the extra assignment at i == 0 is overwritten by the parity bit before the next SCLK edge
 I3C-VIP,dut_i3c_target_model.sv:29,0 -> 1,SDA output value while the open-drain enable is low is not observable
-DBI-VIP,dut_dbi_display_controller.sv:24,0 -> 1,initial value overwritten by the reset branch
-DBI-VIP,dut_dbi_display_controller.sv:28,1 -> 2,initial value overwritten by the reset branch
-DPI-VIP,dut_dpi_display_sink.sv:20,0 -> 1,initial value overwritten by the reset branch
-DPI-VIP,dut_dpi_display_sink.sv:21,0 -> 1,initial value overwritten by the reset branch
-DPI-VIP,dut_dpi_display_sink.sv:22,0 -> 1,initial value overwritten by the reset branch
-DPI-VIP,dut_dpi_display_sink.sv:23,0 -> 1,initial value overwritten by the reset branch
-DPI-VIP,dut_dpi_display_sink.sv:24,0 -> 1,initial value overwritten by the reset branch
-DPI-VIP,dut_dpi_display_sink.sv:42,&& flipped,only selects a `uvm_info message (not an observable output)
 Bluetooth5-VIP,dut_bluetooth5_dut.sv:54,0 -> 1,turn_cnt is reloaded when a packet ends before it is used
-DisplayPort2-VIP,dut_displayport2_sink_model.sv:28,0 -> 1,counter is only compared relative to its value before each test step
-DisplayPort2-VIP,dut_displayport2_sink_model.sv:29,0 -> 1,counter is only compared relative to its value before each test step
-DisplayPort2-VIP,dut_displayport2_sink_model.sv:32,0 -> 1,counter is only compared relative to its value before each test step
-DisplayPort2-VIP,dut_displayport2_sink_model.sv:33,0 -> 1,initial value overwritten by the reset branch
-CCIX-VIP,dut_ccix_agent_model.sv:24,0 -> 1,initial value overwritten by the reset branch
-CCIX-VIP,dut_ccix_agent_model.sv:31,0 -> 1,the pool is set to 4 at link-up before it is used
-CCIX-VIP,dut_ccix_agent_model.sv:58,15 -> 16,the 15-credit ceiling is only reachable after more than 11 flits sent without credit (protocol violation)
-CCIX-VIP,dut_ccix_agent_model.sv:58,< -> <= in condition,the 15-credit ceiling is only reachable after more than 11 flits sent without credit (protocol violation)
 CPRI-VIP,dut_cpri_slave_dut.sv:41,15 -> 16,comma_cnt is only compared with 0 and 3: saturating at 15 or 16 is not observable
 CPRI-VIP,dut_cpri_slave_dut.sv:41,< -> <= in condition,comma_cnt is only compared with 0 and 3: saturating at 15 or 16 is not observable
 SATA-VIP,dut_sata_host_model.sv:31,0 -> 1,statistics counter (fis_count) is not an output
@@ -208,13 +131,6 @@ SATA-VIP,dut_sata_host_model.sv:39,0 -> 1,initial value overwritten by the OOB p
 SATA-VIP,dut_sata_host_model.sv:42,0 -> 1,initial value overwritten by the synchronous reset before the link is up
 SATA-VIP,dut_sata_host_model.sv:44,0 -> 1,initial value overwritten by the OOB process at time 0
 SATA-VIP,dut_sata_host_model.sv:93,0 -> 1,fis_end is already 0 whenever a FIS starts (cleared with fis_valid)
-SLIMbus-VIP,dut_slimbus_codec_slave.sv:19,0 -> 1,initial value overwritten by the reset branch
-SLIMbus-VIP,dut_slimbus_codec_slave.sv:21,0 -> 1,initial value overwritten by the reset branch
-SLIMbus-VIP,dut_slimbus_codec_slave.sv:25,0 -> 1,initial value overwritten by the reset branch
-SLIMbus-VIP,dut_slimbus_codec_slave.sv:26,0 -> 1,h is a blocking temporary assigned before every use
-SLIMbus-VIP,dut_slimbus_codec_slave.sv:28,0 -> 1,initial value overwritten by the reset branch
-SLIMbus-VIP,dut_slimbus_codec_slave.sv:74,0 -> 1,initial value overwritten by the reset branch
-SLIMbus-VIP,dut_slimbus_codec_slave.sv:77,1'b1 inverted,data_o value while data_oe is low (line released) is not observable
 DDR4-VIP,DDR4_top.sv:28,0 -> 1,PROTOCOL is passed down but never read by MEMCORE_top
 DDR4-VIP,MEMCH_top.sv:10,0 -> 1,parameter default overridden by the top-level instantiation
 DDR4-VIP,MEMCH_top.sv:13,15 -> 16,parameter default overridden by the top-level instantiation
@@ -331,14 +247,6 @@ ACE_Lite-UVM-VIP,dut_ace_lite_model.sv:37,8 -> 9,byte-lane loop index past WSTRB
 SDIO-UVM-VIP,dut_sdio_model.sv:28,39 -> 40,CRC7 loop starts one bit past the 40-bit input: d[40] is out of range (X) and only shifts a leading zero through the zero-initialised register
 SDIO-UVM-VIP,dut_sdio_model.sv:71,1'b0 inverted,dat_oe is already low here (busy ends after 8 of the 48 response bits)
 SDIO-UVM-VIP,dut_sdio_model.sv:76,1'b0 inverted,fill bit shifted into the response register after all 48 bits are queued; never driven
-UALink-VIP,dut_ualink_model.sv:30,1'b0 inverted,busy is never read (req_ready carries the flow control)
-UALink-VIP,dut_ualink_model.sv:36,1'b1 inverted,busy is never read (req_ready carries the flow control)
-UALink-VIP,dut_ualink_model.sv:52,1'b0 inverted,busy is never read (req_ready carries the flow control)
-UALink-VIP,dut_ualink_model.sv:33,64 -> 65,reset loop index past the 64-word memory (out-of-range write is ignored)
-CXL-VIP,dut_mp_endpoint_mem_model.sv:18,0 -> 1,rd_count is never used (the model has no read path)
-CXL-VIP,dut_mp_endpoint_mem_model.sv:20,0 -> 1,time-0 value of in_tlp; the synchronous reset clears it before any beat is taken
-PCIe-VIP,dut_mp_endpoint_mem_model.sv:18,0 -> 1,rd_count is never used (the model has no read path)
-PCIe-VIP,dut_mp_endpoint_mem_model.sv:20,0 -> 1,time-0 value of in_tlp; the synchronous reset clears it before any beat is taken
 I2C-VIP,dut_i2c_slave_model.sv:21,0 -> 1,time-0 value of sda_o while sda_oe is 0 (SDA not driven)
 I2C-VIP,dut_i2c_slave_model.sv:86,0 -> 1,skipping the STOP / repeated-START wait after a write is equivalent: the START detector at the top of the loop catches the next START or repeated START the same way
 I2C-VIP,dut_i2c_slave_model.sv:87,! dropped in condition,skipping the STOP / repeated-START wait after a write is equivalent: the START detector at the top of the loop catches the next START or repeated START the same way
@@ -378,21 +286,6 @@ OBI-UVM-VIP,dut_obi_model.sv:33,== flipped,the LFSR grant-stall pattern is arbit
 xSPI-UVM-VIP,dut_xspi_model.sv:93,! dropped in condition,end-of-command actions then fire one clock later and repeat idempotently while the opcode register holds
 SMBus-UVM-VIP,dut_smbus_model.sv:55,1'b0 inverted,reset values of tx/mack/pec_ok/pre are rewritten at START or before use (active and rep are killed)
 SGMII-UVM-VIP,dut_sgmii_model.sv:110,&& flipped,i1 is rewritten at every idle comma before its only use in the next code group
-PCIe-VIP,dut_pcie_dl_model.sv:9,40 -> 41,default CRED_LAT; the test instantiates the model with CRED_LAT 200
-PCIe-VIP,dut_pcie_dl_model.sv:173,4096 -> 4097,initialises a byte past the 4 KB BAR memory
-PCIe-VIP,dut_pcie_dl_model.sv:238,1'b0 inverted,replay_req set at link down replays nothing (the replay buffer is emptied in the same clock) and is cleared in the first L0 clock
-CXL-VIP,dut_cxl_mem_model.sv:47,16 -> 17,pending-table size; at most REQ_CRD + RWD_CRD = 12 entries are ever in use
-CXL-VIP,dut_cxl_mem_model.sv:76,256 -> 257,initialises a line past the 256-line memory
-CXL-VIP,dut_cxl_mem_model.sv:81,1'b0 inverted,s2m_drs_poison reset value; only read with s2m_drs_valid
-CXL-VIP,dut_cxl_mem_model.sv:101,1 -> 2,free-slot search skips the last entry; at most 12 of 16 entries are ever in use
-CXL-VIP,dut_cxl_mem_model.sv:105,1'b0 inverted,p_pois of a write entry; NDR responses carry no poison
-CXL-VIP,dut_cxl_mem_model.sv:110,64 -> 65,byte-enable loop past byte 63 (no such byte)
-CXL-VIP,dut_cxl_mem_model.sv:133,1 -> 2,free-slot search skips the last entry; at most 12 of 16 entries are ever in use
-CXL-VIP,dut_cxl_mem_model.sv:134,1'b1 inverted,no free entry is unreachable (credits limit the table to 12 of 16)
-CXL-VIP,dut_cxl_mem_model.sv:153,1 -> 2,no-candidate marker -1 vs -2; only its sign is tested
-CXL-VIP,dut_cxl_mem_model.sv:156,< -> <= in condition,due times of pending entries never differ by exactly 2^15 clocks
-CXL-VIP,dut_cxl_mem_model.sv:157,< -> <= in condition,due times of pending entries never differ by exactly 2^15 clocks
-CXL-VIP,dut_mp_endpoint_mem_model.sv:20,0 -> 1,declaration value of in_tlp; reset rewrites it before any beat
 DDR5-VIP,dut_ddr5_dev_model.sv:9,16 -> 17,default timing parameter; the test sets every parameter
 DDR5-VIP,dut_ddr5_dev_model.sv:9,12 -> 13,default timing parameter; the test sets every parameter
 DDR5-VIP,dut_ddr5_dev_model.sv:10,8 -> 9,default timing parameter; the test sets every parameter
@@ -412,21 +305,6 @@ HBM3E-VIP,dut_hbm_dev_model.sv:11,8 -> 9,default timing parameter; the test sets
 HBM3E-VIP,dut_hbm_dev_model.sv:61,2 -> 3,reset loop past pseudo channel 1 (no such channel)
 HBM3E-VIP,dut_hbm_dev_model.sv:64,100000 -> 100001,"""long ago"" reset time; any value below -tFAW behaves the same"
 HBM3E-VIP,dut_hbm_dev_model.sv:109,32 -> 33,auto-precharge loop past bank 31 (no such bank)
-UCIe-VIP,dut_ucie_d2d_model.sv:9,120 -> 121,default REPLAY_TO; the test sets the parameter
-UCIe-VIP,dut_ucie_d2d_model.sv:112,> -> >= in condition,when equal the assignment leaves rp_left unchanged
-UCIe-VIP,dut_ucie_d2d_model.sv:200,0 -> 1,the MBTRAIN response is always followed in the same clock by a degrade or a state change that resets t_wait
-UCIe-VIP,dut_ucie_d2d_model.sv:204,1'b0 inverted,li_tx left set after the LINKINIT response is never read again before MBTRAIN clears it
-UCIe-VIP,dut_ucie_d2d_model.sv:278,0 -> 1,rp_num is cleared again on every LINKINIT -> ACTIVE transition
-UALink-VIP,dut_ualink_model.sv:27,1'b0 inverted,initial value of rsp_valid; reset rewrites it before the first clock edge
-UALink-VIP,dut_ualink_model.sv:52,1'b0 inverted,busy is written but never read
-UALink-VIP,dut_ualink_tl_model.sv:31,16 -> 17,pending-table size; at most REQ_CRD = 8 entries are ever in use
-UALink-VIP,dut_ualink_tl_model.sv:45,0 -> 1,time base offset; only differences of now are used
-UALink-VIP,dut_ualink_tl_model.sv:70,1 -> 2,no-slot marker -1 vs -2; only its sign is tested
-UALink-VIP,dut_ualink_tl_model.sv:72,0 -> 1,free-slot search skips entry 0; at most 8 of 16 entries are ever in use
-UALink-VIP,dut_ualink_tl_model.sv:74,1'b1 inverted,no free entry is unreachable (credits limit the table to 8 of 16)
-UALink-VIP,dut_ualink_tl_model.sv:85,64 -> 65,byte-enable loop past byte 63 (no such byte)
-UALink-VIP,dut_ualink_tl_model.sv:108,1 -> 2,arrival numbers spaced by 2 keep the same order
-UALink-VIP,dut_ualink_tl_model.sv:115,< -> <= in condition,re-selecting while a response waits finds the same entry: later arrivals are due later
 HBM3E-VIP,dut_hbm_dev_model.sv:227,16 -> 17,MRS loop upper bound past bank 31 on pseudo channel 1 (no such bank; reads as closed)
 AXI4_Lite-UVM-VIP,dut_axi4_lite_model.sv:55,256 -> 257,reset loop past the last word (no such entry)
 AXI4_Lite-UVM-VIP,dut_axi4_lite_model.sv:63,4 -> 5,strobe loop past lane 3 (no such lane)
@@ -492,50 +370,13 @@ RVFI-UVM-VIP,dut_rvfi_model.sv:90,1'b0 inverted,initial branch-taken flag: every
 SUE-UVM-VIP,dut_sue_model.sv:39,4 -> 5,expected-PSN reset loop: expp[4] is outside the four VCs and the write is dropped
 SUE-UVM-VIP,dut_sue_model.sv:46,< -> <= in condition,receive buffer bound: byte 128 would wrap to rb[0] (DA, never read); frames stop at 90 bytes (64-byte payload limit)
 SUE-UVM-VIP,dut_sue_model.sv:63,128 -> 129,CRC loop bound: the body is guarded by i < n and frames stop at 90 bytes
-PCIe_IDE-UVM-VIP,dut_ide_model.sv:30,8 -> 9,GF(2^8) multiply loop: b[8] is out of range (X) so the extra step adds nothing
-PCIe_IDE-UVM-VIP,dut_ide_model.sv:111,6 -> 7,counter reset loop: ctr[6] is outside the six counters and the write is dropped
-PCIe_IDE-UVM-VIP,dut_ide_model.sv:117,< -> <= in condition,receive buffer bound: DW 49 would land at rb[192..195] (outside the buffer) and that TLP is rejected as over 48 DW anyway
-PCIe_IDE-UVM-VIP,dut_ide_model.sv:140,192 -> 193,TLP size limit: n is a multiple of 4 so n > 192 and n > 193 agree
-PCIe_IDE-UVM-VIP,dut_ide_model.sv:144,6 -> 7,K_SET_GO counter loop: ctr[6] is outside the six counters and the write is dropped
-PCIe_IDE-UVM-VIP,dut_ide_model.sv:148,< -> <= in condition,plain-TLP copy bound: the extra DW lands after the delivered length (nd = n / 4) and is never sent
-PCIe_IDE-UVM-VIP,dut_ide_model.sv:164,16 -> 17,GHASH block guard 17*b < plen: plen is a multiple of 4 so 16 < plen and 17 < plen agree
-PCIe_IDE-UVM-VIP,dut_ide_model.sv:174,2 -> 3,decrypt block loop: a third block needs a payload over 32 bytes, rejected as bad first
-PCIe_IDE-UVM-VIP,dut_ide_model.sv:175,< -> <= in condition,decrypt block guard: the extra block (16*b == plen) writes nothing (every DW guard is false)
-PCIe_IDE-UVM-VIP,dut_ide_model.sv:177,16 -> 17,decrypt fetch limit: the extra byte (first MAC byte) falls in a DW at or past plen, which is not written
-PCIe_IDE-UVM-VIP,dut_ide_model.sv:178,16 -> 17,decrypt DW guard 17*b + 4*j < plen: plen and 16*b + 4*j are multiples of 4 so the comparison does not change
-UALink-VIP,dut_ualink_tl_model.sv:43,256 -> 257,initialises a line past the 256-line memory
-UALink-VIP,dut_ualink_tl_model.sv:44,0 -> 1,entry 0 left X after reset is never chosen as free nor as a response; 15 of 16 entries cover the 8 credits
-UALink-VIP,dut_ualink_tl_model.sv:45,1 -> 2,no-response marker -1 vs -2; only its sign is tested
-UALink-VIP,dut_ualink_tl_model.sv:56,1 -> 2,no-response marker -1 vs -2; only its sign is tested
-UALink-VIP,dut_ualink_tl_model.sv:72,1 -> 2,free-slot search skips the last entry; at most 8 of 16 entries are ever in use
-UALink-VIP,dut_ualink_tl_model.sv:115,0 -> 1,re-selecting while entry 0 waits finds entry 0 again: later arrivals are due later
-UALink-VIP,dut_ualink_inc_model.sv:60,1'b0 inverted,g_sat reset value; the first contribution of every round rewrites it
-UALink-VIP,dut_ualink_inc_model.sv:75,1'b0 inverted,g_sat value after configuration; the first contribution of every round rewrites it
-UALink-VIP,dut_ualink_inc_model.sv:93,4 -> 5,reduction lane loop past lane 3 (no such lane; writes are discarded)
-UALink-VIP,dut_ualink_inc_model.sv:119,< -> <= in condition,re-selecting while group 0 is on the bus finds group 0 again (lowest group first)
-CXL-VIP,dut_cxl_bundle_model.sv:38,1 -> 2,port_for is only called for an active port: n is never 0
-CXL-VIP,dut_cxl_bundle_model.sv:40,4 -> 5,port loop past port 3 (no such port)
-CXL-VIP,dut_cxl_bundle_model.sv:50,1'b0 inverted,rw reset value; every flit is dropped until cfg_we, which clears rw
-CXL-VIP,dut_cxl_bundle_model.sv:51,0 -> 1,buffer slot 0 left X after reset; cfg_we clears every slot before any flit is accepted
-CXL-VIP,dut_cxl_bundle_model.sv:61,0 -> 1,gap timer value after configuration; the buffer is empty so the gap check clears it in the same clock
-CXL-VIP,dut_cxl_bundle_model.sv:64,4 -> 5,port loop past port 3 (no such port)
-CXL-VIP,dut_cxl_bundle_model.sv:71,4 -> 5,port loop past port 3 (no such port)
-UCIe-VIP,dut_ucie_sb3_model.sv:37,0 -> 1,m_n reset value; SOM rewrites it before any fragment is stored
-UCIe-VIP,dut_ucie_sb3_model.sv:67,4 -> 5,byte-enable loop past byte 3 writes outside the 32-bit register (discarded)
 CHI-UVM-VIP,dut_chi_hn_model.sv:51,1'b0 inverted,rn / bad reset values; both are rewritten when a request is accepted before they are read
 CHI-UVM-VIP,dut_chi_hn_model.sv:52,1'b0 inverted,req_ready / snp_rn reset values; no request is offered in reset and snp_rn is only read with snp_valid
 CHI-UVM-VIP,dut_chi_hn_model.sv:53,1'b0 inverted,rsp_rn reset value; only read with rsp_valid
-PCIe-VIP,dut_pcie_flit_model.sv:79,1 -> 2,no-position marker -1 vs -2; only its sign is tested
-PCIe-VIP,dut_pcie_flit_model.sv:82,< -> <= in condition,alpha^j is distinct for every codeword position: a found position never matches again
 RVFI-UVM-VIP,dut_rvfi_model.sv:62,1'b0 inverted,l_ld reset value: S_MEM reads it only after the load/store that entered S_MEM set it
 RVFI-UVM-VIP,dut_rvfi_model.sv:84,20 -> 21,I-immediate sign replication: the 33-bit concatenation is truncated to the same 32-bit value
 RVFI-UVM-VIP,dut_rvfi_model.sv:127,0 -> 1,store byte-lane clear from lane 1: lane 0 is unmasked only for an offset-0 store and is otherwise already zero from the shift
 RVFI-UVM-VIP,dut_rvfi_model.sv:195,24 -> 25,LB sign extension: the 33-bit concatenation is truncated to the same 32-bit value
-UCIe-VIP,dut_ucie_d2d_model.sv:228,0 -> 1,phase of the SBINIT pattern inside its 4-clock period: the pattern still goes out every 4 clocks one clock later and the partner does not depend on the phase
-UCIe-VIP,dut_ucie_d2d_model.sv:87,0 -> 1,rp_num reset value: LINKINIT -> ACTIVE clears it before any replay can count
-UCIe-VIP,dut_ucie_d2d_model.sv:204,0 -> 1,t_wait after the LINKINIT response: shifts the sideband timeout by one clock and the next state change clears it
-UCIe-VIP,dut_ucie_d2d_model.sv:245,< -> <= in condition,width minimum: when the widths are equal both arms give the same value
-UCIe-VIP,dut_ucie_d2d_model.sv:275,== flipped,tr_tx / tr_rx clear: they are read only in MBTRAIN and every transition into MBTRAIN still clears them
 IR_Remote-UVM-VIP,dut_ir_model.sv:38,1'b1 inverted,"lv reset 0: the first high sample ends a ""mark"" in S_IDLE, which ignores mark ends"
 IR_Remote-UVM-VIP,dut_ir_model.sv:64,0 -> 1,RC5 half-bit pair 0 is (space mark) by construction: hv[0] = 1 and the first mark writes hv[1] = 0
 IR_Remote-UVM-VIP,dut_ir_model.sv:108,2 -> 3,3H/3 + 1 = 15 as the low end of a 2-half mark: marks of 7..21 already match the 1-half window first
@@ -548,16 +389,6 @@ MPEG_TS-UVM-VIP,dut_tsi_model.sv:43,1'b0 inverted,perr is reloaded at every ts_s
 MPEG_TS-UVM-VIP,dut_tsi_model.sv:44,4 -> 5,last[4] is outside the four filter entries (write dropped)
 VbyOne_HS-UVM-VIP,dut_vbo_model.sv:33,1'b0 inverted,eol / sof are reloaded at every pix_sol before they are used
 VbyOne_HS-UVM-VIP,dut_vbo_model.sv:49,== flipped,symbols start on sdiv = 1 instead of 0: same symbol period and content (phase only)
-HDMI_CEC-UVM-VIP,dut_cec_model.sv:33,1'b0 inverted,ack is cleared at every start bit and eom reloaded at bit 8 before use
-HDMI_CEC-UVM-VIP,dut_cec_model.sv:53,&& flipped,S_IDLE also leaves on a high sample: S_STL still measures the start low from the next falling edge
-HDMI_CEC-UVM-VIP,dut_cec_model.sv:68,1'b0 inverted,v is not used for the ACK bit (b = 9)
-HDMI_CEC-UVM-VIP,dut_cec_model.sv:71,1'b0 inverted,v is not used once err is set
-HDMI_Source-UVM-VIP,dut_hdmisrc_model.sv:70,1'b0 inverted,vs_q / gbs are reloaded at every control character before they are used
-HDMI_Source-UVM-VIP,dut_hdmisrc_model.sv:73,1'b0 inverted,pkt_ok only matters with pkt_valid, which loads it
-HDMI_Source-UVM-VIP,dut_hdmisrc_model.sv:102,== flipped,h / s are cleared after every packet; clearing them at other guard band characters changes nothing
-HDMI_Source-UVM-VIP,dut_hdmisrc_model.sv:113,4 -> 5,sn[256 +: 56] is past the four subpackets (X): the X compare leaves ok unchanged
-CSI2_Sensor-UVM-VIP,dut_csis_model.sv:36,24 -> 25,"bit 24 of a 24-bit one-hot shift is 0 and ecc24(0) = 0, which only matches syn = 0, already a clean header"
-CSI2_Sensor-UVM-VIP,dut_csis_model.sv:69,1'b0 inverted,"corr is written at every accepted header before the only states that read it (payload, CRC), so its reset value is never observed"
 GMII_PHY-UVM-VIP,dut_gphy_model.sv:104,== flipped,"the loopback client holds at most one frame and the next one is received only after 12 quiet byte times, so a shorter inter-frame gap is never followed by a frame"
 I2S_Codec-UVM-VIP,dut_i2sc_model.sv:17,1 -> 2,"$clog2(18) = $clog2(17) = 5 for DW = 16, so the counter width is unchanged"
 I2S_Codec-UVM-VIP,dut_i2sc_model.sv:27,1'b0 inverted,"bclk idles high and sdin low from reset: a set bclk_s / bclk_d / sdin_s synchroniser flop gives at most one edge before any lrck change, which only shifts the all-zero transmit register or is ignored by the receive counter (still at DW); the lrck_s / lrck_d mutants are killed"

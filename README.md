@@ -4,11 +4,11 @@
 
 > 新增 [shared UVM／六類 coverage 計畫](docs/design/platform_shared_uvm_plan.md) 及有界 RTL seed/replay gate；procedural fixture campaign 通過不等於 UVM 或完整 SoC coverage 100%。
 
-> A comprehensive, open-source collection of **164 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
+> A comprehensive, open-source collection of **117 individual protocol VIP (Verification IP) testbenches** for SystemVerilog/UVM-based SoC/ASIC verification.
 
 [![License](https://img.shields.io/badge/License-Apache%%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![VIP Count](https://img.shields.io/badge/VIPs-164-brightgreen.svg)]()
-[![Protocols](https://img.shields.io/badge/Protocols-150-orange.svg)]()
+[![VIP Count](https://img.shields.io/badge/VIPs-117-brightgreen.svg)]()
+[![Commercial](https://img.shields.io/badge/Commercial%20VIPs-47-lightgrey.svg)](#commercial-vips-license-required)
 
 ---
 
@@ -16,11 +16,12 @@
 
 This repository provides a **modular, per-protocol verification IP library** covering major interface standards used in modern semiconductor design. Each entry is packaged as a standalone zip file.
 
-- **164 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
+- **117 UVM VIPs** -- complete UVM testbench environments (agent, sequences, scoreboard, coverage, SVA checks)
 - **RTL IPs** -- the synthesizable reference RTL lives in [open-ip-portfolio](https://github.com/tonythetiger168/open-ip-portfolio); the column `open-ip 對應` of the CSV maps each VIP to its IP there: each `/`-separated name is the stem of one `rtl/<name>_top.sv`, and `無對應` means open-ip-portfolio has no RTL for it yet
-- **150 distinct protocols** across 20 families
+- **20 protocol families**
+- **47 commercial VIPs** (MIPI, PCIe / CXL / UCIe, HDMI / DisplayPort, unreleased JEDEC memories, SoC subsystem kits) are offered under a paid license; see [Commercial VIPs](#commercial-vips-license-required)
 
-All source files are licensed under **Apache License 2.0**.
+All source files in this repository are licensed under **Apache License 2.0**. The commercial VIPs are not part of this repository.
 
 ---
 
@@ -86,7 +87,7 @@ All source files are licensed under **Apache License 2.0**.
 | EtherCAT | UVM VIP | `EtherCAT-VIP.zip` | 24KB |
 | IO-Link | UVM VIP | `IO_Link-VIP.zip` | 24KB |
 
-### Interconnect (15)
+### Interconnect (10)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
@@ -94,49 +95,26 @@ All source files are licensed under **Apache License 2.0**.
 | Avalon-MM | UVM VIP | `Avalon_MM-UVM-VIP.zip` | 24KB |
 | Avalon-ST | UVM VIP | `Avalon_ST-UVM-VIP.zip` | 24KB |
 | BoW die-to-die PHY v2.0 (OCP ODSA Bunch of Wires) | UVM VIP | `BoW-UVM-VIP.zip` | 28KB |
-| CCIX Cache Coherent Interconnect | UVM VIP | `CCIX-VIP.zip` | 28KB |
-| CXL | UVM VIP | `CXL-VIP.zip` | 54KB |
 | CXS CCIX Stream Interface | UVM VIP | `CXS-VIP.zip` | 28KB |
 | OBI | UVM VIP | `OBI-UVM-VIP.zip` | 21KB |
 | OCP-IP Open Core Protocol | UVM VIP | `OCP-VIP.zip` | 28KB |
-| PCIe | UVM VIP | `PCIe-VIP.zip` | 65KB |
 | RapidIO | UVM VIP | `RapidIO-VIP.zip` | 23KB |
 | TileLink (TL-UL/TL-C) | UVM VIP | `TileLink-VIP.zip` | 29KB |
-| UALink | UVM VIP | `UALink-VIP.zip` | 41KB |
-| UCIe | UVM VIP | `UCIe-VIP.zip` | 43KB |
 | Wishbone | UVM VIP | `Wishbone-UVM-VIP.zip` | 24KB |
 
-### MIPI (18)
+### MIPI (2)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| C-PHY | UVM VIP | `C_PHY-VIP.zip` | 36KB |
-| CSE | UVM VIP | `CSE-VIP.zip` | 36KB |
-| CSI-2 | UVM VIP | `CSI_2-VIP.zip` | 44KB |
-| CSI-2 camera sensor transmitter | UVM VIP | `CSI2_Sensor-UVM-VIP.zip` | 25KB |
-| D-PHY | UVM VIP | `D_PHY-VIP.zip` | 36KB |
-| DigRF | UVM VIP | `DigRF-VIP.zip` | 33KB |
-| DSI | UVM VIP | `DSI-VIP.zip` | 36KB |
-| HSI | UVM VIP | `HSI-VIP.zip` | 34KB |
-| M-PHY | UVM VIP | `M_PHY-VIP.zip` | 36KB |
-| MIPI DBI (Display Bus Interface) | UVM VIP | `DBI-VIP.zip` | 28KB |
-| MIPI DPI (Display Pixel Interface) | UVM VIP | `DPI-VIP.zip` | 27KB |
 | MIPI I3C | UVM VIP | `I3C-VIP.zip` | 35KB |
-| MIPI RFFE | UVM VIP | `RFFE-VIP.zip` | 30KB |
-| MIPI SLIMbus | UVM VIP | `SLIMbus-VIP.zip` | 31KB |
-| MIPI SoundWire | UVM VIP | `SoundWire-VIP.zip` | 32KB |
-| MIPI SPMI | UVM VIP | `SPMI-VIP.zip` | 30KB |
 | SCCB / I2C camera sensor control | UVM VIP | `SCCB_Sensor-UVM-VIP.zip` | 22KB |
-| UniPro | UVM VIP | `UniPro-VIP.zip` | 36KB |
 
-### Memory (26)
+### Memory (21)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | DDR | UVM VIP | `DDR-VIP.zip` | 40KB |
 | DDR5 | UVM VIP | `DDR5-VIP.zip` | 37KB |
-| DDR6 | UVM VIP | `ddr6-VIP.zip` | 27KB |
-| DDR7 | UVM VIP | `ddr7-VIP.zip` | 27KB |
 | DFI 5.0 (MC-PHY Interface) | UVM VIP | `DFI-VIP.zip` | 32KB |
 | eMMC | UVM VIP | `eMMC-VIP.zip` | 53KB |
 | GDDR5 | UVM VIP | `gddr5-VIP.zip` | 29KB |
@@ -147,18 +125,15 @@ All source files are licensed under **Apache License 2.0**.
 | HBM3 | UVM VIP | `hbm3-VIP.zip` | 29KB |
 | HBM3E | UVM VIP | `HBM3E-VIP.zip` | 37KB |
 | HBM4 | UVM VIP | `hbm4-VIP.zip` | 30KB |
-| HBM5 | UVM VIP | `HBM5-VIP.zip` | 27KB |
 | HyperBus / HyperRAM | UVM VIP | `HyperBus-UVM-VIP.zip` | 26KB |
 | LPDDR | UVM VIP | `LPDDR-VIP.zip` | 29KB |
 | LPDDR5 | UVM VIP | `lpddr5-VIP.zip` | 30KB |
 | LPDDR5X | UVM VIP | `lpddr5x-VIP.zip` | 43KB |
 | LPDDR6 | UVM VIP | `LPDDR6-VIP.zip` | 22KB |
-| LPDDR7 | UVM VIP | `lpddr7-VIP.zip` | 32KB |
 | ONFI | UVM VIP | `ONFI-VIP.zip` | 53KB |
 | Quad-SPI NOR flash (XIP) | UVM VIP | `SPI_NOR-UVM-VIP.zip` | 23KB |
 | SD | UVM VIP | `SD-VIP.zip` | 55KB |
 | UFS | UVM VIP | `UFS-VIP.zip` | 35KB |
-| UniPro-Mem | UVM VIP | `UniPro_Mem-VIP.zip` | 39KB |
 
 ### Networking (15)
 
@@ -199,16 +174,14 @@ All source files are licensed under **Apache License 2.0**.
 | MCTP over SMBus (DMTF DSP0237) | UVM VIP | `MCTP-UVM-VIP.zip` | 25KB |
 | SMBus/PMBus | UVM VIP | `SMBus-UVM-VIP.zip` | 26KB |
 
-### Security (7)
+### Security (5)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
 | Crypto / Security Engine | UVM VIP | `Security-VIP.zip` | 36KB |
 | DVB CI / CI+ CAM (EN 50221, PC Card) | UVM VIP | `CI_CAM-UVM-VIP.zip` | 28KB |
-| HDCP 2.3 Content Protection | UVM VIP | `HDCP-VIP.zip` | 32KB |
 | ISO 7816-3 smartcard (T = 0, PPS) | UVM VIP | `Smartcard_ISO7816-UVM-VIP.zip` | 27KB |
 | MACsec (IEEE 802.1AE, GCM-AES-128) | UVM VIP | `MACsec-UVM-VIP.zip` | 29KB |
-| PCIe IDE (AES-256-GCM) | UVM VIP | `PCIe_IDE-UVM-VIP.zip` | 28KB |
 | SPDM 1.4 Responder (DMTF DSP0274, device attestation) | UVM VIP | `SPDM-UVM-VIP.zip` | 27KB |
 
 ### SerDes (1)
@@ -226,7 +199,7 @@ All source files are licensed under **Apache License 2.0**.
 | UART | UVM VIP | `UART-VIP.zip` | 36KB |
 | xSPI (JESD251) | UVM VIP | `xSPI-UVM-VIP.zip` | 23KB |
 
-### Storage (9)
+### Storage (8)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
@@ -234,7 +207,6 @@ All source files are licensed under **Apache License 2.0**.
 | NVMe | UVM VIP | `NVMe-VIP.zip` | 35KB |
 | SAS-4 (Serial Attached SCSI) | UVM VIP | `SAS-VIP.zip` | 34KB |
 | SATA | UVM VIP | `SATA-VIP.zip` | 33KB |
-| SCM dual-mode SSD (NVMe 2.1 multi-queue + FDP, CXL.mem byte port) | UVM VIP | `SCM_SSD-VIP.zip` | 18KB |
 | SD / eMMC card (1/4/8-bit, 512-byte blocks) | UVM VIP | `SDMMC_Card-UVM-VIP.zip` | 31KB |
 | SD memory card (4-bit) | UVM VIP | `SD_Card-UVM-VIP.zip` | 27KB |
 | SDIO | UVM VIP | `SDIO-UVM-VIP.zip` | 23KB |
@@ -259,14 +231,10 @@ All source files are licensed under **Apache License 2.0**.
 | USB4 | UVM VIP | `USB4-VIP.zip` | 61KB |
 | eUSB2 | UVM VIP | `eUSB2-VIP.zip` | 61KB |
 
-### Video (6)
+### Video (2)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
-| DisplayPort2 | UVM VIP | `DisplayPort2-VIP.zip` | 42KB |
-| HDMI 2.1 | UVM VIP | `HDMI-VIP.zip` | 38KB |
-| HDMI CEC | UVM VIP | `HDMI_CEC-UVM-VIP.zip` | 24KB |
-| HDMI source (TMDS, InfoFrames) | UVM VIP | `HDMI_Source-UVM-VIP.zip` | 28KB |
 | MPEG-2 TS / TSI (ISO/IEC 13818-1) | UVM VIP | `MPEG_TS-UVM-VIP.zip` | 23KB |
 | V-by-One HS panel sink | UVM VIP | `VbyOne_HS-UVM-VIP.zip` | 22KB |
 
@@ -276,13 +244,78 @@ All source files are licensed under **Apache License 2.0**.
 |----------|------|------|------|
 | Bluetooth5 | UVM VIP | `Bluetooth5-VIP.zip` | 36KB |
 
-### SoC Subsystem (14)
+## Commercial VIPs (license required)
 
-Phone SoC subsystem VIPs for the AXI4-manager IPs of open-ip-portfolio. Each zip is
-standalone: APB4 agent + generated RAL, AXI4 subordinate / monitor / coverage (the
-manager-port kit), reference-model scoreboards, an RTL snapshot, `tb/top_tb.sv`,
-`sim/<ip>.f` and `sim/testlist.txt` for Verilator + uvm-core. See
-[docs/SOC_SUBSYS.md](docs/SOC_SUBSYS.md).
+The 47 VIPs below are not in this repository. They are built on specifications that are only available to members or adopters of a standards body (MIPI, PCI-SIG, CXL, UCIe, UALink, CCIX, VESA, HDMI, DCP), on memory standards that JEDEC has not published yet, or they are our own SoC subsystem kits. They are available under a commercial license for a fee.
+
+To ask about a license, pricing or an evaluation copy, contact: **_TBD (contact and pricing to be added)_**.
+
+Versions of these VIPs that were published here earlier under Apache-2.0 are no longer distributed and are not maintained.
+
+### Interconnect (5)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| CCIX Cache Coherent Interconnect | UVM VIP | `CCIX-VIP.zip` | 28KB |
+| CXL | UVM VIP | `CXL-VIP.zip` | 54KB |
+| PCIe | UVM VIP | `PCIe-VIP.zip` | 65KB |
+| UALink | UVM VIP | `UALink-VIP.zip` | 41KB |
+| UCIe | UVM VIP | `UCIe-VIP.zip` | 43KB |
+
+### MIPI (16)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| C-PHY | UVM VIP | `C_PHY-VIP.zip` | 36KB |
+| CSE | UVM VIP | `CSE-VIP.zip` | 36KB |
+| CSI-2 | UVM VIP | `CSI_2-VIP.zip` | 44KB |
+| CSI-2 camera sensor transmitter | UVM VIP | `CSI2_Sensor-UVM-VIP.zip` | 25KB |
+| D-PHY | UVM VIP | `D_PHY-VIP.zip` | 36KB |
+| DigRF | UVM VIP | `DigRF-VIP.zip` | 33KB |
+| DSI | UVM VIP | `DSI-VIP.zip` | 36KB |
+| HSI | UVM VIP | `HSI-VIP.zip` | 34KB |
+| M-PHY | UVM VIP | `M_PHY-VIP.zip` | 36KB |
+| MIPI DBI (Display Bus Interface) | UVM VIP | `DBI-VIP.zip` | 28KB |
+| MIPI DPI (Display Pixel Interface) | UVM VIP | `DPI-VIP.zip` | 27KB |
+| MIPI RFFE | UVM VIP | `RFFE-VIP.zip` | 30KB |
+| MIPI SLIMbus | UVM VIP | `SLIMbus-VIP.zip` | 31KB |
+| MIPI SoundWire | UVM VIP | `SoundWire-VIP.zip` | 32KB |
+| MIPI SPMI | UVM VIP | `SPMI-VIP.zip` | 30KB |
+| UniPro | UVM VIP | `UniPro-VIP.zip` | 36KB |
+
+### Memory (5)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| DDR6 | UVM VIP | `ddr6-VIP.zip` | 27KB |
+| DDR7 | UVM VIP | `ddr7-VIP.zip` | 27KB |
+| HBM5 | UVM VIP | `HBM5-VIP.zip` | 27KB |
+| LPDDR7 | UVM VIP | `lpddr7-VIP.zip` | 32KB |
+| UniPro-Mem | UVM VIP | `UniPro_Mem-VIP.zip` | 39KB |
+
+### Security (2)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| HDCP 2.3 Content Protection | UVM VIP | `HDCP-VIP.zip` | 32KB |
+| PCIe IDE (AES-256-GCM) | UVM VIP | `PCIe_IDE-UVM-VIP.zip` | 28KB |
+
+### Storage (1)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| SCM dual-mode SSD (NVMe 2.1 multi-queue + FDP, CXL.mem byte port) | UVM VIP | `SCM_SSD-VIP.zip` | 18KB |
+
+### Video (4)
+
+| Protocol | Type | File | Size |
+|----------|------|------|------|
+| DisplayPort2 | UVM VIP | `DisplayPort2-VIP.zip` | 42KB |
+| HDMI 2.1 | UVM VIP | `HDMI-VIP.zip` | 38KB |
+| HDMI CEC | UVM VIP | `HDMI_CEC-UVM-VIP.zip` | 24KB |
+| HDMI source (TMDS, InfoFrames) | UVM VIP | `HDMI_Source-UVM-VIP.zip` | 28KB |
+
+### SoC Subsystem (14)
 
 | Protocol | Type | File | Size |
 |----------|------|------|------|
@@ -319,9 +352,9 @@ Models a SoC testbench uses next to the protocol VIPs, kept as source under
 open-vip-portfolio/
 |-- LICENSE
 |-- README.md
-|-- vip_individual_portfolio.csv   # machine-readable index (164 entries)
+|-- vip_individual_portfolio.csv   # machine-readable index (164 entries; 47 marked Commercial)
 |-- smoke_report.csv               # full open-toolchain L1b smoke results
-|-- vips/                          # 164 individual VIP zip files
+|-- vips/                          # 117 individual VIP zip files
 |-- .github/workflows/             # CI validation
 |-- docs/                          # CONTRIBUTING and guides
 ```
