@@ -8,9 +8,9 @@
 
 | 結果 | 意義 | VIP 數 |
 |---|---|---|
-| PASS | 建置成功、test 跑到結束（時間 > 0），沒有 UVM_ERROR / UVM_FATAL，VIP 自己的 checker 也沒有 warning | 27 |
-| WARN | 建置成功、跑完、沒有 UVM_ERROR / UVM_FATAL，但 VIP 自己的 checker / SVA 發出 `UVM_WARNING` | 36 |
-| FAIL | 建置成功，但執行時有 UVM_ERROR / UVM_FATAL、逾時，或在時間 0 就結束（test 沒有送出任何流量） | 12 |
+| PASS | 建置成功、test 跑到結束（時間 > 0），沒有 UVM_ERROR / UVM_FATAL，VIP 自己的 checker 也沒有 warning | 30 |
+| WARN | 建置成功、跑完、沒有 UVM_ERROR / UVM_FATAL，但 VIP 自己的 checker / SVA 發出 `UVM_WARNING` | 35 |
+| FAIL | 建置成功，但執行時有 UVM_ERROR / UVM_FATAL、逾時，或在時間 0 就結束（test 沒有送出任何流量） | 10 |
 | ERROR | Verilator 無法建置（語法、LRM 違規或 Verilator 不支援的寫法） | 0 |
 | NONE | 沒有 UVM test（RTL IP 類 VIP，只有 directed testbench） | 2 |
 
@@ -24,7 +24,7 @@
 |---|---|
 | 建置 | 0 |
 | 逾時 / log 洪水 | 0 |
-| scoreboard 比對不符 | 12 |
+| scoreboard 比對不符 | 10 |
 | checker / SVA | 0 |
 
 ## Verilator 5.054 的已知限制
@@ -36,7 +36,7 @@
 - 在 `$urandom` 上 `case` 時每個 case item 都會重新取值：sequence 先把值存進變數再分派。
 - 兩次 clocking 事件之間發出的 drive 會和下一個 `@(cb)` 之後的 drive 落在同一個邊緣，而且順序不保證：driver 在每個 item 開始前先 `@(vif.drv_cb)`（ONFI、HBM）。
 - 以 `verilator` 開頭的註解會被當成 pragma（`BADVLTPRAGMA`）。
-- covergroup 有取樣但 `get_coverage()` 回傳 0：ONFI 的 100% 覆蓋率門檻在 Verilator 下降為 warning。
+- Verilator 5.052 的 covergroup `get_coverage()` 回傳 0、enum transition bins 無法建置；5.054 兩者都支援，ONFI 的 100% 覆蓋率門檻因此在 Verilator 上也強制執行（2026-11-25）。
 - 2-state：`'z` 讀成 0，所以用 `=== 1'bz` 判斷「腳位放開」的邏輯永遠不成立。SPI 用 MOSI 的 `'z` 表示 CPHA=1，monitor 與 slave model 改讀新增的 `mosi_oe`（pad output enable）。
 
 ## 逐 VIP 結果
@@ -64,6 +64,9 @@
 | UFS-VIP | `ufs_regression_test` | PASS |  |  |
 | USB4-VIP | `usb4_test` | PASS |  |  |
 | USB_PD-VIP | `usb_pd_test` | PASS |  |  |
+| ONFI-VIP | `onfi_deep_test` | PASS |  | 2026-11-25 重跑（Verilator 5.054） |
+| FlexRay-VIP | `random_test` | PASS |  | 2026-11-25 重跑（Verilator 5.054） |
+| LIN-VIP | `random_test` | PASS |  | 2026-11-25 重跑（Verilator 5.054） |
 | Bluetooth5-VIP | `bt5_adv_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=3366: UVM_WARNING regression/sva/bluetooth5_compliance_checker.sv(59) @ 343750: reporter [BLUETOOTH5_L2] RX CRC OK failed |
 | CXS-VIP | `cxs_random_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=4: UVM_WARNING tb/top_tb.sv(84) @ 155000: reporter [DUT] cxs receiver: packet abandoned without cxs_last |
 | DDR-VIP | `memory_directed_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=2: UVM_WARNING coverage/memory_coverage_pkg.sv(327) @ 39065000: uvm_test_top.env.cov_chk [memory_coverage_report_checker] DDR Coverage below target |
@@ -76,17 +79,14 @@
 | JESD204-VIP | `jesd204_random_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=1: UVM_WARNING jesd204/jesd204_monitor.svh(75) @ 2875000: uvm_test_top.env.agt.mon [MON] ILAS order error: DID in multiframe 3 |
 | lpddr5-VIP | `lpddr5_write_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=558: UVM_WARNING lpddr5_vip/vip/lpddr5/lpddr5_compliance_checker.sv(39) @ 105000: reporter [LPDDR5_L2] Burst length 8/16 failed |
 | lpddr5x-VIP | `lpddr5x_rw_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=544: UVM_WARNING lpddr5x_vip/vip/lpddr5x/lpddr5x_data_integrity_checker.sv(43) @ 275000: reporter [LPDDR5X_L2] tRP 8-12 cycles failed |
-| ONFI-VIP | `onfi_deep_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=1: UVM_WARNING coverage/memory_coverage_pkg.sv(158) @ 3762750000: uvm_test_top.env.onfi_cov [onfi_coverage] ONFI Coverage < 100% (not measurable in Verilator) |
 | SPI-VIP | `spi_random_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=5: UVM_WARNING spi/spi_driver.svh(78) @ 47405000: uvm_test_top.env.agt.drv [DRV] injecting CS abort after 2 bits |
 | ToggleNAND-VIP | `tnand_random_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=16: UVM_WARNING tb/top_tb.sv(101) @ 14945000: reporter [DUT] cmd 0x80 latched while busy |
 | USB-VIP | `usb_random_regression_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=8134 timeout: UVM_WARNING rtl/sva/usb_compliance_checker.sv(68) @ 106000: reporter [USB_L2] HS preamble failed |
 | USB2-VIP | `usb_eusb2_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=1864 timeout: UVM_WARNING vip/base/usb_vip_pkg.sv(937) @ 206000: uvm_test_top.env.sb [SCOREBOARD] Transaction completed with error status |
 | USB3-VIP | `usb_random_regression_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=25181 timeout: UVM_WARNING rtl/sva/usb3_compliance_checker.sv(73) @ 102000: reporter [USB3_L2] U1/U2 exit failed |
 | CAN-VIP | `can_2_0_test` | FAIL | scoreboard 比對不符 | rc=0 UVM_ERROR=4 UVM_FATAL=0 VIP_WARNINGS=54981: UVM_ERROR env/can_env.sv(63) @ 17065000: uvm_test_top.env.sb [SB] mismatch exp{CAN: type=CAN_2_0 frame=DATA_FRAME id=0x0 ide=0 dlc=0 len=0 rtr=0 fdf=0 brs=0 esi=0 tt=0 err |
-| FlexRay-VIP | `random_test` | FAIL | scoreboard 比對不符 | rc=0 UVM_ERROR=18 UVM_FATAL=0 VIP_WARNINGS=34875: UVM_ERROR env/flexray_env.sv(68) @ 21495000: uvm_test_top.env.sb [SB] mismatch exp{FR: ch=CHANNEL_A seg=STATIC_SEGMENT fid=0 len=0 slot=0 cycle=0 sync=0 start=0 cold=0 wa |
 | I3C-VIP | `i3c_random_test` | FAIL | scoreboard 比對不符 | rc=0 UVM_ERROR=51 UVM_FATAL=0 VIP_WARNINGS=41: UVM_ERROR env/i3c_env.sv(84) @ 1355000: uvm_test_top.env.sb [SB] mismatch exp{I3C SDR WR addr=0x20 len=0 nack=1} obs{I3C SDR WR addr=0x00 len=0 nack=1} |
 | JTAG-VIP | `jtag_random_test` | FAIL | scoreboard 比對不符 | rc=0 UVM_ERROR=26 UVM_FATAL=0 VIP_WARNINGS=2840: UVM_ERROR env/env_pkg.sv(100) @ 2310000: uvm_test_top.env.jtag_sb [JTAG_SB] mismatch exp{JTAG: op=OP_DR_SCAN ir=0x10 dr_len=103 dr=0xc0853a9f1fd75fb3bfe9441296334044 pause |
-| LIN-VIP | `random_test` | FAIL | scoreboard 比對不符 | rc=0 UVM_ERROR=68 UVM_FATAL=0 VIP_WARNINGS=55688: UVM_ERROR common/common_pkg.sv(63) @ 19935000: uvm_test_top.env.agt.chk [PROTOCOL_CHK] [ERROR] PID parity mismatch: expected 01, got 10 (total=1) |
 | LPDDR-VIP | `memory_directed_test` | FAIL | scoreboard 比對不符 | rc=0 UVM_ERROR=19 UVM_FATAL=0 VIP_WARNINGS=74: UVM_ERROR env/memory_env_pkg.sv(131) @ 585000: uvm_test_top.env.sb [SB] LPDDR mismatch exp{LPDDR ACT: bank=0 addr=0x7961 bl=8} obs{LPDDR PRE: bank=0 addr=0x0 bl=0} |
 | LPI-VIP | `lpi_random_test` | FAIL | scoreboard 比對不符 | rc=0 UVM_ERROR=28 UVM_FATAL=0 VIP_WARNINGS=0: UVM_ERROR env/lpi_env.sv(64) @ 225000: uvm_test_top.env.sb [SB] mismatch exp{LPI request deny=1 -> PENDING (stop=3)} obs{LPI request deny=0 -> ACCEPTED |
 | SWD-VIP | `swd_random_test` | FAIL | scoreboard 比對不符 | rc=0 UVM_ERROR=29 UVM_FATAL=0 VIP_WARNINGS=26: UVM_ERROR env/swd_env.sv(107) @ 1125000: uvm_test_top.env.sb [SB] mismatch exp{SWD AP WR a=1 data=0x750d0242 ack=FAULT rdata=0x00000000} obs{SWD AP WR a=1 data=0x7e643f46 ac |
