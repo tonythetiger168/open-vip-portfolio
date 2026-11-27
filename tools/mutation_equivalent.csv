@@ -460,3 +460,11 @@ APB-VIP,dut_amba_dut.sv:123,1'b0 inverted,tie-off of an unused sibling protocol 
 APB-VIP,dut_amba_dut.sv:124,1'b0 inverted,tie-off of an unused sibling protocol (AXI / AXI-Stream) in the shared AMBA model
 TileLink-VIP,dut_tilelink_device_model.sv:97,< -> <= in condition,"when a == b both arms return the same value"
 TileLink-VIP,dut_tilelink_device_model.sv:195,16 -> 17,"the extra iteration b = 16 fails b < d_beats_of() (at most 16), so nothing is read"
+USB3-VIP,dut_usb3_smoke_model.sv:196,1'b0 inverted,"tx_hold after power-on reset: RxDetect -> Polling runs link_reset(), which clears it before any U0 clock"
+USB3-VIP,dut_usb3_smoke_model.sv:201,0 -> 1,"txb[0] reset value: a retry-buffer entry is always written by tx_push before it is sent"
+USB_PD-VIP,dut_usb_pd_smoke_model.sv:167,== flipped,"GoodCRC request cleared at the first instead of the last GoodCRC symbol: the transmitter is busy until the end either way, and the half-duplex bus cannot deliver another message while the sink transmits"
+USB_PD-VIP,dut_usb_pd_smoke_model.sv:234,34 -> 35,"reset loop writes fb[34], which is out of range and ignored"
+USB_PD-VIP,dut_usb_pd_smoke_model.sv:249,1'b0 inverted,"Hard Reset is only sent with the policy engine in Hard Reset, whose abort branch clears tx_busy on the next clock with tx_valid low"
+USB_PD-VIP,dut_usb_pd_smoke_model.sv:325,! dropped in condition,"pe_send is only consumed by an idle transmitter; clearing it when wait_gc starts instead of when the message is taken differs only if the policy engine queued a second message while one is on the wire, which never happens"
+USB_PD-VIP,dut_usb_pd_smoke_model.sv:167,&& flipped,"GoodCRC request also cleared while another frame is on the line: the half-duplex bus cannot deliver a message while the sink transmits"
+USB_PD-VIP,dut_usb_pd_smoke_model.sv:234,0 -> 1,"fb[0] reset skipped: fb is a scratch array that build() fully rewrites before every frame"

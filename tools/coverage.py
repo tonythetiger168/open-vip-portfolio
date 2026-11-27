@@ -197,10 +197,15 @@ def in_scope(scope, fn, page):
     """A covergroup belongs to the VIP under test when it names its protocol,
     or no protocol at all (shared interface groups). The AMBA VIPs compile
     the APB, AHB and AXI checkers together; a register test on one bus can
-    never hit the others' bins."""
+    never hit the others' bins. The USB family's umbrella interface
+    (usb_vip_if: MAC handshake, UTMI line state, PIPE power, PD role) spans
+    seven protocols, so it is left out for a USB VIP measured through its own
+    link-layer agent."""
     if not scope:
         return True
     name = (fn + " " + page).lower()
+    if scope.startswith("usb") and "usb_vip_if" in name:
+        return False
     return scope in name or not any(p in name for p in AMBA_PROTOCOLS)
 
 def unparam(name):
