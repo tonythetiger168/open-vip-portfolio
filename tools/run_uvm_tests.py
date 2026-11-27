@@ -149,9 +149,9 @@ SUITES["SATA-VIP"] = dict(
 # enforced here (5.052 reported 0 and the check was skipped on Verilator).
 # The file list is the --smoke one (every .sv in package order).
 MEMORY_COV_SUITES = {
-    "DDR-VIP": ["memory_coverage_regression_test", "memory_ddr_data_err_test"],
-    "HBM-VIP": ["memory_coverage_regression_test", "memory_hbm_data_err_test"],
-    "LPDDR-VIP": ["memory_coverage_regression_test", "memory_lpddr_data_err_test"],
+    "DDR-VIP": ["memory_coverage_regression_test", "memory_ddr_data_err_test", "memory_ddr_timing_err_test"],
+    "HBM-VIP": ["memory_coverage_regression_test", "memory_hbm_data_err_test", "memory_hbm_timing_err_test"],
+    "LPDDR-VIP": ["memory_coverage_regression_test", "memory_lpddr_data_err_test", "memory_lpddr_timing_err_test"],
     "UFS-VIP": ["memory_coverage_regression_test"],
     "eMMC-VIP": ["memory_coverage_regression_test"],
     "SD-VIP": ["memory_coverage_regression_test"],
