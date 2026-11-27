@@ -6,7 +6,7 @@
 5,Networking,Ethernet,UVM VIP,Ethernet-VIP.zip,57KB,NET-VIP,28,3918,37,19,5,4,v1.9.0,2026-10-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/Ethernet-VIP.zip,Apache-2.0,Ethernet
 6,Networking,FC,UVM VIP,FC-VIP.zip,48KB,NET-VIP,25,3387,37,19,5,4,v1.7.4,2026-09-28,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/FC-VIP.zip,Apache-2.0,FC
 7,Networking,UEC,UVM VIP,UEC-VIP.zip,22KB,NET-VIP,18,855,4,2,1,2,v1.8.0,2026-10-02,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/UEC-VIP.zip,Apache-2.0,UEC
-8,USB,USB,UVM VIP,USB-VIP.zip,74KB,USB-VIP,23,5821,27,19,14,7,v1.7.4,2026-10-30,✅,PASS,https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/USB-VIP.zip,Apache-2.0,USB
+8,USB,USB,UVM VIP,USB-VIP.zip,192KB,USB-VIP,48,15435,138,77,14,7,v1.8.0,2026-11-27,✅,PASS,https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/USB-VIP.zip,Apache-2.0,USB
 9,USB,USB-PD,UVM VIP,USB_PD-VIP.zip,86KB,USB-VIP,23,7059,28,10,14,6,v1.8.0,2026-11-27,✅,PASS,https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/USB_PD-VIP.zip,Apache-2.0,USB_PD
 10,USB,USB2,UVM VIP,USB2-VIP.zip,87KB,USB-VIP,23,7165,33,12,14,6,v1.8.0,2026-11-27,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/USB2-VIP.zip,Apache-2.0,USB2
 11,USB,USB3,UVM VIP,USB3-VIP.zip,84KB,USB-VIP,23,7011,32,12,14,6,v1.8.0,2026-11-27,✅,PASS,https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/USB3-VIP.zip,Apache-2.0,USB3

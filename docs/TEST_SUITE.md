@@ -4,9 +4,9 @@
 
 ## 1. 結論
 
-- 117 個 VIP 中 117 個有可在開源工具上執行的 self-checking 功能測試，共 7581 個 check（另有 RTL IP testbench 的 0 次斷言評估）；117 個 VIP 的測試全部通過。
+- 117 個 VIP 中 117 個有可在開源工具上執行的 self-checking 功能測試，共 9218 個 check（另有 RTL IP testbench 的 0 次斷言評估）；117 個 VIP 的測試全部通過。
 - 判定：✅ Sufficient 96、🟡 Partial 21、❌ Insufficient 0。
-- Mutation testing：2250 個有效 mutant 中 2159 個被功能測試偵測（96%）。
+- Mutation testing：2255 個有效 mutant 中 2180 個被功能測試偵測（97%）。
 - 沒有未修正的 DUT 模型缺陷：功能測試中沒有 XFAIL check（先前記錄的缺陷都已在模型中修正）。
 
 ## 2. 方法
@@ -128,11 +128,11 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [UART-VIP](test_suites/UART-VIP.md) | Serial | `smoke_func_tb.sv` | 61 | iverilog | 18/18 | 0 | ✅ Sufficient |
 | [UEC-VIP](test_suites/UEC-VIP.md) | Networking | `smoke_func_tb.sv` | 16 | iverilog | 12/12 | 0 | 🟡 Partial |
 | [UFS-VIP](test_suites/UFS-VIP.md) | Memory | `func_ufs_tb.sv` | 28 | verilator | 11/12 | 0 | ✅ Sufficient |
-| [USB-VIP](test_suites/USB-VIP.md) | USB | `func_usb_tb.sv` | 29 | iverilog | 26/30 | 0 | ✅ Sufficient |
-| [USB2-VIP](test_suites/USB2-VIP.md) | USB | `smoke_func_tb.sv` | 30 | iverilog | 28/28 | 0 | ✅ Sufficient |
-| [USB3-VIP](test_suites/USB3-VIP.md) | USB | `func_usb3_tb.sv` | 28 | iverilog | 26/30 | 0 | ✅ Sufficient |
-| [USB4-VIP](test_suites/USB4-VIP.md) | USB | `func_usb4_tb.sv` | 26 | verilator | 11/12 | 0 | ✅ Sufficient |
-| [USB_PD-VIP](test_suites/USB_PD-VIP.md) | USB | `func_usb_pd_tb.sv` | 29 | iverilog | 27/30 | 0 | ✅ Sufficient |
+| [USB-VIP](test_suites/USB-VIP.md) | USB | `func_eusb2_tb.sv`, `func_usb2_tb.sv`, `func_usb3_tb.sv`, `func_usb4_tb.sv`, `func_usb_pd_tb.sv` | 902 | iverilog | 27/27 | 0 | ✅ Sufficient |
+| [USB2-VIP](test_suites/USB2-VIP.md) | USB | `smoke_func_tb.sv` | 230 | iverilog | 29/29 | 0 | ✅ Sufficient |
+| [USB3-VIP](test_suites/USB3-VIP.md) | USB | `smoke_func_tb.sv` | 107 | iverilog | 28/28 | 0 | ✅ Sufficient |
+| [USB4-VIP](test_suites/USB4-VIP.md) | USB | `smoke_func_tb.sv` | 213 | iverilog | 25/25 | 0 | ✅ Sufficient |
+| [USB_PD-VIP](test_suites/USB_PD-VIP.md) | USB | `smoke_func_tb.sv` | 264 | iverilog | 27/27 | 0 | ✅ Sufficient |
 | [USXGMII-UVM-VIP](test_suites/USXGMII-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 29 | iverilog | 29/29 | 0 | ✅ Sufficient |
 | [VbyOne_HS-UVM-VIP](test_suites/VbyOne_HS-UVM-VIP.md) | Video | `smoke_func_tb.sv` | 12 | iverilog | 27/27 | 0 | 🟡 Partial |
 | [WTB-UVM-VIP](test_suites/WTB-UVM-VIP.md) | Debug | `smoke_func_tb.sv` | 15 | iverilog | 6/6 | 0 | 🟡 Partial |
@@ -142,7 +142,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [eMMC-VIP](test_suites/eMMC-VIP.md) | Memory | `func_emmc_tb.sv` | 43 | verilator | 8/12 | 0 | 🟡 Partial |
 | [eMMC_Device-UVM-VIP](test_suites/eMMC_Device-UVM-VIP.md) | Storage | `smoke_func_tb.sv` | 36 | iverilog | 27/27 | 0 | ✅ Sufficient |
 | [eSPI-UVM-VIP](test_suites/eSPI-UVM-VIP.md) | Peripherals | `smoke_func_tb.sv` | 54 | iverilog | 26/28 | 0 | ✅ Sufficient |
-| [eUSB2-VIP](test_suites/eUSB2-VIP.md) | USB | `func_eusb2_tb.sv` | 25 | iverilog | 26/30 | 0 | ✅ Sufficient |
+| [eUSB2-VIP](test_suites/eUSB2-VIP.md) | USB | `smoke_func_tb.sv` | 88 | iverilog | 29/29 | 0 | ✅ Sufficient |
 | [gddr5-VIP](test_suites/gddr5-VIP.md) | Memory | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [gddr6-VIP](test_suites/gddr6-VIP.md) | Memory | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [gddr7-VIP](test_suites/gddr7-VIP.md) | Memory | `func_mem_tb.sv` | 15 | verilator | 7/7 | 0 | ✅ Sufficient |
