@@ -18,7 +18,7 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（verilator，83 checks）
+結果：**PASS**（iverilog，83 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 

@@ -10,7 +10,7 @@
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，42 個 check，全部通過 |
 | Mutation | 1/1 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（42 個 check，mutation score 100%） |
+| 判定 | **🟡 Partial**（DUT model 只有 1 個 mutant（需 ≥ 10，model 太小）） |
 
 ## 2. 可執行的功能測試
 
@@ -40,7 +40,7 @@ UVM agent test（`gpio_func_test`：directed + constrained-random 流量，score
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（42 個 check，mutation score 100%）。
+判定：**🟡 Partial**（DUT model 只有 1 個 mutant（需 ≥ 10，model 太小））。
 
 無已知缺口。
 

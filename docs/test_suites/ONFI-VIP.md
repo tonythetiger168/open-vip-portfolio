@@ -94,7 +94,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 | UVM tests | 3 | `memory_base_test`, `memory_coverage_regression_test`, `onfi_deep_test` |
 | Sequences | 54 | `ddr_seq_item`, `ddr_base_seq`, `ddr_rw_seq`, `ddr_sweep_seq`, `ddr_cov_cmd_seq`, `ddr_cov_bank_seq`, `ddr_cov_bl_seq`, `emmc_seq_item`, `emmc_base_seq`, `emmc_rw_seq`, `emmc_sweep_seq`, `emmc_cov_cmd_seq`, `emmc_cov_bw_seq`, `hbm_seq_item`, `hbm_base_seq`, `hbm_rw_seq`, `hbm_sweep_seq`, `hbm_cov_cmd_seq`, `hbm_cov_ch_seq`, `lpddr_seq_item` |
 | SVA（assert / cover property） | 31 / 35 | `assert_l1_cmd_io`, `cover_l1_cmd_io`, `assert_l1_addr_io`, `cover_l1_addr_io`, `assert_l1_we_re`, `cover_l1_we_re`, `assert_l1_cle_ale`, `cover_l1_cle_ale`, `assert_l2_cmd_ce`, `cover_l2_cmd_ce`, `assert_l2_addr_ce`, `cover_l2_addr_ce` … |
-| Covergroups / coverpoints | 11 / 17 | |
+| Covergroups / coverpoints | 12 / 17 | |
 
 ## 4. 充分度判定與缺口
 

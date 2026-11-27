@@ -60,7 +60,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 3 | `avsbus_base_test`, `avsbus_random_test`, `avsbus_regression_test` |
+| UVM tests | 4 | `avsbus_base_test`, `avsbus_random_test`, `avsbus_regression_test`, `avsbus_ral_test` |
 | Sequences | 11 | `avsbus_base_sequence`, `avsbus_set_voltage_seq`, `avsbus_get_voltage_seq`, `avsbus_enable_seq`, `avsbus_corner_voltage_seq`, `avsbus_no_resp_seq`, `avsbus_back_to_back_seq`, `avsbus_error_inject_seq`, `avsbus_random_sequence`, `avsbus_regression_sequence`, `avsbus_transaction` |
 | SVA（assert / cover property） | 20 / 2 | `a_avsbus_l1_clk`, `a_avsbus_l1_rst`, `a_avsbus_l1_state`, `a_avsbus_l1_valid`, `a_avsbus_trans_idle`, `a_avsbus_trans_command`, `a_avsbus_trans_data_phase`, `a_avsbus_trans_ack`, `a_avsbus_l3_reset_idle`, `a_avsbus_l3_no_stuck`, `a_avsbus_l3_full_cycle`, `a_avsbus_l3_back_idle` … |
 | Covergroups / coverpoints | 3 / 8 | |
