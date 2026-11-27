@@ -165,9 +165,15 @@ OneWire-VIP,_1_Wire_top.sv:22,1'b1 inverted,"dq_d reset value: dq_fall is only u
 OneWire-VIP,_1_Wire_top.sv:111,1'b0 inverted,bit shifted into tx_shift[7] is never transmitted (8 bits per byte)
 DDR-VIP,dut_ddr_mem_model.sv:23,32 -> 33,bank arrays sized beyond the 32 addressable banks: extra entry unreachable
 DDR-VIP,dut_ddr_mem_model.sv:29,0 -> 1,"statistics counter, only printed in final"
-DDR-VIP,dut_ddr_mem_model.sv:69,&& flipped,PRE/REF decode only updates bank_open and the refresh counter (never read)
-DDR-VIP,dut_ddr_mem_model.sv:70,1'b0 inverted,bank_open is written but never read
-DDR-VIP,dut_ddr_mem_model.sv:71,! dropped in condition,PRE/REF decode only updates bank_open and the refresh counter (never read)
+DDR-VIP,dut_ddr_mem_model.sv:28,0 -> 1,"statistics counter, only printed in final"
+DDR-VIP,dut_ddr_mem_model.sv:64,1'b1 inverted,bank_open is written but never read
+DDR-VIP,dut_ddr_mem_model.sv:70,16 -> 17,"a 17th read beat lands after the burst window, where nothing samples DQ (the model never releases DQ)"
+DDR-VIP,dut_ddr_mem_model.sv:71,&& flipped,PRE/REF decode only updates bank_open and the refresh counter (never read)
+DDR-VIP,dut_ddr_mem_model.sv:71,! dropped in condition,"dropping either ! gives a pin pattern no command uses, or the ACT pattern that the ACT branch above already takes"
+DDR-VIP,dut_ddr_mem_model.sv:72,1'b0 inverted,bank_open is written but never read
+DDR-VIP,dut_ddr_mem_model.sv:73,&& flipped,PRE/REF decode only updates bank_open and the refresh counter (never read)
+DDR-VIP,dut_ddr_mem_model.sv:73,! dropped in condition,PRE/REF decode only updates bank_open and the refresh counter (never read)
+DDR-VIP,dut_ddr_mem_model.sv:75,0 -> 1,bank_open is written but never read
 DDR4-VIP,MEMCH_top.sv:12,15 -> 16,parameter default overridden by the top-level instantiation
 DDR4-VIP,MEMCH_top.sv:65,1 -> 2,NCH == 1: the channel-1 instance is not generated
 DDR4-VIP,MEMCORE_top.sv:74,1'b0 inverted,rd_pending is reassigned from hcmd whenever the next command is accepted
