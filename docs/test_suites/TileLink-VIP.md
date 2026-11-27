@@ -1,4 +1,4 @@
-# TileLink (TL-UL/TL-C) 測試套件（TileLink-VIP）
+# TileLink (TL-UL/TL-UH) 測試套件（TileLink-VIP）
 
 > 由 `tools/gen_test_suite_docs.py` 依 VIP 內容、`func_report.csv` 與 `mutation_report.csv` 自動產生，請勿手動修改。
 
@@ -8,45 +8,37 @@
 |---|---|
 | 類別 | Interconnect |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，10 個 check，全部通過 |
-| Mutation | 9/9 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（10 個 check，mutation score 100%） |
+| 功能測試 | 1 個檔案，2079 個 check，全部通過 |
+| Mutation | 10/10 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（2079 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
 執行：`python3 tools/run_func_tests.py TileLink-VIP`（Icarus Verilog 或 Verilator 5.054）。
 
-### `tb/func_tilelink_tb.sv`
+### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（verilator，10 checks）
-
-模型合約與範圍（摘自測試檔頭）：
-
-```text
-func_tilelink_tb.sv -- self-checking functional test for the TileLink-UL
-device model (tilelink_device_model, flattened by smoke/flatten.py).
-Run: python3 tools/run_func_tests.py TileLink-VIP
-
-Model contract (from tb/top_tb.sv), TL-UL A/D channels:
-   A beat accepted on a_valid && a_ready (a_ready randomly throttled, one
-   request outstanding). One clock later D returns AccessAck (0) for
-   PutFullData (A opcode 0) or AccessAckData (1) with the stored word for
-   Get (A opcode 4); unwritten addresses read 0. Other A opcodes are
-   answered with AccessAck and a `uvm_warning.
-```
+結果：**PASS**（iverilog，2079 checks）
 
 | # | Check | 類型 |
 |---|---|---|
-| 1 | A not ready and D idle during reset | check |
-| 2 | PutFullData answered with AccessAck | check |
-| 3 | D response one clock after the A beat is accepted | check |
-| 4 | Get answered with AccessAckData and the stored word | check |
-| 5 | Get of an unwritten address returns 0 | check |
-| 6 | 50 random Put/Get: opcodes and data match the reference | check |
-| 7 | exactly one D beat per A request | check |
-| 8 | a_ready low while a request is outstanding | check |
-| 9 | unsupported A opcode (PutPartialData) answered with AccessAck | check |
-| 10 | reset clears ready and D valid | check |
+| 1 | op %0d size %0d @%h: D opcode %0d size %0d denied %0d corrupt %0d | check |
+| 2 | op %0d size %0d: %0d D beats | check |
+| 3 | op %0d param %0d size %0d @%h: data matches the reference | check |
+| 4 | D beat on idle source %0d | check |
+| 5 | all operations completed | check |
+| 6 | in reset: a_ready and d_valid low | check |
+| 7 | in reset: D fields are zero | check |
+| 8 | 4 operations in flight (max %0d) | check |
+| 9 | operations complete out of order (%0d) | check |
+| 10 | the device holds a_ready low while it holds 4 operations | check |
+| 11 | D payload held while d_ready is low (%0d stalls, %0d bad) | check |
+| 12 | a_ready stays low with 4 queued and D stalled (%0d) | check |
+| 13 | reset again: a_ready and d_valid low | check |
+| 14 | reset again: D fields are zero | check |
+| 15 | %0d operations completed | check |
+| 16 | a_ready follows the device LFSR (%0d edges, %0d bad) | check |
+| 17 | responses start at the predicted edge (%0d edges, %0d bad) | check |
 
 ## 3. UVM 測試平台內容
 
@@ -55,13 +47,13 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 | 項目 | 數量 | 名稱 |
 |---|---|---|
 | UVM tests | 5 | `tilelink_base_test`, `tilelink_random_test`, `tilelink_regression_test`, `tilelink_ral_test`, `tilelink_cov_test` |
-| Sequences | 13 | `tilelink_base_sequence`, `tilelink_put_seq`, `tilelink_get_seq`, `tilelink_wr_rd_same_addr_seq`, `tilelink_size_sweep_seq`, `tilelink_data_corner_seq`, `tilelink_addr_sweep_seq`, `tilelink_error_inject_seq`, `tilelink_reset_seq`, `tilelink_cov_sweep_seq`, `tilelink_random_sequence`, `tilelink_regression_sequence`, `tilelink_transaction` |
-| SVA（assert / cover property） | 18 / 3 | `a_tilelink_l1_clk`, `a_tilelink_l1_rst`, `a_tilelink_l1_state`, `a_tilelink_l1_valid`, `a_tilelink_trans_idle`, `a_tilelink_trans_a_channel`, `a_tilelink_trans_d_channel`, `a_tilelink_trans_retry`, `a_tilelink_l3_reset_idle`, `a_tilelink_l3_no_stuck`, `a_tilelink_l3_full_cycle`, `a_tilelink_l3_back_idle` … |
-| Covergroups / coverpoints | 3 / 8 | |
+| Sequences | 12 | `tilelink_base_sequence`, `tilelink_put_get_seq`, `tilelink_partial_seq`, `tilelink_atomic_seq`, `tilelink_outstanding_seq`, `tilelink_denied_seq`, `tilelink_intent_seq`, `tilelink_corrupt_seq`, `tilelink_cov_sweep_seq`, `tilelink_random_sequence`, `tilelink_regression_sequence`, `tilelink_transaction` |
+| SVA（assert / cover property） | 22 / 10 | `a_tl_l1_valid_known`, `a_tl_l1_a_known`, `a_tl_l1_d_known`, `a_tl_l1_reset`, `a_tl_l2_a_hold`, `a_tl_l2_a_stable`, `a_tl_l2_d_hold`, `a_tl_l2_d_stable`, `a_tl_l3_opcode`, `a_tl_l3_param`, `a_tl_l3_align`, `a_tl_l3_mask` … |
+| Covergroups / coverpoints | 3 / 17 | |
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（10 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（2079 個 check，mutation score 100%）。
 
 無已知缺口。
 
