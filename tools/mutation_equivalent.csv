@@ -446,3 +446,8 @@ SAS-VIP,dut_sas_target_model.sv:273,< -> <= in condition,"the credit is decremen
 CAN_FD-UVM-VIP,dut_can_fd_model.sv:104,1'b1 inverted,"rxp (rx one clock ago) is overwritten on the first clock, and a SOF needs bus integration (11 recessive bits) first"
 CAN_FD-UVM-VIP,dut_can_fd_model.sv:105,1'b0 inverted,fsbd is cleared when a frame enters the fixed-stuff field and is not read before
 CAN_FD-UVM-VIP,dut_can_fd_model.sv:107,1'b0 inverted,"rtr is written at IDE (base) or RTR (extended) of every frame before it is read; out_rtr is reset on its own"
+DFI-VIP,dut_dfi_model.sv:76,8 -> 9,the reset loop's extra iteration writes act_c / pre_c / row_q[8] out of range: a no-op
+DFI-VIP,dut_dfi_model.sv:81,1'b0 inverted,"init_q, tbp_q and lp_q follow their inputs from the first clock, and nothing starts before several clocks after reset"
+DFI-VIP,dut_dfi_model.sv:175,8 -> 9,open_b[8] is out of range and reads as 0 / X: the extra iteration never finds an open bank
+DFI-VIP,dut_dfi_model.sv:177,8 -> 9,open_b[8] is out of range: the extra iteration closes nothing
+DFI-VIP,dut_dfi_model.sv:216,4 -> 5,the read pipeline loop's extra iteration writes dat_sr[4] out of range: a no-op
