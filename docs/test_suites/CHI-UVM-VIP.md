@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | AMBA |
 | 類型 | UVM VIP |
-| 功能測試 | 2 個檔案，53 個 check，全部通過 |
-| Mutation | 27/28 個 mutant 被偵測（96%） |
-| 判定 | **🟡 Partial**（covergroup 只有 6 個 bins（需 ≥ 10）） |
+| 功能測試 | 2 個檔案，155 個 check，全部通過 |
+| Mutation | 29/29 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（155 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -87,20 +87,60 @@ Run: python3 tools/run_func_tests.py CHI-UVM-VIP
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，14 checks）
+結果：**PASS**（verilator，116 checks）
+
+模型合約與範圍（摘自測試檔頭）：
+
+```text
+Functional smoke testbench (CHI DUT model)
+```
 
 | # | Check | 類型 |
 |---|---|---|
-| 1 | channels reset quiet | check |
-| 2 | no response without request | check |
-| 3 | no ready without request | check |
-| 4 | REQ accepted | check |
-| 5 | DAT accepted | check |
-| 6 | RSPVALID after request | check |
-| 7 | RSP OK status | check |
-| 8 | RSP completes | check |
-| 9 | second REQ accepted | check |
-| 10 | second RSP received | check |
+| 1 | %s: four CompData beats (%0d beats, %0d rsp, %0d errors) | check |
+| 2 | %s: Comp (op %0h rs %0d er %0d) | check |
+| 3 | %s: CompDBIDResp (op %0h er %0d) | check |
+| 4 | %s: data accepted | check |
+| 5 | %s: protocol error %0d (got %0d, %0d errors) | check |
+| 6 | reset values | check |
+| 7 | REQ flit before an L-credit: error 1 | check |
+| 8 | two L-credits per inbound channel (%0d %0d %0d) | check |
+| 9 | the flit without credit was dropped | check |
+| 10 | no CompData before we grant RXDAT credits; REQ credit returned | check |
+| 11 | two RXDAT credits: two beats (%0d) | check |
+| 12 | ReadNoSnp: the rest of the line | check |
+| 13 | ReadNoSnp: DBID 0, I, OK | check |
+| 14 | CopyBackWrData for a WriteNoSnp: error 6 | check |
+| 15 | write data for a DBID not waiting: error 6 | check |
+| 16 | write data for DBID 800: error 6 | check |
+| 17 | then the right data completes the write | check |
+| 18 | NonCopyBackWrData for a WriteBack: error 6 | check |
+| 19 | CompAck with no tracker waiting: error 6 | check |
+| 20 | TXRSP opcode other than CompAck: error 6 | check |
+| 21 | two ReadUniques hold both trackers | check |
+| 22 | distinct DBIDs | check |
+| 23 | no tracker: RetryAck with PCrdType 1 | check |
+| 24 | a second RetryAck | check |
+| 25 | CompAck frees a tracker: PCrdGrant | check |
+| 26 | the freed tracker is reserved: RetryAck | check |
+| 27 | re-sent with AllowRetry 0: served on the reserved tracker | check |
+| 28 | next free tracker: grant for the second retry | check |
+| 29 | second retried request served | check |
+| 30 | no tracker left waiting for CompAck | check |
+| 31 | three retries, three grants: none left | check |
+| 32 | third retried request served | check |
+| 33 | write waiting for data while a read completes | check |
+| 34 | Evict while both trackers wait: RetryAck | check |
+| 35 | one grant for one retry | check |
+| 36 | retried Evict completes | check |
+| 37 | back-to-back Evicts need no tracker | check |
+| 38 | no RXRSP credit: six Comps queued, REQ credits withheld (%0d sent, %0d accepted) | check |
+| 39 | queued Comps delivered (%0d) | check |
+| 40 | Comp %0d in order | check |
+| 41 | REQ credits granted again (%0d) | check |
+| 42 | reset | check |
+| 43 | credits granted again after reset | check |
+| 44 | after reset: TxnID 80 is free, memory kept | check |
 
 ## 3. UVM 測試平台內容
 
@@ -110,14 +150,12 @@ UVM agent test（`chi_func_test`：directed + constrained-random 流量，scoreb
 |---|---|---|
 | UVM tests | 2 | `chi_base_test`, `chi_func_test` |
 | Sequences | 3 | `chi_base_sequence`, `chi_directed_sequence`, `chi_transaction` |
-| SVA（assert / cover property） | 3 / 2 | - |
-| Covergroups / coverpoints | 1 / 2 | |
+| SVA（assert / cover property） | 6 / 3 | - |
+| Covergroups / coverpoints | 1 / 9 | |
 
 ## 4. 充分度判定與缺口
 
-判定：**🟡 Partial**（covergroup 只有 6 個 bins（需 ≥ 10））。
+判定：**✅ Sufficient**（155 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_chi_hn_model.sv:115 && flipped [WACK: if (ack_valid && ack_rn == rn) st <= IDLE;]`
+無已知缺口。
 
