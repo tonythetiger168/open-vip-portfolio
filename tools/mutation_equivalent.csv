@@ -461,3 +461,6 @@ CHI-UVM-VIP,dut_chi_model.sv:99,1'b0 inverted,"t_oor reset value; written when a
 Avalon_MM-UVM-VIP,dut_avalon_mm_model.sv:61,0 -> 1,"response-queue reset values; an entry is always written by its command before the response side reads it"
 Avalon_MM-UVM-VIP,dut_avalon_mm_model.sv:61,4 -> 5,"the extra iteration writes index 4 of 4-entry arrays, which is out of range and ignored"
 Avalon_MM-UVM-VIP,dut_avalon_mm_model.sv:71,4 -> 5,"the extra iteration reads byteenable[4] (X, outside the 4-bit vector), which writes nothing"
+Wishbone-UVM-VIP,dut_wishbone_model.sv:75,256 -> 257,"the extra iteration writes mem[256], out of range of the 256-word array, and is ignored"
+Wishbone-UVM-VIP,dut_wishbone_model.sv:76,16 -> 17,"the extra iteration writes index 16 of 16-entry arrays, out of range and ignored"
+Wishbone-UVM-VIP,dut_wishbone_model.sv:77,4 -> 5,"the extra iteration writes index 4 of the 4-entry response queue, out of range and ignored"

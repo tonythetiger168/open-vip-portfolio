@@ -106,7 +106,7 @@
 105,Storage,SDIO,UVM VIP,SDIO-UVM-VIP.zip,23KB,wave2-uvm,18,858,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/SDIO-UVM-VIP.zip,Apache-2.0,SDIO
 106,Automotive,SENT,UVM VIP,SENT-VIP.zip,23KB,wave2-uvm,18,822,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/SENT-VIP.zip,Apache-2.0,SENT
 107,Debug,WTB,UVM VIP,WTB-UVM-VIP.zip,23KB,wave2-uvm,18,826,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/WTB-UVM-VIP.zip,Apache-2.0,WTB
-108,Interconnect,Wishbone,UVM VIP,Wishbone-UVM-VIP.zip,24KB,wave2-uvm,18,843,4,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/Wishbone-UVM-VIP.zip,Apache-2.0,Wishbone
+108,Interconnect,Wishbone,UVM VIP,Wishbone-UVM-VIP.zip,34KB,wave2-uvm,18,1598,6,4,1,2,v1.8.0,2026-11-27,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/Wishbone-UVM-VIP.zip,Apache-2.0,Wishbone
 109,Networking,XGMII,UVM VIP,XGMII-UVM-VIP.zip,35KB,wave2-uvm,18,1741,9,5,1,2,v1.8.0,2026-11-27,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/XGMII-UVM-VIP.zip,Apache-2.0,XGMII
 110,Networking,800G Ethernet,UVM VIP,ETH800G-VIP.zip,23KB,wave3-uvm,18,882,4,2,1,2,v1.8.0,2026-10-02,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/ETH800G-VIP.zip,Apache-2.0,Ethernet
 111,Automotive,CAN XL,UVM VIP,CAN_XL-UVM-VIP.zip,27KB,wave4-uvm,18,1572,5,2,1,2,v1.9.0,2026-10-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/CAN_XL-UVM-VIP.zip,Apache-2.0,CAN
