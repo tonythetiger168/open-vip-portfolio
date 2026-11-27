@@ -9,8 +9,8 @@
 | 類別 | Networking |
 | 類型 | UVM VIP |
 | 功能測試 | 2 個檔案，37 個 check，全部通過 |
-| Mutation | 24/26 個 mutant 被偵測（92%） |
-| 判定 | **✅ Sufficient**（37 個 check，mutation score 92%） |
+| Mutation | 27/29 個 mutant 被偵測（93%） |
+| 判定 | **✅ Sufficient**（37 個 check，mutation score 93%） |
 
 ## 2. 可執行的功能測試
 
@@ -80,10 +80,10 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（37 個 check，mutation score 92%）。
+判定：**✅ Sufficient**（37 個 check，mutation score 93%）。
 
 未被偵測的 mutant（測試缺口或等價 mutant）：
 
-- `dut_net_mac_model.sv:117 0 -> 1 [in_frame <= 0;]`
-- `dut_net_mac_model.sv:132 && flipped [if (frame_q.size() > 22 && frame_q[20] == 8'h88 && frame_q[2]`
+- `dut_net_mac_model.sv:118 4 -> 5 [for (int i = 0; i < 4; i++)]`
+- `dut_net_mac_model.sv:131 && flipped [if (frame_q.size() > 22 && frame_q[20] == 8'h88 && frame_q[2]`
 

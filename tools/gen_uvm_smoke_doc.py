@@ -81,6 +81,15 @@ def main():
             "`post_randomize()` 配置 `rdata`。",
             "- 2-state：`'z` 讀成 0，所以用 `=== 1'bz` 判斷「腳位放開」的邏輯永遠不成立。SPI 用 MOSI 的 "
             "`'z` 表示 CPHA=1，monitor 與 slave model 改讀新增的 `mosi_oe`（pad output enable）。",
+            "- clocking block 的 `inout` 對 `tri` 線不會驅動：ONFI 的 host 改用介面中的 `io_drv` / `io_oe` 驅動 IO 匯流排。",
+            "- 在 `$urandom` 上 `case` 時每個 case item 都會重新取值：sequence 先把值存進變數再分派。",
+            "- 兩次 clocking 事件之間發出的 drive 會和下一個 `@(cb)` 之後的 drive 落在同一個邊緣，而且順序不保證："
+            "driver 在每個 item 開始前先 `@(vif.drv_cb)`（ONFI、HBM）。",
+            "- 以 `verilator` 開頭的註解會被當成 pragma（`BADVLTPRAGMA`）。",
+            "- covergroup 的 `get_coverage()` 與 enum transition bins 在 5.054 可用，但 transition 的 `[*n]` 重複不支援，需展開寫。",
+            "",
+            "DDR、HBM、LPDDR、UFS、eMMC、SD、ONFI、NVMe、SATA、hbm3 等已有正式 UVM test 的 VIP 由 "
+            "`tools/run_uvm_tests.py` 的正式 suite 執行（CI），不在本表。",
             "",
             "## 逐 VIP 結果", "", "| VIP | Test | 結果 | 原因 | 第一個問題 |", "|---|---|---|---|---|"]
     order = {k: i for i, (k, _) in enumerate(MEANING)}

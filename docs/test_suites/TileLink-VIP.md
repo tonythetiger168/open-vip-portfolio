@@ -54,8 +54,8 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 4 | `tilelink_base_test`, `tilelink_random_test`, `tilelink_regression_test`, `tilelink_ral_test` |
-| Sequences | 12 | `tilelink_base_sequence`, `tilelink_put_seq`, `tilelink_get_seq`, `tilelink_wr_rd_same_addr_seq`, `tilelink_size_sweep_seq`, `tilelink_data_corner_seq`, `tilelink_addr_sweep_seq`, `tilelink_error_inject_seq`, `tilelink_reset_seq`, `tilelink_random_sequence`, `tilelink_regression_sequence`, `tilelink_transaction` |
+| UVM tests | 5 | `tilelink_base_test`, `tilelink_random_test`, `tilelink_regression_test`, `tilelink_ral_test`, `tilelink_cov_test` |
+| Sequences | 13 | `tilelink_base_sequence`, `tilelink_put_seq`, `tilelink_get_seq`, `tilelink_wr_rd_same_addr_seq`, `tilelink_size_sweep_seq`, `tilelink_data_corner_seq`, `tilelink_addr_sweep_seq`, `tilelink_error_inject_seq`, `tilelink_reset_seq`, `tilelink_cov_sweep_seq`, `tilelink_random_sequence`, `tilelink_regression_sequence`, `tilelink_transaction` |
 | SVA（assert / cover property） | 18 / 3 | `a_tilelink_l1_clk`, `a_tilelink_l1_rst`, `a_tilelink_l1_state`, `a_tilelink_l1_valid`, `a_tilelink_trans_idle`, `a_tilelink_trans_a_channel`, `a_tilelink_trans_d_channel`, `a_tilelink_trans_retry`, `a_tilelink_l3_reset_idle`, `a_tilelink_l3_no_stuck`, `a_tilelink_l3_full_cycle`, `a_tilelink_l3_back_idle` … |
 | Covergroups / coverpoints | 3 / 8 | |
 

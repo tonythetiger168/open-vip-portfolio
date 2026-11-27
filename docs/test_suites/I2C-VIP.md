@@ -9,8 +9,8 @@
 | 類別 | Serial |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，15 個 check，全部通過 |
-| Mutation | 24/24 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（15 個 check，mutation score 100%） |
+| Mutation | 28/29 個 mutant 被偵測（97%） |
+| 判定 | **✅ Sufficient**（15 個 check，mutation score 97%） |
 
 ## 2. 可執行的功能測試
 
@@ -44,14 +44,16 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 3 | `i2c_base_test`, `i2c_random_test`, `i2c_regression_test` |
+| UVM tests | 4 | `i2c_base_test`, `i2c_random_test`, `i2c_regression_test`, `i2c_ral_test` |
 | Sequences | 10 | `i2c_base_sequence`, `i2c_write_seq`, `i2c_read_seq`, `i2c_burst_seq`, `i2c_back_to_back_seq`, `i2c_error_inject_seq`, `i2c_reset_seq`, `i2c_random_sequence`, `i2c_regression_sequence`, `i2c_transaction` |
 | SVA（assert / cover property） | 21 / 2 | `a_i2c_l1_clk`, `a_i2c_l1_rst`, `a_i2c_l1_state`, `a_i2c_l1_valid`, `a_i2c_trans_idle`, `a_i2c_trans_start`, `a_i2c_trans_addr`, `a_i2c_trans_ack`, `a_i2c_trans_write`, `a_i2c_trans_read`, `a_i2c_trans_stop`, `a_i2c_l3_reset_idle` … |
 | Covergroups / coverpoints | 3 / 7 | |
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（15 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（15 個 check，mutation score 97%）。
 
-無已知缺口。
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_i2c_slave_model.sv:48 0 -> 1 [bit s = 0, r = 0;]`
 

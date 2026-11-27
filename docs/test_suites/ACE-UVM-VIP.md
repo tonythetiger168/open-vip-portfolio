@@ -9,8 +9,8 @@
 | 類別 | AMBA |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，19 個 check，全部通過 |
-| Mutation | 10/10 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（19 個 check，mutation score 100%） |
+| Mutation | 24/27 個 mutant 被偵測（89%） |
+| 判定 | **✅ Sufficient**（19 個 check，mutation score 89%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（verilator，19 checks）
+結果：**PASS**（iverilog，19 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -61,7 +61,11 @@ UVM agent test（`ace_func_test`：directed + constrained-random 流量，scoreb
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（19 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（19 個 check，mutation score 89%）。
 
-無已知缺口。
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_ace_model.sv:131 0 -> 1 [for (int i = 0; i < 16; i++) begin]`
+- `dut_ace_model.sv:201 == flipped [if (peer[l] == P_UD && (o == SRS || o == SRU || o == SMI)) o]`
+- `dut_ace_model.sv:208 && flipped [if (cdvalid && cdready) begin]`
 

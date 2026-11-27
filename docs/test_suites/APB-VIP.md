@@ -9,7 +9,7 @@
 | 類別 | AMBA |
 | 類型 | UVM VIP |
 | 功能測試 | 2 個檔案，23 個 check，全部通過 |
-| Mutation | 15/15 個 mutant 被偵測（100%） |
+| Mutation | 16/16 個 mutant 被偵測（100%） |
 | 判定 | **✅ Sufficient**（23 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
@@ -59,10 +59,10 @@ UVM RAL test（`amba_ral_test`：hw_reset / bit_bash / mirror 等）在 Verilato
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 5 | `amba_base_test`, `amba_axi_test`, `amba_apb_test`, `amba_apb_err_test`, `amba_ral_test` |
-| Sequences | 11 | `apb_base_sequence`, `apb_write_seq`, `apb_read_seq`, `apb_back_to_back_seq`, `apb_wait_state_seq`, `apb_error_inject_seq`, `apb_reset_seq`, `apb_stress_seq`, `apb_random_sequence`, `apb_regression_sequence`, `amba_seq_item` |
+| UVM tests | 7 | `amba_base_test`, `amba_axi_test`, `amba_apb_test`, `amba_apb_err_test`, `amba_ral_test`, `amba_apb_strb_test`, `amba_apb_cov_test` |
+| Sequences | 13 | `apb_base_sequence`, `apb_write_seq`, `apb_read_seq`, `apb_back_to_back_seq`, `apb_wait_state_seq`, `apb_error_inject_seq`, `apb_reset_seq`, `apb_stress_seq`, `apb_partial_write_seq`, `apb_cov_sweep_seq`, `apb_random_sequence`, `apb_regression_sequence`, `amba_seq_item` |
 | SVA（assert / cover property） | 31 / 14 | `assert_axi_aw`, `assert_axi_wlast`, `assert_axi_bresp`, `assert_ahb_trans`, `assert_apb_en`, `assert_p_apb_psel_setup`, `cover_p_apb_psel_setup`, `assert_p_apb_penable_1cycle`, `cover_p_apb_penable_1cycle`, `assert_p_apb_pwrite_stable`, `cover_p_apb_pwrite_stable`, `assert_p_apb_paddr_stable` … |
-| Covergroups / coverpoints | 8 / 41 | |
+| Covergroups / coverpoints | 10 / 41 | |
 
 ## 4. 充分度判定與缺口
 

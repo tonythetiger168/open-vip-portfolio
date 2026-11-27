@@ -9,8 +9,8 @@
 | 類別 | Automotive |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，23 個 check，全部通過 |
-| Mutation | 24/24 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（23 個 check，mutation score 100%） |
+| Mutation | 24/29 個 mutant 被偵測（83%） |
+| 判定 | **✅ Sufficient**（23 個 check，mutation score 83%） |
 
 ## 2. 可執行的功能測試
 
@@ -51,7 +51,7 @@ Model contract (from tb/top_tb.sv):
 | 8 | 4-beat frame forwarded intact, SOF / EOF on the first / last beat | check |
 | 9 | tx_data_valid = FFh on every beat, no SOF / EOF without data | check |
 | 10 | tx_gate_state reports the gate control of the forwarded frame | check |
-| 11 | fixed store-and-forward delay: tx SOF 10 clocks after the last rx beat | check |
+| 11 | fixed store-and-forward delay: tx SOF 8 clocks after the last rx beat | check |
 | 12 | single-beat frame forwarded with SOF and EOF together | check |
 | 13 | 32-beat frame forwarded intact | check |
 | 14 | beats without a preceding SOF are dropped | check |
@@ -71,14 +71,22 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 8 | `base_test`, `avb_stream_test`, `tsn_preempt_test`, `ptp_sync_test`, `error_inject_test`, `gate_control_test`, `corner_test`, `regression_test` |
-| Sequences | 15 | `base_tx`, `eth_avb_tsn_base_sequence`, `eth_avb_tsn_random_sequence`, `eth_avb_stream_sequence`, `eth_tsn_preempt_sequence`, `eth_ptp_sync_sequence`, `eth_vlan_sequence`, `eth_error_inject_sequence`, `eth_back_to_back_sequence`, `eth_max_frame_sequence`, `eth_min_frame_sequence`, `eth_reset_sequence`, `eth_gate_sequence`, `eth_regression_sequence`, `eth_avb_tsn_transaction` |
+| UVM tests | 9 | `base_test`, `avb_stream_test`, `tsn_preempt_test`, `ptp_sync_test`, `error_inject_test`, `gate_control_test`, `corner_test`, `cov_test`, `regression_test` |
+| Sequences | 16 | `base_tx`, `eth_avb_tsn_base_sequence`, `eth_avb_tsn_random_sequence`, `eth_avb_stream_sequence`, `eth_tsn_preempt_sequence`, `eth_ptp_sync_sequence`, `eth_vlan_sequence`, `eth_error_inject_sequence`, `eth_back_to_back_sequence`, `eth_max_frame_sequence`, `eth_min_frame_sequence`, `eth_reset_sequence`, `eth_gate_sequence`, `eth_cov_sequence`, `eth_regression_sequence`, `eth_avb_tsn_transaction` |
 | SVA（assert / cover property） | 32 / 32 | `assert_p_avb_pcp`, `cover_p_avb_pcp`, `assert_p_avb_vid`, `cover_p_avb_vid`, `assert_p_avb_sr_class`, `cover_p_avb_sr_class`, `assert_p_avb_ethertype`, `cover_p_avb_ethertype`, `assert_p_avb_fcs`, `cover_p_avb_fcs`, `assert_p_avb_stream`, `cover_p_avb_stream` … |
 | Covergroups / coverpoints | 3 / 15 | |
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（23 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（23 個 check，mutation score 83%）。
+
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_eth_avb_tsn_dut.sv:83 0 -> 1 [in_frame          <= 0;]`
+- `dut_eth_avb_tsn_dut.sv:87 0 -> 1 [fwd_timer         <= 0;]`
+- `dut_eth_avb_tsn_dut.sv:120 < -> <= in condition [n = (eg_total - eg_idx < 8) ? (eg_total - eg_idx) : 8;]`
+- `dut_eth_avb_tsn_dut.sv:136 0 -> 1 [if (in_frame && cap_q.size() > 0) begin]`
+- `dut_eth_avb_tsn_dut.sv:136 && flipped [if (in_frame && cap_q.size() > 0) begin]`
 
 模型未實作的功能（不在測試範圍）：
 

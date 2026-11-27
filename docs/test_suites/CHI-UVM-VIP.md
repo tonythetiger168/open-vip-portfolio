@@ -10,7 +10,7 @@
 | 類型 | UVM VIP |
 | 功能測試 | 2 個檔案，53 個 check，全部通過 |
 | Mutation | 27/28 個 mutant 被偵測（96%） |
-| 判定 | **✅ Sufficient**（53 個 check，mutation score 96%） |
+| 判定 | **🟡 Partial**（covergroup 只有 6 個 bins（需 ≥ 10）） |
 
 ## 2. 可執行的功能測試
 
@@ -115,9 +115,9 @@ UVM agent test（`chi_func_test`：directed + constrained-random 流量，scoreb
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（53 個 check，mutation score 96%）。
+判定：**🟡 Partial**（covergroup 只有 6 個 bins（需 ≥ 10））。
 
 未被偵測的 mutant（測試缺口或等價 mutant）：
 
-- `dut_chi_hn_model.sv:114 && flipped [WACK: if (ack_valid && ack_rn == rn) st <= IDLE;]`
+- `dut_chi_hn_model.sv:115 && flipped [WACK: if (ack_valid && ack_rn == rn) st <= IDLE;]`
 

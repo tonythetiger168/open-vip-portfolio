@@ -74,7 +74,7 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 |---|---|---|
 | UVM tests | 5 | `lpddr5x_base_test`, `lpddr5x_rw_test`, `lpddr5x_back_to_back_test`, `lpddr5x_error_test`, `lpddr5x_regression_test` |
 | Sequences | 11 | `lpddr5x_transaction`, `lpddr5x_base_sequence`, `lpddr5x_write_seq`, `lpddr5x_read_seq`, `lpddr5x_back_to_back_seq`, `lpddr5x_pre_ref_seq`, `lpddr5x_error_seq`, `lpddr5x_reset_seq`, `lpddr5x_corner_seq`, `lpddr5x_stress_seq`, `lpddr5x_regression_sequence` |
-| SVA（assert / cover property） | 37 / 35 | `a_lp5x_l1_cmd_known`, `c_lp5x_l1_cmd_known`, `a_lp5x_l1_addr_known`, `c_lp5x_l1_addr_known`, `a_lp5x_l1_bank_known`, `c_lp5x_l1_bank_known`, `a_lp5x_l1_reset_idle`, `c_lp5x_l1_reset_idle`, `a_lp5x_l2_act_from_idle`, `c_lp5x_l2_pre_after_act`, `a_lp5x_l2_idle_after_pre`, `c_lp5x_l2_idle_after_pre` … |
+| SVA（assert / cover property） | 37 / 36 | `a_lp5x_l1_cmd_known`, `c_lp5x_l1_cmd_known`, `a_lp5x_l1_addr_known`, `c_lp5x_l1_addr_known`, `a_lp5x_l1_bank_known`, `c_lp5x_l1_bank_known`, `a_lp5x_l1_reset_idle`, `c_lp5x_l1_reset_idle`, `a_lp5x_l2_act_from_idle`, `c_lp5x_l2_pre_after_act`, `c_lp5x_l2_pre_idle_nop`, `a_lp5x_l2_idle_after_pre` … |
 | Covergroups / coverpoints | 3 / 8 | |
 
 ## 4. 充分度判定與缺口

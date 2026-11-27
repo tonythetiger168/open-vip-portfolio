@@ -9,8 +9,8 @@
 | 類別 | Storage |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，51 個 check，全部通過 |
-| Mutation | 24/25 個 mutant 被偵測（96%） |
-| 判定 | **✅ Sufficient**（51 個 check，mutation score 96%） |
+| Mutation | 9/10 個 mutant 被偵測（90%） |
+| 判定 | **✅ Sufficient**（51 個 check，mutation score 90%） |
 
 ## 2. 可執行的功能測試
 
@@ -85,9 +85,9 @@ UVM agent test（`sata_func_test`：directed + constrained-random 流量，score
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（51 個 check，mutation score 96%）。
+判定：**✅ Sufficient**（51 個 check，mutation score 90%）。
 
 未被偵測的 mutant（測試缺口或等價 mutant）：
 
-- `dut_sata_host_model.sv:31 0 -> 1 [int fis_count = 0;]`
+- `dut_sata_host_model.sv:63 < -> <= in condition [while (n < 4 && vif_rst_n === 1'b1) begin @(posedge vif_clk)]`
 

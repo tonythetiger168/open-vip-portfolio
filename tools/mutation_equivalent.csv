@@ -99,7 +99,6 @@ I2S-VIP,dut_i2s_receiver_loopback.sv:50,0 -> 1,in_left after reset only shifts u
 I2S-VIP,dut_i2s_receiver_loopback.sv:53,0 -> 1,rcnt is reloaded at the WS rising edge before it is used
 I2S-VIP,dut_i2s_receiver_loopback.sv:69,24 -> 25,the extra shift happens only for slots longer than 24 bits, which are never stored (lcnt != 24)
 I2S-VIP,dut_i2s_receiver_loopback.sv:77,0 -> 1,rcnt is reloaded at the next WS rising edge before it is used
-LIN-VIP,dut_lin_slave_model.sv:98,0 -> 1,initial value overwritten by the reset branch
 CAN-VIP,dut_can_node_model.sv:194,0 -> 1,initial value overwritten by the reset branch
 CXS-VIP,dut_cxs_receiver_model.sv:34,0 -> 1,initial value overwritten by the reset branch
 CXS-VIP,dut_cxs_receiver_model.sv:36,0 -> 1,initial value overwritten by the reset branch
@@ -113,11 +112,6 @@ ONFI-VIP,dut_onfi_nand_model.sv:9,64 -> 65,changes the internal storage key layo
 ONFI-VIP,dut_onfi_nand_model.sv:43,0 -> 1,initial value overwritten by the reset branch
 ONFI-VIP,dut_onfi_nand_model.sv:153,0 -> 1,wr_ptr is cleared again by every 80h / EFh command before it is used
 ONFI-VIP,dut_onfi_nand_model.sv:176,< -> <= in condition,the extra write targets page_buf[PAGE_SIZE] (out of range, ignored)
-FlexRay-VIP,dut_flexray_node_model.sv:75,1'b1 inverted,initial value overwritten by the reset branch
-FlexRay-VIP,dut_flexray_node_model.sv:84,0 -> 1,receiver counters are reloaded at the start of every frame before use
-FlexRay-VIP,dut_flexray_node_model.sv:85,0 -> 1,transmitter / error counters are reloaded before use or reset by the reset branch
-FlexRay-VIP,dut_flexray_node_model.sv:144,36 -> 37,the shortest frame needs 62 bits: rcnt > 36 and rcnt > 37 are both implied by rcnt + 1 >= need
-FlexRay-VIP,dut_flexray_node_model.sv:161,7 -> 8,loop index 7 writes payload_length[-1] (out of range, ignored)
 Security-VIP,dut_security_engine_model.sv:29,0 -> 1,statistics counter (op_count / err_count) is not an output
 Security-VIP,dut_security_engine_model.sv:40,0 -> 1,latency is reloaded on every start before it is used
 Security-VIP,dut_security_engine_model.sv:81,1 -> 2,a latency of 2 reaches the done branch after one decrement either way (2 -> 1 or 2 -> 0)
@@ -204,26 +198,11 @@ Ethernet_AVB_TSN-VIP,dut_eth_avb_tsn_dut.sv:118,8 -> 9,frames are whole 8-byte b
 Ethernet_AVB_TSN-VIP,dut_eth_avb_tsn_dut.sv:118,< -> <= in condition,frames are whole 8-byte beats: a remainder of 8 gives n = 8 either way
 Ethernet_AVB_TSN-VIP,dut_eth_avb_tsn_dut.sv:134,0 -> 1,the capture queue holds 0 or a multiple of 8 bytes and is never empty while in_frame
 Ethernet_AVB_TSN-VIP,dut_eth_avb_tsn_dut.sv:134,> -> >= in condition,the capture queue is never empty while in_frame
-FlexRay-VIP,dut_flexray_node_model.sv:91,0 -> 1,initial value overwritten by the reset branch
-FlexRay-VIP,dut_flexray_node_model.sv:94,0 -> 1,initial value overwritten by the reset branch
-FlexRay-VIP,dut_flexray_node_model.sv:96,0 -> 1,initial value overwritten by the reset branch
-FlexRay-VIP,dut_flexray_node_model.sv:98,0 -> 1,initial value overwritten by the reset branch
-FlexRay-VIP,dut_flexray_node_model.sv:100,0 -> 1,receiver counters are reloaded at the start of every frame before use
-FlexRay-VIP,dut_flexray_node_model.sv:101,0 -> 1,tx_len is set when a frame is evaluated, before the transmitter reads it
-FlexRay-VIP,dut_flexray_node_model.sv:156,16 -> 17,"length bit 16 (64 words) only matters above MAX_WORDS = 4, which the model clamps; such frames are out of scope"
-FlexRay-VIP,dut_flexray_node_model.sv:161,>= -> > in condition,need >= HDR_BITS + 26 so rcnt + 1 >= need already implies rcnt > HDR_BITS
-FlexRay-VIP,dut_flexray_node_model.sv:169,11 -> 12,loop index 11 writes frame_id[-1] / hc_rx[-1] (out of range, ignored)
-FlexRay-VIP,dut_flexray_node_model.sv:181,7 -> 8,loop index 7 writes payload_length[-1] (out of range, ignored)
-LIN-VIP,dut_lin_slave_model.sv:107,0 -> 1,initial value overwritten by the reset branch
-LIN-VIP,dut_lin_slave_model.sv:112,0 -> 1,tx_len is set by build_tx / the wake-up path before the transmitter reads it
-LIN-VIP,dut_lin_slave_model.sv:120,0 -> 1,nrx is cleared again at every break before a byte is received
-LIN-VIP,dut_lin_slave_model.sv:203,2 -> 3,exp_bytes >= 5 once the PID is in (nrx = 1): nrx + 1 >= exp_bytes already implies nrx >= 4
 ONFI-VIP,dut_onfi_nand_model.sv:45,0 -> 1,initial value overwritten by the reset branch
 ONFI-VIP,dut_onfi_nand_model.sv:71,12 -> 13,"manuf[12] reads past the string (0) into param_page[44], which the model-name loop then overwrites"
 ONFI-VIP,dut_onfi_nand_model.sv:134,0 -> 1,addr_cnt is cleared by every command latch before an address cycle uses it
 ONFI-VIP,dut_onfi_nand_model.sv:225,&& flipped,"reloads out_byte while RE# stays low: the pointer has not moved, so the same byte is reloaded; with CE# high IO is not driven"
 SAS-VIP,dut_sas_target_model.sv:24,0 -> 1,initial value overwritten by the reset branch
-SAS-VIP,dut_sas_target_model.sv:147,3 -> 4,"samples each 2-clock bit 1 clock later, still inside the same bit cell (stop bit included)"
 SD-VIP,dut_sd_card_dut.sv:98,0 -> 1,rsp_cnt is loaded when a response starts before it is read
 SD-VIP,dut_sd_card_dut.sv:143,1 -> 2,err_cnt is a statistic printed at the end of the run (not an output)
 eMMC-VIP,dut_emmc_device_dut.sv:155,1 -> 2,err_cnt is a statistic printed at the end of the run (not an output)
@@ -265,13 +244,13 @@ SPI-VIP,dut_spi_slave_model.sv:89,0 -> 1,ibit > 1 vs ibit > 0 only differs at ib
 UART-VIP,dut_uart_loopback_model.sv:27,2 -> 3,start-bit sample point at 1/3 instead of 1/2 of a bit; with clean edges both land inside the start bit and every later sample shifts by the same amount inside its bit
 USB2-VIP,dut_usb2_smoke_model.sv:70,1'b0 inverted,reset value of setup_pending; every OUT token clears it and every SETUP token sets it before a data stage can use it
 USB2-VIP,dut_usb2_smoke_model.sv:126,1'b0 inverted,setup_pending left set after the SETUP data stage; the next OUT clears it and the next SETUP sets it before any data stage reads it
-APB-VIP,dut_amba_dut.sv:55,64 -> 65,reset loop index 64 is out of range (write ignored)
-APB-VIP,dut_amba_dut.sv:60,< -> <= in condition,wait_cnt saturates at 2 either way within the observed 2-clock wait
-APB-VIP,dut_amba_dut.sv:63,4 -> 5,PSTRB[4] is out of range (reads X; branch not taken)
-APB-VIP,dut_amba_dut.sv:72,1'b0 inverted,tie-off of an unused sibling protocol (AXI) in the shared AMBA model
+APB-VIP,dut_amba_dut.sv:56,64 -> 65,reset loop index 64 is out of range (write ignored)
+APB-VIP,dut_amba_dut.sv:61,< -> <= in condition,wait_cnt saturates at 2 either way within the observed 2-clock wait
+APB-VIP,dut_amba_dut.sv:64,4 -> 5,PSTRB[4] is out of range (reads X; branch not taken)
 APB-VIP,dut_amba_dut.sv:73,1'b0 inverted,tie-off of an unused sibling protocol (AXI) in the shared AMBA model
-APB-VIP,dut_amba_dut.sv:74,1'b0 inverted,tie-off of an unused sibling protocol (AXI/AXI-Stream) in the shared AMBA model
-APB-VIP,dut_amba_dut.sv:75,1'b0 inverted,tie-off of an unused sibling protocol (AHB) in the shared AMBA model
+APB-VIP,dut_amba_dut.sv:74,1'b0 inverted,tie-off of an unused sibling protocol (AXI) in the shared AMBA model
+APB-VIP,dut_amba_dut.sv:75,1'b0 inverted,tie-off of an unused sibling protocol (AXI/AXI-Stream) in the shared AMBA model
+APB-VIP,dut_amba_dut.sv:76,1'b0 inverted,tie-off of an unused sibling protocol (AHB) in the shared AMBA model
 Avalon_MM-UVM-VIP,dut_avalon_mm_model.sv:40,64 -> 65,reset loop index past the 64-word memory (out-of-range write is ignored)
 Avalon_MM-UVM-VIP,dut_avalon_mm_model.sv:46,&& flipped,rd_word also latched on a completed write; only a completed read's rd_d uses it and that read latches its own word first
 OBI-UVM-VIP,dut_obi_model.sv:45,0 -> 1,response FIFO entries are written before they are read; reset contents are never observed
@@ -428,3 +407,39 @@ SPDM-UVM-VIP,dut_spdm_model.sv:61,20 -> 21,"cq has 20 entries; the extra compare
 SPDM-UVM-VIP,dut_spdm_model.sv:61,< -> <= in condition,"same is already 0 unless qn = 20, and then i never reaches qn"
 SPDM-UVM-VIP,dut_spdm_model.sv:79,64 -> 65,"aq has 64 entries; the extra write is dropped"
 SPDM-UVM-VIP,dut_spdm_model.sv:114,0 -> 1,"ri is set to 0 at the last byte of every request, before it is read"
+LIN-VIP,dut_lin_slave_model.sv:103,0 -> 1,one trailing recessive bit fewer after the response: the line idles recessive afterwards anyway
+LIN-VIP,dut_lin_slave_model.sv:114,0 -> 1,initial value overwritten by the reset branch
+LIN-VIP,dut_lin_slave_model.sv:183,1 -> 2,sample point one clock earlier is still inside the bit (1.5 bit times minus 2 of BIT_CLKS = 8)
+FlexRay-VIP,dut_flexray_node_model.sv:136,1 -> 2,bit sample point one clock earlier is still inside the bit (BIT_CLKS = 8)
+FlexRay-VIP,dut_flexray_node_model.sv:161,23 -> 24,the payload length is read one bit later: bits 16-22 are already in and need is only used from rcnt = HDR_BITS (40)
+FlexRay-VIP,dut_flexray_node_model.sv:199,0 -> 1,echo bit 0 is the reserved bit (0 in every legal frame) and tx_shift is cleared to 0 first
+FlexRay-VIP,dut_flexray_node_model.sv:75,1'b1 inverted,initial value overwritten by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:84,0 -> 1,receiver counters are reloaded at the start of every frame before use
+FlexRay-VIP,dut_flexray_node_model.sv:85,0 -> 1,transmitter / error counters are reloaded before use or reset by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:144,36 -> 37,the shortest frame needs 62 bits: rcnt > 36 and rcnt > 37 are both implied by rcnt + 1 >= need
+FlexRay-VIP,dut_flexray_node_model.sv:161,7 -> 8,loop index 7 writes payload_length[-1] (out of range, ignored)
+FlexRay-VIP,dut_flexray_node_model.sv:91,0 -> 1,initial value overwritten by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:94,0 -> 1,initial value overwritten by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:96,0 -> 1,initial value overwritten by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:98,0 -> 1,initial value overwritten by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:100,0 -> 1,receiver counters are reloaded at the start of every frame before use
+FlexRay-VIP,dut_flexray_node_model.sv:101,0 -> 1,tx_len is set when a frame is evaluated, before the transmitter reads it
+FlexRay-VIP,dut_flexray_node_model.sv:156,16 -> 17,"length bit 16 (64 words) only matters above MAX_WORDS = 4, which the model clamps; such frames are out of scope"
+FlexRay-VIP,dut_flexray_node_model.sv:161,>= -> > in condition,need >= HDR_BITS + 26 so rcnt + 1 >= need already implies rcnt > HDR_BITS
+FlexRay-VIP,dut_flexray_node_model.sv:169,11 -> 12,loop index 11 writes frame_id[-1] / hc_rx[-1] (out of range, ignored)
+FlexRay-VIP,dut_flexray_node_model.sv:181,7 -> 8,loop index 7 writes payload_length[-1] (out of range, ignored)
+LIN-VIP,dut_lin_slave_model.sv:98,0 -> 1,initial value overwritten by the reset branch
+LIN-VIP,dut_lin_slave_model.sv:107,0 -> 1,initial value overwritten by the reset branch
+LIN-VIP,dut_lin_slave_model.sv:112,0 -> 1,tx_len is set by build_tx / the wake-up path before the transmitter reads it
+LIN-VIP,dut_lin_slave_model.sv:120,0 -> 1,nrx is cleared again at every break before a byte is received
+LIN-VIP,dut_lin_slave_model.sv:203,2 -> 3,exp_bytes >= 5 once the PID is in (nrx = 1): nrx + 1 >= exp_bytes already implies nrx >= 4
+SAS-VIP,dut_sas_target_model.sv:151,3 -> 4,"samples each 2-clock bit 1 clock later, still inside the same bit cell (stop bit included)"
+SAS-VIP,dut_sas_target_model.sv:61,0 -> 1,"zero_cnt is reloaded on the next clock from txp, which is high (toggling) when speed negotiation completes"
+SAS-VIP,dut_sas_target_model.sv:93,0 -> 1,io_nwords is assigned before every use (rx_frame / tx_frame callers)
+SAS-VIP,dut_sas_target_model.sv:132,0 -> 1,"one bogus empty byte (ok = 0) is read before the first frame; the server drops it and restarts with the connection still closed"
+SAS-VIP,dut_sas_target_model.sv:138,0 -> 1,"the receiver arms after 2 instead of 3 idle clocks; every frame starts at least 8 idle clocks after phy_ready"
+SAS-VIP,dut_sas_target_model.sv:141,3 -> 4,"the receiver arms after 4 instead of 3 idle clocks; every frame starts at least 8 idle clocks after phy_ready"
+SAS-VIP,dut_sas_target_model.sv:187,0 -> 1,io_nwords is set to len on a good frame and overwritten by every tx_frame caller otherwise
+SAS-VIP,dut_sas_target_model.sv:218,8 -> 9,"the ninth address byte reads addr[71:64] of a 64-bit bit vector (0); a zero byte does not change the XOR check byte"
+SAS-VIP,dut_sas_target_model.sv:242,&& flipped,"with phy_ready low, rx_frame returns at once with fok = 0, so the loop exits either way"
+SAS-VIP,dut_sas_target_model.sv:273,< -> <= in condition,"the credit is decremented before the echo, so it is below SAS_INIT_CREDITS when it is returned"

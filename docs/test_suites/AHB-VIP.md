@@ -71,10 +71,10 @@ UVM RAL test（`amba_ral_test`：hw_reset / bit_bash / mirror 等）在 Verilato
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 5 | `amba_base_test`, `amba_axi_test`, `amba_ahb_test`, `amba_apb_test`, `amba_ral_test` |
-| Sequences | 11 | `ahb_base_sequence`, `ahb_single_seq`, `ahb_incr_burst_seq`, `ahb_wrap_burst_seq`, `ahb_back_to_back_seq`, `ahb_error_inject_seq`, `ahb_reset_seq`, `ahb_stress_seq`, `ahb_random_sequence`, `ahb_regression_sequence`, `amba_seq_item` |
+| UVM tests | 6 | `amba_base_test`, `amba_axi_test`, `amba_ahb_test`, `amba_apb_test`, `amba_ral_test`, `amba_ahb_cov_test` |
+| Sequences | 12 | `ahb_base_sequence`, `ahb_single_seq`, `ahb_incr_burst_seq`, `ahb_wrap_burst_seq`, `ahb_back_to_back_seq`, `ahb_error_inject_seq`, `ahb_reset_seq`, `ahb_stress_seq`, `ahb_cov_sweep_seq`, `ahb_random_sequence`, `ahb_regression_sequence`, `amba_seq_item` |
 | SVA（assert / cover property） | 33 / 16 | `assert_axi_aw`, `assert_axi_wlast`, `assert_axi_bresp`, `assert_ahb_trans`, `assert_apb_en`, `assert_p_ahb_htrans_valid`, `cover_p_ahb_htrans_valid`, `assert_p_ahb_hburst_valid`, `cover_p_ahb_hburst_valid`, `assert_p_ahb_hsize_valid`, `cover_p_ahb_hsize_valid`, `assert_p_ahb_hresp_valid` … |
-| Covergroups / coverpoints | 8 / 42 | |
+| Covergroups / coverpoints | 10 / 42 | |
 
 ## 4. 充分度判定與缺口
 

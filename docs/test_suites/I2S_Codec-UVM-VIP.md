@@ -10,7 +10,7 @@
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，12 個 check，全部通過 |
 | Mutation | 16/16 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（12 個 check，mutation score 100%） |
+| 判定 | **🟡 Partial**（covergroup 只有 7 個 bins（需 ≥ 10）） |
 
 ## 2. 可執行的功能測試
 
@@ -54,7 +54,7 @@ UVM agent test（`i2sc_func_test`：directed + constrained-random 流量，score
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（12 個 check，mutation score 100%）。
+判定：**🟡 Partial**（covergroup 只有 7 個 bins（需 ≥ 10））。
 
 無已知缺口。
 
