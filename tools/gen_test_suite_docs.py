@@ -18,8 +18,8 @@ and vip_individual_portfolio.csv.
 Verdict (sufficiency of the functional tests for the DUT model):
   Sufficient    tests pass, >= 10 checks, mutation score >= 80 % and DUT-model
                 line coverage >= 80 % (when coverage_report.csv exists)
-  Partial       tests pass, but < 10 checks, mutation score 50..79 %, fewer than
-                10 valid mutants, a measured covergroup total under 10 bins, or line
+  Partial       tests pass, but < 10 checks, mutation score 50..79 %, a DUT model with
+                fewer than 10 mutants, a measured covergroup total under 10 bins, or line
                 coverage < 80 % (mutants are only placed on lines the tests can
                 reach, so a high score alone does not show the model is tested)
   Insufficient  no test, a failing test, or mutation score < 50 %
@@ -134,9 +134,10 @@ def n_sva(rows):
 # ---------------------------------------------------------------- verdict
 LINE_COV_MIN = 80.0
 # A mutation score from a handful of mutants says little: a DUT model of three
-# statements gets 100 % from one or two mutants. Ask for MUT_VALID_MIN valid
-# mutants before the score can carry a Sufficient verdict.
-MUT_VALID_MIN = 10
+# statements gets 100 % from one or two mutants. Ask for a model that offers at
+# least MUT_SITES_MIN mutants (mutation_score.py caps the count at 12 for
+# Verilator-built VIPs, so the cap itself is not penalised).
+MUT_SITES_MIN = 10
 # A covergroup of a few bins is at 100 % after a few items. When the functional
 # coverage is measured, ask for FUNC_BINS_MIN bins in the VIP's covergroups.
 FUNC_BINS_MIN = 10
@@ -160,8 +161,8 @@ def verdict(rows, mut, cov=None):
     line = line_cov(cov)
     if line is not None and line < LINE_COV_MIN:
         return "Partial", "DUT model line coverage %.1f%%" % line
-    if score is not None and int(mut["valid"]) < MUT_VALID_MIN:
-        return "Partial", "只有 %s 個有效 mutant（需 ≥ %d）" % (mut["valid"], MUT_VALID_MIN)
+    if score is not None and int(mut["mutants"]) < MUT_SITES_MIN:
+        return "Partial", "DUT model 只有 %s 個 mutant（需 ≥ %d，model 太小）" % (mut["mutants"], MUT_SITES_MIN)
     bins = int(cov["func_total"]) if cov and cov.get("func_total") not in (None, "", "0") else None
     if bins is not None and bins < FUNC_BINS_MIN:
         return "Partial", "covergroup 只有 %d 個 bins（需 ≥ %d）" % (bins, FUNC_BINS_MIN)
@@ -362,7 +363,7 @@ def main():
     S.append("2. **UVM 測試平台**（tests / sequences / scoreboard / SVA / coverage）：需商用模擬器執行，開源流程以 "
              "pyslang elaboration 檢查（`tools/elab_scan.py`）；有 register model 的 VIP（APB / AHB / AXI / OCP / TileLink）另以 "
              "`tools/run_uvm_tests.py` 在 Verilator 上執行 UVM RAL test（見 [RAL.md](RAL.md)）；由 `tools/gen_uvm_agents.py` 產生 agent 的 "
-             "29 個 VIP 另在 Verilator 上執行 `<prefix>_func_test`（scoreboard 以 DUT 參考模型比對）。")
+             "VIP（以及 NVMe、SATA、hbm3 等手寫 agent）另在 Verilator 上執行 `<prefix>_func_test`（scoreboard 以 DUT 參考模型比對）。")
     S.append("3. **Mutation testing**（`tools/mutation_score.py`）：對 DUT 模型注入運算子與常數錯誤，檢查功能測試能否偵測，"
              "作為「測試是否足夠」的客觀指標，結果寫入 `mutation_report.csv`。")
     S.append("")
@@ -370,9 +371,9 @@ def main():
     S.append("")
     S.append("| 判定 | 條件 |")
     S.append("|---|---|")
-    S.append("| ✅ Sufficient | 功能測試通過，≥ 10 個 check，≥ 10 個有效 mutant 且 mutation score ≥ 80%，DUT model line coverage ≥ 80%，"
+    S.append("| ✅ Sufficient | 功能測試通過，≥ 10 個 check，DUT model 可產生 ≥ 10 個 mutant 且 mutation score ≥ 80%，DUT model line coverage ≥ 80%，"
              "有量到 functional coverage 時 covergroup 共 ≥ 10 個 bins |")
-    S.append("| 🟡 Partial | 功能測試通過，但 check < 10、有效 mutant < 10、mutation score 50–79%、line coverage < 80% 或 covergroup bins < 10 |")
+    S.append("| 🟡 Partial | 功能測試通過，但 check < 10、model mutant < 10、mutation score 50–79%、line coverage < 80% 或 covergroup bins < 10 |")
     S.append("| ❌ Insufficient | 沒有功能測試、測試失敗或 mutation score < 50% |")
     S.append("")
     S.append("Mutant 只會放在測試跑得到的程式碼上才可能被偵測，所以另以 `coverage_report.csv`（`tools/coverage.py`）的 "
