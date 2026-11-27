@@ -322,8 +322,7 @@ forever begin
   ones = rx ? ones + 1 : 0;
 end
 """,
-    mon_tasks="""
-// independent decoder over the clock samples of one frame (from SOF)
+    mon_members="""// independent decoder state over the clock samples of one frame (from SOF)
 bit dq[$];
 int unsigned dp, dsmp;
 bit dfast, dshort, dlast;
@@ -332,6 +331,8 @@ bit [14:0] d15;
 bit [16:0] d17;
 bit [20:0] d21;
 canfd_err_e de;
+""",
+    mon_tasks="""
 
 // next line bit, sampled in the middle of its bit time
 function bit rb();
