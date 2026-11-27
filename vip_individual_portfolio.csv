@@ -13,7 +13,7 @@
 12,USB,USB4,UVM VIP,USB4-VIP.zip,61KB,USB-VIP,20,5159,27,19,14,6,v1.7.4,2026-09-28,✅,PASS,https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/USB4-VIP.zip,Apache-2.0,USB4
 13,USB,eUSB2,UVM VIP,eUSB2-VIP.zip,61KB,USB-VIP,20,5160,25,17,14,6,v1.7.4,2026-09-28,✅,PASS,https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/eUSB2-VIP.zip,Apache-2.0,eUSB2
 14,AMBA,AHB,UVM VIP,AHB-VIP.zip,51KB,AMBA-VIP,18,2932,40,21,8,4,v1.8.0,2026-11-27,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/AHB-VIP.zip,Apache-2.0,AHB
-15,AMBA,APB,UVM VIP,APB-VIP.zip,33KB,AMBA-VIP,16,1827,31,14,8,4,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/APB-VIP.zip,Apache-2.0,APB
+15,AMBA,APB,UVM VIP,APB-VIP.zip,50KB,AMBA-VIP,18,2842,36,19,8,4,v1.8.0,2026-11-27,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/APB-VIP.zip,Apache-2.0,APB
 16,AMBA,AXI,UVM VIP,AXI-VIP.zip,55KB,AMBA-VIP,18,3227,39,17,8,4,v1.8.0,2026-11-27,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/AXI-VIP.zip,Apache-2.0,AXI / AXI4
 17,Memory,DDR,UVM VIP,DDR-VIP.zip,40KB,MEMORY-VIP,12,2056,33,29,0,5,v1.7.4,2026-10-30,✅,PASS(verilator),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/DDR-VIP.zip,Apache-2.0,DDR / DDR4 / DDR4_Lite
 18,Memory,DDR5,UVM VIP,DDR5-VIP.zip,37KB,NEW,21,1946,4,2,1,2,v1.9.0,2026-10-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/DDR5-VIP.zip,Apache-2.0,DDR5

@@ -458,3 +458,5 @@ APB-VIP,dut_amba_dut.sv:88,64 -> 65,reset loop index 64 is out of range of regba
 APB-VIP,dut_amba_dut.sv:122,1'b0 inverted,tie-off of an unused sibling protocol (AXI) in the shared AMBA model
 APB-VIP,dut_amba_dut.sv:123,1'b0 inverted,tie-off of an unused sibling protocol (AXI) in the shared AMBA model
 APB-VIP,dut_amba_dut.sv:124,1'b0 inverted,tie-off of an unused sibling protocol (AXI / AXI-Stream) in the shared AMBA model
+TileLink-VIP,dut_tilelink_device_model.sv:97,< -> <= in condition,"when a == b both arms return the same value"
+TileLink-VIP,dut_tilelink_device_model.sv:195,16 -> 17,"the extra iteration b = 16 fails b < d_beats_of() (at most 16), so nothing is read"
