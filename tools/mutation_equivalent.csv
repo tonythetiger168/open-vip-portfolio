@@ -224,9 +224,6 @@ LTI-VIP,dut_lti_translation_unit_model.sv:50,0 -> 1,only changes the random la_r
 LTI-VIP,dut_lti_translation_unit_model.sv:50,!= flipped,only changes the random la_ready throttle probability
 Avalon_ST-UVM-VIP,dut_avalon_st_model.sv:34,1'b0 inverted,skid_sop is reloaded with the beat before skid_valid makes it visible
 Avalon_ST-UVM-VIP,dut_avalon_st_model.sv:35,1'b0 inverted,skid_eop is reloaded with the beat before skid_valid makes it visible
-MDIO-UVM-VIP,dut_mdio_model.sv:40,1'b0 inverted,mdc_q reset value only matters if MDC is high when reset is released (an extra rise before any frame)
-MDIO-UVM-VIP,dut_mdio_model.sv:46,1'b1 inverted,dout is only visible while drive is set and is loaded before drive rises
-MDIO-UVM-VIP,dut_mdio_model.sv:78,1'b1 inverted,dout is not visible once drive is cleared
 Bluetooth5-VIP,dut_bluetooth5_dut.sv:55,0 -> 1,tx_idx is reloaded at the end of the turnaround before PEER_SEND reads it
 ACE_Lite-UVM-VIP,dut_ace_lite_model.sv:37,8 -> 9,byte-lane loop index past WSTRB[7]: wstrb[8] is out of range and never enables a write
 SDIO-UVM-VIP,dut_sdio_model.sv:28,39 -> 40,CRC7 loop starts one bit past the 40-bit input: d[40] is out of range (X) and only shifts a leading zero through the zero-initialised register
@@ -464,3 +461,8 @@ Avalon_MM-UVM-VIP,dut_avalon_mm_model.sv:71,4 -> 5,"the extra iteration reads by
 Wishbone-UVM-VIP,dut_wishbone_model.sv:75,256 -> 257,"the extra iteration writes mem[256], out of range of the 256-word array, and is ignored"
 Wishbone-UVM-VIP,dut_wishbone_model.sv:76,16 -> 17,"the extra iteration writes index 16 of 16-entry arrays, out of range and ignored"
 Wishbone-UVM-VIP,dut_wishbone_model.sv:77,4 -> 5,"the extra iteration writes index 4 of the 4-entry response queue, out of range and ignored"
+MDIO-UVM-VIP,dut_mdio_model.sv:47,== flipped,"flipping d == 5'd3 only permutes which storage slot MMD 3 and MMD 7 use (still one slot each)"
+MDIO-UVM-VIP,dut_mdio_model.sv:63,1'b0 inverted,"skip and shortp are loaded at every frame start before they are read; their reset values are never seen"
+MDIO-UVM-VIP,dut_mdio_model.sv:66,1 -> 2,"c22[1] is never read: register 1 reads the phy_status pins"
+MDIO-UVM-VIP,dut_mdio_model.sv:68,3 -> 4,"maddr has 3 entries; the extra iteration writes out of range and is dropped"
+MDIO-UVM-VIP,dut_mdio_model.sv:141,32 -> 33,"c22 has 32 entries; the extra iteration writes out of range and is dropped"
