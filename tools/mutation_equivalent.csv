@@ -457,3 +457,4 @@ GMII-UVM-VIP,dut_gmii_model.sv:36,1'b0 inverted,"f_pre is assigned again on the 
 RGMII-UVM-VIP,dut_rgmii_model.sv:48,1'b0 inverted,"f_code is assigned again on the first byte of every frame, before anything reads it"
 XGMII-UVM-VIP,dut_xgmii_model.sv:46,1'b0 inverted,"f_code is assigned again by every Start, and nothing reads it while no frame is open"
 XGMII-UVM-VIP,dut_xgmii_model.sv:70,< -> <= in condition,"fb has 2048 entries: the extra write to fb[2048] is out of range and dropped; oversize frames never read the buffer"
+CHI-UVM-VIP,dut_chi_model.sv:99,1'b0 inverted,"t_oor reset value; written when a tracker is allocated (line 333 of top_tb), before any read"

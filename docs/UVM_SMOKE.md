@@ -2,17 +2,17 @@
 
 本文件由 `tools/gen_uvm_smoke_doc.py` 依 `uvm_smoke_report.csv` 產生（`python3 tools/run_uvm_tests.py --smoke`，全部 VIP 約需數小時）。
 
-`tools/run_uvm_tests.py` 的正式 suite（9 個 RAL VIP、70 個產生式 agent）以外，其餘 VIP 的 UVM 環境（driver / monitor / scoreboard / checker / covergroup）之前只做過 pyslang elaboration，從未被模擬器執行。`--smoke` 把 VIP 的全部 `.sv` 以 elab_scan 的順序（package 排在 import 它的檔案之前）、呼叫 `run_test()` 的 module 為 top 建置，執行 base test 的衍生 test（優先選名稱含 VIP 名的那個）。沒有 pass 標記可等，所以 PASS 只代表環境能建置、跑完 sequence 且沒有任何錯誤回報，**不代表** scoreboard 做了有意義的比對。
+`tools/run_uvm_tests.py` 的正式 suite（9 個 RAL VIP、71 個產生式 agent）以外，其餘 VIP 的 UVM 環境（driver / monitor / scoreboard / checker / covergroup）之前只做過 pyslang elaboration，從未被模擬器執行。`--smoke` 把 VIP 的全部 `.sv` 以 elab_scan 的順序（package 排在 import 它的檔案之前）、呼叫 `run_test()` 的 module 為 top 建置，執行 base test 的衍生 test（優先選名稱含 VIP 名的那個）。沒有 pass 標記可等，所以 PASS 只代表環境能建置、跑完 sequence 且沒有任何錯誤回報，**不代表** scoreboard 做了有意義的比對。
 
 | 結果 | 意義 | VIP 數 |
 |---|---|---|
-| PASS | 建置成功、test 跑到結束（時間 > 0），沒有 UVM_ERROR / UVM_FATAL，VIP 自己的 checker 也沒有 warning | 34 |
+| PASS | 建置成功、test 跑到結束（時間 > 0），沒有 UVM_ERROR / UVM_FATAL，VIP 自己的 checker 也沒有 warning | 33 |
 | WARN | 建置成功、跑完、沒有 UVM_ERROR / UVM_FATAL，但 VIP 自己的 checker / SVA 發出 `UVM_WARNING` | 4 |
 | FAIL | 建置成功，但執行時有 UVM_ERROR / UVM_FATAL、逾時，或在時間 0 就結束（test 沒有送出任何流量） | 0 |
 | ERROR | Verilator 無法建置（語法、LRM 違規或 Verilator 不支援的寫法） | 0 |
 | NONE | 沒有 UVM test（RTL IP 類 VIP，只有 directed testbench） | 0 |
 
-共 38 個 VIP，其中 38 個有 UVM test。
+共 37 個 VIP，其中 37 個有 UVM test。
 
 ## 失敗原因分類
 
@@ -43,7 +43,6 @@ DDR、HBM、LPDDR、UFS、eMMC、SD、ONFI、NVMe、SATA、hbm3 等已有正式 
 | CAN-VIP | `can_2_0_test` | PASS |  |  |
 | CPRI-VIP | `cpri_random_test` | PASS |  |  |
 | CXS-VIP | `cxs_random_test` | PASS |  |  |
-| DFI-VIP | `dfi_random_test` | PASS |  |  |
 | eCPRI-VIP | `ecpri_random_test` | PASS |  |  |
 | Ethernet-VIP | `net_ethernet_100g_test` | PASS |  |  |
 | Ethernet_AVB_TSN-VIP | `avb_stream_test` | PASS |  |  |
