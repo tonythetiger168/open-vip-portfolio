@@ -186,11 +186,11 @@ HBM-VIP,dut_hbm_mem_model.sv:70,! dropped in condition,PRE/REF decode only updat
 LPDDR-VIP,dut_lpddr_mem_model.sv:17,32 -> 33,bank arrays sized beyond the 32 addressable banks: extra entry unreachable
 LPDDR-VIP,dut_lpddr_mem_model.sv:22,0 -> 1,"statistics counter, only printed in final"
 LPDDR-VIP,dut_lpddr_mem_model.sv:23,0 -> 1,"statistics counter, only printed in final"
+LPDDR-VIP,dut_lpddr_mem_model.sv:72,1'b1 inverted,bank_open is written but never read
+LPDDR-VIP,dut_lpddr_mem_model.sv:77,1'b0 inverted,bank_open is written but never read
+LPDDR-VIP,dut_lpddr_mem_model.sv:80,0 -> 1,bank_open is written but never read
+LPDDR-VIP,dut_lpddr_mem_model.sv:80,1'b0 inverted,bank_open is written but never read
 LPDDR-VIP,dut_lpddr_mem_model.sv:23,0 -> 1,"statistics counter, only printed in final"
-LPDDR-VIP,dut_lpddr_mem_model.sv:34,8 -> 9,extra burst beat lands at col+64; the model's commands always use column 0 and read 8 beats
-LPDDR-VIP,dut_lpddr_mem_model.sv:57,1'b1 inverted,bank_open is written but never read
-LPDDR-VIP,dut_lpddr_mem_model.sv:62,1'b0 inverted,bank_open is written but never read
-LPDDR-VIP,dut_lpddr_mem_model.sv:65,0 -> 1,bank_open is written but never read
 LPDDR4-VIP,MEMCH_top.sv:12,15 -> 16,parameter default overridden by the top-level instantiation
 LPDDR4-VIP,MEMCORE_top.sv:74,1'b0 inverted,rd_pending is reassigned from hcmd whenever the next command is accepted
 LPDDR4-VIP,MEMCORE_top.sv:105,1'b0 inverted,LPDDR4 exposes only addr[2:0] on CA; the zero-extended upper bits are dropped
