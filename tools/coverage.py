@@ -204,7 +204,7 @@ def in_scope(scope, fn, page):
     if not scope:
         return True
     name = (fn + " " + page).lower()
-    if scope.startswith("usb") and "usb_vip_if" in name:
+    if (scope.startswith("usb") or scope == "eusb2") and "usb_vip_if" in name:
         return False
     return scope in name or not any(p in name for p in AMBA_PROTOCOLS)
 

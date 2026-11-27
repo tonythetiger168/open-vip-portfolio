@@ -474,3 +474,4 @@ USB4-VIP,dut_usb4_smoke_model.sv:233,0 -> 1,"rel_v[0] not cleared at reset: rel_
 USB4-VIP,dut_usb4_smoke_model.sv:236,0 -> 1,"output queue write pointer starts at 1: lane 0 is CLd after reset, and the flush sets oq_rd = oq_wr before any packet is queued, so only the pointer difference matters"
 USB4-VIP,dut_usb4_smoke_model.sv:315,2 -> 3,"retrain loop over the 2 lanes: index 2 is out of range of ls[2], reads X and the guarded write is discarded"
 USB2-VIP,dut_usb2_smoke_model.sv:203,1'b0 inverted,"sp_sc reset value: it is only read in X_SPLIT, and every entry to X_SPLIT first loads it from the SPLIT token"
+eUSB2-VIP,dut_eusb2_smoke_model.sv:101,1'b0 inverted,"l1_rw reset value: it is only read in L1, and L1 is entered only by an LPM ACK, which loads it from the token"

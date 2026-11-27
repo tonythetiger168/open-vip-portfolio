@@ -166,6 +166,7 @@ USB_SUITES = {
     "USB3-VIP": ["usb3_link_test"],
     "USB_PD-VIP": ["usb_pd_link_test"],
     "USB4-VIP": ["usb4_link_test"],
+    "eUSB2-VIP": ["eusb2_link_test"],
 }
 
 def usb_suites():
