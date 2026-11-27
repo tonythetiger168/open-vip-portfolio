@@ -231,9 +231,7 @@ def gen_driver(s):
       req.tag = item_cnt++;
       `uvm_info("DRV", {{"drive: ", req.convert2string()}}, UVM_HIGH)
       drive_item(req);
-      $cast(rsp_item, req.clone());
-      ap.write(rsp_item);
-      seq_item_port.item_done();
+{apw}      seq_item_port.item_done();
     end
   endtask
 
@@ -251,6 +249,9 @@ endclass
            bg=("    fork\n" + ind(s["drv_bg"], 6) + "\n    join_none") if s.get("drv_bg") and not s.get("drv_bg_at_reset") else "",
            bg0=("    fork\n" + ind(s["drv_bg"], 6) + "\n    join_none\n") if s.get("drv_bg") and s.get("drv_bg_at_reset") else "",
            idle=ind(s["drv_idle"], 4), item=ind(s["drv_item"], 4),
+           # drv_ap_manual: the driver's own code writes ap (e.g. when items
+           # complete out of order); otherwise each item is written once driven
+           apw="" if s.get("drv_ap_manual") else "      $cast(rsp_item, req.clone());\n      ap.write(rsp_item);\n",
            tasks=("\n" + ind(s.get("drv_tasks", ""), 2)) if s.get("drv_tasks") else "")
 
 

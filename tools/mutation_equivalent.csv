@@ -290,9 +290,6 @@ HBM3E-VIP,dut_hbm_dev_model.sv:109,32 -> 33,auto-precharge loop past bank 31 (no
 HBM3E-VIP,dut_hbm_dev_model.sv:227,16 -> 17,MRS loop upper bound past bank 31 on pseudo channel 1 (no such bank; reads as closed)
 AXI4_Lite-UVM-VIP,dut_axi4_lite_model.sv:55,256 -> 257,reset loop past the last word (no such entry)
 AXI4_Lite-UVM-VIP,dut_axi4_lite_model.sv:63,4 -> 5,strobe loop past lane 3 (no such lane)
-AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:46,4 -> 5,lane loop past lane 3 (TKEEP / TSTRB bit 4 do not exist)
-AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:58,1'b0 inverted,reset value of err: ignored while in_pkt is low (the first transfer starts from 0)
-AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:61,1'b0 inverted,reset value of pkt_err: only read with pkt_done
 ACE-UVM-VIP,dut_ace_model.sv:114,&& flipped,CRREADY high outside the response window: allowed (READY may be high without VALID); the master sends one CR per snoop
 ACE-UVM-VIP,dut_ace_model.sv:115,&& flipped,CDREADY high outside the data window: allowed (READY may be high without VALID); the master sends one CD line per snoop
 ACE-UVM-VIP,dut_ace_model.sv:119,16 -> 17,merge loop past byte 15 (no such byte)
@@ -466,3 +463,7 @@ MDIO-UVM-VIP,dut_mdio_model.sv:63,1'b0 inverted,"skip and shortp are loaded at e
 MDIO-UVM-VIP,dut_mdio_model.sv:66,1 -> 2,"c22[1] is never read: register 1 reads the phy_status pins"
 MDIO-UVM-VIP,dut_mdio_model.sv:68,3 -> 4,"maddr has 3 entries; the extra iteration writes out of range and is dropped"
 MDIO-UVM-VIP,dut_mdio_model.sv:141,32 -> 33,"c22 has 32 entries; the extra iteration writes out of range and is dropped"
+AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:55,4 -> 5,"lane 4 does not exist: tkeep[4] / tstrb[4] read X and neither branch is taken"
+AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:69,16 -> 17,"there are 16 TID contexts; the extra iteration writes out of range and is dropped"
+AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:70,1'b0 inverted,"c_err is only read while c_in is set, and c_in is cleared in reset"
+AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:74,1'b0 inverted,"pkt_err is only meaningful with pkt_done, and every pkt_done loads it"
