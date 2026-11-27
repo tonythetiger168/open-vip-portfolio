@@ -36,7 +36,7 @@
 - 在 `$urandom` 上 `case` 時每個 case item 都會重新取值：sequence 先把值存進變數再分派。
 - 兩次 clocking 事件之間發出的 drive 會和下一個 `@(cb)` 之後的 drive 落在同一個邊緣，而且順序不保證：driver 在每個 item 開始前先 `@(vif.drv_cb)`（ONFI、HBM）。
 - 以 `verilator` 開頭的註解會被當成 pragma（`BADVLTPRAGMA`）。
-- Verilator 5.052 的 covergroup `get_coverage()` 回傳 0、enum transition bins 無法建置；5.054 兩者都支援，ONFI 的 100% 覆蓋率門檻因此在 Verilator 上也強制執行（2026-11-25）。
+- Verilator 5.052 的 covergroup `get_coverage()` 回傳 0、enum transition bins 無法建置；5.054 兩者都支援（但不支援 transition 的 `[*n]` 重複，需展開寫）。2026-11-26 起 DDR、HBM、LPDDR、UFS、eMMC、SD、ONFI 的 `memory_coverage_regression_test` 改列入 `tools/run_uvm_tests.py` 的正式 suite（CI L1d），覆蓋率未達 100% 即失敗，不再由 `--smoke` 執行；下表這 7 列是之前的 smoke 結果。
 - 2-state：`'z` 讀成 0，所以用 `=== 1'bz` 判斷「腳位放開」的邏輯永遠不成立。SPI 用 MOSI 的 `'z` 表示 CPHA=1，monitor 與 slave model 改讀新增的 `mosi_oe`（pad output enable）。
 
 ## 逐 VIP 結果

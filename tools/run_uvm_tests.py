@@ -15,9 +15,10 @@ need no randomize() are run by default.
 A test passes when the simulation finishes, reports no UVM_ERROR/UVM_FATAL
 and no UVM_WARNING from the VIP's own code (its protocol checkers / SVA warn
 rather than error, and legal register traffic must not trip them), and
-prints ``RAL_PASS checks=<n>`` (RAL tests) or ``SB_PASS checks=<n>`` (the
+prints ``RAL_PASS checks=<n>`` (RAL tests), ``SB_PASS checks=<n>`` (the
 agent tests of the template-built VIPs: scoreboard checks against the
-reference model of the DUT). Output: one line per test
+reference model of the DUT) or ``COV_PASS checks=<n>`` (the memory VIPs'
+coverage regressions: the covergroup goal of the VIP's protocol is met). Output: one line per test
 ``UVM_PASS|UVM_FAIL|UVM_ERROR <VIP>/<test> -- detail`` and, for a full run,
 ``uvm_report.csv`` (vip,test,result,checks,detail) in the repo root.
 Exit status is non-zero when any test fails or cannot be built.
@@ -141,6 +142,30 @@ SUITES["SATA-VIP"] = dict(
     incs=["sata", "common", "env", "tests", "regression/sva", "regression/vip/sata"],
     tests=["sata_func_test"])
 
+# Memory VIPs on the shared memory_env: the coverage regression must close the
+# covergroup goal of the VIP's own protocol (100%; unreachable bins are
+# ignore_bins with a REACHABILITY note) and prints COV_PASS. Verilator 5.054
+# measures get_coverage() and builds enum transition bins, so the goal is
+# enforced here (5.052 reported 0 and the check was skipped on Verilator).
+# The file list is the --smoke one (every .sv in package order).
+MEMORY_COV_SUITES = {
+    "DDR-VIP": ["memory_coverage_regression_test"],
+    "HBM-VIP": ["memory_coverage_regression_test"],
+    "LPDDR-VIP": ["memory_coverage_regression_test"],
+    "UFS-VIP": ["memory_coverage_regression_test"],
+    "eMMC-VIP": ["memory_coverage_regression_test"],
+    "SD-VIP": ["memory_coverage_regression_test"],
+    "ONFI-VIP": ["memory_coverage_regression_test", "onfi_deep_test"],
+}
+
+def memory_cov_suites():
+    out = {}
+    for vip, tests in MEMORY_COV_SUITES.items():
+        if os.path.isdir(os.path.join(VIPS, vip)):
+            s = smoke_suite(vip)
+            out[vip] = dict(files=s["files"], incs=s["incs"], top=s["top"], tests=tests)
+    return out
+
 # The SoC subsystem VIPs and the AXI4 manager-port kit (tools/gen_soc_subsys_vips.py)
 # ship common/ssv_pkg.sv, a Verilator filelist sim/<p>.f and sim/testlist.txt;
 # every test in the list runs (SB_PASS / RAL_PASS markers).
@@ -236,6 +261,8 @@ def smoke_suite(vip):
                 incs=sorted({os.path.relpath(os.path.dirname(f), vdir) for f in allsv}),
                 tests=[test] if test else [])
 
+SUITES.update(memory_cov_suites())
+
 def run(cmd, cwd, timeout):
     try:
         p = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=timeout)
@@ -274,7 +301,7 @@ def classify(rc, out):
     warns = [l for l in out.splitlines()
              if l.startswith("UVM_WARNING ") and not re.match(r'UVM_WARNING\s*:', l)
              and not l.startswith("UVM_WARNING uvm-core") and "/uvm-core/" not in l.split("@")[0]]
-    m = re.search(r'^(?:RAL|SB)_PASS checks=(\d+)', out, re.M)
+    m = re.search(r'^(?:RAL|SB|COV)_PASS checks=(\d+)', out, re.M)
     if rc == 0 and m and errs == 0 and fatals == 0 and not warns:
         return "PASS", int(m.group(1)), ""
     first = [l for l in out.splitlines() if l.startswith(("UVM_ERROR ", "UVM_FATAL "))
