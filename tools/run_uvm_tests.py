@@ -162,8 +162,10 @@ MEMORY_COV_SUITES = {
 # VIP's device model (tb/<proto>_smoke_model.sv) with the compliance checker
 # on the same interface. File list as for --smoke.
 USB_SUITES = {
+    "USB2-VIP": ["usb2_link_test"],
     "USB3-VIP": ["usb3_link_test"],
     "USB_PD-VIP": ["usb_pd_link_test"],
+    "USB4-VIP": ["usb4_link_test"],
 }
 
 def usb_suites():
