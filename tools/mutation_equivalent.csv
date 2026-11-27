@@ -475,3 +475,26 @@ USB4-VIP,dut_usb4_smoke_model.sv:236,0 -> 1,"output queue write pointer starts a
 USB4-VIP,dut_usb4_smoke_model.sv:315,2 -> 3,"retrain loop over the 2 lanes: index 2 is out of range of ls[2], reads X and the guarded write is discarded"
 USB2-VIP,dut_usb2_smoke_model.sv:203,1'b0 inverted,"sp_sc reset value: it is only read in X_SPLIT, and every entry to X_SPLIT first loads it from the SPLIT token"
 eUSB2-VIP,dut_eusb2_smoke_model.sv:101,1'b0 inverted,"l1_rw reset value: it is only read in L1, and L1 is entered only by an LPM ACK, which loads it from the token"
+USB-VIP,dut_usb2_smoke_model.sv:70,1'b0 inverted,reset value of setup_pending; every OUT token clears it and every SETUP token sets it before a data stage can use it
+USB-VIP,dut_usb2_smoke_model.sv:126,1'b0 inverted,setup_pending left set after the SETUP data stage; the next OUT clears it and the next SETUP sets it before any data stage reads it
+USB-VIP,dut_usb3_smoke_model.sv:196,1'b0 inverted,"tx_hold after power-on reset: RxDetect -> Polling runs link_reset(), which clears it before any U0 clock"
+USB-VIP,dut_usb3_smoke_model.sv:201,0 -> 1,txb[0] reset value: a retry-buffer entry is always written by tx_push before it is sent
+USB-VIP,dut_usb_pd_smoke_model.sv:167,== flipped,"GoodCRC request cleared at the first instead of the last GoodCRC symbol: the transmitter is busy until the end either way, and the half-duplex bus cannot deliver another message while the sink transmits"
+USB-VIP,dut_usb_pd_smoke_model.sv:234,34 -> 35,"reset loop writes fb[34], which is out of range and ignored"
+USB-VIP,dut_usb_pd_smoke_model.sv:249,1'b0 inverted,"Hard Reset is only sent with the policy engine in Hard Reset, whose abort branch clears tx_busy on the next clock with tx_valid low"
+USB-VIP,dut_usb_pd_smoke_model.sv:325,! dropped in condition,"pe_send is only consumed by an idle transmitter; clearing it when wait_gc starts instead of when the message is taken differs only if the policy engine queued a second message while one is on the wire, which never happens"
+USB-VIP,dut_usb_pd_smoke_model.sv:167,&& flipped,GoodCRC request also cleared while another frame is on the line: the half-duplex bus cannot deliver a message while the sink transmits
+USB-VIP,dut_usb_pd_smoke_model.sv:234,0 -> 1,fb[0] reset skipped: fb is a scratch array that build() fully rewrites before every frame
+USB-VIP,dut_usb4_smoke_model.sv:166,12 -> 13,"replay loop bound: a stored response has at most 11 words after the header, so i = 12 never passes the i < last_n guard"
+USB-VIP,dut_usb4_smoke_model.sv:229,64 -> 65,reset loop over the 64-entry config space: the extra index is out of range and the write is discarded
+USB-VIP,dut_usb4_smoke_model.sv:233,0 -> 1,"rel_v[0] not cleared at reset: rel_n is 0, so the ring is empty and the first release push rewrites slot 0 before it is read"
+USB-VIP,dut_usb4_smoke_model.sv:236,0 -> 1,"output queue write pointer starts at 1: lane 0 is CLd after reset, and the flush sets oq_rd = oq_wr before any packet is queued, so only the pointer difference matters"
+USB-VIP,dut_usb4_smoke_model.sv:315,2 -> 3,"retrain loop over the 2 lanes: index 2 is out of range of ls[2], reads X and the guarded write is discarded"
+USB-VIP,dut_usb2_smoke_model.sv:203,1'b0 inverted,"sp_sc reset value: it is only read in X_SPLIT, and every entry to X_SPLIT first loads it from the SPLIT token"
+USB-VIP,dut_eusb2_smoke_model.sv:101,1'b0 inverted,"l1_rw reset value: it is only read in L1, and L1 is entered only by an LPM ACK, which loads it from the token"
+USB4-VIP,dut_usb4_smoke_model.sv:206,1 -> 2,"default path index -1 -> -2: the only use is the p < 0 test for an unknown HopID, which both values pass"
+USB4-VIP,dut_usb4_smoke_model.sv:231,1'b0 inverted,"poison reset value: it is only read at the end of a packet, and every packet start (w_first) reloads it"
+USB_PD-VIP,dut_usb_pd_smoke_model.sv:243,1'b0 inverted,"wait_gc left set when a Hard Reset is sent: the policy engine is in P_HRST, whose branch clears wait_gc on the clock after the 4-symbol ordered set"
+USB-VIP,dut_usb4_smoke_model.sv:206,1 -> 2,"default path index -1 -> -2: the only use is the p < 0 test for an unknown HopID, which both values pass"
+USB-VIP,dut_usb4_smoke_model.sv:231,1'b0 inverted,"poison reset value: it is only read at the end of a packet, and every packet start (w_first) reloads it"
+USB-VIP,dut_usb_pd_smoke_model.sv:243,1'b0 inverted,"wait_gc left set when a Hard Reset is sent: the policy engine is in P_HRST, whose branch clears wait_gc on the clock after the 4-symbol ordered set"
