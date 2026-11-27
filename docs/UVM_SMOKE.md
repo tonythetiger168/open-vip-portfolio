@@ -2,17 +2,17 @@
 
 本文件由 `tools/gen_uvm_smoke_doc.py` 依 `uvm_smoke_report.csv` 產生（`python3 tools/run_uvm_tests.py --smoke`，全部 VIP 約需數小時）。
 
-`tools/run_uvm_tests.py` 的正式 suite（9 個 RAL VIP、71 個產生式 agent）以外，其餘 VIP 的 UVM 環境（driver / monitor / scoreboard / checker / covergroup）之前只做過 pyslang elaboration，從未被模擬器執行。`--smoke` 把 VIP 的全部 `.sv` 以 elab_scan 的順序（package 排在 import 它的檔案之前）、呼叫 `run_test()` 的 module 為 top 建置，執行 base test 的衍生 test（優先選名稱含 VIP 名的那個）。沒有 pass 標記可等，所以 PASS 只代表環境能建置、跑完 sequence 且沒有任何錯誤回報，**不代表** scoreboard 做了有意義的比對。
+`tools/run_uvm_tests.py` 的正式 suite（9 個 RAL VIP、77 個產生式 agent）以外，其餘 VIP 的 UVM 環境（driver / monitor / scoreboard / checker / covergroup）之前只做過 pyslang elaboration，從未被模擬器執行。`--smoke` 把 VIP 的全部 `.sv` 以 elab_scan 的順序（package 排在 import 它的檔案之前）、呼叫 `run_test()` 的 module 為 top 建置，執行 base test 的衍生 test（優先選名稱含 VIP 名的那個）。沒有 pass 標記可等，所以 PASS 只代表環境能建置、跑完 sequence 且沒有任何錯誤回報，**不代表** scoreboard 做了有意義的比對。
 
 | 結果 | 意義 | VIP 數 |
 |---|---|---|
-| PASS | 建置成功、test 跑到結束（時間 > 0），沒有 UVM_ERROR / UVM_FATAL，VIP 自己的 checker 也沒有 warning | 33 |
-| WARN | 建置成功、跑完、沒有 UVM_ERROR / UVM_FATAL，但 VIP 自己的 checker / SVA 發出 `UVM_WARNING` | 4 |
+| PASS | 建置成功、test 跑到結束（時間 > 0），沒有 UVM_ERROR / UVM_FATAL，VIP 自己的 checker 也沒有 warning | 31 |
+| WARN | 建置成功、跑完、沒有 UVM_ERROR / UVM_FATAL，但 VIP 自己的 checker / SVA 發出 `UVM_WARNING` | 0 |
 | FAIL | 建置成功，但執行時有 UVM_ERROR / UVM_FATAL、逾時，或在時間 0 就結束（test 沒有送出任何流量） | 0 |
 | ERROR | Verilator 無法建置（語法、LRM 違規或 Verilator 不支援的寫法） | 0 |
 | NONE | 沒有 UVM test（RTL IP 類 VIP，只有 directed testbench） | 0 |
 
-共 37 個 VIP，其中 37 個有 UVM test。
+共 31 個 VIP，其中 31 個有 UVM test。
 
 ## 失敗原因分類
 
@@ -70,9 +70,3 @@ DDR、HBM、LPDDR、UFS、eMMC、SD、ONFI、NVMe、SATA、hbm3 等已有正式 
 | ToggleNAND-VIP | `tnand_random_test` | PASS |  |  |
 | TypeC-VIP | `typec_random_test` | PASS |  |  |
 | UART-VIP | `uart_random_test` | PASS |  |  |
-| USB4-VIP | `usb4_test` | PASS |  |  |
-| USB_PD-VIP | `usb_pd_test` | PASS |  |  |
-| eUSB2-VIP | `usb_eusb2_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=48612 timeout: UVM_WARNING rtl/sva/eusb2_compliance_checker.sv(76) @ 110000: reporter [EUSB2_L3] Valid dropped before ready failed |
-| USB-VIP | `usb_random_regression_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=8134 timeout: UVM_WARNING rtl/sva/usb_compliance_checker.sv(68) @ 106000: reporter [USB_L2] HS preamble failed |
-| USB2-VIP | `usb_eusb2_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=1864 timeout: UVM_WARNING vip/base/usb_vip_pkg.sv(937) @ 206000: uvm_test_top.env.sb [SCOREBOARD] Transaction completed with error status |
-| USB3-VIP | `usb_random_regression_test` | WARN |  | rc=0 UVM_ERROR=0 UVM_FATAL=0 VIP_WARNINGS=25181 timeout: UVM_WARNING rtl/sva/usb3_compliance_checker.sv(73) @ 102000: reporter [USB3_L2] U1/U2 exit failed |

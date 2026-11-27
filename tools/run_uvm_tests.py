@@ -158,6 +158,26 @@ MEMORY_COV_SUITES = {
     "ONFI-VIP": ["memory_coverage_regression_test", "onfi_deep_test"],
 }
 
+# USB family: the protocol's link / protocol layer agent runs against the
+# VIP's device model (tb/<proto>_smoke_model.sv) with the compliance checker
+# on the same interface. File list as for --smoke.
+USB_SUITES = {
+    "USB-VIP": ["usb_family_test"],
+    "USB2-VIP": ["usb2_link_test"],
+    "USB3-VIP": ["usb3_link_test"],
+    "USB_PD-VIP": ["usb_pd_link_test"],
+    "USB4-VIP": ["usb4_link_test"],
+    "eUSB2-VIP": ["eusb2_link_test"],
+}
+
+def usb_suites():
+    out = {}
+    for vip, tests in USB_SUITES.items():
+        if os.path.isdir(os.path.join(VIPS, vip)):
+            s = smoke_suite(vip)
+            out[vip] = dict(files=s["files"], incs=s["incs"], top=s["top"], tests=tests)
+    return out
+
 def memory_cov_suites():
     out = {}
     for vip, tests in MEMORY_COV_SUITES.items():
@@ -262,6 +282,7 @@ def smoke_suite(vip):
                 tests=[test] if test else [])
 
 SUITES.update(memory_cov_suites())
+SUITES.update(usb_suites())
 
 def run(cmd, cwd, timeout):
     try:
