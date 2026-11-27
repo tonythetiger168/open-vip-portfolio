@@ -443,3 +443,6 @@ SAS-VIP,dut_sas_target_model.sv:187,0 -> 1,io_nwords is set to len on a good fra
 SAS-VIP,dut_sas_target_model.sv:218,8 -> 9,"the ninth address byte reads addr[71:64] of a 64-bit bit vector (0); a zero byte does not change the XOR check byte"
 SAS-VIP,dut_sas_target_model.sv:242,&& flipped,"with phy_ready low, rx_frame returns at once with fok = 0, so the loop exits either way"
 SAS-VIP,dut_sas_target_model.sv:273,< -> <= in condition,"the credit is decremented before the echo, so it is below SAS_INIT_CREDITS when it is returned"
+CAN_FD-UVM-VIP,dut_can_fd_model.sv:104,1'b1 inverted,"rxp (rx one clock ago) is overwritten on the first clock, and a SOF needs bus integration (11 recessive bits) first"
+CAN_FD-UVM-VIP,dut_can_fd_model.sv:105,1'b0 inverted,fsbd is cleared when a frame enters the fixed-stuff field and is not read before
+CAN_FD-UVM-VIP,dut_can_fd_model.sv:107,1'b0 inverted,"rtr is written at IDE (base) or RTR (extended) of every frame before it is read; out_rtr is reset on its own"
