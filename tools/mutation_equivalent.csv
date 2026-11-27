@@ -2,13 +2,6 @@
 # out of the VIP's scope. Read by tools/mutation_score.py; location is
 # <flattened file>:<line> as printed in its "survived:" lines.
 vip,location,mutation,reason
-AXI-VIP,dut_amba_dut.sv:45,512 -> 513,initialises an index past the 512-word memory
-AXI-VIP,dut_amba_dut.sv:87,1'b0 inverted,wr_error is reloaded by every AW before it is used
-AXI-VIP,dut_amba_dut.sv:132,1'b0 inverted,rd_error is reloaded by every AR before it is used
-AXI-VIP,dut_amba_dut.sv:106,8 -> 9,wstrb[8] does not exist (X): no write
-AXI-VIP,dut_amba_dut.sv:161,1'b0 inverted,AXI-Stream tie-off of the shared AMBA shell (not AXI)
-AXI-VIP,dut_amba_dut.sv:162,1'b0 inverted,AHB tie-off of the shared AMBA shell (not AXI)
-AXI-VIP,dut_amba_dut.sv:163,1'b0 inverted,APB tie-off of the shared AMBA shell (not AXI)
 HBM3E-VIP,dut_hbm3e_model.sv:26,4 -> 5,initialises a stack index past the array
 HBM3E-VIP,dut_hbm3e_model.sv:27,2 -> 3,initialises a pseudo-channel index past the array
 HBM3E-VIP,dut_hbm3e_model.sv:28,16384 -> 16385,initialises a word index past the array
@@ -210,11 +203,6 @@ eMMC-VIP,dut_emmc_device_dut.sv:223,!= flipped,bit_cnt is reloaded (1) by the ne
 DDR4-VIP,MEMCORE_top.sv:13,15 -> 16,parameter default overridden by MEMCH_top
 LPDDR4-VIP,MEMCORE_top.sv:13,15 -> 16,parameter default overridden by MEMCH_top
 LPDDR4-VIP,MEMCORE_top.sv:119,1'b0 inverted,LPDDR4 exposes only addr[2:0] on CA; the zero-extended upper bits are dropped
-AXI-VIP,dut_amba_dut.sv:89,1'b0 inverted,wr_error is reloaded by every AW before it is used
-AXI-VIP,dut_amba_dut.sv:108,8 -> 9,wstrb[8] does not exist (X): no write
-AXI-VIP,dut_amba_dut.sv:134,1'b0 inverted,rd_error is reloaded by every AR before it is used
-AXI-VIP,dut_amba_dut.sv:164,1'b0 inverted,AHB tie-off of the shared AMBA shell (not AXI)
-AXI-VIP,dut_amba_dut.sv:165,1'b0 inverted,APB tie-off of the shared AMBA shell (not AXI)
 OCP-VIP,dut_ocp_slave_model.sv:47,0 -> 1,only changes the random SCmdAccept throttle probability
 OCP-VIP,dut_ocp_slave_model.sv:47,!= flipped,only changes the random SCmdAccept throttle probability
 TileLink-VIP,dut_tilelink_device_model.sv:48,4 -> 5,only changes the random a_ready throttle probability
@@ -467,3 +455,6 @@ AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:55,4 -> 5,"lane 4 does not exist: tke
 AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:69,16 -> 17,"there are 16 TID contexts; the extra iteration writes out of range and is dropped"
 AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:70,1'b0 inverted,"c_err is only read while c_in is set, and c_in is cleared in reset"
 AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:74,1'b0 inverted,"pkt_err is only meaningful with pkt_done, and every pkt_done loads it"
+AXI-VIP,dut_amba_dut.sv:140,1'b1 inverted,"without found the B pick is the last eligible entry of the rotation instead of the first: still the oldest of its ID, so an equally legal order"
+AXI-VIP,dut_amba_dut.sv:150,&& flipped,"with || an unused slot may be considered first, but every valid eligible slot later in the rotation overwrites it and slot 0 (oldest) is always valid and eligible"
+AXI-VIP,dut_amba_dut.sv:243,1'b0 inverted,AHB tie-off of the shared AMBA shell (not AXI)

@@ -241,6 +241,10 @@ def summarize(dats, dut_files, suffix_ok=False, scope=None):
                 continue
             if metric in ("func", "assert") and not in_scope(scope, fn, f.get("page", "")):
                 continue
+            # ignore_bins / illegal_bins are written as points too (Bt=ignore
+            # / Bt=illegal): they are exclusions, not coverage goals
+            if metric == "func" and f.get("Bt") in ("ignore", "illegal"):
+                continue
             # covergroup points are told apart by bin and coverpoint path
             # ("h" is cg.<coverpoint>.<bin> there, not the instance)
             # Verilator 5.054 also writes a parameterized class's values into
