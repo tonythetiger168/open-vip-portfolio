@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | AMBA |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，17 個 check，全部通過 |
-| Mutation | 22/22 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（17 個 check，mutation score 100%） |
+| 功能測試 | 1 個檔案，32 個 check，全部通過 |
+| Mutation | 21/21 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（32 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（iverilog，17 checks）
+結果：**PASS**（iverilog，32 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -38,13 +38,28 @@ Functional smoke testbench (AXI4-Stream DUT model)
 | 8 | single byte 'a': CRC 0xE8B7BE43 | check |
 | 9 | position byte only: no data, CRC of nothing is 0 | check |
 | 10 | TKEEP 0 / TSTRB 1 flagged, data bytes still counted | check |
-| 11 | TID change inside a packet flagged; the first TID reported | check |
-| 12 | TDEST change inside a packet flagged; the first TDEST reported | check |
-| 13 | error state cleared for the next packet; CRC of 1234 | check |
-| 14 | eight back-to-back packets, eight reports | check |
-| 15 | last of them reported correctly | check |
-| 16 | 255 data bytes counted | check |
-| 17 | TREADY low for %0d clocks of a held transfer | check |
+| 11 | TID 2 packet inside TID 1's: reported on its own | check |
+| 12 | TID 1 packet resumes and completes intact | check |
+| 13 | TDEST change inside a packet flagged; the first TDEST reported | check |
+| 14 | error state cleared for the next packet; CRC of 1234 | check |
+| 15 | eight back-to-back packets, eight reports | check |
+| 16 | last of them reported correctly | check |
+| 17 | 255 data bytes counted | check |
+| 18 | three interleaved packets, three reports | check |
+| 19 | reports in TLAST order: TID 5 first | check |
+| 20 | then TID 6: 1234 | check |
+| 21 | then TID 4: 123456789 | check |
+| 22 | TDEST kept per TID | check |
+| 23 | TID 8 TDEST change flagged | check |
+| 24 | TID 9 unaffected, a null TLAST transfer ends it | check |
+| 25 | TUSER counted on data bytes only (%0d) | check |
+| 26 | all four TUSER bits | check |
+| 27 | TUSER count starts again for each packet | check |
+| 28 | sixteen TIDs open at once, sixteen reports | check |
+| 29 | every TID kept its own bytes, TDEST and TUSER count | check |
+| 30 | no report in reset | check |
+| 31 | reset dropped TID 10's open packet | check |
+| 32 | TREADY low for %0d clocks of a held transfer | check |
 
 ## 3. UVM 測試平台內容
 
@@ -54,12 +69,12 @@ UVM agent test（`axi_stream_func_test`：directed + constrained-random 流量�
 |---|---|---|
 | UVM tests | 2 | `axi_stream_base_test`, `axi_stream_func_test` |
 | Sequences | 3 | `axi_stream_base_sequence`, `axi_stream_directed_sequence`, `axi_stream_transaction` |
-| SVA（assert / cover property） | 6 / 4 | - |
-| Covergroups / coverpoints | 1 / 5 | |
+| SVA（assert / cover property） | 6 / 5 | - |
+| Covergroups / coverpoints | 1 / 8 | |
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（17 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（32 個 check，mutation score 100%）。
 
 無已知缺口。
 

@@ -99,7 +99,7 @@ All source files in this repository are licensed under **Apache License 2.0**. T
 | OBI | UVM VIP | `OBI-UVM-VIP.zip` | 21KB |
 | OCP-IP Open Core Protocol | UVM VIP | `OCP-VIP.zip` | 28KB |
 | RapidIO | UVM VIP | `RapidIO-VIP.zip` | 23KB |
-| TileLink (TL-UL/TL-C) | UVM VIP | `TileLink-VIP.zip` | 29KB |
+| TileLink (TL-UL/TL-UH) | UVM VIP | `TileLink-VIP.zip` | 47KB |
 | Wishbone | UVM VIP | `Wishbone-UVM-VIP.zip` | 24KB |
 
 ### MIPI (2)

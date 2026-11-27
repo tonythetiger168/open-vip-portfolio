@@ -4,12 +4,12 @@
 
 ## 1. 結論
 
-- 117 個 VIP 中 117 個量到 code coverage（131 個功能測試中 130 個在 Verilator 上帶 coverage 執行）。
-- Line / branch coverage（全部 DUT model 合計）：94.4%（5573/5904）。
-- Toggle coverage（全部 DUT model 合計）：51.0%（59241/116084）。
-- Expression coverage（全部 DUT model 合計）：90.2%（3752/4158）。
+- 117 個 VIP 中 117 個量到 code coverage（126 個功能測試中 125 個在 Verilator 上帶 coverage 執行）。
+- Line / branch coverage（全部 DUT model 合計）：94.6%（5855/6187）。
+- Toggle coverage（全部 DUT model 合計）：51.0%（63733/124954）。
+- Expression coverage（全部 DUT model 合計）：91.1%（4178/4587）。
 - Line coverage 100% 的 VIP 45 個，≥ 90% 的 97 個，低於 90% 的 20 個（見第 4 節）。
-- Functional coverage（covergroup bins，在 Verilator 上量得的 ACE-UVM-VIP / ACE_Lite-UVM-VIP / AHB-VIP / APB-VIP / ATB-UVM-VIP / AVSBus-VIP / AXI-VIP / AXI4_Lite-UVM-VIP / AXI_Stream-UVM-VIP / Avalon_MM-UVM-VIP / Avalon_ST-UVM-VIP / BoW-UVM-VIP / CAN_FD-UVM-VIP / CAN_XL-UVM-VIP / CHI-UVM-VIP / CHI_H-UVM-VIP / CI_CAM-UVM-VIP / DDR-VIP / DDR5-VIP / DFI-VIP / ETH800G-VIP / EtherCAT-VIP / GMII-UVM-VIP / GMII_PHY-UVM-VIP / GPIO-UVM-VIP / HBM-VIP / HBM3E-VIP / HyperBus-UVM-VIP / I2C-VIP / I2S_Codec-UVM-VIP / IO_Link-VIP / IR_Remote-UVM-VIP / LPDDR-VIP / LPDDR6-VIP / MACsec-UVM-VIP / MCTP-UVM-VIP / MDIO-UVM-VIP / MIL_STD_1553-VIP / MPEG_TS-UVM-VIP / NC-SI-UVM-VIP / NVMe-VIP / OBI-UVM-VIP / OCP-VIP / ONFI-VIP / OneWire-UVM-VIP / PTP-VIP / PWM-UVM-VIP / RGMII-UVM-VIP / RVFI-UVM-VIP / RapidIO-VIP / SATA-VIP / SCCB_Sensor-UVM-VIP / SD-VIP / SDIO-UVM-VIP / SDMMC_Card-UVM-VIP / SD_Card-UVM-VIP / SENT-VIP / SGMII-UVM-VIP / SMBus-UVM-VIP / SPDIF-UVM-VIP / SPDM-UVM-VIP / SPI_NOR-UVM-VIP / SUE-UVM-VIP / Smartcard_ISO7816-UVM-VIP / SpaceWire-UVM-VIP / T1S_PLCA-UVM-VIP / TDM-UVM-VIP / TileLink-VIP / UEC-VIP / UFS-VIP / USXGMII-UVM-VIP / VbyOne_HS-UVM-VIP / WTB-UVM-VIP / Wishbone-UVM-VIP / XGMII-UVM-VIP / eMMC-VIP / eMMC_Device-UVM-VIP / eSPI-UVM-VIP / hbm3-VIP / xSPI-UVM-VIP）：37.7%（2724/7218），其餘 UVM 環境的 covergroup 需商用模擬器（見第 2 節）。
+- Functional coverage（covergroup bins，在 Verilator 上量得的 ACE-UVM-VIP / ACE_Lite-UVM-VIP / AHB-VIP / APB-VIP / ATB-UVM-VIP / AVSBus-VIP / AXI-VIP / AXI4_Lite-UVM-VIP / AXI_Stream-UVM-VIP / Avalon_MM-UVM-VIP / Avalon_ST-UVM-VIP / BoW-UVM-VIP / CAN_FD-UVM-VIP / CAN_XL-UVM-VIP / CHI-UVM-VIP / CHI_H-UVM-VIP / CI_CAM-UVM-VIP / DDR-VIP / DDR5-VIP / DFI-VIP / ETH800G-VIP / EtherCAT-VIP / GMII-UVM-VIP / GMII_PHY-UVM-VIP / GPIO-UVM-VIP / HBM-VIP / HBM3E-VIP / HyperBus-UVM-VIP / I2C-VIP / I2S_Codec-UVM-VIP / IO_Link-VIP / IR_Remote-UVM-VIP / LPDDR-VIP / LPDDR6-VIP / MACsec-UVM-VIP / MCTP-UVM-VIP / MDIO-UVM-VIP / MIL_STD_1553-VIP / MPEG_TS-UVM-VIP / NC-SI-UVM-VIP / NVMe-VIP / OBI-UVM-VIP / OCP-VIP / ONFI-VIP / OneWire-UVM-VIP / PTP-VIP / PWM-UVM-VIP / RGMII-UVM-VIP / RVFI-UVM-VIP / RapidIO-VIP / SATA-VIP / SCCB_Sensor-UVM-VIP / SD-VIP / SDIO-UVM-VIP / SDMMC_Card-UVM-VIP / SD_Card-UVM-VIP / SENT-VIP / SGMII-UVM-VIP / SMBus-UVM-VIP / SPDIF-UVM-VIP / SPDM-UVM-VIP / SPI_NOR-UVM-VIP / SUE-UVM-VIP / Smartcard_ISO7816-UVM-VIP / SpaceWire-UVM-VIP / T1S_PLCA-UVM-VIP / TDM-UVM-VIP / TileLink-VIP / UEC-VIP / UFS-VIP / USXGMII-UVM-VIP / VbyOne_HS-UVM-VIP / WTB-UVM-VIP / Wishbone-UVM-VIP / XGMII-UVM-VIP / eMMC-VIP / eMMC_Device-UVM-VIP / eSPI-UVM-VIP / hbm3-VIP / xSPI-UVM-VIP）：43.4%（3190/7343），其餘 UVM 環境的 covergroup 需商用模擬器（見第 2 節）。
 
 ## 2. 方法
 
@@ -34,14 +34,14 @@
 |---|---|---|---|---|---|---|
 | [ACE-UVM-VIP](test_suites/ACE-UVM-VIP.md) | 1/1 | 92.6% (112/121) | 64.5% (1001/1552) | 91.5% (86/94) | 100.0% (4/4) | 81.8% (36/44) |
 | [ACE_Lite-UVM-VIP](test_suites/ACE_Lite-UVM-VIP.md) | 1/1 | 100.0% (11/11) | 8.0% (183/2282) | 94.4% (17/18) | 100.0% (2/2) | 100.0% (22/22) |
-| [AHB-VIP](test_suites/AHB-VIP.md) | 2/2 | 100.0% (13/13) | 56.3% (364/646) | 100.0% (15/15) | 81.2% (13/16) | 93.3% (83/89) |
-| [APB-VIP](test_suites/APB-VIP.md) | 2/2 | 100.0% (19/19) | 37.8% (196/518) | 100.0% (20/20) | 100.0% (14/14) | 96.6% (86/89) |
+| [AHB-VIP](test_suites/AHB-VIP.md) | 1/1 | 100.0% (28/28) | 40.3% (452/1122) | 100.0% (60/60) | 100.0% (21/21) | 100.0% (153/153) |
+| [APB-VIP](test_suites/APB-VIP.md) | 1/1 | 97.4% (37/38) | 60.6% (1028/1696) | 100.0% (72/72) | 100.0% (19/19) | 100.0% (145/145) |
 | [ATB-UVM-VIP](test_suites/ATB-UVM-VIP.md) | 1/1 | 100.0% (3/3) | 20.0% (16/80) | 100.0% (8/8) | 100.0% (2/2) | 100.0% (5/5) |
 | [AVSBus-VIP](test_suites/AVSBus-VIP.md) | 1/1 | 95.7% (22/23) | 64.3% (18/28) | 87.5% (14/16) | - | 15.4% (21/136) |
-| [AXI-VIP](test_suites/AXI-VIP.md) | 2/2 | 92.1% (35/38) | 61.6% (548/890) | 100.0% (35/35) | 46.7% (7/15) | 93.2% (205/220) |
+| [AXI-VIP](test_suites/AXI-VIP.md) | 1/1 | 100.0% (73/73) | 72.1% (1388/1924) | 99.4% (153/154) | 88.2% (15/17) | 100.0% (304/304) |
 | [AXI4_Lite-UVM-VIP](test_suites/AXI4_Lite-UVM-VIP.md) | 1/1 | 100.0% (33/33) | 70.7% (338/478) | 100.0% (54/54) | 100.0% (4/4) | 92.9% (39/42) |
-| [AXI_Stream-UVM-VIP](test_suites/AXI_Stream-UVM-VIP.md) | 1/1 | 100.0% (32/32) | 89.2% (403/452) | 100.0% (47/47) | 100.0% (4/4) | 8.4% (29/344) |
-| [Avalon_MM-UVM-VIP](test_suites/Avalon_MM-UVM-VIP.md) | 1/1 | 100.0% (10/10) | 91.0% (162/178) | 100.0% (21/21) | 100.0% (2/2) | 100.0% (11/11) |
+| [AXI_Stream-UVM-VIP](test_suites/AXI_Stream-UVM-VIP.md) | 1/1 | 100.0% (33/33) | 59.7% (1409/2362) | 100.0% (46/46) | 100.0% (5/5) | 100.0% (103/103) |
+| [Avalon_MM-UVM-VIP](test_suites/Avalon_MM-UVM-VIP.md) | 1/1 | 100.0% (39/39) | 91.1% (432/474) | 96.3% (79/82) | 100.0% (3/3) | 100.0% (42/42) |
 | [Avalon_ST-UVM-VIP](test_suites/Avalon_ST-UVM-VIP.md) | 2/2 | 100.0% (9/9) | 100.0% (218/218) | 100.0% (13/13) | 100.0% (2/2) | 100.0% (3/3) |
 | [Bluetooth5-VIP](test_suites/Bluetooth5-VIP.md) | 1/1 | 95.8% (23/24) | 34.7% (131/378) | 90.9% (10/11) | - | - |
 | [BoW-UVM-VIP](test_suites/BoW-UVM-VIP.md) | 1/1 | 98.7% (74/75) | 99.6% (1331/1336) | 96.5% (55/57) | 100.0% (7/7) | 100.0% (20/20) |
@@ -84,7 +84,7 @@
 | [LTI-VIP](test_suites/LTI-VIP.md) | 1/1 | 100.0% (12/12) | 80.9% (304/376) | 100.0% (5/5) | - | - |
 | [MACsec-UVM-VIP](test_suites/MACsec-UVM-VIP.md) | 1/1 | 98.7% (76/77) | 62.7% (2715/4328) | 85.2% (46/54) | 100.0% (2/2) | 100.0% (19/19) |
 | [MCTP-UVM-VIP](test_suites/MCTP-UVM-VIP.md) | 1/1 | 100.0% (76/76) | 71.2% (403/566) | 96.1% (74/77) | 100.0% (3/3) | 90.9% (30/33) |
-| [MDIO-UVM-VIP](test_suites/MDIO-UVM-VIP.md) | 2/2 | 92.6% (25/27) | 95.6% (195/204) | 84.6% (11/13) | 100.0% (2/2) | 100.0% (8/8) |
+| [MDIO-UVM-VIP](test_suites/MDIO-UVM-VIP.md) | 1/1 | 100.0% (96/96) | 29.1% (422/1452) | 100.0% (31/31) | 100.0% (2/2) | 100.0% (41/41) |
 | [MIL_STD_1553-VIP](test_suites/MIL_STD_1553-VIP.md) | 1/1 | 100.0% (9/9) | 32.3% (31/96) | 100.0% (6/6) | 100.0% (2/2) | 100.0% (9/9) |
 | [MPEG_TS-UVM-VIP](test_suites/MPEG_TS-UVM-VIP.md) | 1/1 | 95.5% (42/44) | 89.4% (161/180) | 95.8% (23/24) | 100.0% (2/2) | 100.0% (15/15) |
 | [NC-SI-UVM-VIP](test_suites/NC-SI-UVM-VIP.md) | 1/1 | 99.0% (102/103) | 29.8% (1256/4210) | 94.6% (35/37) | 100.0% (2/2) | 100.0% (26/26) |
@@ -119,7 +119,7 @@
 | [SpaceWire-UVM-VIP](test_suites/SpaceWire-UVM-VIP.md) | 1/1 | 98.1% (51/52) | 81.9% (295/360) | 93.8% (45/48) | 100.0% (4/4) | 89.7% (26/29) |
 | [T1S_PLCA-UVM-VIP](test_suites/T1S_PLCA-UVM-VIP.md) | 1/1 | 100.0% (27/27) | 85.0% (153/180) | 98.0% (48/49) | 100.0% (2/2) | 100.0% (8/8) |
 | [TDM-UVM-VIP](test_suites/TDM-UVM-VIP.md) | 1/1 | 100.0% (12/12) | 99.8% (543/544) | 88.9% (8/9) | 75.0% (3/4) | 80.0% (12/15) |
-| [TileLink-VIP](test_suites/TileLink-VIP.md) | 1/1 | 100.0% (13/13) | 82.0% (287/350) | 100.0% (5/5) | - | 93.8% (30/32) |
+| [TileLink-VIP](test_suites/TileLink-VIP.md) | 1/1 | 94.7% (89/94) | 81.7% (2054/2514) | 98.9% (86/87) | 100.0% (10/10) | 100.0% (139/139) |
 | [ToggleNAND-VIP](test_suites/ToggleNAND-VIP.md) | 1/1 | 93.9% (46/49) | 42.1% (106/252) | 92.7% (38/41) | - | - |
 | [TypeC-VIP](test_suites/TypeC-VIP.md) | 1/1 | 88.9% (8/9) | 100.0% (18/18) | 100.0% (2/2) | - | - |
 | [UART-VIP](test_suites/UART-VIP.md) | 1/1 | 90.0% (18/20) | 90.0% (9/10) | 100.0% (4/4) | - | - |
@@ -133,7 +133,7 @@
 | [USXGMII-UVM-VIP](test_suites/USXGMII-UVM-VIP.md) | 1/1 | 100.0% (49/49) | 97.4% (567/582) | 100.0% (24/24) | 100.0% (3/3) | 97.4% (38/39) |
 | [VbyOne_HS-UVM-VIP](test_suites/VbyOne_HS-UVM-VIP.md) | 1/1 | 97.1% (34/35) | 92.6% (250/270) | 95.2% (20/21) | 100.0% (1/1) | 83.3% (5/6) |
 | [WTB-UVM-VIP](test_suites/WTB-UVM-VIP.md) | 1/1 | 100.0% (3/3) | 20.0% (16/80) | 100.0% (8/8) | 100.0% (2/2) | 100.0% (5/5) |
-| [Wishbone-UVM-VIP](test_suites/Wishbone-UVM-VIP.md) | 2/2 | 100.0% (9/9) | 95.6% (1174/1228) | 100.0% (18/18) | 100.0% (2/2) | 100.0% (50/50) |
+| [Wishbone-UVM-VIP](test_suites/Wishbone-UVM-VIP.md) | 1/1 | 100.0% (43/43) | 35.5% (636/1792) | 100.0% (71/71) | 100.0% (4/4) | 100.0% (41/41) |
 | [XGMII-UVM-VIP](test_suites/XGMII-UVM-VIP.md) | 1/1 | 100.0% (56/56) | 79.8% (498/624) | 98.3% (59/60) | 100.0% (5/5) | 100.0% (32/32) |
 | [eCPRI-VIP](test_suites/eCPRI-VIP.md) | 1/1 | 91.9% (34/37) | 70.8% (358/506) | 100.0% (17/17) | - | - |
 | [eMMC-VIP](test_suites/eMMC-VIP.md) | 1/1 | 92.7% (89/96) | 56.6% (738/1304) | 84.1% (58/69) | 97.0% (32/33) | 11.2% (126/1120) |
@@ -183,14 +183,14 @@
 |---|---|---|
 | ACE-UVM-VIP | 81.8% (36/44) | ace_pkg::ace_coverage::ace_cg.cp_cmd(1); ace_pkg::ace_coverage::ace_cg.cp_rs(1); ace_pkg::ace_coverage::ace_cg.cp_ru(1); ace_pkg::ace_coverage::ace_cg.x_snoop_cr(5) |
 | ACE_Lite-UVM-VIP | 100.0% (22/22) | - |
-| AHB-VIP | 93.3% (83/89) | ahb_protocol_checker_sva.cg_ahb.cg_ahb(2); amba_vip_if.cg_amba_ahb.cg_amba_ahb(1); amba_vip_pkg::ahb_coverage::cg_fsm.cp_state(1); amba_vip_pkg::ahb_coverage::cg_fsm.cp_trans(1); amba_vip_pkg::ahb_coverage::cg_protocol.cp_burst(1) |
-| APB-VIP | 96.6% (86/89) | amba_vip_if.cg_amba_apb.cg_amba_apb(1); apb_protocol_checker_sva.cg_apb.cg_apb(2) |
+| AHB-VIP | 100.0% (153/153) | - |
+| APB-VIP | 100.0% (145/145) | - |
 | ATB-UVM-VIP | 100.0% (5/5) | - |
 | AVSBus-VIP | 15.4% (21/136) | avsbus_pkg::avsbus_coverage::cg_error.cp_illegal(1); avsbus_pkg::avsbus_coverage::cg_error.cp_no_resp(1); avsbus_pkg::avsbus_coverage::cg_error.cx_op_status(2); avsbus_pkg::avsbus_coverage::cg_fsm.cp_state(3); avsbus_pkg::avsbus_coverage::cg_fsm.cp_trans(3); avsbus_pkg::avsbus_coverage::cg_protocol.cp_opcode(14); avsbus_pkg::avsbus_coverage::cg_protocol.cp_resp(1); avsbus_pkg::avsbus_coverage::cg_protocol.cx_op_resp(30); avsbus_pkg::avsbus_coverage::cg_protocol.cx_op_volt(60) |
-| AXI-VIP | 93.2% (205/220) | amba_vip_if.cg_amba_axi.cg_amba_axi(1); amba_vip_pkg::amba_cov::cg_axi.cp_prot(1); amba_vip_pkg::amba_cov::cg_axi.cp_resp(2); amba_vip_pkg::amba_cov::cg_axi.cp_size(1); amba_vip_pkg::amba_cov::cg_axi.cross_burst_len(1); amba_vip_pkg::axi_coverage::cg_protocol.cp_resp(1); amba_vip_pkg::axi_coverage::cg_protocol.cx_burst_len(1); axi_protocol_checker_sva.cg_axi.cg_axi(7) |
+| AXI-VIP | 100.0% (304/304) | - |
 | AXI4_Lite-UVM-VIP | 92.9% (39/42) | axi4_lite_pkg::axi4_lite_coverage::axi4_lite_cg.cp_resp(1); axi4_lite_pkg::axi4_lite_coverage::axi4_lite_cg.x_priv(2) |
-| AXI_Stream-UVM-VIP | 8.4% (29/344) | axi_stream_pkg::axi_stream_coverage::axi_stream_cg.cp_tail(63); axi_stream_pkg::axi_stream_coverage::axi_stream_cg.x_len_tail(252) |
-| Avalon_MM-UVM-VIP | 100.0% (11/11) | - |
+| AXI_Stream-UVM-VIP | 100.0% (103/103) | - |
+| Avalon_MM-UVM-VIP | 100.0% (42/42) | - |
 | Avalon_ST-UVM-VIP | 100.0% (3/3) | - |
 | BoW-UVM-VIP | 100.0% (20/20) | - |
 | CAN_FD-UVM-VIP | 100.0% (112/112) | - |
@@ -217,7 +217,7 @@
 | LPDDR6-VIP | 100.0% (19/19) | - |
 | MACsec-UVM-VIP | 100.0% (19/19) | - |
 | MCTP-UVM-VIP | 90.9% (30/33) | mctp_pkg::mctp_coverage::mctp_cg.cp_type(1); mctp_pkg::mctp_coverage::mctp_cg.x_err_n(2) |
-| MDIO-UVM-VIP | 100.0% (8/8) | - |
+| MDIO-UVM-VIP | 100.0% (41/41) | - |
 | MIL_STD_1553-VIP | 100.0% (9/9) | - |
 | MPEG_TS-UVM-VIP | 100.0% (15/15) | - |
 | NC-SI-UVM-VIP | 100.0% (26/26) | - |
@@ -248,13 +248,13 @@
 | SpaceWire-UVM-VIP | 89.7% (26/29) | spacewire_pkg::spacewire_coverage::spacewire_cg.cp_flags(1); spacewire_pkg::spacewire_coverage::spacewire_cg.x_len_fault(2) |
 | T1S_PLCA-UVM-VIP | 100.0% (8/8) | - |
 | TDM-UVM-VIP | 80.0% (12/15) | tdm_pkg::tdm_coverage::tdm_cg.cp_gap(1); tdm_pkg::tdm_coverage::tdm_cg.x_gap_err(2) |
-| TileLink-VIP | 93.8% (30/32) | tilelink_pkg::tilelink_coverage::cg_protocol.cx_op_dop(2) |
+| TileLink-VIP | 100.0% (139/139) | - |
 | UEC-VIP | 100.0% (7/7) | - |
 | UFS-VIP | 10.1% (127/1253) | memory_coverage_pkg::ddr_coverage::ddr_cg.bank(8); memory_coverage_pkg::ddr_coverage::ddr_cg.bank_group(4); memory_coverage_pkg::ddr_coverage::ddr_cg.burst_len(4); memory_coverage_pkg::ddr_coverage::ddr_cg.cmd(16); memory_coverage_pkg::ddr_coverage::ddr_cg.cmd_x_bank(128); memory_coverage_pkg::emmc_coverage::emmc_cg.bw(3); memory_coverage_pkg::emmc_coverage::emmc_cg.cmd(64); memory_coverage_pkg::emmc_coverage::emmc_cg.cmd_x_bw(192); memory_coverage_pkg::hbm_coverage::hbm_cg.bank(4); memory_coverage_pkg::hbm_coverage::hbm_cg.cid(8); memory_coverage_pkg::hbm_coverage::hbm_cg.cmd(16); memory_coverage_pkg::hbm_coverage::hbm_cg.cmd_x_cid(128); memory_coverage_pkg::lpddr_coverage::lpddr_cg.bank(8); memory_coverage_pkg::lpddr_coverage::lpddr_cg.cmd(16); memory_coverage_pkg::lpddr_coverage::lpddr_cg.cmd_x_bank(128); memory_coverage_pkg::onfi_coverage::onfi_cg.cmd(64); memory_coverage_pkg::sd_coverage::sd_cg.bw(3); memory_coverage_pkg::sd_coverage::sd_cg.cmd(64); memory_coverage_pkg::sd_coverage::sd_cg.cmd_x_bw(192); memory_coverage_pkg::ufs_coverage::ufs_data_cg.status(1); memory_coverage_pkg::unipro_coverage::unipro_cg.cport(8); memory_coverage_pkg::unipro_coverage::unipro_cg.msg(4); memory_coverage_pkg::unipro_coverage::unipro_cg.msg_x_cport(32); memory_coverage_pkg::unipro_coverage::unipro_credit_cg.cred(3); memory_coverage_pkg::unipro_coverage::unipro_credit_cg.cred_x_msg(12); memory_coverage_pkg::unipro_coverage::unipro_credit_cg.msg(4); memory_coverage_pkg::unipro_coverage::unipro_fsm_cg.msg_trans(3); memory_coverage_pkg::unipro_coverage::unipro_fsm_cg.msg_x_tc(6); memory_coverage_pkg::unipro_coverage::unipro_fsm_cg.tc(3) |
 | USXGMII-UVM-VIP | 97.4% (38/39) | usxgmii_pkg::usxgmii_coverage::usxgmii_cg.x_speed_fault(1) |
 | VbyOne_HS-UVM-VIP | 83.3% (5/6) | vbo_pkg::vbo_coverage::vbo_cg.cp_fill(1) |
 | WTB-UVM-VIP | 100.0% (5/5) | - |
-| Wishbone-UVM-VIP | 100.0% (50/50) | - |
+| Wishbone-UVM-VIP | 100.0% (41/41) | - |
 | XGMII-UVM-VIP | 100.0% (32/32) | - |
 | eMMC-VIP | 11.2% (126/1120) | memory_coverage_pkg::ddr_coverage::ddr_cg.bank(8); memory_coverage_pkg::ddr_coverage::ddr_cg.bank_group(4); memory_coverage_pkg::ddr_coverage::ddr_cg.burst_len(4); memory_coverage_pkg::ddr_coverage::ddr_cg.cmd(16); memory_coverage_pkg::ddr_coverage::ddr_cg.cmd_x_bank(128); memory_coverage_pkg::hbm_coverage::hbm_cg.bank(4); memory_coverage_pkg::hbm_coverage::hbm_cg.cid(8); memory_coverage_pkg::hbm_coverage::hbm_cg.cmd(16); memory_coverage_pkg::hbm_coverage::hbm_cg.cmd_x_cid(128); memory_coverage_pkg::lpddr_coverage::lpddr_cg.bank(8); memory_coverage_pkg::lpddr_coverage::lpddr_cg.cmd(16); memory_coverage_pkg::lpddr_coverage::lpddr_cg.cmd_x_bank(128); memory_coverage_pkg::onfi_coverage::onfi_cg.cmd(64); memory_coverage_pkg::sd_coverage::sd_cg.bw(3); memory_coverage_pkg::sd_coverage::sd_cg.cmd(64); memory_coverage_pkg::sd_coverage::sd_cg.cmd_x_bw(192); memory_coverage_pkg::ufs_coverage::ufs_cg.cmd_x_lun(57); memory_coverage_pkg::ufs_coverage::ufs_cg.lun(8); memory_coverage_pkg::ufs_coverage::ufs_cg.opcode(5); memory_coverage_pkg::ufs_coverage::ufs_cg.upiu(8); memory_coverage_pkg::ufs_coverage::ufs_data_cg.dlen(6); memory_coverage_pkg::ufs_coverage::ufs_data_cg.lba(3); memory_coverage_pkg::ufs_coverage::ufs_data_cg.len_x_lba(15); memory_coverage_pkg::ufs_coverage::ufs_data_cg.status(3); memory_coverage_pkg::ufs_coverage::ufs_fsm_cg.lun_t(2); memory_coverage_pkg::ufs_coverage::ufs_fsm_cg.trans(7); memory_coverage_pkg::ufs_coverage::ufs_fsm_cg.trans_x_lun(14); memory_coverage_pkg::unipro_coverage::unipro_cg.cport(8); memory_coverage_pkg::unipro_coverage::unipro_cg.msg(4); memory_coverage_pkg::unipro_coverage::unipro_cg.msg_x_cport(32); memory_coverage_pkg::unipro_coverage::unipro_credit_cg.cred(3); memory_coverage_pkg::unipro_coverage::unipro_credit_cg.cred_x_msg(12); memory_coverage_pkg::unipro_coverage::unipro_credit_cg.msg(4); memory_coverage_pkg::unipro_coverage::unipro_fsm_cg.msg_trans(3); memory_coverage_pkg::unipro_coverage::unipro_fsm_cg.msg_x_tc(6); memory_coverage_pkg::unipro_coverage::unipro_fsm_cg.tc(3) |
 | eMMC_Device-UVM-VIP | 31.2% (5/16) | emd_pkg::emd_coverage::emd_cg.cp_got(1); emd_pkg::emd_coverage::emd_cg.cp_idx(9); emd_pkg::emd_coverage::emd_cg.cp_len(1) |
