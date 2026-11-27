@@ -451,3 +451,5 @@ DFI-VIP,dut_dfi_model.sv:81,1'b0 inverted,"init_q, tbp_q and lp_q follow their i
 DFI-VIP,dut_dfi_model.sv:175,8 -> 9,open_b[8] is out of range and reads as 0 / X: the extra iteration never finds an open bank
 DFI-VIP,dut_dfi_model.sv:177,8 -> 9,open_b[8] is out of range: the extra iteration closes nothing
 DFI-VIP,dut_dfi_model.sv:216,4 -> 5,the read pipeline loop's extra iteration writes dat_sr[4] out of range: a no-op
+PTP-VIP,dut_ptp_model.sv:32,96 -> 97,"RBMAX only bounds the receive buffer; every frame the model checks is under 96 bytes, so one more slot is never written"
+PTP-VIP,dut_ptp_model.sv:95,>= -> > in condition,"byte 48 is seconds[47:40], zero for any clock a 64-bit nanosecond counter can hold (2^64 ns < 2^40 s)"
