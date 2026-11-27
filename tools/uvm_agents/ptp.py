@@ -592,7 +592,7 @@ module ptp_model (
       rcnt <= 8'h0; nb <= 8'h0; proc <= 1'b0; cap3 <= 1'b0; mvalid <= 1'b0; st <= S_IDLE; wcnt <= 4'h0;
       tidx <= 7'h0; seq_s <= 16'h0; dseq <= 16'h0; dsent <= 16'h0; mport <= 80'h0; mds <= 112'h0;
       rx_done <= 1'b0; rx_drop <= 3'h0; rx_type <= 4'h0; sync_ok <= 1'b0; offset <= 64'h0; delay <= 64'h0;
-      tx_valid <= 1'b0; tx_data <= 8'h0; tx_last <= 1'b0;
+      tx_valid <= 1'b0; tx_data <= 8'h0; tx_last <= 1'b0; for (int j = 0; j < RBMAX; j++) rb[j] <= 8'h0;
     end else begin
       step = 64'd8;
       rx_done <= 1'b0;
@@ -854,6 +854,7 @@ initial begin
   rst_n = 1;
   idle(5);
   chk(nstep == 0 && tot_now() == 40, $sformatf("free-running clock 8 ns per cycle (%0d)", tot_now()));
+  chk(ndone == 0 && ndreq == 0, "no frame reported or sent after reset");
 
   // no master selected: everything from A is dropped as not from the master
   sync1(A, 16'd1, 0, 0, 0); rx(5, "Sync before any Announce");
@@ -1018,6 +1019,16 @@ initial begin
   chk({txf[44], txf[45]} == 16'd0, "Delay_Req sequenceId restarts at 0");
   dresp(A, 16'd0, 0, 0, 0); rx(0, "Delay_Resp with no delay");
   chk(ldly == 0 && loff == 0, "zero offset, zero delay");
+  // seconds field: the slave is 3 s behind, so the step makes the next originTimestamp carry seconds 3
+  sync1(A, 16'd2, -64'sd3000000000, 0, 0); rx(0, "Sync, slave 3 s behind");
+  wait_dreq();
+  dresp(A, 16'd1, -64'sd3000000000, 0, 0); rx(0, "Delay_Resp");
+  chk(lstep == 64'sd3000000000, $sformatf("clock stepped +3 s (%0d)", lstep));
+  nq0 = ndreq;
+  sync1(A, 16'd3, 0, 0, 0); rx(0, "Sync after the step");
+  wait_dreq();
+  chk(t3_obs / NS == 3 && {txf[48], txf[49], txf[50], txf[51], txf[52], txf[53]} == 3 &&
+      {txf[54], txf[55], txf[56], txf[57]} == t3_obs % NS, $sformatf("originTimestamp seconds 3 (%0d)", t3_obs));
 
   chk(nlast == 0, $sformatf("tx_last only with tx_valid (%0d)", nlast));
   if (fails == 0) $display("FUNC_PASS checks=%0d", checks);

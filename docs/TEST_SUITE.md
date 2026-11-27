@@ -4,9 +4,9 @@
 
 ## 1. 結論
 
-- 117 個 VIP 中 117 個有可在開源工具上執行的 self-checking 功能測試，共 4320 個 check（另有 RTL IP testbench 的 0 次斷言評估）；117 個 VIP 的測試全部通過。
+- 117 個 VIP 中 117 個有可在開源工具上執行的 self-checking 功能測試，共 4326 個 check（另有 RTL IP testbench 的 0 次斷言評估）；117 個 VIP 的測試全部通過。
 - 判定：✅ Sufficient 95、🟡 Partial 22、❌ Insufficient 0。
-- Mutation testing：2200 個有效 mutant 中 2109 個被功能測試偵測（96%）。
+- Mutation testing：2202 個有效 mutant 中 2111 個被功能測試偵測（96%）。
 - 沒有未修正的 DUT 模型缺陷：功能測試中沒有 XFAIL check（先前記錄的缺陷都已在模型中修正）。
 
 ## 2. 方法
@@ -96,7 +96,7 @@ Checks 欄不含 RTL IP testbench 的斷言評估次數（見各 VIP 文件）�
 | [OCP-VIP](test_suites/OCP-VIP.md) | Interconnect | `func_ocp_tb.sv` | 12 | verilator | 7/7 | 0 | ✅ Sufficient |
 | [ONFI-VIP](test_suites/ONFI-VIP.md) | Memory | `func_onfi_tb.sv` | 39 | verilator | 8/8 | 0 | ✅ Sufficient |
 | [OneWire-UVM-VIP](test_suites/OneWire-UVM-VIP.md) | Peripherals | `smoke_func_tb.sv` | 25 | iverilog | 13/16 | 0 | 🟡 Partial |
-| [PTP-VIP](test_suites/PTP-VIP.md) | Networking | `smoke_func_tb.sv` | 108 | iverilog | 28/28 | 0 | ✅ Sufficient |
+| [PTP-VIP](test_suites/PTP-VIP.md) | Networking | `smoke_func_tb.sv` | 114 | iverilog | 30/30 | 0 | ✅ Sufficient |
 | [PWM-UVM-VIP](test_suites/PWM-UVM-VIP.md) | Peripherals | `smoke_func_tb.sv` | 35 | iverilog | 10/12 | 0 | 🟡 Partial |
 | [RGMII-UVM-VIP](test_suites/RGMII-UVM-VIP.md) | Networking | `smoke_func_tb.sv` | 107 | iverilog | 29/29 | 0 | ✅ Sufficient |
 | [RVFI-UVM-VIP](test_suites/RVFI-UVM-VIP.md) | Debug | `smoke_func_tb.sv` | 63 | iverilog | 25/25 | 0 | ✅ Sufficient |

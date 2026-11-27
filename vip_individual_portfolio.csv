@@ -99,7 +99,7 @@
 98,Networking,MDIO,UVM VIP,MDIO-UVM-VIP.zip,23KB,wave2-uvm,18,805,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/MDIO-UVM-VIP.zip,Apache-2.0,MDIO
 99,Aerospace,MIL-STD-1553,UVM VIP,MIL_STD_1553-VIP.zip,24KB,wave2-uvm,18,841,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/MIL_STD_1553-VIP.zip,Apache-2.0,MIL_STD_1553
 100,Peripherals,1-Wire,UVM VIP,OneWire-UVM-VIP.zip,23KB,wave2-uvm,18,809,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/OneWire-UVM-VIP.zip,Apache-2.0,1-Wire
-101,Networking,IEEE 1588 PTP,UVM VIP,PTP-VIP.zip,38KB,wave2-uvm,18,1900,9,3,1,2,v1.8.0,2026-11-27,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/PTP-VIP.zip,Apache-2.0,PTP
+101,Networking,IEEE 1588 PTP,UVM VIP,PTP-VIP.zip,38KB,wave2-uvm,18,1911,9,3,1,2,v1.8.0,2026-11-27,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/PTP-VIP.zip,Apache-2.0,PTP
 102,Peripherals,PWM,UVM VIP,PWM-UVM-VIP.zip,29KB,wave2-uvm,20,989,3,2,1,2,v1.7.4,2026-10-30,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/PWM-UVM-VIP.zip,Apache-2.0,PWM
 103,Networking,RGMII,UVM VIP,RGMII-UVM-VIP.zip,34KB,wave2-uvm,18,1664,8,5,1,2,v1.8.0,2026-11-27,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/RGMII-UVM-VIP.zip,Apache-2.0,RGMII
 104,Interconnect,RapidIO,UVM VIP,RapidIO-VIP.zip,23KB,wave2-uvm,18,830,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/RapidIO-VIP.zip,Apache-2.0,RAPIDIO

@@ -5,8 +5,8 @@
 ## 1. 結論
 
 - 117 個 VIP 中 117 個量到 code coverage（131 個功能測試中 130 個在 Verilator 上帶 coverage 執行）。
-- Line / branch coverage（全部 DUT model 合計）：94.4%（5572/5903）。
-- Toggle coverage（全部 DUT model 合計）：50.8%（59025/116084）。
+- Line / branch coverage（全部 DUT model 合計）：94.4%（5573/5904）。
+- Toggle coverage（全部 DUT model 合計）：51.0%（59241/116084）。
 - Expression coverage（全部 DUT model 合計）：90.2%（3752/4158）。
 - Line coverage 100% 的 VIP 45 個，≥ 90% 的 97 個，低於 90% 的 20 個（見第 4 節）。
 - Functional coverage（covergroup bins，在 Verilator 上量得的 ACE-UVM-VIP / ACE_Lite-UVM-VIP / AHB-VIP / APB-VIP / ATB-UVM-VIP / AVSBus-VIP / AXI-VIP / AXI4_Lite-UVM-VIP / AXI_Stream-UVM-VIP / Avalon_MM-UVM-VIP / Avalon_ST-UVM-VIP / BoW-UVM-VIP / CAN_FD-UVM-VIP / CAN_XL-UVM-VIP / CHI-UVM-VIP / CHI_H-UVM-VIP / CI_CAM-UVM-VIP / DDR-VIP / DDR5-VIP / DFI-VIP / ETH800G-VIP / EtherCAT-VIP / GMII-UVM-VIP / GMII_PHY-UVM-VIP / GPIO-UVM-VIP / HBM-VIP / HBM3E-VIP / HyperBus-UVM-VIP / I2C-VIP / I2S_Codec-UVM-VIP / IO_Link-VIP / IR_Remote-UVM-VIP / LPDDR-VIP / LPDDR6-VIP / MACsec-UVM-VIP / MCTP-UVM-VIP / MDIO-UVM-VIP / MIL_STD_1553-VIP / MPEG_TS-UVM-VIP / NC-SI-UVM-VIP / NVMe-VIP / OBI-UVM-VIP / OCP-VIP / ONFI-VIP / OneWire-UVM-VIP / PTP-VIP / PWM-UVM-VIP / RGMII-UVM-VIP / RVFI-UVM-VIP / RapidIO-VIP / SATA-VIP / SCCB_Sensor-UVM-VIP / SD-VIP / SDIO-UVM-VIP / SDMMC_Card-UVM-VIP / SD_Card-UVM-VIP / SENT-VIP / SGMII-UVM-VIP / SMBus-UVM-VIP / SPDIF-UVM-VIP / SPDM-UVM-VIP / SPI_NOR-UVM-VIP / SUE-UVM-VIP / Smartcard_ISO7816-UVM-VIP / SpaceWire-UVM-VIP / T1S_PLCA-UVM-VIP / TDM-UVM-VIP / TileLink-VIP / UEC-VIP / UFS-VIP / USXGMII-UVM-VIP / VbyOne_HS-UVM-VIP / WTB-UVM-VIP / Wishbone-UVM-VIP / XGMII-UVM-VIP / eMMC-VIP / eMMC_Device-UVM-VIP / eSPI-UVM-VIP / hbm3-VIP / xSPI-UVM-VIP）：37.7%（2724/7218），其餘 UVM 環境的 covergroup 需商用模擬器（見第 2 節）。
@@ -93,7 +93,7 @@
 | [OCP-VIP](test_suites/OCP-VIP.md) | 1/1 | 100.0% (16/16) | 85.8% (295/344) | 100.0% (5/5) | - | 93.1% (27/29) |
 | [ONFI-VIP](test_suites/ONFI-VIP.md) | 1/1 | 90.5% (86/95) | 83.1% (118/142) | 100.0% (35/35) | 100.0% (35/35) | 13.2% (68/515) |
 | [OneWire-UVM-VIP](test_suites/OneWire-UVM-VIP.md) | 1/1 | 90.9% (10/11) | 87.5% (21/24) | 85.7% (6/7) | 100.0% (2/2) | 100.0% (5/5) |
-| [PTP-VIP](test_suites/PTP-VIP.md) | 1/1 | 100.0% (81/81) | 45.7% (2615/5728) | 98.1% (51/52) | 100.0% (3/3) | 100.0% (57/57) |
+| [PTP-VIP](test_suites/PTP-VIP.md) | 1/1 | 100.0% (82/82) | 49.4% (2831/5728) | 98.1% (51/52) | 100.0% (3/3) | 100.0% (57/57) |
 | [PWM-UVM-VIP](test_suites/PWM-UVM-VIP.md) | 1/1 | 100.0% (6/6) | 19.8% (21/106) | 100.0% (9/9) | 100.0% (2/2) | 100.0% (7/7) |
 | [RGMII-UVM-VIP](test_suites/RGMII-UVM-VIP.md) | 1/1 | 100.0% (53/53) | 76.5% (384/502) | 98.4% (63/64) | 100.0% (5/5) | 100.0% (34/34) |
 | [RVFI-UVM-VIP](test_suites/RVFI-UVM-VIP.md) | 1/1 | 85.0% (91/107) | 33.9% (1166/3440) | 91.4% (74/81) | 100.0% (2/2) | 81.7% (49/60) |
