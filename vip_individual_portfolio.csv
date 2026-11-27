@@ -91,7 +91,7 @@
 90,Interconnect,Avalon-MM,UVM VIP,Avalon_MM-UVM-VIP.zip,24KB,wave2-uvm,18,863,4,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/Avalon_MM-UVM-VIP.zip,Apache-2.0,Avalon-MM
 91,Interconnect,Avalon-ST,UVM VIP,Avalon_ST-UVM-VIP.zip,24KB,wave2-uvm,18,862,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/Avalon_ST-UVM-VIP.zip,Apache-2.0,Avalon-ST
 92,Automotive,CAN-FD,UVM VIP,CAN_FD-UVM-VIP.zip,39KB,wave2-uvm,18,2028,6,3,1,2,v1.8.0,2026-11-27,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/CAN_FD-UVM-VIP.zip,Apache-2.0,CAN
-93,AMBA,CHI,UVM VIP,CHI-UVM-VIP.zip,34KB,wave2-uvm,20,1618,3,2,1,2,v1.11.0,2026-10-30,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/CHI-UVM-VIP.zip,Apache-2.0,CHI
+93,AMBA,CHI,UVM VIP,CHI-UVM-VIP.zip,45KB,wave2-uvm,20,2564,6,3,1,2,v1.12.0,2026-11-27,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/CHI-UVM-VIP.zip,Apache-2.0,CHI
 94,Industrial,EtherCAT,UVM VIP,EtherCAT-VIP.zip,24KB,wave2-uvm,18,837,3,2,1,2,v1.7.4,2026-09-28,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/EtherCAT-VIP.zip,Apache-2.0,ETHERCAT
 95,Networking,GMII,UVM VIP,GMII-UVM-VIP.zip,33KB,wave2-uvm,18,1573,8,4,1,2,v1.8.0,2026-11-27,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/GMII-UVM-VIP.zip,Apache-2.0,GMII
 96,Peripherals,GPIO,UVM VIP,GPIO-UVM-VIP.zip,29KB,wave2-uvm,20,976,3,2,1,2,v1.7.4,2026-10-30,✅,PASS(functional),https://github.com/tonythetiger168/open-vip-portfolio/blob/main/vips/GPIO-UVM-VIP.zip,Apache-2.0,GPIO
