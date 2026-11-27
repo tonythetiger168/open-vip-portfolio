@@ -453,3 +453,7 @@ DFI-VIP,dut_dfi_model.sv:177,8 -> 9,open_b[8] is out of range: the extra iterati
 DFI-VIP,dut_dfi_model.sv:216,4 -> 5,the read pipeline loop's extra iteration writes dat_sr[4] out of range: a no-op
 PTP-VIP,dut_ptp_model.sv:32,96 -> 97,"RBMAX only bounds the receive buffer; every frame the model checks is under 96 bytes, so one more slot is never written"
 PTP-VIP,dut_ptp_model.sv:95,>= -> > in condition,"byte 48 is seconds[47:40], zero for any clock a 64-bit nanosecond counter can hold (2^64 ns < 2^40 s)"
+GMII-UVM-VIP,dut_gmii_model.sv:36,1'b0 inverted,"f_pre is assigned again on the first byte of every frame, before anything reads it"
+RGMII-UVM-VIP,dut_rgmii_model.sv:48,1'b0 inverted,"f_code is assigned again on the first byte of every frame, before anything reads it"
+XGMII-UVM-VIP,dut_xgmii_model.sv:46,1'b0 inverted,"f_code is assigned again by every Start, and nothing reads it while no frame is open"
+XGMII-UVM-VIP,dut_xgmii_model.sv:70,< -> <= in condition,"fb has 2048 entries: the extra write to fb[2048] is out of range and dropped; oversize frames never read the buffer"
