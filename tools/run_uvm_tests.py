@@ -151,7 +151,7 @@ SUITES["SATA-VIP"] = dict(
 MEMORY_COV_SUITES = {
     "DDR-VIP": ["memory_coverage_regression_test", "memory_ddr_data_err_test"],
     "HBM-VIP": ["memory_coverage_regression_test", "memory_hbm_data_err_test"],
-    "LPDDR-VIP": ["memory_coverage_regression_test"],
+    "LPDDR-VIP": ["memory_coverage_regression_test", "memory_lpddr_data_err_test"],
     "UFS-VIP": ["memory_coverage_regression_test"],
     "eMMC-VIP": ["memory_coverage_regression_test"],
     "SD-VIP": ["memory_coverage_regression_test"],
