@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | MIPI |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，30 個 check，全部通過 |
-| Mutation | 9/11 個 mutant 被偵測（82%） |
-| 判定 | **✅ Sufficient**（30 個 check，mutation score 82%） |
+| 功能測試 | 1 個檔案，37 個 check，全部通過 |
+| Mutation | 10/11 個 mutant 被偵測（91%） |
+| 判定 | **✅ Sufficient**（37 個 check，mutation score 91%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_i3c_tb.sv`
 
-結果：**PASS**（verilator，30 checks）
+結果：**PASS**（verilator，37 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -71,13 +71,20 @@ Model contract (from tb/top_tb.sv), I3C SDR subset:
 | 21 | IBI request (SDA pulled low) after the bus is idle | check |
 | 22 | IBI pulse released, request cleared | check |
 | 23 | DISEC with ENINT disables IBIs | check |
-| 24 | direct ENEC to 0x0B enables IBIs on that target only | check |
-| 25 | direct DISEC to 0x0B disables its IBIs | check |
-| 26 | unsupported direct CCC is NACKed | check |
-| 27 | private transfers still work after direct CCCs | check |
-| 28 | RSTDAA clears the dynamic addresses | check |
-| 29 | old dynamic address is NACKed after RSTDAA | check |
-| 30 | START during reset is not ACKed | check |
+| 24 | ENEC without ENINT does not enable IBIs | check |
+| 25 | DISEC without ENINT does not disable IBIs | check |
+| 26 | DISEC with ENINT disables them again | check |
+| 27 | ENEC ended by a STOP before its event byte changes nothing | check |
+| 28 | 7E/W followed by a STOP is ACKed and then dropped | check |
+| 29 | private write address ACKed, then STOP | check |
+| 30 | transfers after the cut-short frames still work, memory unchanged | check |
+| 31 | direct ENEC to 0x0B enables IBIs on that target only | check |
+| 32 | direct DISEC to 0x0B disables its IBIs | check |
+| 33 | unsupported direct CCC is NACKed | check |
+| 34 | private transfers still work after direct CCCs | check |
+| 35 | RSTDAA clears the dynamic addresses | check |
+| 36 | old dynamic address is NACKed after RSTDAA | check |
+| 37 | START during reset is not ACKed | check |
 
 ## 3. UVM 測試平台內容
 
@@ -92,10 +99,9 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（30 個 check，mutation score 82%）。
+判定：**✅ Sufficient**（37 個 check，mutation score 91%）。
 
 未被偵測的 mutant（測試缺口或等價 mutant）：
 
-- `dut_i3c_target_model.sv:72 1'b1 inverted [else if (vif_sda_i === 1'b1 && pd === 1'b0 && vif_scl_i === ]`
 - `dut_i3c_target_model.sv:243 0 -> 1 [else idle_cnt = 0;]`
 

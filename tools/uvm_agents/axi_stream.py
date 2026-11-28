@@ -1,103 +1,161 @@
 # AMBA AXI4-Stream transmitter agent (ARM IHI 0051).
-# tb/top_tb.sv axi_stream_model: 32-bit receiver (four byte lanes) with TREADY
-# from an LFSR. Per packet (TLAST) it reports, one clock after the last
-# transfer, the number of data bytes (TKEEP and TSTRB high), the number of
-# position bytes (TKEEP high, TSTRB low), the CRC-32 (IEEE 802.3, reflected,
-# init and xorout 0xFFFFFFFF) of the data bytes in stream order, the packet's
-# TID / TDEST, and an error flag for the reserved TKEEP low / TSTRB high
-# combination or a TID / TDEST change inside a packet. Null bytes (TKEEP low)
-# are dropped.
-# The driver places the packet's bytes on the lanes with random null bytes
-# and random TVALID gaps; packets follow each other with no idle clock.
+# tb/top_tb.sv axi_stream_model: 32-bit receiver (four byte lanes, one TUSER
+# bit per byte) with TREADY from an LFSR. It keeps one packet context per TID,
+# so packets of different TIDs may be interleaved transfer by transfer
+# (AXI4-Stream 2.2 / 4.1). Per packet (TLAST) it reports, one clock after the
+# last transfer, the number of data bytes (TKEEP and TSTRB high), the number
+# of position bytes (TKEEP high, TSTRB low), the number of data bytes with
+# their TUSER bit set, the CRC-32 (IEEE 802.3, reflected, init and xorout
+# 0xFFFFFFFF) of the data bytes in stream order, the packet's TID / TDEST, and
+# an error flag for the reserved TKEEP low / TSTRB high combination or a TDEST
+# change inside a TID's packet. Null bytes (TKEEP low) are dropped together
+# with their TUSER bits.
+# The driver keeps up to three packets (distinct TIDs) in flight and picks the
+# next transfer from a random one of them, with random null bytes and TVALID
+# gaps; an item with ilv = 0 waits until its packet is done.
 from _lib import wait_cb
 
 SPEC = dict(
     vip="AXI_Stream-UVM-VIP", p="axi_stream", P="AXI4-Stream", dir="axi_stream", family="AMBA",
     desc="AMBA AXI4-Stream transmitter VIP: TVALID / TREADY back-pressure, TKEEP null bytes, "
-         "TSTRB position bytes, TLAST packets, TID / TDEST routing fields, back-to-back packets.",
+         "TSTRB position bytes, per-byte TUSER, TLAST packets, TID-interleaved streams, TDEST routing, "
+         "lengths 1-255 bytes.",
     about="""
 AXI4-Stream carries unaddressed data (video lines, network packets, DSP
-samples) between IP blocks. The DUT model is a packet receiver that reports a
-byte count, a position-byte count and the CRC-32 of each packet's data bytes;
-the scoreboard computes the same from the bytes the agent sent, so a dropped,
-duplicated, reordered or mis-classified byte shows up as a mismatch. The SVA
-checker holds the AXI4-Stream rules: payload stable while TVALID waits for
-TREADY, no reserved TKEEP / TSTRB combination, TID / TDEST constant within a
-packet.""",
+samples) between IP blocks. The DUT model is a packet receiver with one
+context per TID, so streams with different TIDs can be interleaved transfer by
+transfer. It reports a byte count, a position-byte count, a TUSER count and
+the CRC-32 of each packet's data bytes; the scoreboard computes the same from
+the bytes the agent sent, so a dropped, duplicated, reordered, mis-classified
+or mis-steered byte shows up as a mismatch. The driver interleaves up to three
+packets. The SVA checker holds the AXI4-Stream rules: payload stable while
+TVALID waits for TREADY, no reserved TKEEP / TSTRB combination, TDEST constant
+within a TID's packet.""",
     timeout=200,
     ports=[
         ("in", "logic", "tvalid"), ("out", "logic", "tready"),
         ("in", "logic [31:0]", "tdata"), ("in", "logic [3:0]", "tkeep"), ("in", "logic [3:0]", "tstrb"),
         ("in", "logic", "tlast"), ("in", "logic [3:0]", "tid"), ("in", "logic [3:0]", "tdest"),
+        ("in", "logic [3:0]", "tuser"),
         ("out", "logic", "pkt_done"), ("out", "logic [7:0]", "pkt_ndata"), ("out", "logic [7:0]", "pkt_npos"),
+        ("out", "logic [7:0]", "pkt_nuser"),
         ("out", "logic [31:0]", "pkt_crc"), ("out", "logic [3:0]", "pkt_id"), ("out", "logic [3:0]", "pkt_dest"),
         ("out", "logic", "pkt_err"),
     ],
-    cfg="int unsigned null_pct = 15;   // percent of lanes left null inside a packet\n"
-        "int unsigned pos_pct  = 10;   // percent of bytes sent as position bytes",
+    cfg="int unsigned null_pct = 15;   // percent of lanes left null inside a sparse packet\n"
+        "int unsigned max_ilv  = 3;    // packets (distinct TIDs) in flight at once",
     fields=[
-        ("bit [8:0]", "bytes", "req", "q"),        # {position, value}; position bytes carry 0
-        ("bit [3:0]", "id", "req"),
-        ("bit [3:0]", "dest", "req"),
+        ("bit [9:0]", "bytes", "req", "q"),        # {tuser, position, value}; position bytes carry 0
+        ("bit [3:0]", "id", "req", "rand"),
+        ("bit [3:0]", "dest", "req", "rand"),
         ("bit [7:0]", "ndata", "rsp"),
         ("bit [7:0]", "npos", "rsp"),
+        ("bit [7:0]", "nuser", "rsp"),
         ("bit [31:0]", "crc", "rsp"),
         ("bit", "err", "rsp"),
-        ("bit [6:0]", "nbytes", "info", "rand"),
-        ("bit [1:0]", "gap", "info", "rand"),      # TVALID low clocks between transfers
+        ("bit [7:0]", "nbytes", "info", "rand"),
+        ("bit [1:0]", "gap", "info", "rand"),      # TVALID low clocks after a transfer of this packet
         ("bit", "sparse", "info", "rand"),         # null lanes inside the packet
+        ("bit", "ilv", "info", "rand"),            # let the next packet start before this one ends
+        ("bit [1:0]", "umode", "info", "rand"),    # TUSER: 0 none, 1 random, 2 all, 3 first byte
+        ("bit [3:0]", "ppct", "info", "rand"),     # position bytes, in tenths of percent / 10
+        ("bit", "ilvd", "info"),                   # monitor: another TID's transfer came inside this packet
         ("bit [31:0]", "seed", "info", "rand"),
     ],
     constraints="""
-constraint c_len { nbytes inside {[1:64]}; gap dist { 0 := 4, [1:3] :/ 1 }; }
+constraint c_len { nbytes dist { [1:4] :/ 3, [5:16] :/ 3, [17:64] :/ 3, [65:255] :/ 1 };
+                   gap dist { 0 := 4, [1:3] :/ 1 }; ilv dist { 1 := 2, 0 := 1 };
+                   ppct dist { 0 := 3, 1 := 3, [2:9] :/ 1 }; }
 """,
     tr_functions="""
-// cfg-free fill: about one byte in ten is a position byte
+// byte fill from seed: about pos_pct percent position bytes, TUSER per umode
 function void fill_bytes(int unsigned n, int unsigned pos_pct = 10);
   bit [31:0] x = seed | 32'h1;
   bytes.delete();
   for (int unsigned i = 0; i < n; i++) begin
+    bit u;
     x ^= x << 13; x ^= x >> 17; x ^= x << 5;
-    if (x[31:24] % 100 < pos_pct) bytes.push_back(9'h100);
-    else bytes.push_back({1'b0, x[7:0]});
+    u = (umode == 1) ? x[16] : (umode == 2) ? 1'b1 : (umode == 3) ? (i == 0) : 1'b0;
+    if (x[31:24] % 100 < pos_pct) bytes.push_back({u, 9'h100});
+    else bytes.push_back({u, 1'b0, x[7:0]});
   end
 endfunction
 
 function void post_randomize();
-  fill_bytes(nbytes);
+  fill_bytes(nbytes, 10 * ppct);
 endfunction
 """,
     drv_rsp=False,
-    drv_desc="one packet per item, bytes placed on the four lanes with random null bytes and TVALID gaps",
+    drv_ap_manual=True,
+    drv_desc="packets of up to three TIDs in flight, transfers picked from a random one, random null bytes and TVALID gaps",
+    drv_members="""axi_stream_transaction pool[$];   // packets in flight
+int unsigned           pos[$];    // next byte of each""",
     drv_idle="""
 vif.drv_cb.tvalid <= 1'b0; vif.drv_cb.tdata <= '0; vif.drv_cb.tkeep <= '0; vif.drv_cb.tstrb <= '0;
-vif.drv_cb.tlast  <= 1'b0; vif.drv_cb.tid   <= '0; vif.drv_cb.tdest <= '0;
+vif.drv_cb.tlast  <= 1'b0; vif.drv_cb.tid   <= '0; vif.drv_cb.tdest <= '0; vif.drv_cb.tuser <= '0;
 """,
     drv_item="""
-int unsigned idx = 0;
-while (idx < t.bytes.size()) begin
-  bit [31:0] d = 0; bit [3:0] k = 0, s = 0;
+// a TID carries one packet at a time; at most cfg.max_ilv packets in flight
+while (pool.size() >= cfg.max_ilv || tid_busy(t.id)) @(vif.drv_cb);
+pool.push_back(t);
+pos.push_back(0);
+if (!t.ilv) while (in_pool(t)) @(vif.drv_cb);
+""",
+    drv_bg="""
+forever begin
+  if (pool.size() == 0) @(vif.drv_cb);
+  else send_beat($urandom_range(pool.size() - 1));
+end
+""",
+    drv_tasks="""
+function bit tid_busy(bit [3:0] id);
+  foreach (pool[i]) if (pool[i].id == id) return 1;
+  return 0;
+endfunction
+
+function bit in_pool(axi_stream_transaction t);
+  foreach (pool[i]) if (pool[i] == t) return 1;
+  return 0;
+endfunction
+
+// one transfer of packet k, held until TREADY
+task send_beat(int k);
+  axi_stream_transaction t;
+  axi_stream_transaction c;
+  int unsigned idx;
+  bit [31:0] d; bit [3:0] kp, s, u;
+  t = pool[k];
+  idx = pos[k];
+  d = 0; kp = 0; s = 0; u = 0;
   for (int l = 0; l < 4; l++) begin
     if (idx < t.bytes.size() && !(t.sparse && $urandom_range(99) < cfg.null_pct)) begin
-      k[l] = 1'b1;
+      kp[l] = 1'b1;
       s[l] = !t.bytes[idx][8];
+      u[l] = t.bytes[idx][9];
       d[l*8 +: 8] = t.bytes[idx][7:0];
       idx++;
     end
   end
-  vif.drv_cb.tvalid <= 1'b1; vif.drv_cb.tdata <= d; vif.drv_cb.tkeep <= k; vif.drv_cb.tstrb <= s;
+  vif.drv_cb.tvalid <= 1'b1; vif.drv_cb.tdata <= d; vif.drv_cb.tkeep <= kp; vif.drv_cb.tstrb <= s;
+  vif.drv_cb.tuser  <= u;
   vif.drv_cb.tlast  <= (idx == t.bytes.size()); vif.drv_cb.tid <= t.id; vif.drv_cb.tdest <= t.dest;
 """ + "\n".join("  " + l for l in wait_cb("vif.drv_cb.tready === 1'b1", "AXI4-Stream TREADY").splitlines()) + """
-  if (t.gap != 0 && idx < t.bytes.size()) begin
+  pos[k] = idx;
+  if (idx == t.bytes.size()) begin
+    vif.drv_cb.tvalid <= 1'b0;
+    vif.drv_cb.tlast  <= 1'b0;
+    $cast(c, t.clone());
+    ap.write(c);
+    pool.delete(k);
+    pos.delete(k);
+  end else if (t.gap != 0) begin
     vif.drv_cb.tvalid <= 1'b0;
     repeat (t.gap) @(vif.drv_cb);
   end
-end
-vif.drv_cb.tvalid <= 1'b0;
-vif.drv_cb.tlast  <= 1'b0;
+endtask
 """,
-    mon_desc="transfers (TVALID & TREADY) collected into packets at TLAST, completed by the receiver's packet report",
-    mon_members="axi_stream_transaction cur, done_q[$];",
+    mon_desc="transfers (TVALID & TREADY) collected per TID into packets at TLAST, completed by the receiver's packet report",
+    mon_members="axi_stream_transaction cur[16], done_q[$];",
     mon_run="""
 forever begin
   @(vif.mon_cb);
@@ -107,23 +165,27 @@ forever begin
       `uvm_error("MON", "AXI4-Stream: packet report without a TLAST transfer")
     else begin
       axi_stream_transaction t = done_q.pop_front();
-      t.ndata = vif.mon_cb.pkt_ndata; t.npos = vif.mon_cb.pkt_npos; t.crc = vif.mon_cb.pkt_crc;
-      t.err = vif.mon_cb.pkt_err;
+      t.ndata = vif.mon_cb.pkt_ndata; t.npos = vif.mon_cb.pkt_npos; t.nuser = vif.mon_cb.pkt_nuser;
+      t.crc = vif.mon_cb.pkt_crc; t.err = vif.mon_cb.pkt_err;
       if (vif.mon_cb.pkt_id != t.id || vif.mon_cb.pkt_dest != t.dest) t.err = 1'b1;
       publish(t);
     end
   end
   if (vif.mon_cb.tvalid && vif.mon_cb.tready) begin
-    if (cur == null) begin
-      cur = axi_stream_transaction::type_id::create("t");
-      cur.id = vif.mon_cb.tid; cur.dest = vif.mon_cb.tdest;
+    int unsigned id;
+    id = vif.mon_cb.tid;
+    if (cur[id] == null) begin
+      cur[id] = axi_stream_transaction::type_id::create("t");
+      cur[id].id = vif.mon_cb.tid; cur[id].dest = vif.mon_cb.tdest;
     end
+    foreach (cur[j]) if (j != id && cur[j] != null) cur[j].ilvd = 1'b1;
     for (int l = 0; l < 4; l++)
       if (vif.mon_cb.tkeep[l])
-        cur.bytes.push_back(vif.mon_cb.tstrb[l] ? {1'b0, vif.mon_cb.tdata[l*8 +: 8]} : 9'h100);
+        cur[id].bytes.push_back(vif.mon_cb.tstrb[l] ? {vif.mon_cb.tuser[l], 1'b0, vif.mon_cb.tdata[l*8 +: 8]}
+                                                    : {vif.mon_cb.tuser[l], 9'h100});
     if (vif.mon_cb.tlast) begin
-      done_q.push_back(cur);
-      cur = null;
+      done_q.push_back(cur[id]);
+      cur[id] = null;
     end
   end
 end
@@ -137,41 +199,56 @@ function bit [31:0] crc32_byte(bit [31:0] c, bit [7:0] b);
 endfunction""",
     predict="""
 bit [31:0] c = 32'hFFFF_FFFF;
-t.ndata = 0; t.npos = 0; t.err = 0;
+t.ndata = 0; t.npos = 0; t.nuser = 0; t.err = 0;
 foreach (t.bytes[i])
   if (t.bytes[i][8]) t.npos++;
-  else begin t.ndata++; c = crc32_byte(c, t.bytes[i][7:0]); end
+  else begin t.ndata++; t.nuser += t.bytes[i][9]; c = crc32_byte(c, t.bytes[i][7:0]); end
 t.crc = ~c;
 """,
     checks="""
 if (t.bytes.size() == 0) fail(t, "packet with no data or position byte");
-if (t.err) fail(t, "receiver flagged a reserved TKEEP / TSTRB combination or a TID / TDEST change");
+if (t.err) fail(t, "receiver flagged a reserved TKEEP / TSTRB combination or a TDEST change inside a packet");
 """,
     coverage="""
-cp_len  : coverpoint tr.bytes.size() { bins one = {1}; bins word = {[2:4]}; bins short_ = {[5:16]}; bins long_ = {[17:64]}; }
-cp_pos  : coverpoint tr.npos { bins none = {0}; bins some = {[1:$]}; }
-cp_tail : coverpoint tr.bytes.size() % 4;
+cp_len  : coverpoint tr.bytes.size() { bins one = {1}; bins word = {[2:4]}; bins short_ = {[5:16]}; bins mid = {[17:64]};
+                                       bins long_ = {[65:254]}; bins max = {255}; }
+cp_lenx : coverpoint tr.bytes.size() { bins short_ = {[5:16]}; bins mid = {[17:64]}; bins long_ = {[65:254]}; }
+cp_tail : coverpoint tr.bytes.size() % 4 { bins full = {0}; bins t1 = {1}; bins t2 = {2}; bins t3 = {3}; }
+cp_pos  : coverpoint tr.npos { bins none = {0}; bins one = {1}; bins some = {[2:$]}; }
+cp_user : coverpoint (tr.nuser == 0 ? 0 : tr.nuser == tr.ndata ? 2 : 1) { bins none = {0}; bins some = {1}; bins all = {2}; }
 cp_id   : coverpoint tr.id;
-cp_dest : coverpoint tr.dest { bins lo = {[0:7]}; bins hi = {[8:15]}; }
-x_len_tail : cross cp_len, cp_tail;
+cp_dest : coverpoint tr.dest;
+cp_ilv  : coverpoint tr.ilvd { bins alone = {0}; bins interleaved = {1}; }
+x_len_tail : cross cp_lenx, cp_tail;
+x_ilv_len  : cross cp_ilv, cp_lenx;
+x_id_ilv   : cross cp_id, cp_ilv;
 """,
     directed="""
-// the CRC-32 check string, then every tail length, null-heavy packets,
-// position bytes, every TID and back-to-back single-transfer packets
+// the CRC-32 check string, then a length sweep 1..64 and 255, null-heavy
+// packets, position bytes, TUSER, every TID / TDEST, then interleaved streams
 begin
-  string cv = "123456789";
+  string cv;
+  cv = "123456789";
   t = item();
-  foreach (cv[i]) t.bytes.push_back({1'b0, cv[i]});
+  foreach (cv[i]) t.bytes.push_back({2'b00, cv[i]});
   t.id = 4'h1; t.dest = 4'h2; send(t);
 end
-for (int n = 1; n <= 8; n++) begin t = item(); t.seed = n; t.fill_bytes(n, 0); t.id = n; send(t); end
+for (int n = 1; n <= 64; n++) begin t = item(); t.seed = n; t.umode = n % 4; t.fill_bytes(n, (n % 3) * 10); t.id = n % 16; t.dest = n / 4; send(t); end
+for (int n = 65; n < 256; n += 38) begin t = item(); t.seed = n; t.umode = 1; t.fill_bytes(n == 255 ? 254 : n, 5); send(t); end
+t = item(); t.seed = 32'h255; t.fill_bytes(255, 5); t.sparse = 1; send(t);
 t = item(); t.seed = 32'h77; t.sparse = 1; t.gap = 2; t.fill_bytes(40); send(t);
-t = item(); t.bytes = '{9'h100, 9'h0AA, 9'h100, 9'h100, 9'h055}; t.dest = 4'hF; send(t);
-t = item(); t.bytes = '{9'h100}; send(t);                 // position byte only
+t = item(); t.bytes = '{10'h100, 10'h2AA, 10'h300, 10'h100, 10'h055}; t.dest = 4'hF; send(t);
+t = item(); t.bytes = '{10'h100}; send(t);                 // position byte only
 for (int i = 0; i < 16; i++) begin t = item(); t.seed = 200 + i; t.fill_bytes(1 + i % 4, 0); t.id = i; t.dest = 15 - i; send(t); end
+// interleaved: three TIDs in flight, every TID once interleaved with each length class
+for (int i = 0; i < 48; i++) begin
+  t = item(); t.seed = 300 + i; t.ilv = 1; t.umode = i % 4; t.sparse = i[2];
+  t.fill_bytes((i % 4 == 0) ? 2 + i % 3 : (i % 4 == 1) ? 5 + i % 12 : (i % 4 == 2) ? 17 + i : 65 + i, 10);
+  t.id = i % 16; t.dest = (i * 7) % 16; t.gap = i % 3; send(t);
+end
 t = item(); t.seed = 32'h99; t.fill_bytes(64); send(t);
 """,
-    drain_ns=3000,
+    drain_ns=5000,
     model="""
 module axi_stream_model (
   input  logic        clk,
@@ -184,35 +261,45 @@ module axi_stream_model (
   input  logic        tlast,
   input  logic [3:0]  tid,
   input  logic [3:0]  tdest,
+  input  logic [3:0]  tuser,
   output logic        pkt_done,
   output logic [7:0]  pkt_ndata,
   output logic [7:0]  pkt_npos,
+  output logic [7:0]  pkt_nuser,
   output logic [31:0] pkt_crc,
   output logic [3:0]  pkt_id,
   output logic [3:0]  pkt_dest,
   output logic        pkt_err
 );
   logic [7:0]  lfsr;
-  logic        in_pkt, err;
-  logic [7:0]  nd, np;
-  logic [31:0] crc;
-  logic [3:0]  cur_id, cur_dest;
-  // this transfer folded into the packet state
-  logic [7:0]  nd_n, np_n;
+  // one packet context per TID
+  logic        c_in   [0:15];
+  logic        c_err  [0:15];
+  logic [7:0]  c_nd   [0:15];
+  logic [7:0]  c_np   [0:15];
+  logic [7:0]  c_nu   [0:15];
+  logic [31:0] c_crc  [0:15];
+  logic [3:0]  c_dest [0:15];
+  // this transfer folded into its TID's packet state
+  logic        in_pkt;
+  logic [7:0]  nd_n, np_n, nu_n;
   logic [31:0] crc_n;
   logic        err_n;
 
   assign tready = lfsr[1] | lfsr[3];
 
   always_comb begin
-    nd_n = in_pkt ? nd : 8'd0;
-    np_n = in_pkt ? np : 8'd0;
-    crc_n = in_pkt ? crc : 32'hFFFF_FFFF;
-    err_n = in_pkt ? err : 1'b0;
-    if (in_pkt && (tid != cur_id || tdest != cur_dest)) err_n = 1'b1;
+    in_pkt = c_in[tid];
+    nd_n  = in_pkt ? c_nd[tid] : 8'd0;
+    np_n  = in_pkt ? c_np[tid] : 8'd0;
+    nu_n  = in_pkt ? c_nu[tid] : 8'd0;
+    crc_n = in_pkt ? c_crc[tid] : 32'hFFFF_FFFF;
+    err_n = in_pkt ? c_err[tid] : 1'b0;
+    if (in_pkt && tdest != c_dest[tid]) err_n = 1'b1;
     for (int l = 0; l < 4; l++) begin
       if (tkeep[l] && tstrb[l]) begin
         nd_n = nd_n + 8'd1;
+        nu_n = nu_n + {7'd0, tuser[l]};
         crc_n = crc_n ^ {24'h0, tdata[l*8 +: 8]};
         for (int i = 0; i < 8; i++) crc_n = crc_n[0] ? (crc_n >> 1) ^ 32'hEDB8_8320 : crc_n >> 1;
       end else if (tkeep[l]) np_n = np_n + 8'd1;
@@ -222,21 +309,25 @@ module axi_stream_model (
 
   always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
-      lfsr <= 8'hC3; in_pkt <= 1'b0; err <= 1'b0; nd <= '0; np <= '0; crc <= '1;
-      cur_id <= '0; cur_dest <= '0;
-      pkt_done <= 1'b0; pkt_ndata <= '0; pkt_npos <= '0; pkt_crc <= '0; pkt_id <= '0;
+      lfsr <= 8'hC3;
+      for (int i = 0; i < 16; i++) begin
+        c_in[i] <= 1'b0; c_err[i] <= 1'b0; c_nd[i] <= '0; c_np[i] <= '0; c_nu[i] <= '0;
+        c_crc[i] <= '1; c_dest[i] <= '0;
+      end
+      pkt_done <= 1'b0; pkt_ndata <= '0; pkt_npos <= '0; pkt_nuser <= '0; pkt_crc <= '0; pkt_id <= '0;
       pkt_dest <= '0; pkt_err <= 1'b0;
     end else begin
       lfsr <= {lfsr[6:0], lfsr[7] ^ lfsr[5] ^ lfsr[4] ^ lfsr[3]};
       pkt_done <= 1'b0;
       if (tvalid && tready) begin
-        if (!in_pkt) begin cur_id <= tid; cur_dest <= tdest; end
+        if (!in_pkt) c_dest[tid] <= tdest;
         if (tlast) begin
-          in_pkt <= 1'b0;
-          pkt_done <= 1'b1; pkt_ndata <= nd_n; pkt_npos <= np_n; pkt_crc <= ~crc_n;
-          pkt_id <= in_pkt ? cur_id : tid; pkt_dest <= in_pkt ? cur_dest : tdest; pkt_err <= err_n;
+          c_in[tid] <= 1'b0;
+          pkt_done <= 1'b1; pkt_ndata <= nd_n; pkt_npos <= np_n; pkt_nuser <= nu_n; pkt_crc <= ~crc_n;
+          pkt_id <= tid; pkt_dest <= in_pkt ? c_dest[tid] : tdest; pkt_err <= err_n;
         end else begin
-          in_pkt <= 1'b1; nd <= nd_n; np <= np_n; crc <= crc_n; err <= err_n;
+          c_in[tid] <= 1'b1; c_nd[tid] <= nd_n; c_np[tid] <= np_n; c_nu[tid] <= nu_n;
+          c_crc[tid] <= crc_n; c_err[tid] <= err_n;
         end
       end
     end
@@ -244,27 +335,27 @@ module axi_stream_model (
 endmodule
 """,
     sva="""
-logic in_pkt;
-logic [3:0] p_id, p_dest;
+logic       p_in   [0:15];
+logic [3:0] p_dest [0:15];
 always_ff @(posedge clk or negedge rst_n)
-  if (!rst_n) begin in_pkt <= 1'b0; p_id <= '0; p_dest <= '0; end
+  if (!rst_n) for (int i = 0; i < 16; i++) begin p_in[i] <= 1'b0; p_dest[i] <= '0; end
   else if (tvalid && tready) begin
-    in_pkt <= !tlast;
-    if (!in_pkt) begin p_id <= tid; p_dest <= tdest; end
+    p_in[tid] <= !tlast;
+    if (!p_in[tid]) p_dest[tid] <= tdest;
   end
 assert property (@(posedge clk) disable iff (!rst_n) !$isunknown({tready, pkt_done}))
   else $error("AXI4-Stream: X on TREADY / report");
-assert property (@(posedge clk) disable iff (!rst_n) tvalid |-> !$isunknown({tdata & {{8{tkeep[3]}}, {8{tkeep[2]}}, {8{tkeep[1]}}, {8{tkeep[0]}}}, tkeep, tstrb, tlast, tid, tdest}))
+assert property (@(posedge clk) disable iff (!rst_n) tvalid |-> !$isunknown({tdata & {{8{tkeep[3]}}, {8{tkeep[2]}}, {8{tkeep[1]}}, {8{tkeep[0]}}}, tuser & tkeep, tkeep, tstrb, tlast, tid, tdest}))
   else $error("AXI4-Stream: X on the payload while TVALID");
 // once TVALID is high it stays high, payload stable, until TREADY
-assert property (@(posedge clk) disable iff (!rst_n) tvalid && !tready |=> tvalid && $stable({tdata, tkeep, tstrb, tlast, tid, tdest}))
+assert property (@(posedge clk) disable iff (!rst_n) tvalid && !tready |=> tvalid && $stable({tdata, tkeep, tstrb, tuser, tlast, tid, tdest}))
   else $error("AXI4-Stream: transfer changed or withdrawn before TREADY");
 // TKEEP low with TSTRB high is reserved
 assert property (@(posedge clk) disable iff (!rst_n) tvalid |-> (tstrb & ~tkeep) == 4'h0)
   else $error("AXI4-Stream: reserved TKEEP = 0 / TSTRB = 1 combination");
-// TID and TDEST do not change inside a packet
-assert property (@(posedge clk) disable iff (!rst_n) tvalid && in_pkt |-> tid == p_id && tdest == p_dest)
-  else $error("AXI4-Stream: TID / TDEST changed inside a packet");
+// TDEST does not change inside a TID's packet (other TIDs may interleave)
+assert property (@(posedge clk) disable iff (!rst_n) tvalid && p_in[tid] |-> tdest == p_dest[tid])
+  else $error("AXI4-Stream: TDEST changed inside a packet");
 // a report only follows a TLAST transfer
 assert property (@(posedge clk) disable iff (!rst_n) pkt_done |-> $past(tvalid && tready && tlast))
   else $error("AXI4-Stream: packet report without TLAST");
@@ -272,6 +363,7 @@ cover property (@(posedge clk) disable iff (!rst_n) tvalid && !tready ##1 tvalid
 cover property (@(posedge clk) disable iff (!rst_n) tvalid && tready && tkeep != 4'hF && !tlast);
 cover property (@(posedge clk) disable iff (!rst_n) tvalid && tready && (tkeep & ~tstrb) != 0);
 cover property (@(posedge clk) disable iff (!rst_n) tvalid && tready && tlast ##1 tvalid && tready && tlast);
+cover property (@(posedge clk) disable iff (!rst_n) tvalid && tready && !tlast ##1 tvalid && tready && $changed(tid));
 """,
     smoke="""
 int checks = 0;
@@ -281,17 +373,17 @@ logic clk = 1'b0;
 logic rst_n = 1'b0;
 logic tvalid = 0, tlast = 0;
 logic [31:0] tdata = 0;
-logic [3:0] tkeep = 0, tstrb = 0, tid = 0, tdest = 0;
+logic [3:0] tkeep = 0, tstrb = 0, tid = 0, tdest = 0, tuser = 0;
 wire tready, pkt_done, pkt_err;
-wire [7:0] pkt_ndata, pkt_npos;
+wire [7:0] pkt_ndata, pkt_npos, pkt_nuser;
 wire [31:0] pkt_crc;
 wire [3:0] pkt_id, pkt_dest;
 
 always #5 clk = ~clk;
 
 axi_stream_model u_dut (.clk(clk), .rst_n(rst_n), .tvalid(tvalid), .tready(tready), .tdata(tdata),
-                        .tkeep(tkeep), .tstrb(tstrb), .tlast(tlast), .tid(tid), .tdest(tdest),
-                        .pkt_done(pkt_done), .pkt_ndata(pkt_ndata), .pkt_npos(pkt_npos),
+                        .tkeep(tkeep), .tstrb(tstrb), .tlast(tlast), .tid(tid), .tdest(tdest), .tuser(tuser),
+                        .pkt_done(pkt_done), .pkt_ndata(pkt_ndata), .pkt_npos(pkt_npos), .pkt_nuser(pkt_nuser),
                         .pkt_crc(pkt_crc), .pkt_id(pkt_id), .pkt_dest(pkt_dest), .pkt_err(pkt_err));
 
 task automatic chk(input bit ok, input string msg);
@@ -301,28 +393,33 @@ endtask
 
 // reports seen (one per packet)
 int nrep = 0;
-logic [7:0] r_nd, r_np; logic [31:0] r_crc; logic [3:0] r_id, r_dest; logic r_err;
+logic [7:0] r_nd, r_np, r_nu; logic [31:0] r_crc; logic [3:0] r_id, r_dest; logic r_err;
+logic [31:0] h_crc [0:15]; logic [7:0] h_nd [0:15], h_nu [0:15]; logic [3:0] h_id [0:15]; logic h_err [0:15];
 always @(posedge clk) if (pkt_done) begin
-  nrep++; r_nd = pkt_ndata; r_np = pkt_npos; r_crc = pkt_crc; r_id = pkt_id; r_dest = pkt_dest; r_err = pkt_err;
+  r_nd = pkt_ndata; r_np = pkt_npos; r_nu = pkt_nuser; r_crc = pkt_crc; r_id = pkt_id; r_dest = pkt_dest; r_err = pkt_err;
+  h_crc[nrep % 16] = pkt_crc; h_nd[nrep % 16] = pkt_ndata; h_nu[nrep % 16] = pkt_nuser; h_id[nrep % 16] = pkt_id;
+  h_err[nrep % 16] = pkt_err;
+  nrep++;
 end
 
 // one transfer, held until TREADY
 int stalls = 0;
+logic [3:0] u_next = 0;   // TUSER of the next transfer
 task automatic xfer(input logic [31:0] d, input logic [3:0] k, input logic [3:0] s, input logic l,
                     input logic [3:0] id, input logic [3:0] dst);
   int n;
-  tvalid = 1; tdata = d; tkeep = k; tstrb = s; tlast = l; tid = id; tdest = dst;
+  tvalid = 1; tdata = d; tkeep = k; tstrb = s; tlast = l; tid = id; tdest = dst; tuser = u_next;
   n = 0;
   @(posedge clk);
   while (!tready && n < 50) begin stalls++; @(posedge clk); n++; end
   #1;
-  tvalid = 0; tlast = 0;
+  tvalid = 0; tlast = 0; tuser = 0; u_next = 0;
 endtask
 
 task automatic wait_rep(input int prev);
   int n;
   n = 0;
-  while (nrep == prev && n < 20) begin @(posedge clk); n++; end
+  while (nrep <= prev && n < 20) begin @(posedge clk); n++; end
   #1;
 endtask
 
@@ -377,12 +474,19 @@ initial begin
   xfer(32'h0000_3231, 4'h3, 4'h7, 1, 4'h0, 4'h0);
   wait_rep(b);
   chk(r_err === 1'b1 && r_nd == 2, "TKEEP 0 / TSTRB 1 flagged, data bytes still counted");
-  // TID change inside a packet, TDEST change inside a packet
+  // a TID change inside a packet is an interleave: the other TID's packet is separate
   b = nrep;
   xfer(32'h3433_3231, 4'hF, 4'hF, 0, 4'h1, 4'h1);
-  xfer(32'h3837_3635, 4'hF, 4'hF, 1, 4'h2, 4'h1);
+  xfer(32'h0000_0061, 4'h1, 4'h1, 1, 4'h2, 4'h1);
   wait_rep(b);
-  chk(r_err === 1'b1 && r_id == 4'h1, "TID change inside a packet flagged; the first TID reported");
+  chk(nrep == b + 1 && r_err === 1'b0 && r_id == 4'h2 && r_nd == 1 && r_crc === 32'hE8B7_BE43,
+      "TID 2 packet inside TID 1's: reported on its own");
+  b = nrep;
+  xfer(32'h3837_3635, 4'hF, 4'hF, 0, 4'h1, 4'h1);
+  xfer(32'h0000_0039, 4'h1, 4'h1, 1, 4'h1, 4'h1);
+  wait_rep(b);
+  chk(r_err === 1'b0 && r_id == 4'h1 && r_nd == 9 && r_crc === 32'hCBF4_3926, "TID 1 packet resumes and completes intact");
+  // TDEST change inside a packet
   b = nrep;
   xfer(32'h3433_3231, 4'hF, 4'hF, 0, 4'h1, 4'h1);
   xfer(32'h3837_3635, 4'hF, 4'hF, 1, 4'h1, 4'h3);
@@ -407,6 +511,70 @@ initial begin
   wait_rep(b);
   chk(r_nd == 255 && r_err === 1'b0, "255 data bytes counted");
 
+  // three streams interleaved byte by byte: "123456789", "a", "1234"
+  b = nrep;
+  xfer(32'h0000_0031, 4'h1, 4'h1, 0, 4'h4, 4'h9);
+  xfer(32'h0000_0031, 4'h1, 4'h1, 0, 4'h6, 4'h7);
+  xfer(32'h0000_3332, 4'h3, 4'h3, 0, 4'h4, 4'h9);
+  xfer(32'h0000_3332, 4'h3, 4'h3, 0, 4'h6, 4'h7);
+  xfer(32'h0000_0061, 4'h1, 4'h1, 1, 4'h5, 4'h8);
+  xfer(32'h3534_0000, 4'hC, 4'hC, 0, 4'h4, 4'h9);
+  xfer(32'h0000_0034, 4'h1, 4'h1, 1, 4'h6, 4'h7);
+  xfer(32'h3938_3736, 4'hF, 4'hF, 1, 4'h4, 4'h9);
+  wait_rep(b + 2);
+  chk(nrep == b + 3, "three interleaved packets, three reports");
+  chk(h_id[b % 16] == 4'h5 && h_nd[b % 16] == 1 && h_crc[b % 16] === 32'hE8B7_BE43, "reports in TLAST order: TID 5 first");
+  chk(h_id[(b + 1) % 16] == 4'h6 && h_crc[(b + 1) % 16] === 32'h9BE3_E0A3 && h_err[(b + 1) % 16] === 1'b0, "then TID 6: 1234");
+  chk(h_id[(b + 2) % 16] == 4'h4 && h_crc[(b + 2) % 16] === 32'hCBF4_3926 && h_nd[(b + 2) % 16] == 9, "then TID 4: 123456789");
+  chk(r_dest == 4'h9, "TDEST kept per TID");
+  // a TDEST change of one TID is flagged without touching the other
+  b = nrep;
+  xfer(32'h3433_3231, 4'hF, 4'hF, 0, 4'h8, 4'h1);
+  xfer(32'h3433_3231, 4'hF, 4'hF, 0, 4'h9, 4'h2);
+  xfer(32'h3837_3635, 4'hF, 4'hF, 1, 4'h8, 4'h3);
+  xfer(32'h0000_0000, 4'h0, 4'h0, 1, 4'h9, 4'h2);
+  wait_rep(b + 1);
+  chk(h_err[b % 16] === 1'b1 && h_id[b % 16] == 4'h8, "TID 8 TDEST change flagged");
+  chk(h_err[(b + 1) % 16] === 1'b0 && h_crc[(b + 1) % 16] === 32'h9BE3_E0A3, "TID 9 unaffected, a null TLAST transfer ends it");
+  // TUSER: counted per data byte; not for position or null bytes
+  b = nrep;
+  u_next = 4'b0101; xfer(32'h3433_3231, 4'hF, 4'hF, 0, 4'h3, 4'h3);
+  u_next = 4'b1111; xfer(32'h3837_3635, 4'h7, 4'h3, 0, 4'h3, 4'h3);
+  u_next = 4'b1000; xfer(32'h0000_0039, 4'h1, 4'h1, 1, 4'h3, 4'h3);
+  wait_rep(b);
+  chk(r_nu == 4 && r_nd == 7 && r_np == 1 && r_err === 1'b0, $sformatf("TUSER counted on data bytes only (%0d)", r_nu));
+  b = nrep;
+  u_next = 4'hF; xfer(32'h3433_3231, 4'hF, 4'hF, 1, 4'h3, 4'h3);
+  wait_rep(b);
+  chk(r_nu == 4 && r_crc === 32'h9BE3_E0A3, "all four TUSER bits");
+  b = nrep;
+  xfer(32'h3433_3231, 4'hF, 4'hF, 1, 4'h3, 4'h3);
+  wait_rep(b);
+  chk(r_nu == 0, "TUSER count starts again for each packet");
+  // each TID's context: 16 packets open at once, closed in reverse
+  b = nrep;
+  for (int i = 0; i < 16; i++) begin u_next = i[0] ? 4'h1 : 4'h0; xfer(32'h0000_3231, 4'h3, 4'h3, 0, i, 15 - i); end
+  for (int i = 15; i >= 0; i--) xfer(32'h0000_3433, 4'h3, 4'h3, 1, i, 15 - i);
+  repeat (3) @(posedge clk); #1;
+  chk(nrep == b + 16, "sixteen TIDs open at once, sixteen reports");
+  begin
+    int ok;
+    ok = 1;
+    for (int i = 0; i < 16; i++)
+      if (h_id[(b + i) % 16] != 15 - i || h_crc[(b + i) % 16] !== 32'h9BE3_E0A3 || h_err[(b + i) % 16] !== 1'b0 ||
+          h_nu[(b + i) % 16] != ((15 - i) % 2)) ok = 0;
+    chk(ok == 1, "every TID kept its own bytes, TDEST and TUSER count");
+  end
+  // reset clears every open context
+  xfer(32'h0000_3231, 4'h3, 4'h3, 0, 4'hA, 4'h1);
+  rst_n = 0; repeat (2) @(posedge clk); #1;
+  chk(pkt_done === 1'b0, "no report in reset");
+  rst_n = 1; repeat (2) @(posedge clk); #1;
+  b = nrep;
+  xfer(32'h0000_0061, 4'h1, 4'h1, 1, 4'hA, 4'h2);
+  wait_rep(b);
+  chk(r_nd == 1 && r_crc === 32'hE8B7_BE43 && r_dest == 4'h2 && r_err === 1'b0, "reset dropped TID 10's open packet");
+
   // TREADY is not always high: the receiver back-pressures
   chk(stalls > 0, $sformatf("TREADY low for %0d clocks of a held transfer", stalls));
 
@@ -416,7 +584,7 @@ initial begin
 end
 
 initial begin
-  #400000;
+  #2000000;
   $display("FUNC_FAIL timeout");
   $finish;
 end

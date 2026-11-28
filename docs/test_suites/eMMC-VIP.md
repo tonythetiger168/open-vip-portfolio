@@ -9,8 +9,8 @@
 | 類別 | Memory |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，43 個 check，全部通過 |
-| Mutation | 10/10 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（43 個 check，mutation score 100%） |
+| Mutation | 8/12 個 mutant 被偵測（67%） |
+| 判定 | **🟡 Partial**（mutation score 67%） |
 
 ## 2. 可執行的功能測試
 
@@ -110,7 +110,12 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（43 個 check，mutation score 100%）。
+判定：**🟡 Partial**（mutation score 67%）。
 
-無已知缺口。
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_emmc_device_dut.sv:144 || flipped [bad_crc     = (shreg[7:1] != crc7(idx, arg, 1'b1)) || shreg[]`
+- `dut_emmc_device_dut.sv:155 || flipped [if (bad_addr || bad_crc || bad_illegal) err_cnt <= err_cnt +]`
+- `dut_emmc_device_dut.sv:196 ! dropped in condition [if (!bad_addr && !bad_crc) begin]`
+- `dut_emmc_device_dut.sv:243 == flipped [if (idx == 6'd13) cstate <= cstate;]`
 

@@ -2,13 +2,6 @@
 # out of the VIP's scope. Read by tools/mutation_score.py; location is
 # <flattened file>:<line> as printed in its "survived:" lines.
 vip,location,mutation,reason
-AXI-VIP,dut_amba_dut.sv:45,512 -> 513,initialises an index past the 512-word memory
-AXI-VIP,dut_amba_dut.sv:87,1'b0 inverted,wr_error is reloaded by every AW before it is used
-AXI-VIP,dut_amba_dut.sv:132,1'b0 inverted,rd_error is reloaded by every AR before it is used
-AXI-VIP,dut_amba_dut.sv:106,8 -> 9,wstrb[8] does not exist (X): no write
-AXI-VIP,dut_amba_dut.sv:161,1'b0 inverted,AXI-Stream tie-off of the shared AMBA shell (not AXI)
-AXI-VIP,dut_amba_dut.sv:162,1'b0 inverted,AHB tie-off of the shared AMBA shell (not AXI)
-AXI-VIP,dut_amba_dut.sv:163,1'b0 inverted,APB tie-off of the shared AMBA shell (not AXI)
 HBM3E-VIP,dut_hbm3e_model.sv:26,4 -> 5,initialises a stack index past the array
 HBM3E-VIP,dut_hbm3e_model.sv:27,2 -> 3,initialises a pseudo-channel index past the array
 HBM3E-VIP,dut_hbm3e_model.sv:28,16384 -> 16385,initialises a word index past the array
@@ -99,7 +92,6 @@ I2S-VIP,dut_i2s_receiver_loopback.sv:50,0 -> 1,in_left after reset only shifts u
 I2S-VIP,dut_i2s_receiver_loopback.sv:53,0 -> 1,rcnt is reloaded at the WS rising edge before it is used
 I2S-VIP,dut_i2s_receiver_loopback.sv:69,24 -> 25,the extra shift happens only for slots longer than 24 bits, which are never stored (lcnt != 24)
 I2S-VIP,dut_i2s_receiver_loopback.sv:77,0 -> 1,rcnt is reloaded at the next WS rising edge before it is used
-LIN-VIP,dut_lin_slave_model.sv:98,0 -> 1,initial value overwritten by the reset branch
 CAN-VIP,dut_can_node_model.sv:194,0 -> 1,initial value overwritten by the reset branch
 CXS-VIP,dut_cxs_receiver_model.sv:34,0 -> 1,initial value overwritten by the reset branch
 CXS-VIP,dut_cxs_receiver_model.sv:36,0 -> 1,initial value overwritten by the reset branch
@@ -113,11 +105,6 @@ ONFI-VIP,dut_onfi_nand_model.sv:9,64 -> 65,changes the internal storage key layo
 ONFI-VIP,dut_onfi_nand_model.sv:43,0 -> 1,initial value overwritten by the reset branch
 ONFI-VIP,dut_onfi_nand_model.sv:153,0 -> 1,wr_ptr is cleared again by every 80h / EFh command before it is used
 ONFI-VIP,dut_onfi_nand_model.sv:176,< -> <= in condition,the extra write targets page_buf[PAGE_SIZE] (out of range, ignored)
-FlexRay-VIP,dut_flexray_node_model.sv:75,1'b1 inverted,initial value overwritten by the reset branch
-FlexRay-VIP,dut_flexray_node_model.sv:84,0 -> 1,receiver counters are reloaded at the start of every frame before use
-FlexRay-VIP,dut_flexray_node_model.sv:85,0 -> 1,transmitter / error counters are reloaded before use or reset by the reset branch
-FlexRay-VIP,dut_flexray_node_model.sv:144,36 -> 37,the shortest frame needs 62 bits: rcnt > 36 and rcnt > 37 are both implied by rcnt + 1 >= need
-FlexRay-VIP,dut_flexray_node_model.sv:161,7 -> 8,loop index 7 writes payload_length[-1] (out of range, ignored)
 Security-VIP,dut_security_engine_model.sv:29,0 -> 1,statistics counter (op_count / err_count) is not an output
 Security-VIP,dut_security_engine_model.sv:40,0 -> 1,latency is reloaded on every start before it is used
 Security-VIP,dut_security_engine_model.sv:81,1 -> 2,a latency of 2 reaches the done branch after one decrement either way (2 -> 1 or 2 -> 0)
@@ -194,8 +181,6 @@ LPDDR-VIP,dut_lpddr_mem_model.sv:23,0 -> 1,"statistics counter, only printed in 
 LPDDR4-VIP,MEMCH_top.sv:12,15 -> 16,parameter default overridden by the top-level instantiation
 LPDDR4-VIP,MEMCORE_top.sv:74,1'b0 inverted,rd_pending is reassigned from hcmd whenever the next command is accepted
 LPDDR4-VIP,MEMCORE_top.sv:105,1'b0 inverted,LPDDR4 exposes only addr[2:0] on CA; the zero-extended upper bits are dropped
-AHB-VIP,dut_amba_dut.sv:37,1024 -> 1025,initial loop index 1024 is out of range of mem[0:1023]
-AHB-VIP,dut_amba_dut.sv:58,1'b0 inverted,"ap_write reset value is only used together with ap_valid, which resets to 0"
 CAN-VIP,dut_can_node_model.sv:91,0 -> 1,"early-out of frame_bits(): n = c+4 still lies 15+ bits before the computed frame end, so returning 0 there changes nothing"
 CAN-VIP,dut_can_node_model.sv:212,0 -> 1,initial value overwritten by IDLE on the first clock after reset
 Ethernet_AVB_TSN-VIP,dut_eth_avb_tsn_dut.sv:84,0 -> 1,eg_total is loaded from the FIFO before EG_SEND reads it
@@ -204,26 +189,11 @@ Ethernet_AVB_TSN-VIP,dut_eth_avb_tsn_dut.sv:118,8 -> 9,frames are whole 8-byte b
 Ethernet_AVB_TSN-VIP,dut_eth_avb_tsn_dut.sv:118,< -> <= in condition,frames are whole 8-byte beats: a remainder of 8 gives n = 8 either way
 Ethernet_AVB_TSN-VIP,dut_eth_avb_tsn_dut.sv:134,0 -> 1,the capture queue holds 0 or a multiple of 8 bytes and is never empty while in_frame
 Ethernet_AVB_TSN-VIP,dut_eth_avb_tsn_dut.sv:134,> -> >= in condition,the capture queue is never empty while in_frame
-FlexRay-VIP,dut_flexray_node_model.sv:91,0 -> 1,initial value overwritten by the reset branch
-FlexRay-VIP,dut_flexray_node_model.sv:94,0 -> 1,initial value overwritten by the reset branch
-FlexRay-VIP,dut_flexray_node_model.sv:96,0 -> 1,initial value overwritten by the reset branch
-FlexRay-VIP,dut_flexray_node_model.sv:98,0 -> 1,initial value overwritten by the reset branch
-FlexRay-VIP,dut_flexray_node_model.sv:100,0 -> 1,receiver counters are reloaded at the start of every frame before use
-FlexRay-VIP,dut_flexray_node_model.sv:101,0 -> 1,tx_len is set when a frame is evaluated, before the transmitter reads it
-FlexRay-VIP,dut_flexray_node_model.sv:156,16 -> 17,"length bit 16 (64 words) only matters above MAX_WORDS = 4, which the model clamps; such frames are out of scope"
-FlexRay-VIP,dut_flexray_node_model.sv:161,>= -> > in condition,need >= HDR_BITS + 26 so rcnt + 1 >= need already implies rcnt > HDR_BITS
-FlexRay-VIP,dut_flexray_node_model.sv:169,11 -> 12,loop index 11 writes frame_id[-1] / hc_rx[-1] (out of range, ignored)
-FlexRay-VIP,dut_flexray_node_model.sv:181,7 -> 8,loop index 7 writes payload_length[-1] (out of range, ignored)
-LIN-VIP,dut_lin_slave_model.sv:107,0 -> 1,initial value overwritten by the reset branch
-LIN-VIP,dut_lin_slave_model.sv:112,0 -> 1,tx_len is set by build_tx / the wake-up path before the transmitter reads it
-LIN-VIP,dut_lin_slave_model.sv:120,0 -> 1,nrx is cleared again at every break before a byte is received
-LIN-VIP,dut_lin_slave_model.sv:203,2 -> 3,exp_bytes >= 5 once the PID is in (nrx = 1): nrx + 1 >= exp_bytes already implies nrx >= 4
 ONFI-VIP,dut_onfi_nand_model.sv:45,0 -> 1,initial value overwritten by the reset branch
 ONFI-VIP,dut_onfi_nand_model.sv:71,12 -> 13,"manuf[12] reads past the string (0) into param_page[44], which the model-name loop then overwrites"
 ONFI-VIP,dut_onfi_nand_model.sv:134,0 -> 1,addr_cnt is cleared by every command latch before an address cycle uses it
 ONFI-VIP,dut_onfi_nand_model.sv:225,&& flipped,"reloads out_byte while RE# stays low: the pointer has not moved, so the same byte is reloaded; with CE# high IO is not driven"
 SAS-VIP,dut_sas_target_model.sv:24,0 -> 1,initial value overwritten by the reset branch
-SAS-VIP,dut_sas_target_model.sv:147,3 -> 4,"samples each 2-clock bit 1 clock later, still inside the same bit cell (stop bit included)"
 SD-VIP,dut_sd_card_dut.sv:98,0 -> 1,rsp_cnt is loaded when a response starts before it is read
 SD-VIP,dut_sd_card_dut.sv:143,1 -> 2,err_cnt is a statistic printed at the end of the run (not an output)
 eMMC-VIP,dut_emmc_device_dut.sv:155,1 -> 2,err_cnt is a statistic printed at the end of the run (not an output)
@@ -231,11 +201,6 @@ eMMC-VIP,dut_emmc_device_dut.sv:223,!= flipped,bit_cnt is reloaded (1) by the ne
 DDR4-VIP,MEMCORE_top.sv:13,15 -> 16,parameter default overridden by MEMCH_top
 LPDDR4-VIP,MEMCORE_top.sv:13,15 -> 16,parameter default overridden by MEMCH_top
 LPDDR4-VIP,MEMCORE_top.sv:119,1'b0 inverted,LPDDR4 exposes only addr[2:0] on CA; the zero-extended upper bits are dropped
-AXI-VIP,dut_amba_dut.sv:89,1'b0 inverted,wr_error is reloaded by every AW before it is used
-AXI-VIP,dut_amba_dut.sv:108,8 -> 9,wstrb[8] does not exist (X): no write
-AXI-VIP,dut_amba_dut.sv:134,1'b0 inverted,rd_error is reloaded by every AR before it is used
-AXI-VIP,dut_amba_dut.sv:164,1'b0 inverted,AHB tie-off of the shared AMBA shell (not AXI)
-AXI-VIP,dut_amba_dut.sv:165,1'b0 inverted,APB tie-off of the shared AMBA shell (not AXI)
 OCP-VIP,dut_ocp_slave_model.sv:47,0 -> 1,only changes the random SCmdAccept throttle probability
 OCP-VIP,dut_ocp_slave_model.sv:47,!= flipped,only changes the random SCmdAccept throttle probability
 TileLink-VIP,dut_tilelink_device_model.sv:48,4 -> 5,only changes the random a_ready throttle probability
@@ -245,9 +210,6 @@ LTI-VIP,dut_lti_translation_unit_model.sv:50,0 -> 1,only changes the random la_r
 LTI-VIP,dut_lti_translation_unit_model.sv:50,!= flipped,only changes the random la_ready throttle probability
 Avalon_ST-UVM-VIP,dut_avalon_st_model.sv:34,1'b0 inverted,skid_sop is reloaded with the beat before skid_valid makes it visible
 Avalon_ST-UVM-VIP,dut_avalon_st_model.sv:35,1'b0 inverted,skid_eop is reloaded with the beat before skid_valid makes it visible
-MDIO-UVM-VIP,dut_mdio_model.sv:40,1'b0 inverted,mdc_q reset value only matters if MDC is high when reset is released (an extra rise before any frame)
-MDIO-UVM-VIP,dut_mdio_model.sv:46,1'b1 inverted,dout is only visible while drive is set and is loaded before drive rises
-MDIO-UVM-VIP,dut_mdio_model.sv:78,1'b1 inverted,dout is not visible once drive is cleared
 Bluetooth5-VIP,dut_bluetooth5_dut.sv:55,0 -> 1,tx_idx is reloaded at the end of the turnaround before PEER_SEND reads it
 ACE_Lite-UVM-VIP,dut_ace_lite_model.sv:37,8 -> 9,byte-lane loop index past WSTRB[7]: wstrb[8] is out of range and never enables a write
 SDIO-UVM-VIP,dut_sdio_model.sv:28,39 -> 40,CRC7 loop starts one bit past the 40-bit input: d[40] is out of range (X) and only shifts a leading zero through the zero-initialised register
@@ -265,13 +227,6 @@ SPI-VIP,dut_spi_slave_model.sv:89,0 -> 1,ibit > 1 vs ibit > 0 only differs at ib
 UART-VIP,dut_uart_loopback_model.sv:27,2 -> 3,start-bit sample point at 1/3 instead of 1/2 of a bit; with clean edges both land inside the start bit and every later sample shifts by the same amount inside its bit
 USB2-VIP,dut_usb2_smoke_model.sv:70,1'b0 inverted,reset value of setup_pending; every OUT token clears it and every SETUP token sets it before a data stage can use it
 USB2-VIP,dut_usb2_smoke_model.sv:126,1'b0 inverted,setup_pending left set after the SETUP data stage; the next OUT clears it and the next SETUP sets it before any data stage reads it
-APB-VIP,dut_amba_dut.sv:55,64 -> 65,reset loop index 64 is out of range (write ignored)
-APB-VIP,dut_amba_dut.sv:60,< -> <= in condition,wait_cnt saturates at 2 either way within the observed 2-clock wait
-APB-VIP,dut_amba_dut.sv:63,4 -> 5,PSTRB[4] is out of range (reads X; branch not taken)
-APB-VIP,dut_amba_dut.sv:72,1'b0 inverted,tie-off of an unused sibling protocol (AXI) in the shared AMBA model
-APB-VIP,dut_amba_dut.sv:73,1'b0 inverted,tie-off of an unused sibling protocol (AXI) in the shared AMBA model
-APB-VIP,dut_amba_dut.sv:74,1'b0 inverted,tie-off of an unused sibling protocol (AXI/AXI-Stream) in the shared AMBA model
-APB-VIP,dut_amba_dut.sv:75,1'b0 inverted,tie-off of an unused sibling protocol (AHB) in the shared AMBA model
 Avalon_MM-UVM-VIP,dut_avalon_mm_model.sv:40,64 -> 65,reset loop index past the 64-word memory (out-of-range write is ignored)
 Avalon_MM-UVM-VIP,dut_avalon_mm_model.sv:46,&& flipped,rd_word also latched on a completed write; only a completed read's rd_d uses it and that read latches its own word first
 OBI-UVM-VIP,dut_obi_model.sv:45,0 -> 1,response FIFO entries are written before they are read; reset contents are never observed
@@ -314,9 +269,6 @@ HBM3E-VIP,dut_hbm_dev_model.sv:109,32 -> 33,auto-precharge loop past bank 31 (no
 HBM3E-VIP,dut_hbm_dev_model.sv:227,16 -> 17,MRS loop upper bound past bank 31 on pseudo channel 1 (no such bank; reads as closed)
 AXI4_Lite-UVM-VIP,dut_axi4_lite_model.sv:55,256 -> 257,reset loop past the last word (no such entry)
 AXI4_Lite-UVM-VIP,dut_axi4_lite_model.sv:63,4 -> 5,strobe loop past lane 3 (no such lane)
-AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:46,4 -> 5,lane loop past lane 3 (TKEEP / TSTRB bit 4 do not exist)
-AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:58,1'b0 inverted,reset value of err: ignored while in_pkt is low (the first transfer starts from 0)
-AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:61,1'b0 inverted,reset value of pkt_err: only read with pkt_done
 ACE-UVM-VIP,dut_ace_model.sv:114,&& flipped,CRREADY high outside the response window: allowed (READY may be high without VALID); the master sends one CR per snoop
 ACE-UVM-VIP,dut_ace_model.sv:115,&& flipped,CDREADY high outside the data window: allowed (READY may be high without VALID); the master sends one CD line per snoop
 ACE-UVM-VIP,dut_ace_model.sv:119,16 -> 17,merge loop past byte 15 (no such byte)
@@ -428,3 +380,121 @@ SPDM-UVM-VIP,dut_spdm_model.sv:61,20 -> 21,"cq has 20 entries; the extra compare
 SPDM-UVM-VIP,dut_spdm_model.sv:61,< -> <= in condition,"same is already 0 unless qn = 20, and then i never reaches qn"
 SPDM-UVM-VIP,dut_spdm_model.sv:79,64 -> 65,"aq has 64 entries; the extra write is dropped"
 SPDM-UVM-VIP,dut_spdm_model.sv:114,0 -> 1,"ri is set to 0 at the last byte of every request, before it is read"
+LIN-VIP,dut_lin_slave_model.sv:103,0 -> 1,one trailing recessive bit fewer after the response: the line idles recessive afterwards anyway
+LIN-VIP,dut_lin_slave_model.sv:114,0 -> 1,initial value overwritten by the reset branch
+LIN-VIP,dut_lin_slave_model.sv:183,1 -> 2,sample point one clock earlier is still inside the bit (1.5 bit times minus 2 of BIT_CLKS = 8)
+FlexRay-VIP,dut_flexray_node_model.sv:136,1 -> 2,bit sample point one clock earlier is still inside the bit (BIT_CLKS = 8)
+FlexRay-VIP,dut_flexray_node_model.sv:161,23 -> 24,the payload length is read one bit later: bits 16-22 are already in and need is only used from rcnt = HDR_BITS (40)
+FlexRay-VIP,dut_flexray_node_model.sv:199,0 -> 1,echo bit 0 is the reserved bit (0 in every legal frame) and tx_shift is cleared to 0 first
+FlexRay-VIP,dut_flexray_node_model.sv:75,1'b1 inverted,initial value overwritten by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:84,0 -> 1,receiver counters are reloaded at the start of every frame before use
+FlexRay-VIP,dut_flexray_node_model.sv:85,0 -> 1,transmitter / error counters are reloaded before use or reset by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:144,36 -> 37,the shortest frame needs 62 bits: rcnt > 36 and rcnt > 37 are both implied by rcnt + 1 >= need
+FlexRay-VIP,dut_flexray_node_model.sv:161,7 -> 8,loop index 7 writes payload_length[-1] (out of range, ignored)
+FlexRay-VIP,dut_flexray_node_model.sv:91,0 -> 1,initial value overwritten by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:94,0 -> 1,initial value overwritten by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:96,0 -> 1,initial value overwritten by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:98,0 -> 1,initial value overwritten by the reset branch
+FlexRay-VIP,dut_flexray_node_model.sv:100,0 -> 1,receiver counters are reloaded at the start of every frame before use
+FlexRay-VIP,dut_flexray_node_model.sv:101,0 -> 1,tx_len is set when a frame is evaluated, before the transmitter reads it
+FlexRay-VIP,dut_flexray_node_model.sv:156,16 -> 17,"length bit 16 (64 words) only matters above MAX_WORDS = 4, which the model clamps; such frames are out of scope"
+FlexRay-VIP,dut_flexray_node_model.sv:161,>= -> > in condition,need >= HDR_BITS + 26 so rcnt + 1 >= need already implies rcnt > HDR_BITS
+FlexRay-VIP,dut_flexray_node_model.sv:169,11 -> 12,loop index 11 writes frame_id[-1] / hc_rx[-1] (out of range, ignored)
+FlexRay-VIP,dut_flexray_node_model.sv:181,7 -> 8,loop index 7 writes payload_length[-1] (out of range, ignored)
+LIN-VIP,dut_lin_slave_model.sv:98,0 -> 1,initial value overwritten by the reset branch
+LIN-VIP,dut_lin_slave_model.sv:107,0 -> 1,initial value overwritten by the reset branch
+LIN-VIP,dut_lin_slave_model.sv:112,0 -> 1,tx_len is set by build_tx / the wake-up path before the transmitter reads it
+LIN-VIP,dut_lin_slave_model.sv:120,0 -> 1,nrx is cleared again at every break before a byte is received
+LIN-VIP,dut_lin_slave_model.sv:203,2 -> 3,exp_bytes >= 5 once the PID is in (nrx = 1): nrx + 1 >= exp_bytes already implies nrx >= 4
+SAS-VIP,dut_sas_target_model.sv:151,3 -> 4,"samples each 2-clock bit 1 clock later, still inside the same bit cell (stop bit included)"
+SAS-VIP,dut_sas_target_model.sv:61,0 -> 1,"zero_cnt is reloaded on the next clock from txp, which is high (toggling) when speed negotiation completes"
+SAS-VIP,dut_sas_target_model.sv:93,0 -> 1,io_nwords is assigned before every use (rx_frame / tx_frame callers)
+SAS-VIP,dut_sas_target_model.sv:132,0 -> 1,"one bogus empty byte (ok = 0) is read before the first frame; the server drops it and restarts with the connection still closed"
+SAS-VIP,dut_sas_target_model.sv:138,0 -> 1,"the receiver arms after 2 instead of 3 idle clocks; every frame starts at least 8 idle clocks after phy_ready"
+SAS-VIP,dut_sas_target_model.sv:141,3 -> 4,"the receiver arms after 4 instead of 3 idle clocks; every frame starts at least 8 idle clocks after phy_ready"
+SAS-VIP,dut_sas_target_model.sv:187,0 -> 1,io_nwords is set to len on a good frame and overwritten by every tx_frame caller otherwise
+SAS-VIP,dut_sas_target_model.sv:218,8 -> 9,"the ninth address byte reads addr[71:64] of a 64-bit bit vector (0); a zero byte does not change the XOR check byte"
+SAS-VIP,dut_sas_target_model.sv:242,&& flipped,"with phy_ready low, rx_frame returns at once with fok = 0, so the loop exits either way"
+SAS-VIP,dut_sas_target_model.sv:273,< -> <= in condition,"the credit is decremented before the echo, so it is below SAS_INIT_CREDITS when it is returned"
+CAN_FD-UVM-VIP,dut_can_fd_model.sv:104,1'b1 inverted,"rxp (rx one clock ago) is overwritten on the first clock, and a SOF needs bus integration (11 recessive bits) first"
+CAN_FD-UVM-VIP,dut_can_fd_model.sv:105,1'b0 inverted,fsbd is cleared when a frame enters the fixed-stuff field and is not read before
+CAN_FD-UVM-VIP,dut_can_fd_model.sv:107,1'b0 inverted,"rtr is written at IDE (base) or RTR (extended) of every frame before it is read; out_rtr is reset on its own"
+DFI-VIP,dut_dfi_model.sv:76,8 -> 9,the reset loop's extra iteration writes act_c / pre_c / row_q[8] out of range: a no-op
+DFI-VIP,dut_dfi_model.sv:81,1'b0 inverted,"init_q, tbp_q and lp_q follow their inputs from the first clock, and nothing starts before several clocks after reset"
+DFI-VIP,dut_dfi_model.sv:175,8 -> 9,open_b[8] is out of range and reads as 0 / X: the extra iteration never finds an open bank
+DFI-VIP,dut_dfi_model.sv:177,8 -> 9,open_b[8] is out of range: the extra iteration closes nothing
+DFI-VIP,dut_dfi_model.sv:216,4 -> 5,the read pipeline loop's extra iteration writes dat_sr[4] out of range: a no-op
+PTP-VIP,dut_ptp_model.sv:32,96 -> 97,"RBMAX only bounds the receive buffer; every frame the model checks is under 96 bytes, so one more slot is never written"
+PTP-VIP,dut_ptp_model.sv:95,>= -> > in condition,"byte 48 is seconds[47:40], zero for any clock a 64-bit nanosecond counter can hold (2^64 ns < 2^40 s)"
+GMII-UVM-VIP,dut_gmii_model.sv:36,1'b0 inverted,"f_pre is assigned again on the first byte of every frame, before anything reads it"
+RGMII-UVM-VIP,dut_rgmii_model.sv:48,1'b0 inverted,"f_code is assigned again on the first byte of every frame, before anything reads it"
+XGMII-UVM-VIP,dut_xgmii_model.sv:46,1'b0 inverted,"f_code is assigned again by every Start, and nothing reads it while no frame is open"
+XGMII-UVM-VIP,dut_xgmii_model.sv:70,< -> <= in condition,"fb has 2048 entries: the extra write to fb[2048] is out of range and dropped; oversize frames never read the buffer"
+CHI-UVM-VIP,dut_chi_model.sv:99,1'b0 inverted,"t_oor reset value; written when a tracker is allocated (line 333 of top_tb), before any read"
+Avalon_MM-UVM-VIP,dut_avalon_mm_model.sv:61,0 -> 1,"response-queue reset values; an entry is always written by its command before the response side reads it"
+Avalon_MM-UVM-VIP,dut_avalon_mm_model.sv:61,4 -> 5,"the extra iteration writes index 4 of 4-entry arrays, which is out of range and ignored"
+Avalon_MM-UVM-VIP,dut_avalon_mm_model.sv:71,4 -> 5,"the extra iteration reads byteenable[4] (X, outside the 4-bit vector), which writes nothing"
+Wishbone-UVM-VIP,dut_wishbone_model.sv:75,256 -> 257,"the extra iteration writes mem[256], out of range of the 256-word array, and is ignored"
+Wishbone-UVM-VIP,dut_wishbone_model.sv:76,16 -> 17,"the extra iteration writes index 16 of 16-entry arrays, out of range and ignored"
+Wishbone-UVM-VIP,dut_wishbone_model.sv:77,4 -> 5,"the extra iteration writes index 4 of the 4-entry response queue, out of range and ignored"
+MDIO-UVM-VIP,dut_mdio_model.sv:47,== flipped,"flipping d == 5'd3 only permutes which storage slot MMD 3 and MMD 7 use (still one slot each)"
+MDIO-UVM-VIP,dut_mdio_model.sv:63,1'b0 inverted,"skip and shortp are loaded at every frame start before they are read; their reset values are never seen"
+MDIO-UVM-VIP,dut_mdio_model.sv:66,1 -> 2,"c22[1] is never read: register 1 reads the phy_status pins"
+MDIO-UVM-VIP,dut_mdio_model.sv:68,3 -> 4,"maddr has 3 entries; the extra iteration writes out of range and is dropped"
+MDIO-UVM-VIP,dut_mdio_model.sv:141,32 -> 33,"c22 has 32 entries; the extra iteration writes out of range and is dropped"
+AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:55,4 -> 5,"lane 4 does not exist: tkeep[4] / tstrb[4] read X and neither branch is taken"
+AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:69,16 -> 17,"there are 16 TID contexts; the extra iteration writes out of range and is dropped"
+AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:70,1'b0 inverted,"c_err is only read while c_in is set, and c_in is cleared in reset"
+AXI_Stream-UVM-VIP,dut_axi_stream_model.sv:74,1'b0 inverted,"pkt_err is only meaningful with pkt_done, and every pkt_done loads it"
+AXI-VIP,dut_amba_dut.sv:140,1'b1 inverted,"without found the B pick is the last eligible entry of the rotation instead of the first: still the oldest of its ID, so an equally legal order"
+AXI-VIP,dut_amba_dut.sv:150,&& flipped,"with || an unused slot may be considered first, but every valid eligible slot later in the rotation overwrites it and slot 0 (oldest) is always valid and eligible"
+AXI-VIP,dut_amba_dut.sv:243,1'b0 inverted,AHB tie-off of the shared AMBA shell (not AXI)
+AHB-VIP,dut_amba_dut.sv:79,1'b0 inverted,"dp_write / dp_err / dp_excl / dp_exok reset values only matter with dp_valid, which resets to 0; all are loaded at the first HREADY edge"
+AHB-VIP,dut_amba_dut.sv:123,1'b0 inverted,AXI tie-off of the shared AMBA shell (not AHB)
+AHB-VIP,dut_amba_dut.sv:124,1'b0 inverted,AXI tie-off of the shared AMBA shell (not AHB)
+AHB-VIP,dut_amba_dut.sv:125,1'b0 inverted,AXI / AXI-Stream tie-off of the shared AMBA shell (not AHB)
+APB-VIP,dut_amba_dut.sv:86,1'b0 inverted,"wk only counts while the slave is asleep; reset leaves it awake and wk is cleared by the PWAKEUP-low clocks that put it to sleep"
+APB-VIP,dut_amba_dut.sv:88,64 -> 65,reset loop index 64 is out of range of regbank[0:63] / ubank[0:63] (write ignored)
+APB-VIP,dut_amba_dut.sv:122,1'b0 inverted,tie-off of an unused sibling protocol (AXI) in the shared AMBA model
+APB-VIP,dut_amba_dut.sv:123,1'b0 inverted,tie-off of an unused sibling protocol (AXI) in the shared AMBA model
+APB-VIP,dut_amba_dut.sv:124,1'b0 inverted,tie-off of an unused sibling protocol (AXI / AXI-Stream) in the shared AMBA model
+TileLink-VIP,dut_tilelink_device_model.sv:97,< -> <= in condition,"when a == b both arms return the same value"
+TileLink-VIP,dut_tilelink_device_model.sv:195,16 -> 17,"the extra iteration b = 16 fails b < d_beats_of() (at most 16), so nothing is read"
+USB3-VIP,dut_usb3_smoke_model.sv:196,1'b0 inverted,"tx_hold after power-on reset: RxDetect -> Polling runs link_reset(), which clears it before any U0 clock"
+USB3-VIP,dut_usb3_smoke_model.sv:201,0 -> 1,"txb[0] reset value: a retry-buffer entry is always written by tx_push before it is sent"
+USB_PD-VIP,dut_usb_pd_smoke_model.sv:167,== flipped,"GoodCRC request cleared at the first instead of the last GoodCRC symbol: the transmitter is busy until the end either way, and the half-duplex bus cannot deliver another message while the sink transmits"
+USB_PD-VIP,dut_usb_pd_smoke_model.sv:234,34 -> 35,"reset loop writes fb[34], which is out of range and ignored"
+USB_PD-VIP,dut_usb_pd_smoke_model.sv:249,1'b0 inverted,"Hard Reset is only sent with the policy engine in Hard Reset, whose abort branch clears tx_busy on the next clock with tx_valid low"
+USB_PD-VIP,dut_usb_pd_smoke_model.sv:325,! dropped in condition,"pe_send is only consumed by an idle transmitter; clearing it when wait_gc starts instead of when the message is taken differs only if the policy engine queued a second message while one is on the wire, which never happens"
+USB_PD-VIP,dut_usb_pd_smoke_model.sv:167,&& flipped,"GoodCRC request also cleared while another frame is on the line: the half-duplex bus cannot deliver a message while the sink transmits"
+USB_PD-VIP,dut_usb_pd_smoke_model.sv:234,0 -> 1,"fb[0] reset skipped: fb is a scratch array that build() fully rewrites before every frame"
+USB4-VIP,dut_usb4_smoke_model.sv:166,12 -> 13,"replay loop bound: a stored response has at most 11 words after the header, so i = 12 never passes the i < last_n guard"
+USB4-VIP,dut_usb4_smoke_model.sv:229,64 -> 65,"reset loop over the 64-entry config space: the extra index is out of range and the write is discarded"
+USB4-VIP,dut_usb4_smoke_model.sv:233,0 -> 1,"rel_v[0] not cleared at reset: rel_n is 0, so the ring is empty and the first release push rewrites slot 0 before it is read"
+USB4-VIP,dut_usb4_smoke_model.sv:236,0 -> 1,"output queue write pointer starts at 1: lane 0 is CLd after reset, and the flush sets oq_rd = oq_wr before any packet is queued, so only the pointer difference matters"
+USB4-VIP,dut_usb4_smoke_model.sv:315,2 -> 3,"retrain loop over the 2 lanes: index 2 is out of range of ls[2], reads X and the guarded write is discarded"
+USB2-VIP,dut_usb2_smoke_model.sv:203,1'b0 inverted,"sp_sc reset value: it is only read in X_SPLIT, and every entry to X_SPLIT first loads it from the SPLIT token"
+eUSB2-VIP,dut_eusb2_smoke_model.sv:101,1'b0 inverted,"l1_rw reset value: it is only read in L1, and L1 is entered only by an LPM ACK, which loads it from the token"
+USB-VIP,dut_usb2_smoke_model.sv:70,1'b0 inverted,reset value of setup_pending; every OUT token clears it and every SETUP token sets it before a data stage can use it
+USB-VIP,dut_usb2_smoke_model.sv:126,1'b0 inverted,setup_pending left set after the SETUP data stage; the next OUT clears it and the next SETUP sets it before any data stage reads it
+USB-VIP,dut_usb3_smoke_model.sv:196,1'b0 inverted,"tx_hold after power-on reset: RxDetect -> Polling runs link_reset(), which clears it before any U0 clock"
+USB-VIP,dut_usb3_smoke_model.sv:201,0 -> 1,txb[0] reset value: a retry-buffer entry is always written by tx_push before it is sent
+USB-VIP,dut_usb_pd_smoke_model.sv:167,== flipped,"GoodCRC request cleared at the first instead of the last GoodCRC symbol: the transmitter is busy until the end either way, and the half-duplex bus cannot deliver another message while the sink transmits"
+USB-VIP,dut_usb_pd_smoke_model.sv:234,34 -> 35,"reset loop writes fb[34], which is out of range and ignored"
+USB-VIP,dut_usb_pd_smoke_model.sv:249,1'b0 inverted,"Hard Reset is only sent with the policy engine in Hard Reset, whose abort branch clears tx_busy on the next clock with tx_valid low"
+USB-VIP,dut_usb_pd_smoke_model.sv:325,! dropped in condition,"pe_send is only consumed by an idle transmitter; clearing it when wait_gc starts instead of when the message is taken differs only if the policy engine queued a second message while one is on the wire, which never happens"
+USB-VIP,dut_usb_pd_smoke_model.sv:167,&& flipped,GoodCRC request also cleared while another frame is on the line: the half-duplex bus cannot deliver a message while the sink transmits
+USB-VIP,dut_usb_pd_smoke_model.sv:234,0 -> 1,fb[0] reset skipped: fb is a scratch array that build() fully rewrites before every frame
+USB-VIP,dut_usb4_smoke_model.sv:166,12 -> 13,"replay loop bound: a stored response has at most 11 words after the header, so i = 12 never passes the i < last_n guard"
+USB-VIP,dut_usb4_smoke_model.sv:229,64 -> 65,reset loop over the 64-entry config space: the extra index is out of range and the write is discarded
+USB-VIP,dut_usb4_smoke_model.sv:233,0 -> 1,"rel_v[0] not cleared at reset: rel_n is 0, so the ring is empty and the first release push rewrites slot 0 before it is read"
+USB-VIP,dut_usb4_smoke_model.sv:236,0 -> 1,"output queue write pointer starts at 1: lane 0 is CLd after reset, and the flush sets oq_rd = oq_wr before any packet is queued, so only the pointer difference matters"
+USB-VIP,dut_usb4_smoke_model.sv:315,2 -> 3,"retrain loop over the 2 lanes: index 2 is out of range of ls[2], reads X and the guarded write is discarded"
+USB-VIP,dut_usb2_smoke_model.sv:203,1'b0 inverted,"sp_sc reset value: it is only read in X_SPLIT, and every entry to X_SPLIT first loads it from the SPLIT token"
+USB-VIP,dut_eusb2_smoke_model.sv:101,1'b0 inverted,"l1_rw reset value: it is only read in L1, and L1 is entered only by an LPM ACK, which loads it from the token"
+USB4-VIP,dut_usb4_smoke_model.sv:206,1 -> 2,"default path index -1 -> -2: the only use is the p < 0 test for an unknown HopID, which both values pass"
+USB4-VIP,dut_usb4_smoke_model.sv:231,1'b0 inverted,"poison reset value: it is only read at the end of a packet, and every packet start (w_first) reloads it"
+USB_PD-VIP,dut_usb_pd_smoke_model.sv:243,1'b0 inverted,"wait_gc left set when a Hard Reset is sent: the policy engine is in P_HRST, whose branch clears wait_gc on the clock after the 4-symbol ordered set"
+USB-VIP,dut_usb4_smoke_model.sv:206,1 -> 2,"default path index -1 -> -2: the only use is the p < 0 test for an unknown HopID, which both values pass"
+USB-VIP,dut_usb4_smoke_model.sv:231,1'b0 inverted,"poison reset value: it is only read at the end of a packet, and every packet start (w_first) reloads it"
+USB-VIP,dut_usb_pd_smoke_model.sv:243,1'b0 inverted,"wait_gc left set when a Hard Reset is sent: the policy engine is in P_HRST, whose branch clears wait_gc on the clock after the 4-symbol ordered set"

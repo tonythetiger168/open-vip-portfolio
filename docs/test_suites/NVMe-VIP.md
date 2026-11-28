@@ -9,8 +9,8 @@
 | 類別 | Storage |
 | 類型 | UVM VIP |
 | 功能測試 | 2 個檔案，61 個 check，全部通過 |
-| Mutation | 21/22 個 mutant 被偵測（95%） |
-| 判定 | **✅ Sufficient**（61 個 check，mutation score 95%） |
+| Mutation | 7/7 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（61 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -111,9 +111,7 @@ UVM agent test（`nvme_func_test`：directed + constrained-random 流量，score
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（61 個 check，mutation score 95%）。
+判定：**✅ Sufficient**（61 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_nvme_controller_model.sv:35 0 -> 1 [bit [15:0] last_sq_tail = 0;]`
+無已知缺口。
 

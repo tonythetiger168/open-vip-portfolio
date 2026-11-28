@@ -9,8 +9,8 @@
 | 類別 | Automotive |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，38 個 check，全部通過 |
-| Mutation | 10/12 個 mutant 被偵測（83%） |
-| 判定 | **✅ Sufficient**（38 個 check，mutation score 83%） |
+| Mutation | 28/28 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（38 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/smoke_func_tb.sv`
 
-結果：**PASS**（verilator，38 checks）
+結果：**PASS**（iverilog，38 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -59,10 +59,7 @@ UVM agent test（`can_xl_func_test`：directed + constrained-random 流量，sco
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（38 個 check，mutation score 83%）。
+判定：**✅ Sufficient**（38 個 check，mutation score 100%）。
 
-未被偵測的 mutant（測試缺口或等價 mutant）：
-
-- `dut_can_xl_model.sv:64 1'b1 inverted [st <= IDLE; last <= 1'b1; run <= '0; fcnt <= '0; ones <= '0;]`
-- `dut_can_xl_model.sv:127 >= -> > in condition [else if (k >= 16'd45 && k < 16'd77) af <= {af[30:0], rx};]`
+無已知缺口。
 

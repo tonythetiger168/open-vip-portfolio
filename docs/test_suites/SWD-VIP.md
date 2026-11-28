@@ -9,8 +9,8 @@
 | 類別 | Debug |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，23 個 check，全部通過 |
-| Mutation | 11/12 個 mutant 被偵測（92%） |
-| 判定 | **✅ Sufficient**（23 個 check，mutation score 92%） |
+| Mutation | 25/30 個 mutant 被偵測（83%） |
+| 判定 | **✅ Sufficient**（23 個 check，mutation score 83%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_swd_tb.sv`
 
-結果：**PASS**（verilator，23 checks）
+結果：**PASS**（iverilog，23 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -79,9 +79,13 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（23 個 check，mutation score 92%）。
+判定：**✅ Sufficient**（23 個 check，mutation score 83%）。
 
 未被偵測的 mutant（測試缺口或等價 mutant）：
 
-- `dut_swd_dp_model.sv:21 0 -> 1 [bit [31:0] ctrlstat = 0, select_reg = 0, tar = 0, rdbuff = 0]`
+- `dut_swd_dp_model.sv:24 1'b1 inverted [vif_slv_swdio_o  = 1'b1;]`
+- `dut_swd_dp_model.sv:25 1'b0 inverted [vif_slv_swdio_oe = 1'b0;]`
+- `dut_swd_dp_model.sv:45 32 -> 33 [for (int i = 0; i < 32; i++) begin]`
+- `dut_swd_dp_model.sv:84 || flipped [if (^{hdr[4:1]} != hdr[5] || hdr[6] !== 1'b0 || hdr[7] !== 1]`
+- `dut_swd_dp_model.sv:117 && flipped [if (ap && a == 2'h1) rdbuff = tar;]`
 

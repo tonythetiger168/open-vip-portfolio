@@ -8,9 +8,9 @@
 |---|---|
 | 類別 | Automotive |
 | 類型 | UVM VIP |
-| 功能測試 | 1 個檔案，25 個 check，全部通過 |
-| Mutation | 8/8 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（25 個 check，mutation score 100%） |
+| 功能測試 | 1 個檔案，28 個 check，全部通過 |
+| Mutation | 9/9 個 mutant 被偵測（100%） |
+| 判定 | **✅ Sufficient**（28 個 check，mutation score 100%） |
 
 ## 2. 可執行的功能測試
 
@@ -18,7 +18,7 @@
 
 ### `tb/func_lin_tb.sv`
 
-結果：**PASS**（verilator，25 checks）
+結果：**PASS**（verilator，28 checks）
 
 模型合約與範圍（摘自測試檔頭）：
 
@@ -54,27 +54,30 @@ Model contract (from tb/lin_slave_model.sv), 8 clocks per bit:
 | 2 | break field (13 dominant bits + delimiter) detected | check |
 | 3 | sync byte 0x55 received without bit error | check |
 | 4 | PID and parity decoded | check |
-| 5 | 2-byte length from ID[5:4]=00, enhanced checksum accepted | check |
-| 6 | checksum output carries the received checksum byte | check |
-| 7 | re-transmitted break is 13 bits (%0d clocks) | check |
-| 8 | frame re-transmitted: sync, PID, data (%0d bytes) | check |
-| 9 | re-transmitted frame ends with the checksum | check |
-| 10 | 4-byte frame (ID[5:4]=10) | check |
-| 11 | 8-byte frame (ID 0x3C) | check |
-| 12 | diagnostic ID 0x3C: classic checksum accepted and re-transmitted | check |
-| 13 | PID parity error flagged | check |
-| 14 | parity error answered with 0xFF after the sync | check |
-| 15 | wrong checksum byte flagged | check |
-| 16 | stop bit 0 flagged as framing error | check |
-| 17 | sync byte other than 0x55 flagged as bit error | check |
-| 18 | no timeout within 24 bit times after the break | check |
-| 19 | timeout exactly 24 bit times after the break delimiter (%0d clocks) | check |
-| 20 | short dominant pulse answered as a wake-up | check |
-| 21 | wake-up answer as long as the pulse, to the bit sampling (%0d clocks) | check |
-| 22 | 8-bit wake-up pulse answered with 9 sampled bit times (%0d clocks) | check |
-| 23 | awake for 24 idle bit times | check |
-| 24 | sleep exactly 24 idle bit times after reset (%0d clocks) | check |
-| 25 | bus activity leaves sleep | check |
+| 5 | pid_rcvd pulses once per protected identifier (%0d) | check |
+| 6 | 2-byte length from ID[5:4]=00, enhanced checksum accepted | check |
+| 7 | checksum output carries the received checksum byte | check |
+| 8 | re-transmitted break is 13 bits (%0d clocks) | check |
+| 9 | frame re-transmitted: sync, PID, data (%0d bytes) | check |
+| 10 | re-transmitted frame ends with the checksum | check |
+| 11 | 4-byte frame (ID[5:4]=10) | check |
+| 12 | 8-byte frame (ID 0x3C) | check |
+| 13 | diagnostic ID 0x3C: classic checksum accepted and re-transmitted | check |
+| 14 | checksum carry at a sum of exactly 256 (0x80 + 0x80 -> 0xFE) accepted | check |
+| 15 | PID parity error flagged | check |
+| 16 | parity error answered with 0xFF after the sync | check |
+| 17 | wrong checksum byte flagged | check |
+| 18 | stop bit 0 flagged as framing error | check |
+| 19 | reset clears the parity, checksum, timeout, framing and bit error flags | check |
+| 20 | sync byte other than 0x55 flagged as bit error | check |
+| 21 | no timeout within 24 bit times after the break | check |
+| 22 | timeout exactly 24 bit times after the break delimiter (%0d clocks) | check |
+| 23 | short dominant pulse answered as a wake-up | check |
+| 24 | wake-up answer as long as the pulse, to the bit sampling (%0d clocks) | check |
+| 25 | 8-bit wake-up pulse answered with 9 sampled bit times (%0d clocks) | check |
+| 26 | awake for 24 idle bit times | check |
+| 27 | sleep exactly 24 idle bit times after reset (%0d clocks) | check |
+| 28 | bus activity leaves sleep | check |
 
 ## 3. UVM 測試平台內容
 
@@ -82,14 +85,14 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
-| UVM tests | 5 | `base_test`, `random_test`, `sleep_wakeup_test`, `error_inject_test`, `regression_test` |
-| Sequences | 12 | `base_tx`, `lin_base_sequence`, `lin_random_sequence`, `lin_diagnostic_sequence`, `lin_sleep_wakeup_sequence`, `lin_error_inject_sequence`, `lin_back_to_back_sequence`, `lin_corner_sequence`, `lin_reset_sequence`, `lin_stress_sequence`, `lin_regression_sequence`, `lin_transaction` |
+| UVM tests | 6 | `base_test`, `random_test`, `sleep_wakeup_test`, `error_inject_test`, `cov_test`, `regression_test` |
+| Sequences | 13 | `base_tx`, `lin_base_sequence`, `lin_random_sequence`, `lin_diagnostic_sequence`, `lin_sleep_wakeup_sequence`, `lin_error_inject_sequence`, `lin_back_to_back_sequence`, `lin_corner_sequence`, `lin_reset_sequence`, `lin_stress_sequence`, `lin_cov_sequence`, `lin_regression_sequence`, `lin_transaction` |
 | SVA（assert / cover property） | 27 / 24 | `assert_p_lin_break`, `cover_p_lin_break`, `assert_p_lin_sync`, `cover_p_lin_sync`, `assert_p_lin_pid`, `cover_p_lin_pid`, `assert_p_lin_parity`, `cover_p_lin_parity`, `assert_p_lin_data_len`, `cover_p_lin_data_len`, `assert_p_lin_checksum`, `cover_p_lin_checksum` … |
 | Covergroups / coverpoints | 4 / 8 | |
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（25 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（28 個 check，mutation score 100%）。
 
 無已知缺口。
 

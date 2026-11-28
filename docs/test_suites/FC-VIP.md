@@ -9,8 +9,8 @@
 | 類別 | Networking |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，30 個 check，全部通過 |
-| Mutation | 12/12 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（30 個 check，mutation score 100%） |
+| Mutation | 11/12 個 mutant 被偵測（92%） |
+| 判定 | **✅ Sufficient**（30 個 check，mutation score 92%） |
 
 ## 2. 可執行的功能測試
 
@@ -32,7 +32,7 @@
 | 8 | 40-byte frame: one fcs_valid, crc_ok, no errors | check |
 | 9 | second identical frame with a correct CRC accepted | check |
 | 10 | 2084-byte frame with idle gaps: crc_ok | check |
-| 11 | partial last beat (be = 0x03) honoured | check |
+| 11 | partial last beat (be = 0x0F) honoured | check |
 | 12 | corrupted CRC: crc_error pulse, crc_ok low | check |
 | 13 | fcs_valid / crc_error are single-clock pulses | check |
 | 14 | 32-byte frame (< 36) raises len_error | check |
@@ -66,7 +66,9 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（30 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（30 個 check，mutation score 92%）。
 
-無已知缺口。
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_net_fc_model.sv:102 1'b0 inverted [vif_fcs_valid <= 1'b0;]`
 

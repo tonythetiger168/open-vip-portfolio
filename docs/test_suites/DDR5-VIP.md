@@ -9,12 +9,62 @@
 | 類別 | Memory |
 | 類型 | UVM VIP |
 | 功能測試 | 2 個檔案，157 個 check，全部通過 |
-| Mutation | 8/8 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（157 個 check，mutation score 100%） |
+| Mutation | 9/11 個 mutant 被偵測（82%） |
+| 判定 | **✅ Sufficient**（157 個 check，mutation score 82%） |
 
 ## 2. 可執行的功能測試
 
 執行：`python3 tools/run_func_tests.py DDR5-VIP`（Icarus Verilog 或 Verilator 5.054）。
+
+### `ddr5_dev/tb/func_ddr5_ca_tb.sv`
+
+結果：**PASS**（verilator，77 checks）
+
+模型合約與範圍（摘自測試檔頭）：
+
+```text
+FUNC_SIM: verilator
+
+func_ddr5_ca_tb.sv -- the DDR5 CS_n / CA[13:0] command bus (JESD79-5
+section 4.1) and DDR5-4800B timing through the pin-level decoder into
+ddr5_dev_model:
+   * every command of the truth table, encoded here from the table (not
+     from the decoder) with random values on the "valid" bits, decoded with
+     all of its fields: ACT, RD/RDA, WR/WRA (burst select, partial write),
+     WRP/WRPA, MRW (incl. CW), MRR, VrefCA/VrefCS, REFab/REFsb, RFMab/RFMsb,
+     PREab/PREsb/PREpb, SRE/SREF/PDE, MPC, NOP
+   * reserved codes, CS_n low in cycle 2 of ACT / MRW / WRP (dropped) and
+     of RD / WR / MRR (allowed), DES with random CA
+   * CL 40 / CWL 38 programmed with MRW MR0 on the pins, MRR data,
+     write / read data through the device at the DDR5-4800B latencies
+   * DDR5-4800B timing in clocks (tCK 0.416 ns): tRCD, tRP, tRAS, tRRD_S,
+     tRRD_L, tCCD_S, tCCD_L, tRTP, tWR, tRFC1 (16 Gb) at their boundaries
+The decoder hands every command to the device two clocks after the clock
+that started it; data timing below includes those two clocks.
+Run: python3 tools/run_func_tests.py DDR5-VIP
+```
+
+| # | Check | 類型 |
+|---|---|---|
+| 1 | %s: bus timing (B at +%0d) | check |
+| 2 | %s: at %0d clocks rejected (err=%h) | check |
+| 3 | %s: at %0d clocks accepted (err=%h) | check |
+| 4 | %s: banks closed afterwards | check |
+| 5 | truth table: %0d commands decoded with all fields (%0d wrong) | check |
+| 6 | truth table: no decoder error (%b) | check |
+| 7 | one decoded command per command (%0d) | check |
+| 8 | reserved code CA0..CA4 = %b%b%b%b%b rejected (err %b) | check |
+| 9 | DES: CA is don't care | check |
+| 10 | kind %0d with CS_n low in cycle 2 not executed | check |
+| 11 | kind %0d with CS_n low in cycle 2 (ODT) executed | check |
+| 12 | MRW MR0 = CL40 / BL16 accepted | check |
+| 13 | MRR MR0 returns CL40 at RL 40 (the CW=1 MRW was ignored) | check |
+| 14 | no MRR data before RL | check |
+| 15 | ACT in BG0 then BG1 at tRRD_S | check |
+| 16 | RDs accepted after tWTR | check |
+| 17 | BG0 read data at CL 40 = written data (CWL 38) | check |
+| 18 | BG1 read data right behind it (tCCD_S = burst) = written data | check |
+| 19 | PREab closes both banks | check |
 
 ### `ddr5_dev/tb/func_ddr5_dev_tb.sv`
 
@@ -102,28 +152,23 @@ Run: python3 tools/run_func_tests.py DDR5-VIP
 | 57 | postponed refresh limit flagged once (%0d) | check |
 | 58 | reset drops every read in flight (%0d bursts issued, %0d beats after reset) | check |
 
-### `ddr5_dev/tb/func_ddr5_ca_tb.sv`
-
-結果：**PASS**（verilator，77 checks）
-
-CS_n / CA[13:0] 腳位層指令解碼（JESD79-5 指令真值表）：276 個隨機指令逐欄位比對、保留碼、cycle 2 的 CS_n、DES；在腳位上寫入並讀回 MR0 = CL 40 / BL16，CW 為高的 MRW 被忽略；CWL 38 / CL 40 的寫入與讀取資料；DDR5-4800B 時序邊界（tRCD、tRP、tRAS、tRRD_S/L、tCCD_L、tRTP、tWR、tRFC1）。
-
 ## 3. UVM 測試平台內容
 
-UVM agent test（`ddr5_func_test`：directed + constrained-random 流量）以 `python3 tools/run_uvm_tests.py DDR5-VIP` 執行。agent 以 CS_n / CA[13:0] 腳位驅動 `ddr5_ca_decoder_model.sv` 與 `ddr5_dev_model.sv`（DDR5-4800B 時序），driver 依全部時序規則排程；monitor 自行解碼腳位，規則檢查器檢查每個指令，scoreboard 以參考記憶體比對每筆讀取，並比對 driver 與 monitor 的 transaction；解碼器或裝置拒絕任何指令即為 UVM error。msim 結果：542 個指令、0 違規、468 筆讀取比對、coverage 100%。
+UVM agent test（`ddr5_func_test`：directed + constrained-random 流量，scoreboard 以 DUT 模型的參考模型逐筆比對，並比對 driver 與 monitor 的 transaction）在 Verilator 上以 `python3 tools/run_uvm_tests.py DDR5-VIP` 執行；agent 由 `tools/gen_uvm_agents.py` 依 `tools/uvm_agents/` 的協定 spec 產生。
 
 | 項目 | 數量 | 名稱 |
 |---|---|---|
 | UVM tests | 2 | `ddr5_base_test`, `ddr5_func_test` |
-| Sequences | 3 | `ddr5_seq_base`, `ddr5_base_sequence`, `ddr5_directed_sequence` |
-| SVA（assert / cover property） | 5 / 4 | - |
+| Sequences | 5 | `ddr5_seq_base`, `ddr5_base_sequence`, `ddr5_directed_sequence`, `ddr5_transaction`, `ddr5_cmd_item` |
+| SVA（assert / cover property） | 5 / 4 | `a_cs_reset`, `a_ca_x`, `a_cs_cycle2`, `a_rd_x`, `a_wd_burst`, `c_act`, `c_two_cycle`, `c_rd`, `c_wd` |
 | Covergroups / coverpoints | 3 / 6 | |
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（157 個 check，mutation score 100%）。
+判定：**✅ Sufficient**（157 個 check，mutation score 82%）。
 
-模型未實作的功能（不在測試範圍）：
+未被偵測的 mutant（測試缺口或等價 mutant）：
 
-- Not modelled: data mask, write CRC / ALERT_n, DQS preamble / postamble timing, ECS, same-bank refresh timing, self refresh and power-down timing.
+- `dut_ddr5_dev_model.sv:134 >= -> > in condition [else if (!open_[b] || ap_at[b] >= 0) e[0] = 1'b1;]`
+- `dut_ddr5_dev_model.sv:186 0 -> 1 [for (int i = 0; i < 8; i++) begin]`
 

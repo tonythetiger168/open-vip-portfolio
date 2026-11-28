@@ -9,8 +9,8 @@
 | 類別 | Memory |
 | 類型 | UVM VIP |
 | 功能測試 | 1 個檔案，35 個 check，全部通過 |
-| Mutation | 10/10 個 mutant 被偵測（100%） |
-| 判定 | **✅ Sufficient**（35 個 check，mutation score 100%） |
+| Mutation | 8/12 個 mutant 被偵測（67%） |
+| 判定 | **🟡 Partial**（mutation score 67%） |
 
 ## 2. 可執行的功能測試
 
@@ -98,7 +98,12 @@ UVM 測試需商用模擬器（VCS / Xcelium / Questa）執行；開源流程只
 
 ## 4. 充分度判定與缺口
 
-判定：**✅ Sufficient**（35 個 check，mutation score 100%）。
+判定：**🟡 Partial**（mutation score 67%）。
 
-無已知缺口。
+未被偵測的 mutant（測試缺口或等價 mutant）：
+
+- `dut_sd_card_dut.sv:62 0 -> 1 [for (int i = 0; i < 64; i++) sw_status[i] = i[7:0];]`
+- `dut_sd_card_dut.sv:99 0 -> 1 [st <= S_IDLE; bit_cnt <= 0; rsp_cnt <= 0; data_cnt <= 0; pro]`
+- `dut_sd_card_dut.sv:197 0 -> 1 [if (!bad_addr && !bad_crc) begin data_cnt <= 0; nib <= 0; cs]`
+- `dut_sd_card_dut.sv:218 0 -> 1 [if (idx != 6'd0) bit_cnt <= 0;]`
 

@@ -224,16 +224,14 @@ def gen_driver(s):
     {p}_transaction rsp_item;
     drive_idle();
     wait (vif.rst_n === 1'b1);
-    repeat (4) @(vif.drv_cb);
+{bg0}    repeat (4) @(vif.drv_cb);
 {bg}
     forever begin
       seq_item_port.get_next_item(req);
       req.tag = item_cnt++;
       `uvm_info("DRV", {{"drive: ", req.convert2string()}}, UVM_HIGH)
       drive_item(req);
-      $cast(rsp_item, req.clone());
-      ap.write(rsp_item);
-      seq_item_port.item_done();
+{apw}      seq_item_port.item_done();
     end
   endtask
 
@@ -248,8 +246,12 @@ def gen_driver(s):
 {tasks}
 endclass
 """.format(p=p, members=("\n" + ind(s.get("drv_members", ""), 2) + "\n") if s.get("drv_members") else "",
-           bg=("    fork\n" + ind(s["drv_bg"], 6) + "\n    join_none") if s.get("drv_bg") else "",
+           bg=("    fork\n" + ind(s["drv_bg"], 6) + "\n    join_none") if s.get("drv_bg") and not s.get("drv_bg_at_reset") else "",
+           bg0=("    fork\n" + ind(s["drv_bg"], 6) + "\n    join_none\n") if s.get("drv_bg") and s.get("drv_bg_at_reset") else "",
            idle=ind(s["drv_idle"], 4), item=ind(s["drv_item"], 4),
+           # drv_ap_manual: the driver's own code writes ap (e.g. when items
+           # complete out of order); otherwise each item is written once driven
+           apw="" if s.get("drv_ap_manual") else "      $cast(rsp_item, req.clone());\n      ap.write(rsp_item);\n",
            tasks=("\n" + ind(s.get("drv_tasks", ""), 2)) if s.get("drv_tasks") else "")
 
 
@@ -585,7 +587,7 @@ def gen_env(s):
 endpackage
 """.format(p=p, members=("\n" + ind(s.get("sb_members", ""), 4) + "\n") if s.get("sb_members") else "",
            predict=ind(s["predict"], 6),
-           skip=(" && !(%s)" % s["pair_skip"]) if s.get("pair_skip") else "", agree="e.compare(o)" if drv_rsp else "e.req_equal(o)",
+           skip=(" && !(%s)" % s["pair_skip"]) if s.get("pair_skip") else "", agree=s.get("pair_agree") or ("e.compare(o)" if drv_rsp else "e.req_equal(o)"),
            ral_classes=gen_ral_classes(s) if ral else "",
            ral_members=RAL_MEMBERS.format(p=p) if ral else "",
            ral_build=RAL_BUILD.format(p=p) if ral else "",
@@ -819,6 +821,8 @@ def gen_tests(s):
 # ``pair_skip`` (any spec): expression on a monitored item ``t`` that the
 # driver does not publish (e.g. a snoop the DUT starts); such items are still
 # predicted and checked but not matched against the driver's items.
+# ``pair_agree`` (any spec): expression on driven ``e`` / observed ``o`` that
+# replaces the default driver-vs-monitor agreement test.
 # and optionally ``interface`` (replaces the interface rendered from ports)
 # and ``top_wires`` (extra lines in top_tb, e.g. open-drain bus resolution).
 
